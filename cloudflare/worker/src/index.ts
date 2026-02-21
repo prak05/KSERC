@@ -1,7 +1,7 @@
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 type Env = {
-  RAG_BUCKET: R2Bucket;
+  RAG_KV: KVNamespace;
   RAG_AUTH_TOKEN?: string;
 };
 
@@ -14,11 +14,22 @@ type RagChunk = {
 
 const CHUNK_SIZE = 1200;
 const CHUNK_OVERLAP = 150;
+const INDEX_CHUNK_BYTES = 900_000;
+
+const CORS_HEADERS: Record<string, string> = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET,POST,OPTIONS",
+  "access-control-allow-headers": "content-type,authorization",
+};
+
+function withCors(headers: HeadersInit = {}): HeadersInit {
+  return { ...CORS_HEADERS, ...headers };
+}
 
 function jsonResponse(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "content-type": "application/json" },
+    headers: withCors({ "content-type": "application/json" }),
   });
 }
 
@@ -99,25 +110,34 @@ async function buildChunksFromBuffer(name: string, buffer: ArrayBuffer): Promise
   return chunks;
 }
 
-async function listSeedObjects(env: Env): Promise<R2Object[]> {
-  const objects: R2Object[] = [];
-  let cursor: string | undefined = undefined;
-  while (true) {
-    const result = await env.RAG_BUCKET.list({
-      prefix: "rag/seed/",
-      cursor,
-    });
-    objects.push(...result.objects);
-    if (!result.truncated) break;
-    cursor = result.cursor;
-  }
-  return objects;
-}
-
 async function saveIndex(env: Env, chunks: RagChunk[]): Promise<void> {
   const payload = JSON.stringify({ chunks });
-  await env.RAG_BUCKET.put("rag/index.json", payload, {
-    httpMetadata: { contentType: "application/json" },
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(payload);
+  const parts: string[] = [];
+  for (let i = 0; i < bytes.length; i += INDEX_CHUNK_BYTES) {
+    const slice = bytes.slice(i, i + INDEX_CHUNK_BYTES);
+    parts.push(new TextDecoder().decode(slice));
+  }
+  await env.RAG_KV.put("rag:index:meta", JSON.stringify({ parts: parts.length }));
+  await Promise.all(
+    parts.map((part, idx) => env.RAG_KV.put(`rag:index:${idx}`, part))
+  );
+}
+
+async function loadIndex(env: Env): Promise<Response> {
+  const metaRaw = await env.RAG_KV.get("rag:index:meta");
+  if (!metaRaw) {
+    return jsonResponse({ chunks: [] }, 200);
+  }
+  const meta = JSON.parse(metaRaw) as { parts: number };
+  const parts = await Promise.all(
+    Array.from({ length: meta.parts }, (_, i) => env.RAG_KV.get(`rag:index:${i}`))
+  );
+  const payload = parts.join("");
+  return new Response(payload, {
+    status: 200,
+    headers: { "content-type": "application/json" },
   });
 }
 
@@ -126,36 +146,16 @@ export default {
     if (!checkAuth(request, env)) return unauthorized();
 
     const url = new URL(request.url);
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: withCors() });
+    }
     if (request.method === "GET" && url.pathname === "/rag/index") {
-      const obj = await env.RAG_BUCKET.get("rag/index.json");
-      if (!obj) return jsonResponse({ error: "index_not_found" }, 404);
-      return new Response(obj.body, {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
+      return await loadIndex(env);
     }
 
     if (request.method === "POST" && url.pathname === "/rag/index-seed") {
-      const objects = await listSeedObjects(env);
-      if (!objects.length) {
-        return jsonResponse({ status: "empty", indexed_chunks: 0, sources: [] }, 200);
-      }
-      const chunks: RagChunk[] = [];
-      for (const obj of objects) {
-        const name = obj.key.replace("rag/seed/", "");
-        const file = await env.RAG_BUCKET.get(obj.key);
-        if (!file) continue;
-        const buffer = await file.arrayBuffer();
-        const fileChunks = await buildChunksFromBuffer(name, buffer);
-        chunks.push(...fileChunks);
-      }
-      await saveIndex(env, chunks);
-      const sources = Array.from(new Set(chunks.map((c) => c.source))).sort();
-      return jsonResponse({
-        status: "indexed",
-        indexed_chunks: chunks.length,
-        sources,
-      });
+      await saveIndex(env, []);
+      return jsonResponse({ status: "empty", indexed_chunks: 0, sources: [] }, 200);
     }
 
     if (request.method === "POST" && url.pathname === "/rag/upload") {
@@ -169,8 +169,6 @@ export default {
       for (const file of files) {
         const buffer = await file.arrayBuffer();
         const safeName = file.name || `upload-${timestamp}`;
-        const storageKey = `rag/uploads/${timestamp}-${safeName}`;
-        await env.RAG_BUCKET.put(storageKey, buffer);
         const fileChunks = await buildChunksFromBuffer(safeName, buffer);
         chunks.push(...fileChunks);
       }

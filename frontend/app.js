@@ -20,7 +20,7 @@ const verdictDownload = document.getElementById("verdictDownload");
 let latestVerdict = null;
 
 function getBaseUrl() {
-  return baseUrlInput.value.replace(/\/+$/, "");
+  return baseUrlInput.value.trim().replace(/\/+$/, "");
 }
 
 function getIndexBaseUrl() {
@@ -35,10 +35,20 @@ function setStatus(el, text, isError = false) {
   el.style.color = isError ? "#b91c1c" : "";
 }
 
+function requireBaseUrl(statusEl) {
+  const base = getBaseUrl();
+  if (!base) {
+    setStatus(statusEl, "Set Backend Base URL first.", true);
+    throw new Error("Missing Backend Base URL");
+  }
+  return base;
+}
+
 async function testHealth() {
   setStatus(healthStatus, "Checking backend...");
   try {
-    const response = await fetch(`${getBaseUrl()}/`);
+    const base = requireBaseUrl(healthStatus);
+    const response = await fetch(`${base}/`);
     if (!response.ok) {
       throw new Error(`Health check failed (${response.status})`);
     }
@@ -59,11 +69,12 @@ async function generateVerdict() {
 
   setStatus(verdictStatus, "Generating verdict via RAG + 4 LLM agents...");
   try {
+    const base = requireBaseUrl(verdictStatus);
     const formData = new FormData();
     formData.append("arr_pdf", arrFile);
     formData.append("truing_pdf", truingFile);
 
-    const response = await fetch(`${getBaseUrl()}/verdict/`, {
+    const response = await fetch(`${base}/verdict/`, {
       method: "POST",
       body: formData,
     });
@@ -167,7 +178,12 @@ function renderRagSnippets(snippets) {
 async function indexSeed() {
   setStatus(ragStatus, "Indexing seed folder...");
   try {
+    requireBaseUrl(ragStatus);
     const indexBase = getIndexBaseUrl();
+    if (!indexBase) {
+      setStatus(ragStatus, "Set Index Service URL first.", true);
+      return;
+    }
     const response = await fetch(`${indexBase}/rag/index-seed`, { method: "POST" });
     if (!response.ok) {
       const errorText = await response.text();
@@ -186,7 +202,8 @@ async function indexSeed() {
 async function refreshRag() {
   setStatus(ragStatus, "Refreshing backend index...");
   try {
-    const response = await fetch(`${getBaseUrl()}/rag/refresh`, { method: "POST" });
+    const base = requireBaseUrl(ragStatus);
+    const response = await fetch(`${base}/rag/refresh`, { method: "POST" });
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || `Refresh failed (${response.status})`);
@@ -206,9 +223,14 @@ async function uploadRag() {
   }
   setStatus(ragStatus, "Uploading and indexing...");
   try {
+    requireBaseUrl(ragStatus);
     const formData = new FormData();
     Array.from(files).forEach((f) => formData.append("files", f));
     const indexBase = getIndexBaseUrl();
+    if (!indexBase) {
+      setStatus(ragStatus, "Set Index Service URL first.", true);
+      return;
+    }
     const response = await fetch(`${indexBase}/rag/upload`, {
       method: "POST",
       body: formData,

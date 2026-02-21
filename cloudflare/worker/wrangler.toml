@@ -8,6 +8,6 @@ workers_dev = true
 # Optional Bearer token for auth
 RAG_AUTH_TOKEN = ""
 
-[[r2_buckets]]
-binding = "RAG_BUCKET"
-bucket_name = "kserc-rag"
+[[kv_namespaces]]
+binding = "RAG_KV"
+id = "cf362bab2a7341e9afe4772dcca97b84"

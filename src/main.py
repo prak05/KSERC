@@ -63,7 +63,7 @@ from src.services.llm_summary import generate_summary
 
 # [User Defined] RAG and Verdict services
 # [Source] src/services/rag.py, src/services/llm_orchestrator.py, src/services/verdict.py
-from src.services.rag import build_chunks_from_dir, save_index, load_index, RagIndex
+from src.services.rag import save_index, load_index, RagIndex
 from src.services.rag_remote import (
     remote_index_seed,
     remote_upload_files,
@@ -102,12 +102,15 @@ def _load_rag_index_if_exists() -> None:
     [Why] Reuse across requests
     """
     global rag_index
+    if not settings.RAG_REMOTE_BASE_URL:
+        logger.warning("Local RAG indexing is disabled. Set RAG_REMOTE_BASE_URL to enable remote indexing.")
+        return
     index_path = Path(settings.RAG_INDEX_FILE)
     if index_path.exists():
         rag_index = load_index(index_path)
-        logger.info("Loaded RAG index from disk")
-    elif settings.RAG_REMOTE_BASE_URL:
-        logger.info("Local index missing; remote RAG base set. Use /rag/refresh to load.")
+        logger.info("Loaded cached RAG index from disk")
+    else:
+        logger.info("Local cache missing; remote RAG base set. Use /rag/refresh to load.")
 
 
 async def _refresh_rag_index_from_remote() -> None:
@@ -472,29 +475,17 @@ async def ai_summary(payload: SummaryRequest) -> SummaryResponse:
 )
 async def rag_index_seed() -> RagIndexResponse:
     global rag_index
-    if settings.RAG_REMOTE_BASE_URL:
-        remote_result = await remote_index_seed()
-        await _refresh_rag_index_from_remote()
-        return RagIndexResponse(
-            status=remote_result.get("status", "indexed"),
-            indexed_chunks=remote_result.get("indexed_chunks", 0),
-            sources=remote_result.get("sources", [])
-        )
-
-    seed_dir = Path(settings.RAG_SEED_DIR)
-    if not seed_dir.exists():
+    if not settings.RAG_REMOTE_BASE_URL:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"RAG_SEED_DIR not found: {seed_dir}"
+            detail="Local RAG indexing is disabled. Configure RAG_REMOTE_BASE_URL."
         )
-    chunks = build_chunks_from_dir(seed_dir)
-    save_index(chunks, Path(settings.RAG_INDEX_FILE))
-    rag_index = RagIndex(chunks)
-    sources = sorted({c["source"] for c in chunks})
+    remote_result = await remote_index_seed()
+    await _refresh_rag_index_from_remote()
     return RagIndexResponse(
-        status="indexed",
-        indexed_chunks=len(chunks),
-        sources=sources
+        status=remote_result.get("status", "indexed"),
+        indexed_chunks=remote_result.get("indexed_chunks", 0),
+        sources=remote_result.get("sources", [])
     )
 
 
@@ -509,54 +500,30 @@ async def rag_index_seed() -> RagIndexResponse:
 )
 async def rag_upload(files: list[UploadFile] = File(...)) -> RagIndexResponse:
     global rag_index
-    if settings.RAG_REMOTE_BASE_URL:
-        upload_files = []
-        for f in files:
-            if not f.filename:
-                continue
-            content = await f.read()
-            upload_files.append(
-                ("files", (f.filename, content, f.content_type or "application/octet-stream"))
-            )
-        if not upload_files:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="No files uploaded"
-            )
-        remote_result = await remote_upload_files(upload_files)
-        await _refresh_rag_index_from_remote()
-        return RagIndexResponse(
-            status=remote_result.get("status", "uploaded_and_indexed"),
-            indexed_chunks=remote_result.get("indexed_chunks", 0),
-            sources=remote_result.get("sources", [])
+    if not settings.RAG_REMOTE_BASE_URL:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Local RAG indexing is disabled. Configure RAG_REMOTE_BASE_URL."
         )
-
-    storage_dir = Path(settings.RAG_STORAGE_DIR)
-    storage_dir.mkdir(parents=True, exist_ok=True)
-
-    saved_files = []
+    upload_files = []
     for f in files:
         if not f.filename:
             continue
-        target = storage_dir / f.filename
         content = await f.read()
-        target.write_bytes(content)
-        saved_files.append(target)
-
-    if not saved_files:
+        upload_files.append(
+            ("files", (f.filename, content, f.content_type or "application/octet-stream"))
+        )
+    if not upload_files:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No files uploaded"
         )
-
-    chunks = build_chunks_from_dir(storage_dir)
-    save_index(chunks, Path(settings.RAG_INDEX_FILE))
-    rag_index = RagIndex(chunks)
-    sources = sorted({c["source"] for c in chunks})
+    remote_result = await remote_upload_files(upload_files)
+    await _refresh_rag_index_from_remote()
     return RagIndexResponse(
-        status="uploaded_and_indexed",
-        indexed_chunks=len(chunks),
-        sources=sources
+        status=remote_result.get("status", "uploaded_and_indexed"),
+        indexed_chunks=remote_result.get("indexed_chunks", 0),
+        sources=remote_result.get("sources", [])
     )
 
 
