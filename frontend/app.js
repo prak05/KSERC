@@ -82,20 +82,51 @@ async function generateVerdict() {
 }
 
 function renderVerdict(data) {
-  analysisSummary.innerHTML = `
-    <div><strong>Summary:</strong> ${data.summary || "No summary"}</div>
-    <div><strong>Approved:</strong> ${(data.approved_items || []).length}</div>
-    <div><strong>Disallowed:</strong> ${(data.disallowed_items || []).length}</div>
-    <div><strong>Conditions:</strong> ${(data.conditions || []).length}</div>
-  `;
+  analysisSummary.textContent = "";
+  const summaryRow = document.createElement("div");
+  const summaryLabel = document.createElement("strong");
+  summaryLabel.textContent = "Summary:";
+  summaryRow.appendChild(summaryLabel);
+  summaryRow.append(` ${data.summary || "No summary"}`);
+  analysisSummary.appendChild(summaryRow);
+
+  const approvedRow = document.createElement("div");
+  const approvedLabel = document.createElement("strong");
+  approvedLabel.textContent = "Approved:";
+  approvedRow.appendChild(approvedLabel);
+  approvedRow.append(` ${(data.approved_items || []).length}`);
+  analysisSummary.appendChild(approvedRow);
+
+  const disallowedRow = document.createElement("div");
+  const disallowedLabel = document.createElement("strong");
+  disallowedLabel.textContent = "Disallowed:";
+  disallowedRow.appendChild(disallowedLabel);
+  disallowedRow.append(` ${(data.disallowed_items || []).length}`);
+  analysisSummary.appendChild(disallowedRow);
+
+  const conditionsRow = document.createElement("div");
+  const conditionsLabel = document.createElement("strong");
+  conditionsLabel.textContent = "Conditions:";
+  conditionsRow.appendChild(conditionsLabel);
+  conditionsRow.append(` ${(data.conditions || []).length}`);
+  analysisSummary.appendChild(conditionsRow);
   analysisSummary.classList.remove("muted");
 
-  agentSummary.innerHTML = `
-    <div><strong>Legal Brain:</strong> ${data.agent_outputs?.legal_brain ? "✓" : "-"}</div>
-    <div><strong>Forensic Auditor:</strong> ${data.agent_outputs?.forensic_auditor ? "✓" : "-"}</div>
-    <div><strong>Technical Validator:</strong> ${data.agent_outputs?.technical_validator ? "✓" : "-"}</div>
-    <div><strong>CRO Verdict:</strong> ${data.agent_outputs?.chief_regulatory_officer ? "✓" : "-"}</div>
-  `;
+  agentSummary.textContent = "";
+  const agentRows = [
+    ["Legal Brain", data.agent_outputs?.legal_brain ? "✓" : "-"],
+    ["Forensic Auditor", data.agent_outputs?.forensic_auditor ? "✓" : "-"],
+    ["Technical Validator", data.agent_outputs?.technical_validator ? "✓" : "-"],
+    ["CRO Verdict", data.agent_outputs?.chief_regulatory_officer ? "✓" : "-"],
+  ];
+  agentRows.forEach(([label, value]) => {
+    const row = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = `${label}:`;
+    row.appendChild(strong);
+    row.append(` ${value}`);
+    agentSummary.appendChild(row);
+  });
   agentSummary.classList.remove("muted");
 
   verdictDownload.href = `${getBaseUrl()}${data.verdict_pdf_url}`;
@@ -110,15 +141,26 @@ function renderRagSnippets(snippets) {
     ragSnippets.classList.add("muted");
     return;
   }
-  ragSnippets.innerHTML = snippets
-    .map(
-      (s) => `
-      <div class="rag-card">
-        <div><strong>${s.source}</strong> ${s.page ? `• Page ${s.page}` : ""}</div>
-        <div>${s.text}</div>
-      </div>`
-    )
-    .join("");
+  ragSnippets.textContent = "";
+  snippets.forEach((s) => {
+    const card = document.createElement("div");
+    card.className = "rag-card";
+
+    const meta = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = s.source || "Unknown";
+    meta.appendChild(strong);
+    if (s.page) {
+      meta.append(` • Page ${s.page}`);
+    }
+
+    const body = document.createElement("div");
+    body.textContent = s.text || "";
+
+    card.appendChild(meta);
+    card.appendChild(body);
+    ragSnippets.appendChild(card);
+  });
   ragSnippets.classList.remove("muted");
 }
 

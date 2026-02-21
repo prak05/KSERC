@@ -32,7 +32,7 @@ pdfplumber==0.10.3
 # [Source] https://github.com/andrew-d/python-multipart
 # [Why] Required by FastAPI for handling file uploads (UploadFile in endpoints)
 # [Usage] Enables PDF file upload functionality in src/main.py
-python-multipart==0.0.9
+python-multipart==0.0.22
 
 # [Library] python-dotenv - Environment variable management
 # [Source] https://github.com/theskumar/python-dotenv
