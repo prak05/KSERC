@@ -1,0 +1,59 @@
+# [Purpose] List of Python dependencies required for the KSERC ARA Backend
+# [Source] Carefully selected libraries for efficiency and performance
+# [Why] These libraries form the backbone of the backend system
+
+# [Library] FastAPI - Modern, high-performance web framework for building APIs
+# [Source] https://fastapi.tiangolo.com/
+# [Why] Chosen for its speed, automatic API documentation (Swagger UI), and async support
+# [Usage] Main framework for REST API endpoints in src/main.py
+fastapi==0.115.6
+
+# [Library] Uvicorn - Lightning-fast ASGI server implementation
+# [Source] https://www.uvicorn.org/
+# [Why] Standard ASGI server for running FastAPI applications
+# [Usage] Runs the application server (uvicorn.run in src/main.py)
+uvicorn==0.27.0
+
+# [Library] Pydantic - Data validation using Python type hints
+# [Source] https://docs.pydantic.dev/
+# [Why] Ensures type safety and automatic validation of API inputs/outputs
+# [Usage] Used in src/models/schemas.py for defining data models
+pydantic==2.10.4
+
+# [Library] pdfplumber - PDF extraction library optimized for tables
+# [Source] https://github.com/jsvine/pdfplumber
+# [Why] Best choice for extracting structured tables from PDFs (superior to PyPDF2)
+# [Critical] Essential for extracting KSERC financial tables from regulatory orders
+# [Usage] Used in src/services/pdf_ingestion.py for parsing PDF content
+pdfplumber==0.10.3
+
+
+# [Library] python-multipart - Streaming multipart parser
+# [Source] https://github.com/andrew-d/python-multipart
+# [Why] Required by FastAPI for handling file uploads (UploadFile in endpoints)
+# [Usage] Enables PDF file upload functionality in src/main.py
+python-multipart==0.0.9
+
+# [Library] python-dotenv - Environment variable management
+# [Source] https://github.com/theskumar/python-dotenv
+# [Why] Safely load configuration from .env files (API keys, secrets)
+# [Usage] Used in src/config.py for loading environment variables
+python-dotenv==1.0.0
+
+# [Library] httpx - HTTP client for API calls
+# [Source] https://www.python-httpx.org/
+# [Why] Required for calling free-tier LLM APIs (Hugging Face Inference)
+# [Usage] Used in src/services/llm_summary.py
+httpx==0.28.1
+
+# [Library] fpdf2 - Lightweight PDF generation
+# [Source] https://pyfpdf.github.io/fpdf2/
+# [Why] Generate verdict PDF for clients
+# [Usage] Used in src/services/verdict.py
+fpdf2==2.7.9
+
+# [Library] google-cloud-storage - Upload verdict PDFs to GCS
+# [Source] https://cloud.google.com/python/docs/reference/storage/latest
+# [Why] Store verdicts in a public bucket
+# [Usage] Used in src/services/verdict.py
+google-cloud-storage==2.16.0

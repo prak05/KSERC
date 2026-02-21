@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KSERC Saarthi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">SA</span>
+        <div>
+          <div class="brand-title">KSERC Saarthi</div>
+          <div class="brand-subtitle">Regulatory Intelligence & Verdict Engine</div>
+        </div>
+      </div>
+      <div class="env-pill">RAG + 4-LLM Verdicts</div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <h1>KSERC Saarthi</h1>
+          <p>
+            Three-layer decision stack: RAG over KSERC archives, four specialized LLM
+            agents, and a final KSERC-style verdict. Upload ARR and Truing-Up orders,
+            get a verdict PDF with approvals and conditions.
+          </p>
+        </div>
+        <div class="hero-card">
+          <label class="label" for="baseUrl">Backend Base URL</label>
+          <input
+            id="baseUrl"
+            class="input"
+            type="url"
+            value="http://localhost:8000"
+            placeholder="http://localhost:8000"
+          />
+          <button id="healthBtn" class="btn ghost">Test Connection</button>
+          <div id="healthStatus" class="status muted">Waiting for connection test.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>ARR & Truing-Up Upload</h2>
+            <p>Submit ARR and Truing-Up order PDFs to generate the verdict.</p>
+          </div>
+          <div class="panel-actions">
+            <label class="file">
+              ARR PDF
+              <input id="arrInput" type="file" accept="application/pdf" />
+            </label>
+            <label class="file">
+              Truing-Up PDF
+              <input id="truingInput" type="file" accept="application/pdf" />
+            </label>
+            <button id="verdictBtn" class="btn primary">Generate Verdict</button>
+          </div>
+        </div>
+        <div id="verdictStatus" class="status muted">Awaiting inputs.</div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h3>Verdict Snapshot</h3>
+          <div id="analysisSummary" class="content muted">
+            Verdict summary will appear here.
+          </div>
+          <a id="verdictDownload" class="btn secondary" href="#" download>
+            Download Verdict PDF
+          </a>
+        </div>
+        <div class="card">
+          <h3>Agent Outputs</h3>
+          <div id="agentSummary" class="content muted">
+            Outputs from Legal, Forensic, Technical, and CRO agents appear here.
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>RAG Index (Backend Admin)</h2>
+            <p>Offload indexing to Cloudflare, then refresh the backend cache.</p>
+          </div>
+          <div class="panel-actions">
+            <label class="label" for="indexUrl">Index Service URL (Cloudflare)</label>
+            <input
+              id="indexUrl"
+              class="input"
+              type="url"
+              placeholder="https://your-worker.workers.dev"
+            />
+            <button id="indexSeedBtn" class="btn secondary">Index Seed Folder</button>
+            <input id="ragFiles" class="file" type="file" multiple />
+            <button id="uploadRagBtn" class="btn ghost">Upload & Index</button>
+            <button id="refreshRagBtn" class="btn ghost">Refresh Backend Index</button>
+          </div>
+        </div>
+        <div id="ragStatus" class="status muted">No RAG indexing yet.</div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>RAG Citations</h2>
+            <p>Top regulatory snippets used in the verdict.</p>
+          </div>
+        </div>
+        <div id="ragSnippets" class="rag-snippets muted">No RAG snippets yet.</div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>KSERC Saarthi • Final verdicts with human oversight</div>
+      <div>Endpoints: `/rag/index-seed`, `/rag/upload`, `/verdict/`</div>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+name = "kserc-rag-indexer"
+main = "src/index.ts"
+compatibility_date = "2025-02-20"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[vars]
+# Optional Bearer token for auth
+RAG_AUTH_TOKEN = ""
+
+[[r2_buckets]]
+binding = "RAG_BUCKET"
+bucket_name = "kserc-rag"

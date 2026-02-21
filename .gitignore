@@ -1,0 +1,115 @@
+# [Purpose] .gitignore file to exclude unnecessary files from version control
+# [Source] Standard Python gitignore patterns from GitHub's gitignore templates
+
+# Python bytecode and cache files
+# [Why] These are compiled Python files generated at runtime, not needed in repo
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+# [Why] These are build artifacts created during package installation
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+# [Why] Test coverage reports are generated locally, not needed in repo
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+# [Why] Each developer creates their own virtual environment
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and editors
+# [Why] Developer-specific IDE settings should not be shared
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+# [Why] May contain sensitive information like API keys
+.env
+.env.local
+.env.*.local
+
+# Secrets and credentials
+# [Why] Prevent accidental key material commits
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+
+# Logs
+# [Why] Log files are generated at runtime
+*.log
+logs/
+
+# Temporary files
+# [Why] Temporary files should not be tracked
+/tmp/
+*.tmp
+*.bak
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+data/
+*.pdf
+
+# RAG seed docs and worker artifacts
+rag_seed/
+.wrangler/
+cloudflare/worker/.wrangler/
