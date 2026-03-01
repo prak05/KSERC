@@ -1,0 +1,5 @@
+{
+  "name": "KSERC AI Truing-Up Tool",
+  "description": "AI-based analytical tool for automated truing-up of accounts for distribution licensees (KDHPCL, Technopark, Infopark, CSEZA).",
+  "requestFramePermissions": []
+}
