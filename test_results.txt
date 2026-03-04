@@ -1,0 +1,70 @@
+Running extraction...
+Consider using the pymupdf_layout package for a greatly improved page layout analysis.
+
+Claimed expenses:
+  admin_general: 95.36
+  depreciation: 82.38
+  employee_cost: 60.02
+  interest_consumer_deposits: 123.65
+  other_expenses: 2.32
+  power_purchase_cost: 5549.13
+  repair_maintenance: 503.62
+  return_on_nfa: 90.04
+
+Running audit...
+
+Approved expenses:
+  admin_general: 49.55
+  depreciation: 82.38
+  employee_cost: 29.82
+  interest_consumer_deposits: 123.65
+  interest_long_term: 3.24
+  other_expenses: 2.32
+  power_purchase_cost: 5528.39
+  repair_maintenance: 385.04
+  return_on_nfa: 39.55
+
+===============================================================================================
+COMPARISON: System Output vs KSERC Trued-Up Order (Table 33)
+===============================================================================================
+Component                              Claimed     System      KSERC       Diff   Status
+-----------------------------------------------------------------------------------------------
+admin_general                            95.36      49.55      49.84      -0.29       OK
+carrying_cost                             0.00       0.00       0.00      +0.00       OK
+depreciation                             82.38      82.38      34.66     +47.72     MISS
+employee_cost                            60.02      29.82      30.68      -0.86       OK
+interest_consumer_deposits              123.65     123.65     123.65      +0.00       OK
+interest_long_term                        0.00       3.24       3.82      -0.58     MISS
+interest_working_capital                  0.00       0.00       0.00      +0.00       OK
+other_debits                              0.00       0.00       0.00      +0.00       OK
+other_expenses                            2.32       2.32       0.00      +2.32       OK
+power_purchase_cost                    5549.13    5528.39    5508.00     +20.39       OK
+repair_maintenance                      503.62     385.04     416.71     -31.67    CLOSE
+return_on_nfa                            90.04      39.55      34.83      +4.72     MISS
+section3_1_duty                           0.00       0.00       0.00      +0.00       OK
+-----------------------------------------------------------------------------------------------
+TOTAL                                             6243.94    6202.19     +41.75
+
+--- ACCURACY SUMMARY ---
+Total system approved: 6243.94 L
+Total KSERC approved:  6202.19 L
+Overall accuracy:      100.7%
+
+Per-component accuracy:
+  [OK]   admin_general: 0.6% off
+  [MISS] depreciation: 137.7% off (sys=82.38, kserc=34.66)
+  [OK]   employee_cost: 2.8% off
+  [OK]   interest_consumer_deposits: 0.0% off
+  [MISS] interest_long_term: 15.2% off (sys=3.24, kserc=3.82)
+  [OK]   power_purchase_cost: 0.4% off
+  [OK]   repair_maintenance: 7.6% off
+  [MISS] return_on_nfa: 13.6% off (sys=39.55, kserc=34.83)
+
+Components within 10%: 5/8
+
+--- DISALLOWANCE LOG ---
+  Power Purchase Cost — Distribution Loss Penalty: claimed=5549.13, approved=5528.39, cut=20.74
+  Employee Expenses: claimed=60.02, approved=29.82, cut=30.2
+  Repairs & Maintenance: claimed=503.62, approved=385.04, cut=118.58
+  Administration & General Expenses: claimed=95.36, approved=49.55, cut=45.81
+  Return on Net Fixed Assets: claimed=90.04, approved=39.55, cut=50.49

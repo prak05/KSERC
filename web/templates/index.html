@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KSERC - Kerala State Electricity Regulatory Commission - Automated Tariff Truing Up Analysis System">
+    <title>KSERC | Tariff Truing Up Analysis System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <!-- ═══ TOP GOVERNMENT BAR ═══ -->
+    <div class="gov-bar">
+        <div class="gov-bar-inner">
+            <span>Government of Kerala | സർക്കാർ</span>
+            <span>Official Regulatory Platform</span>
+        </div>
+    </div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="main-header">
+        <div class="header-inner">
+            <div class="header-brand">
+                <div class="emblem">
+                    <div class="emblem-icon">⚡</div>
+                </div>
+                <div class="header-text">
+                    <h1>Kerala State Electricity Regulatory Commission</h1>
+                    <p class="header-subtitle">കേരള സംസ്ഥാന വൈദ്യുതി റെഗുലേറ്ററി കമ്മീഷൻ</p>
+                    <p class="header-desc">Automated Tariff Truing Up Analysis System</p>
+                </div>
+            </div>
+            <div class="header-meta">
+                <div class="classification-badge">RESTRICTED</div>
+                <div class="header-date" id="currentDate"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ NAVIGATION ═══ -->
+    <nav class="main-nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-link active" data-section="upload">
+                <span class="nav-icon">📤</span> Submit Petition
+            </a>
+            <a href="#" class="nav-link" data-section="results" id="navResults" style="display:none;">
+                <span class="nav-icon">📊</span> Analysis Results
+            </a>
+        </div>
+    </nav>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main class="main-content">
+
+        <!-- ── Upload Section ── -->
+        <section id="uploadSection" class="content-section">
+            <div class="section-header">
+                <h2>Submit Petition for Truing Up Analysis</h2>
+                <p>Upload the licensee's petition PDF for automated compliance analysis against KSERC Regulations, 2021</p>
+            </div>
+
+            <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="licensee">
+                            <span class="label-icon">🏢</span>
+                            Small Distribution Licensee
+                        </label>
+                        <select id="licensee" name="licensee" required>
+                            <option value="">— Select Licensee —</option>
+                            {% for lic in licensees %}
+                            <option value="{{ lic }}">{{ lic }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="financialYear">
+                            <span class="label-icon">📅</span>
+                            Financial Year
+                        </label>
+                        <select id="financialYear" name="financial_year" required>
+                            <option value="">— Select Year —</option>
+                            <option value="2024-25">2024-25</option>
+                            <option value="2023-24">2023-24</option>
+                            <option value="2022-23">2022-23</option>
+                            <option value="2021-22">2021-22</option>
+                            <option value="2020-21">2020-21</option>
+                            <option value="2019-20">2019-20</option>
+                            <option value="2018-19">2018-19</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Drop Zone -->
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-content">
+                        <div class="drop-icon">📄</div>
+                        <h3>Upload Petition PDF</h3>
+                        <p>Drag & drop your file here or click to browse</p>
+                        <p class="drop-hint">Maximum file size: 50MB • PDF format only</p>
+                        <input type="file" id="fileInput" name="file" accept=".pdf" hidden>
+                        <button type="button" class="btn btn-outline" id="browseBtn">Browse Files</button>
+                    </div>
+                    <div class="file-preview" id="filePreview" style="display:none;">
+                        <span class="file-icon">📎</span>
+                        <span class="file-name" id="fileName"></span>
+                        <span class="file-size" id="fileSize"></span>
+                        <button type="button" class="file-remove" id="removeFile">✕</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                    <span class="btn-text">Begin Analysis</span>
+                    <span class="btn-loader" style="display:none;">
+                        <span class="spinner"></span>
+                        Processing...
+                    </span>
+                </button>
+            </form>
+        </section>
+
+        <!-- ── Loading Section ── -->
+        <section id="loadingSection" class="content-section" style="display:none;">
+            <div class="loading-container">
+                <div class="loading-animation">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring delay-1"></div>
+                    <div class="pulse-ring delay-2"></div>
+                    <div class="loading-icon">⚡</div>
+                </div>
+                <h2>Analyzing Petition</h2>
+                <div class="loading-steps">
+                    <div class="loading-step active" id="step1">
+                        <span class="step-indicator"></span>
+                        <span>Extracting financial tables from PDF...</span>
+                    </div>
+                    <div class="loading-step" id="step2">
+                        <span class="step-indicator"></span>
+                        <span>Running compliance audit against KSERC Regulations...</span>
+                    </div>
+                    <div class="loading-step" id="step3">
+                        <span class="step-indicator"></span>
+                        <span>Generating detailed justifications...</span>
+                    </div>
+                    <div class="loading-step" id="step4">
+                        <span class="step-indicator"></span>
+                        <span>Preparing PDF order document...</span>
+                    </div>
+                </div>
+                <p class="loading-note">This process may take 2-5 minutes depending on the document complexity.</p>
+            </div>
+        </section>
+
+        <!-- ── Results Section ── -->
+        <section id="resultsSection" class="content-section" style="display:none;">
+
+            <!-- Summary Cards -->
+            <div class="results-header">
+                <div class="results-title">
+                    <h2>Truing Up Analysis Report</h2>
+                    <p id="resultsMeta"></p>
+                </div>
+                <button class="btn btn-primary" id="downloadBtn">
+                    <span>⬇️ Download PDF Order</span>
+                </button>
+            </div>
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-label">Total Claimed Expenditure</div>
+                    <div class="card-value claimed" id="totalClaimed">—</div>
+                    <div class="card-unit">Rs. Lakhs</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-label">Total Approved Expenditure</div>
+                    <div class="card-value approved" id="totalApproved">—</div>
+                    <div class="card-unit">Rs. Lakhs</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-label">Total Revenue</div>
+                    <div class="card-value revenue" id="totalRevenue">—</div>
+                    <div class="card-unit">Rs. Lakhs</div>
+                </div>
+                <div class="summary-card" id="gapSurplusCard">
+                    <div class="card-label" id="gapSurplusLabel">Revenue Position</div>
+                    <div class="card-value" id="gapSurplusValue">—</div>
+                    <div class="card-unit">Rs. Lakhs</div>
+                </div>
+            </div>
+
+            <!-- Distribution Loss -->
+            <div class="info-bar" id="distLossBar" style="display:none;">
+                <span class="info-icon">⚠️</span>
+                <span id="distLossText"></span>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="table-section">
+                <h3>Component-wise Analysis</h3>
+                <div class="table-container">
+                    <table class="data-table" id="comparisonTable">
+                        <thead>
+                            <tr>
+                                <th>Sl. No.</th>
+                                <th>Particulars</th>
+                                <th class="num">Claimed (Rs. Lakhs)</th>
+                                <th class="num">Approved (Rs. Lakhs)</th>
+                                <th class="num">Variance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Component Justifications -->
+            <div class="justifications-section" id="justificationsSection">
+                <h3>Detailed Justifications & Commission's Observations</h3>
+                <div id="justificationCards"></div>
+            </div>
+
+            <!-- Disallowances Summary -->
+            <div class="disallowances-section" id="disallowancesSection" style="display:none;">
+                <h3>⛔ Summary of Disallowances</h3>
+                <div id="disallowancesList"></div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="main-footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <p><strong>Kerala State Electricity Regulatory Commission</strong></p>
+                <p>KPFC Bhavanam, C.V. Raman Pillai Road, Vellayambalam, Thiruvananthapuram - 695010</p>
+            </div>
+            <div class="footer-right">
+                <p>Developed under the directives of KSERC</p>
+                <p class="footer-disclaimer">This is an automated analysis tool. Final orders are subject to Commission's approval.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
