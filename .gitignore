@@ -1,0 +1,59 @@
+# Environment & Secrets
+.env
+*.json
+!package.json
+service_account.json
+vertex_sa.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Data & Cache
+.extraction_cache/
+*.db
+data/*.pkl
+data/*.pickle
+*.chroma/
+chroma_db/
+*.jsonl
+data/audit_trail/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Output files (regeneratable)
+output_orders/*.pdf
+
+# Uploads (user data, not committed)
+uploads/
+
+# Documents (too large for git)
+# Documents/
+
+# Logs
+*.log
+
+# Large PDFs in project root
+/*.pdf
+
+# Temp
+/tmp/
+*.tmp

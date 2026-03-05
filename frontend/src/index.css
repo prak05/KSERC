@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+/* ═══ Government Design System Tokens ═══ */
+@theme {
+  --color-kserc-navy: #0c1b2e;
+  --color-kserc-navy-light: #142d4a;
+  --color-kserc-navy-dark: #070f1a;
+  --color-kserc-gold: #c9a03c;
+  --color-kserc-gold-light: #e8c75a;
+  --color-kserc-gold-dark: #a17e2a;
+  --color-kserc-blue: #1a5276;
+  --color-kserc-blue-light: #2980b9;
+  --color-kserc-green: #1a7a4c;
+  --color-kserc-green-light: #27ae60;
+  --color-kserc-red: #922b21;
+  --color-kserc-red-light: #c0392b;
+  --color-kserc-amber: #b7950b;
+  --color-kserc-surface: #f4f6f9;
+  --color-kserc-border: #d5dbe3;
+  --color-kserc-text: #1a1a2e;
+  --color-kserc-text-muted: #5d6d7e;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--color-kserc-surface);
+    color: var(--color-kserc-text);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* ═══ Animations ═══ */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 0.3; }
+  100% { transform: scale(0.8); opacity: 0.8; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.4s ease-out forwards;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ═══ Scrollbar ═══ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-kserc-surface); }
+::-webkit-scrollbar-thumb { background: var(--color-kserc-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-kserc-text-muted); }
