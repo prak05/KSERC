@@ -1,29 +1,16 @@
 import json
 import logging
 from typing import Dict, Any
-import os
-import vertexai
-from vertexai.generative_models import GenerativeModel, GenerationConfig
+
+from src.gemini_client import generate
 
 logger = logging.getLogger("chief_auditor")
 
 class ChiefAuditor:
     def __init__(self):
-        """Initializes the Gemini 2.5 Pro Chief Auditor model."""
-        key_path = os.path.abspath("vertex_sa.json")
-        if not os.path.exists(key_path):
-            logger.warning("vertex_sa.json not found! Auditor will fail if no default creds exist.")
-        else:
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
-            vertexai.init(project="triple-cab-488111-f5", location="us-central1")
-
-        self.model = GenerativeModel("gemini-2.5-pro")
-        
-        # Enforce strict JSON output
-        self.generation_config = GenerationConfig(
-            temperature=0.0,
-            response_mime_type="application/json",
-        )
+        """Initializes the Gemini 2.5 Pro Chief Auditor."""
+        # Client is initialized lazily via gemini_client on first generate() call
+        pass
 
     def analyze_component(
         self, 
@@ -125,11 +112,13 @@ class ChiefAuditor:
         """
 
         try:
-            response = self.model.generate_content(
+            raw = generate(
                 prompt,
-                generation_config=self.generation_config
+                model="gemini-2.5-pro",
+                temperature=0.0,
+                response_mime_type="application/json",
             )
-            data = json.loads(response.text)
+            data = json.loads(raw)
             
             # Ensure types
             approved_amount = float(data.get("approved_amount", 0.0))

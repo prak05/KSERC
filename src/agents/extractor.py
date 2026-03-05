@@ -336,15 +336,8 @@ def _find_arr_table_pages(images: List[bytes]) -> List[int]:
     Falls back to [0..min(len(images),6)] if Gemini can't determine.
     """
     try:
-        import vertexai
-        from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
-
-        key_path = os.path.abspath("vertex_sa.json")
-        if not os.path.exists(key_path):
-            return list(range(min(len(images), 8)))
-
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
-        vertexai.init(project="triple-cab-488111-f5", location="us-central1")
+        from src.gemini_client import generate_with_parts
+        from google.genai import types
 
         PAGE_FINDER_PROMPT = """Look at these PDF pages carefully. Identify which pages contain the MAIN ARR (Aggregate Revenue Requirement) SUMMARY TABLE.
 
@@ -381,20 +374,18 @@ The correct table has BOTH expenditure AND revenue items on the same or consecut
 Return ONLY a JSON object: {"arr_pages": [1, 2, 3]} with 1-based page numbers.
 If you truly cannot find it, return {"arr_pages": []}."""
 
-        parts = [Part.from_text(text=PAGE_FINDER_PROMPT)]
+        parts = [types.Part.from_text(text=PAGE_FINDER_PROMPT)]
         for png_bytes in images:
-            parts.append(Part.from_data(data=png_bytes, mime_type="image/png"))
+            parts.append(types.Part.from_bytes(data=png_bytes, mime_type="image/png"))
 
-        model = GenerativeModel("gemini-2.5-flash")
-        response = model.generate_content(
-            contents=parts,
-            generation_config=GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.0,
-            )
+        raw = generate_with_parts(
+            parts,
+            model="gemini-2.5-flash",
+            temperature=0.0,
+            response_mime_type="application/json",
         )
 
-        raw = response.text.strip()
+        raw = raw.strip()
         if raw.startswith("```"):
             raw = re.sub(r"^```[a-z]*\n?", "", raw)
             raw = re.sub(r"\n?```$", "", raw)
@@ -427,37 +418,26 @@ def _extract_with_gemini_vision(
     financial_year: str = "",
 ) -> float:
     """
-    Send PDF page images to Gemini Vision and extract ARR financial table.
-    Uses the new google-genai SDK with the latest model.
+    Send PDF page images to Gemini and extract ARR financial table.
+    Uses the google-genai SDK with the latest model.
     Updates claimed_expenses and claimed_revenues in-place.
     Returns distribution_loss_pct.
     """
     try:
-        import vertexai
-        from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
-        from google.oauth2.credentials import Credentials
+        from src.gemini_client import get_client, generate_with_parts
+        from google.genai import types
     except ImportError:
-        logger.warning("vertexai not installed; skipping Gemini Vision.")
+        logger.warning("google-genai not installed; skipping Gemini Vision.")
         return 0.0
-
-    key_path = os.path.abspath("vertex_sa.json")
-    if not os.path.exists(key_path):
-        logger.warning("vertex_sa.json not found; skipping Gemini Vision.")
-        return 0.0
-    
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
-    vertexai.init(project="triple-cab-488111-f5", location="us-central1")
 
     # Build content parts: prompt + dynamic KDHP column instruction + all page images
-    # For KDHP, inject a very explicit instruction about which column to extract from
     dynamic_prefix = ""
     if licensee_name and ("KDHP" in licensee_name.upper() or "KANNAN" in licensee_name.upper()):
-        # Convert FY like "2024-25" to "FY25"
         fy_short = ""
         if financial_year and "-" in financial_year:
-            fy_short = "FY" + financial_year.split("-")[1]  # e.g. "2024-25" -> "FY25"
+            fy_short = "FY" + financial_year.split("-")[1]
         elif financial_year:
-            fy_short = "FY" + financial_year[-2:]  # e.g. "2025" -> "FY25"
+            fy_short = "FY" + financial_year[-2:]
         
         if fy_short:
             dynamic_prefix = (
@@ -471,24 +451,21 @@ def _extract_with_gemini_vision(
                 f"*** END OVERRIDE ***\n\n"
             )
     
-    parts = [Part.from_text(text=dynamic_prefix + GEMINI_VISION_PROMPT)]
+    parts = [types.Part.from_text(text=dynamic_prefix + GEMINI_VISION_PROMPT)]
     for i, png_bytes in enumerate(images):
-        parts.append(Part.from_data(data=png_bytes, mime_type="image/png"))
+        parts.append(types.Part.from_bytes(data=png_bytes, mime_type="image/png"))
 
     try:
-        logger.info(f"Sending {len(images)} page images to Vertex AI (Gemini Vision)...")
-        # Use Pro for highest accuracy Vision extraction of complex multi-page financial tables
-        model = GenerativeModel(
-            "gemini-2.5-pro",
-            system_instruction=(
-                "You are an expert KSERC financial data extractor. "
-                "You MUST return ONLY valid JSON matching the exact schema. No markdown. "
-                "CRITICAL INSTRUCTIONS: "
-                "1. Identify the 'Claimed' or 'Petition' column (NOT 'KSERC Approved'). "
-                "2. Extract every single expense and revenue item into `claimed_expenses` and `claimed_revenues`. "
-                "3. MATHEMATICAL CHECKSUM: The sum of all values inside `claimed_expenses` MUST EXACTLY EQUAL `total_expenditure`. If it does not, you extracted a row incorrectly. Fix it. "
-                "All values are in Rs. Lakhs. Precision is strictly required."
-            )
+        logger.info(f"Sending {len(images)} page images to Gemini Vision...")
+        
+        system_instruction = (
+            "You are an expert KSERC financial data extractor. "
+            "You MUST return ONLY valid JSON matching the exact schema. No markdown. "
+            "CRITICAL INSTRUCTIONS: "
+            "1. Identify the 'Claimed' or 'Petition' column (NOT 'KSERC Approved'). "
+            "2. Extract every single expense and revenue item into `claimed_expenses` and `claimed_revenues`. "
+            "3. MATHEMATICAL CHECKSUM: The sum of all values inside `claimed_expenses` MUST EXACTLY EQUAL `total_expenditure`. If it does not, you extracted a row incorrectly. Fix it. "
+            "All values are in Rs. Lakhs. Precision is strictly required."
         )
         
         max_retries = 2
@@ -497,15 +474,15 @@ def _extract_with_gemini_vision(
         data = {}
 
         for attempt in range(max_retries):
-            response = model.generate_content(
-                contents=parts,
-                generation_config=GenerationConfig(
-                    response_mime_type="application/json",
-                    temperature=0.0, # Completely deterministic for data extraction
-                )
+            raw = generate_with_parts(
+                parts,
+                model="gemini-2.5-pro",
+                temperature=0.0,
+                response_mime_type="application/json",
+                system_instruction=system_instruction,
             )
 
-            raw = response.text.strip()
+            raw = raw.strip()
 
             # Strip markdown code fences
             if raw.startswith("```"):
@@ -527,12 +504,11 @@ def _extract_with_gemini_vision(
             calc_exp = sum(float(str(v).replace(',', '')) for v in gemini_expenses.values() if v)
             target_exp = float(str(data.get("total_expenditure", 0.0)).replace(',', ''))
             
-            if target_exp > 0 and abs(calc_exp - target_exp) > 2.0: # Allow minor rounding diffs
+            if target_exp > 0 and abs(calc_exp - target_exp) > 2.0:
                 logger.warning(f"  [Attempt {attempt+1}] Checksum Failed! Calculated exp: {calc_exp:.2f}, Table total: {target_exp:.2f}")
                 if attempt < max_retries - 1:
-                    # Append the error message to the prompt for the next try
                     error_msg = f"ERROR: Your previous extraction failed the mathematical checksum. Your extracted expenses sum to {calc_exp:.2f}, but you reported a 'total_expenditure' of {target_exp:.2f}. Please carefully re-read the table columns and fix the incorrect missing numbers."
-                    parts.append(Part.from_text(text=error_msg))
+                    parts.append(types.Part.from_text(text=error_msg))
                     continue
             else:
                 logger.info(f"  [Attempt {attempt+1}] Checksum Passed! Calculated exp: {calc_exp:.2f} == Table total: {target_exp:.2f}")
@@ -540,7 +516,7 @@ def _extract_with_gemini_vision(
             logger.info(f"Gemini Vision raw response (first 500 chars): {raw[:500]}")
             break
 
-        # Merge into state dicts — only update if Gemini returned a non-zero value
+        # Merge into state dicts
         updates_exp = 0
         for key in claimed_expenses:
             val = gemini_expenses.get(key, 0.0)
@@ -572,11 +548,8 @@ def _extract_with_gemini_vision(
         dist_loss = float(data.get("distribution_loss_pct", 0.0))
         logger.info(f"  [GeminiVision] distribution_loss_pct: {dist_loss}%")
 
-        # Extract BEE energy audit fee if present in the A&G breakdown
         bee_fee = float(data.get("bee_energy_audit_fee", 0.0) or 0.0)
         logger.info(f"  [GeminiVision] bee_energy_audit_fee: {bee_fee}L")
-
-        # Store bee_fee on the shared state dict (passed by reference)
         claimed_expenses["__bee_energy_audit_fee__"] = bee_fee
 
         return dist_loss

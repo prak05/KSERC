@@ -3,16 +3,11 @@ from typing import Dict, Any, List, TypedDict
 from langgraph.graph import StateGraph, START, END
 
 # Import the specialized agents
-from src.rag.retriever import legal_researcher
 from src.agents.calculator import evaluate_om_expense, evaluate_financial_expense
 from src.agents.chief_auditor import auditor
-
-from vertexai.generative_models import GenerativeModel, GenerationConfig
+from src.gemini_client import generate
 
 logger = logging.getLogger("truing_up_graph")
-
-# Fast, cheap model for scanning 50 pages of text quickly
-flash_model = GenerativeModel("gemini-2.5-flash")
 
 def extract_narrative(petition_text: str, component: str) -> str:
     """Scans the entire petition and finds the Licensee's narrative justification for a specific line item."""
@@ -28,8 +23,13 @@ PETITION TEXT:
 {petition_text}
 """
     try:
-        res = flash_model.generate_content(prompt, generation_config=GenerationConfig(temperature=0.0))
-        return res.text.strip()
+        result = generate(
+            prompt,
+            model="gemini-2.5-flash",
+            temperature=0.0,
+            response_mime_type="text/plain",
+        )
+        return result.strip()
     except Exception as e:
         logger.error(f"Flash failed to extract narrative for {component}: {e}")
         return "Failed to extract narrative."
@@ -75,16 +75,11 @@ def component_processing_node(state: AgentState) -> AgentState:
         licensee_narrative = extract_narrative(petition_text, component)
         logger.info(f"[Graph] Licensee Narrative for {component} extracted.")
             
-        # 3. Context-Aware Legal RAG Agent: Fetch Precedent
-        # Instead of just querying "Employee Cost", we append their excuse to find exact case law precedent!
-        targeted_query = f"{base_query}. Precedent for: {licensee_narrative}"
-        
-        legal_context = "Fallback legal rule."
-        if legal_researcher:
-            try:
-                legal_context = legal_researcher.query_regulations(targeted_query)
-            except Exception as e:
-                logger.error(f"RAG failed for {component}: {e}")
+        # 3. Legal Context: Will be replaced by File Search in Phase 2
+        # For now, use a placeholder
+        legal_context = "Regulation-based legal context. (File Search integration pending - Phase 2)"
+        # TODO Phase 2: Replace with File Search query
+        # legal_context = file_search_query(targeted_query)
                 
         # 4. Chief Auditor Agent: Synthesize Truth
         decision = auditor.analyze_component(

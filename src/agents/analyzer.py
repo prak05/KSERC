@@ -230,21 +230,7 @@ def analyze_petition_deep(
 
     Returns a structured dict of decisions for the Auditor to apply.
     """
-    try:
-        import vertexai
-        from vertexai.generative_models import GenerativeModel, Tool, GenerationConfig
-        import vertexai.preview.generative_models as generative_models
-    except ImportError:
-        logger.warning("vertexai not installed; skipping deep analysis.")
-        return _empty_insights()
-
-    key_path = os.path.abspath("vertex_sa.json")
-    if not os.path.exists(key_path):
-        logger.warning("vertex_sa.json not found; skipping deep analysis.")
-        return _empty_insights()
-    
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
-    vertexai.init(project="triple-cab-488111-f5", location="us-central1")
+    from src.gemini_client import generate
 
     # 1. Extract full PDF text
     logger.info(f"[Analyzer] Extracting full text from PDF: {pdf_path}")
@@ -270,29 +256,20 @@ def analyze_petition_deep(
         f"Return your decisions as JSON."
     )
 
-    # 4. Call Vertex AI GenerativeModel
+    # 4. Call Gemini via centralized client
     try:
-        # Use Gemini 2.5 Pro for deep, complex financial reasoning and standard rule application
-        model = GenerativeModel(
-            "gemini-2.5-pro",
+        raw = generate(
+            full_prompt,
+            model="gemini-2.5-pro",
+            temperature=0.1,
+            response_mime_type="application/json",
             system_instruction=(
                 "You are the Kerala State Electricity Regulatory Commission (KSERC). "
                 "You must rigorously audit the licensee's claims against the provided regulations. "
                 "Think step-by-step for each expense component before making your final decision. "
                 "Your final output must be exactly matching the requested JSON structure."
-            )
+            ),
         )
-
-
-        response = model.generate_content(
-            full_prompt,
-            generation_config=GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.1,  # Low temperature for highly factual and deterministic financial analysis
-            )
-        )
-
-        raw = response.text.strip()
         logger.info(f"[Analyzer] Gemini response (first 800 chars): {raw[:800]}")
 
         # Strip markdown code fences if present
