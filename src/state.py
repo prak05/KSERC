@@ -17,8 +17,11 @@ class TruingUpState(TypedDict):
     # ── Petition Metadata ──────────────────────────────────────────────
     licensee_name: str          # Technopark | Infopark | CSEZA | KDHP
     financial_year: str         # e.g. "2022-23"
-    petition_pdf_path: str      # Absolute path to the input PDF
+    petition_pdf_path: str      # Absolute path to the MAIN petition PDF
+    petition_input_path: str    # Original input (can be file OR folder)
+    annexure_pdf_paths: List[str]  # Paths to supporting annexure PDFs
     petition_number: str        # e.g. "OP 84/2023"
+    petition_text: str          # Full extracted text from petition + annexures
 
     # ── Extracted Data (from Extractor Agent) ──────────────────────────
     claimed_expenses: Dict[str, float]
@@ -40,6 +43,19 @@ class TruingUpState(TypedDict):
     # ── MYT Baseline Data (loaded from JSONs) ─────────────────────────
     myt_baseline_norms: Dict[str, float]
     # Keys mirror claimed_expenses for side-by-side comparison
+
+    # ── KSERC Cross-Licensee Methodology (from ALL past orders) ────────
+    kserc_methodology_rules: Dict[str, Any]
+    # Learned from ALL past orders, regulations, and amendments
+
+    # ── AI Deep Analysis Results ───────────────────────────────────────
+    ai_insights: Dict[str, Any]
+    # Output from AI Commission (deep analyzer), if used
+
+    # ── Deep Table Extraction (ALL tables from petition) ───────────────
+    detailed_tables: Dict[str, Any]
+    # Contains: tables_found, component_justifications, energy_data,
+    # capital_structure, escalation_factors, loan_details, etc.
 
     # ── Processed Data (from Auditor Agent) ────────────────────────────
     approved_expenses: Dict[str, float]

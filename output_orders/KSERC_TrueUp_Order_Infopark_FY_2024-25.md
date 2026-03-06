@@ -1,0 +1,998 @@
+```html
+<h1>KERALA STATE ELECTRICITY REGULATORY COMMISSION</h1>
+<h2>THIRUVANANTHAPURAM</h2>
+<p class="center bold">Petition No: OP XX / 2026</p>
+<table class="header-table">
+  <tr><td class="label">Present</td><td class="colon">:</td><td class="value"><b>Sri T K Jose, Chairman</b><br/><b>Adv. A J Wilson, Member</b><br/><b>Sri. B Pradeep, Member</b></td></tr>
+  <tr class="spacer-row"><td colspan="3"></td></tr>
+  <tr><td class="label">In the matter of</td><td class="colon">:</td><td class="value">Petition for approval of truing up of accounts for the financial year 2024-25</td></tr>
+  <tr class="spacer-row"><td colspan="3"></td></tr>
+  <tr><td class="label">Petitioner</td><td class="colon">:</td><td class="value">M/s Infopark Kerala</td></tr>
+  <tr><td class="label">Represented by</td><td class="colon">:</td><td class="value">Sri. Susanth Kurunthil, Chief Executive Officer</td></tr>
+  <tr class="spacer-row"><td colspan="3"></td></tr>
+  <tr><td class="label">Respondent</td><td class="colon">:</td><td class="value">M/s Kerala State Electricity Board Limited</td></tr>
+  <tr><td class="label">Represented by</td><td class="colon">:</td><td class="value">Sri. Ajith Kumar K.N, Executive Engineer, KSEB Ltd<br/>Sri.Shan B.S, Asst. Executive Engineer, KSEB Ltd<br/>Smt. Archana M, Asst. Engineer, KSEB Ltd</td></tr>
+  <tr class="spacer-row"><td colspan="3"></td></tr>
+  <tr><td class="label">Hearing</td><td class="colon">:</td><td class="value">DD.MM.YYYY at the Court Hall, Office of the Commission</td></tr>
+</table>
+<p class="center bold">Order Dated DD.MM.YYYY</p>
+
+<h3>PART A: INTRODUCTION</h3>
+
+<p><b>1.</b>&nbsp;&nbsp;M/s Infopark, Kochi (hereinafter called the licensee or Infopark) is a Government of Kerala Undertaking under the Information Technology Department, engaged in the development of infrastructure for information technology (IT) and IT-enabled services. The licensee was granted a distribution license to supply electricity in its Special Economic Zones (SEZ) at Kakkanad and Cherthala. The electricity distribution operations at Infopark, Cherthala commenced from 1-7-2013, following the grant of a distribution license vide order dated 10-5-2010. The Infopark Phase II campus at Kakkanad was granted a distribution license vide order dated 18-10-2011. The licensee provides ready-to-occupy infrastructure, including power distribution, to IT companies within these campuses, serving a mix of High Tension (HT) and Low Tension (LT) consumers.</p>
+
+<p><b>2.</b>&nbsp;&nbsp;The Commission had notified the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, for the five-year Control Period starting from the first day of April 2022 and ending on the thirty-first day of March 2027. The licensee, M/s Infopark, has filed the present petition for the truing up of its accounts for the financial year 2024-25, which is the third year of the said Control Period. The petition was filed in accordance with the provisions of the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021.</p>
+
+<p><b>3.</b>&nbsp;&nbsp;The truing up of accounts is a regulatory process to reconcile the approved costs and revenues with the actual audited figures for a given financial year. As per the Tariff Regulations, 2021, the Commission is required to undertake this exercise to determine the actual revenue gap or surplus for the year. This process involves a prudence check of all expenses claimed by the licensee and verification of the revenues realized. Any variation between the approved and actual figures for controllable parameters is treated as per the provisions of the Regulations, with gains or losses being shared between the licensee and the consumers.</p>
+
+<p><b>4.</b>&nbsp;&nbsp;The Commission, vide its Order in OP No. 09/2023 dated 24.01.2024, had approved the Aggregate Revenue Requirement (ARR) and Expected Revenue from Charges (ERC) for the licensee for the Control Period FY 2022-23 to FY 2026-27. In the present petition, the licensee has claimed a revenue gap of Rs. 79.77 lakh for FY 2024-25. A comparison of the claim made in the petition with the ARR&ERC approved by the Commission is tabulated below.</p>
+
+<p class="table-caption">Table 1<br/><b>Comparison of ARR & ERC and Truing Up for 2024-25</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>ARR Approved</th>
+      <th>For Truing Up (Claimed)</th>
+      <th>Trued Up (Approved)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cost of Power Purchase</td>
+      <td class="num">537.73</td>
+      <td class="num">1023.94</td>
+      <td class="num">1033.71</td>
+    </tr>
+    <tr>
+      <td>Employee Cost</td>
+      <td class="num">25.04</td>
+      <td class="num">29.86</td>
+      <td class="num">24.82</td>
+    </tr>
+    <tr>
+      <td>R&M Expense</td>
+      <td class="num">26.41</td>
+      <td class="num">58.30</td>
+      <td class="num">26.18</td>
+    </tr>
+    <tr>
+      <td>A&G Expense</td>
+      <td class="num">5.11</td>
+      <td class="num">10.06</td>
+      <td class="num">7.30</td>
+    </tr>
+    <tr>
+      <td>Depreciation</td>
+      <td class="num">47.21</td>
+      <td class="num">47.21</td>
+      <td class="num">47.21</td>
+    </tr>
+    <tr>
+      <td>Interest & Finance Charges</td>
+      <td class="num">47.61</td>
+      <td class="num">74.35</td>
+      <td class="num">52.06</td>
+    </tr>
+    <tr>
+      <td>Carrying cost for past revenue gaps</td>
+      <td class="num">53.93</td>
+      <td class="num">62.26</td>
+      <td class="num">62.26</td>
+    </tr>
+    <tr>
+      <td>Return on Equity/NFA</td>
+      <td class="num">36.11</td>
+      <td class="num">36.11</td>
+      <td class="num">36.11</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Aggregate Revenue Requirement</b></td>
+      <td class="num"><b>779.15</b></td>
+      <td class="num"><b>1342.09</b></td>
+      <td class="num"><b>1289.65</b></td>
+    </tr>
+    <tr>
+      <td>Revenue from Sale of power</td>
+      <td class="num">749.66</td>
+      <td class="num">1187.62</td>
+      <td class="num">1187.62</td>
+    </tr>
+    <tr>
+      <td>Wheeling Charges</td>
+      <td class="num">0.00</td>
+      <td class="num">64.46</td>
+      <td class="num">64.46</td>
+    </tr>
+    <tr>
+      <td>Non-Tariff Income</td>
+      <td class="num">42.64</td>
+      <td class="num">10.24</td>
+      <td class="num">10.24</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Total Revenue/ERC</b></td>
+      <td class="num"><b>792.30</b></td>
+      <td class="num"><b>1262.32</b></td>
+      <td class="num"><b>1262.32</b></td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Revenue Surplus / (Deficit)</b></td>
+      <td class="num"><b>13.15</b></td>
+      <td class="num"><b>(79.77)</b></td>
+      <td class="num"><b>(27.33)</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><b>5.</b>&nbsp;&nbsp;The financial performance of the licensee over the past few years shows a fluctuating trend in its revenue gap. A comparison of the net surplus or deficit from the truing up of accounts over the recent years is provided below to contextualize the current year's performance.</p>
+
+<p class="table-caption">Table 2<br/><b>Comparison of Trued Up Accounts Over the Years</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>2021-22 (Trued Up)</th>
+      <th>2022-23 (Trued Up)</th>
+      <th>2023-24 (Trued Up)</th>
+      <th>2024-25 (Trued Up)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Total Expenditure</td>
+      <td class="num">712.55</td>
+      <td class="num">957.50</td>
+      <td class="num">1134.36</td>
+      <td class="num">1289.65</td>
+    </tr>
+    <tr>
+      <td>Total Revenue</td>
+      <td class="num">627.18</td>
+      <td class="num">915.08</td>
+      <td class="num">1117.84</td>
+      <td class="num">1262.32</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Net Surplus/(Deficit)</b></td>
+      <td class="num"><b>(85.37)</b></td>
+      <td class="num"><b>(42.42)</b></td>
+      <td class="num"><b>(16.52)</b></td>
+      <td class="num"><b>(27.33)</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><b>6.</b>&nbsp;&nbsp;After preliminary examination, the Commission admitted the petition as OP No. XX/2026. A public hearing was conducted to provide an opportunity for the licensee and other stakeholders to present their views. The Commission has analyzed the submissions made by the licensee in the petition, the clarifications provided during the hearing, comments from the respondent KSEB Ltd, and the audited annual accounts. The analysis and decisions on each component of expenditure and revenue are detailed in the subsequent paragraphs of this Order.</p>
+
+<h3>HEARING ON THE PETITION</h3>
+
+<p><b>7.</b>&nbsp;&nbsp;The hearing on the petition was conducted at the Court Hall, Office of the Commission on DD.MM.YYYY. Sri. Susanth Kurunthil, Chief Executive Officer, represented the petitioner and made a detailed presentation on the truing up petition for FY 2024-25. The main points submitted by the licensee during the presentation are briefed below:</p>
+<p style="margin-left:32px;"><b>a)</b> The total number of consumers increased to 217 during FY 2024-25, with 189 consumers in Kakkanad and 28 in Cherthala. The actual energy sales for the year were 137.61 lakh units, a significant increase of 59.29% over the ARR approval of 86.39 lakh units.</p>
+<p style="margin-left:32px;"><b>b)</b> The licensee achieved an overall distribution loss of 2.86%, which is well below the Commission-approved target of 4.23%. The loss in Cherthala was reduced to 10.49% from 12.22% in the previous year, while the loss in Kakkanad was 2.41%.</p>
+<p style="margin-left:32px;"><b>c)</b> The total energy purchased from KSEB Ltd was 139.93 lakh units at a total cost of Rs. 1023.94 lakh. No solar power was injected into the grid during the year, as all solar generation was used for internal requirements.</p>
+<p style="margin-left:32px;"><b>d)</b> A total Operation & Maintenance (O&M) expense of Rs. 98.22 lakh has been claimed, which is higher than the normative O&M expense of Rs. 56.56 lakh approved for the year. The increase is attributed to higher employee costs, one-time repair works, and increased administrative expenses.</p>
+<p style="margin-left:32px;"><b>e)</b> The employee cost claimed is Rs. 29.86 lakh, which includes salary, allowances, and other benefits for the staff engaged in the distribution business.</p>
+<p style="margin-left:32px;"><b>f)</b> The actual R&M expense claimed is Rs. 58.30 lakh. This includes Rs. 19.28 lakh towards one-time expenses, primarily for the replacement of an EHT bushing of a 220 kV transformer and other critical maintenance works.</p>
+<p style="margin-left:32px;"><b>g)</b> The A&G expense claimed is Rs. 10.06 lakh, which includes costs for insurance, audit fees, inspectorate fees, and a mandatory energy audit charge of Rs. 2.24 lakh.</p>
+<p style="margin-left:32px;"><b>h)</b> The depreciation claimed for the year is Rs. 47.21 lakh, which is in line with the previous year as there were no new asset additions.</p>
+<p style="margin-left:32px;"><b>i)</b> The licensee has claimed Interest and Finance charges of Rs. 74.35 lakh, which includes interest on normative loan, interest on consumer security deposits, and interest on working capital.</p>
+<p style="margin-left:32px;"><b>j)</b> The total revenue realized during the year is Rs. 1262.32 lakh, comprising Rs. 1187.62 lakh from the sale of power, Rs. 64.46 lakh from wheeling charges, and Rs. 10.24 lakh as non-tariff income.</p>
+<p style="margin-left:32px;"><b>k)</b> Based on the above, the petition for the truing up of accounts for the year 2024-25 is submitted with a revenue gap of Rs. 79.77 lakh.</p>
+
+<p><b>8.</b>&nbsp;&nbsp;KSEB Ltd, the respondent, vide letter dated DD.MM.YYYY, submitted its comments on the petition. The key points raised by KSEB Ltd are as follows:</p>
+<p style="margin-left:32px;"><b>a)</b> The energy purchase units and the power purchase cost claimed by Infopark for its Cherthala and Kakkanad campuses tally with the records of KSEB Ltd.</p>
+<p style="margin-left:32px;"><b>b)</b> It was noted that the distribution loss claimed by the licensee (2.86%) is significantly lower than the approved level (4.23%). KSEB Ltd submitted that since distribution loss reduction is an efficiency parameter, the benefit should be shared as per the Tariff Regulations.</p>
+<p style="margin-left:32px;"><b>c)</b> The Operation and Maintenance expense claimed by the licensee is substantially higher than the ceiling level specified in the Tariff Regulations, 2021. It was submitted that O&M expenses are controllable factors, and any cost higher than the ceiling norms should be disallowed after a thorough prudence check by the Commission.</p>
+
+<h3>ANALYSIS AND DECISION OF THE COMMISSION</h3>
+
+<p><b>9.</b>&nbsp;&nbsp;The Commission has considered the petition of the licensee for Truing Up of Accounts for the year 2024-25, along with the clarifications provided during the hearing, the comments of KSEB Ltd, and the audited financial statements. The analysis and decisions of the Commission, as per the provisions of the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, on the petition for Truing Up of Accounts for the year 2024-25 are detailed below.</p>
+
+<h3>ENERGY SALES AND CONSUMER MIX</h3>
+
+<p><b>10.</b>&nbsp;&nbsp;The licensee in its petition has submitted details of the number of consumers and energy sales for FY 2024-25. As per the petition, the total number of consumers served by the licensee stood at 217, comprising 189 consumers at the Kakkanad campus and 28 at the Cherthala campus. The consumer mix includes HT Industrial (HT-IB), LT Industrial (LT-IV B), and various other LT commercial and public lighting categories.</p>
+
+<p><b>11.</b>&nbsp;&nbsp;The total energy sales for the year 2024-25 were 137.61 lakh units, which is a 14.66% increase over the previous year's sales of 120.02 lakh units. This growth is primarily attributed to the induction of new IT companies in the distribution area and an increase in energy consumption by existing consumers, reflecting a continued recovery and expansion of business activities post-pandemic. A comparison of the actual number of consumers and the sale of power over the recent years is shown below.</p>
+
+<p class="table-caption">Table 3<br/><b>Comparison of No. of Consumers and Sales</b></p>
+<p class="table-subcaption">(Sales in Lakh Units)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th rowspan="2">Category</th>
+      <th colspan="2">2023-24 (Trued Up)</th>
+      <th colspan="2">2024-25 (Filed)</th>
+    </tr>
+    <tr>
+      <th>Consumers</th>
+      <th>Sales</th>
+      <th>Consumers</th>
+      <th>Sales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LT IV B</td>
+      <td class="num">185</td>
+      <td class="num">40.03</td>
+      <td class="num">194</td>
+      <td class="num">46.66</td>
+    </tr>
+    <tr>
+      <td>LT VI B</td>
+      <td class="num">1</td>
+      <td class="num">0.14</td>
+      <td class="num">1</td>
+      <td class="num">0.17</td>
+    </tr>
+    <tr>
+      <td>LT VI C</td>
+      <td class="num">2</td>
+      <td class="num">0.14</td>
+      <td class="num">2</td>
+      <td class="num">0.17</td>
+    </tr>
+    <tr>
+      <td>LT VI F</td>
+      <td class="num">13</td>
+      <td class="num">5.60</td>
+      <td class="num">9</td>
+      <td class="num">2.18</td>
+    </tr>
+    <tr>
+      <td>LT VII A</td>
+      <td class="num">3</td>
+      <td class="num">0.69</td>
+      <td class="num">3</td>
+      <td class="num">0.79</td>
+    </tr>
+    <tr>
+      <td>LT VIII B</td>
+      <td class="num">2</td>
+      <td class="num">1.18</td>
+      <td class="num">2</td>
+      <td class="num">1.29</td>
+    </tr>
+    <tr>
+      <td>HT IB</td>
+      <td class="num">4</td>
+      <td class="num">72.23</td>
+      <td class="num">5</td>
+      <td class="num">86.02</td>
+    </tr>
+    <tr>
+      <td>HT IIB</td>
+      <td class="num">1</td>
+      <td class="num">0.01</td>
+      <td class="num">1</td>
+      <td class="num">0.32</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Total</b></td>
+      <td class="num"><b>211</b></td>
+      <td class="num"><b>120.02</b></td>
+      <td class="num"><b>217</b></td>
+      <td class="num"><b>137.61</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><b>12.</b>&nbsp;&nbsp;The licensee has stated that the increase in sales is mainly on account of the continued business recovery and the addition of new IT companies within its licensed area. The Commission notes the positive trend in energy sales, which contributes to better utilization of the distribution network and improved financial viability for the licensee.</p>
+
+<p class="commission-decision"><b>13.</b>&nbsp;&nbsp;After analyzing the details submitted in the petition and considering the justifications provided by the licensee, the Commission hereby approves the actual energy sales of 137.61 lakh units as per the petition for the purpose of Truing Up of Accounts for the financial year 2024-25.</p>
+
+```
+
+<h3>Energy Requirement and Distribution Loss</h3>
+<p><b>14.</b>&nbsp;&nbsp;The total energy input into the distribution system for the year 2024-25 is 242.68 lakh units. This entire energy requirement was met through power purchase from KSEB Ltd, as there was no solar power injected into the grid during the period. The licensee has wheeled 102.75 lakh units for M/s Smart City through its network. Corresponding to the total energy sales of 137.61 lakh units to its own consumers, the distribution loss claimed by the licensee in the petition is 2.86%.</p>
+
+<p><b>15.</b>&nbsp;&nbsp;The Commission, in its Order on ARR&ERC for the control period, had approved a distribution loss target of 4.23% for the year 2024-25. The licensee has achieved an actual distribution loss of 2.86%, which is significantly lower than the approved target. This indicates an improvement in operational efficiency. The details of the distribution loss, including the wheeling energy, are tabulated below.</p>
+
+<p class="table-caption">Table 4<br/><b>Distribution Loss including Wheeling Energy for 2024-25</b></p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>Kakkanad (PH-II)</th>
+      <th>Cherthala</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Energy Input (in lakh units)</td>
+      <td class="num">229.18</td>
+      <td class="num">13.50</td>
+      <td class="num">242.68</td>
+    </tr>
+    <tr>
+      <td>Energy Sales to Consumers (in lakh units)</td>
+      <td class="num">125.53</td>
+      <td class="num">12.08</td>
+      <td class="num">137.61</td>
+    </tr>
+    <tr>
+      <td>Wheeled Energy Output (in lakh units)</td>
+      <td class="num">98.13</td>
+      <td class="num">0.00</td>
+      <td class="num">98.13</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Total Output (in lakh units)</b></td>
+      <td class="num"><b>223.66</b></td>
+      <td class="num"><b>12.08</b></td>
+      <td class="num"><b>235.74</b></td>
+    </tr>
+    <tr>
+      <td>Distribution Loss (in lakh units)</td>
+      <td class="num">5.52</td>
+      <td class="num">1.42</td>
+      <td class="num">6.94</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Distribution Loss %</b></td>
+      <td class="num"><b>2.41%</b></td>
+      <td class="num"><b>10.52%</b></td>
+      <td class="num"><b>2.86%</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><b>16.</b>&nbsp;&nbsp;Distribution loss is a controllable parameter as per the Tariff Regulations, 2021. Regulation 73(3) specifies the methodology to account for any variation between the actual and approved levels of distribution loss. The relevant portion of the Regulation is as shown below:</p>
+<blockquote>
+  <b>73. Distribution loss...</b><br/>
+  (3) Any variation between the actual level of distribution losses and the approved level of distribution losses shall be dealt with, as part of the truing up of the respective financial year in the following manner:-<br/>
+  i. if the actual distribution loss is higher than the approved level of distribution loss for any particular financial year of the control period, then the quantum of power purchase corresponding to the excess distribution loss for that financial year, shall be disallowed at the average cost of power purchase for the respective financial year;<br/>
+  ii. if the actual distribution loss is lower than the approved level of distribution loss for any particular financial year of the control period, then the savings in the power purchase cost corresponding to the difference in distribution loss for that financial year at the average cost of power purchase for the respective financial year, shall be shared between the distribution business/licensee and the consumers in the ratio of 2:1.
+</blockquote>
+
+<p><b>17.</b>&nbsp;&nbsp;As per Regulation 73, the reduction of distribution loss is an efficiency parameter. The licensee has achieved a distribution loss of 2.86%, which is better than the approved target of 4.23%. The Commission has computed the financial impact of this efficiency gain, which is to be shared between the licensee and the consumers.</p>
+
+<p class="table-caption">Table 5<br/><b>Savings in Power Purchase Cost due to Loss Reduction</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Approved Distribution Loss (%)</td>
+      <td class="num">4.23%</td>
+    </tr>
+    <tr>
+      <td>Actual Distribution Loss (%)</td>
+      <td class="num">2.86%</td>
+    </tr>
+    <tr>
+      <td>Energy Input (Lakh Units)</td>
+      <td class="num">242.68</td>
+    </tr>
+    <tr>
+      <td>Energy Savings (Lakh Units)</td>
+      <td class="num">3.32</td>
+    </tr>
+    <tr>
+      <td>Average Power Purchase Cost (Rs./kWh)</td>
+      <td class="num">7.32</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Total Efficiency Gain (Rs. Lakh)</b></td>
+      <td class="num"><b>14.65</b></td>
+    </tr>
+    <tr>
+      <td>Gain to be retained by Licensee (2/3rd)</td>
+      <td class="num">9.77</td>
+    </tr>
+    <tr>
+      <td>Gain to be passed on to Consumers (1/3rd)</td>
+      <td class="num">4.88</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="commission-decision"><b>18.</b>&nbsp;&nbsp;Considering that the licensee has achieved a distribution loss better than the target approved by the Commission, the Commission hereby approves the actual loss of 2.86%. The resultant efficiency gain of Rs. 14.65 Lakhs shall be shared in the ratio of 2:1 between the licensee and consumers. Accordingly, an amount of Rs. 9.77 Lakhs is allowed to be retained by the licensee, and Rs. 4.88 Lakhs shall be passed on to the consumers.</p>
+
+<h3>Power Purchase Cost</h3>
+<p><b>19.</b>&nbsp;&nbsp;The licensee has claimed a power purchase cost of Rs. 1023.94 Lakhs for the financial year 2024-25. This entire cost is towards the purchase of 139.93 lakh units of energy from Kerala State Electricity Board Ltd (KSEBL). The licensee has stated that the increase in power purchase is a direct result of the growth in consumer demand and the addition of new IT companies in its operational areas.</p>
+
+<p><b>20.</b>&nbsp;&nbsp;As per the Tariff Regulations, 2021, the prudent cost of power purchase is a pass-through expense in the Aggregate Revenue Requirement. The Commission is required to verify the prudence of the quantum of power purchased and the price at which it was procured.</p>
+
+<p><b>21.</b>&nbsp;&nbsp;The Commission has examined the claim and notes that the quantum of energy purchased is consistent with the approved energy sales and the approved distribution loss level. The average cost of power purchase works out to Rs. 7.32 per unit, which is found to be in line with the applicable tariffs of KSEB Ltd for the period. The Commission, as detailed in the preceding section, has also computed an efficiency gain of Rs. 14.65 Lakhs due to the reduction in distribution loss, of which Rs. 9.77 Lakhs is to be passed on to the licensee. This amount is adjusted in the approved power purchase cost.</p>
+
+<p class="commission-decision"><b>22.</b>&nbsp;&nbsp;Accordingly, the Commission hereby approves a total of Rs. 1033.71 Lakhs (Rs. 1023.94 Lakhs claimed + Rs. 9.77 Lakhs as licensee's share of efficiency gain) as the power purchase cost for the year 2024-25.</p>
+
+<h3>Operation & Maintenance (O&M) Expenses</h3>
+<p><b>23.</b>&nbsp;&nbsp;Operation and Maintenance expenses are controllable expenses comprising Employee Cost, Repair & Maintenance (R&M) Expenses, and Administrative & General (A&G) Expenses. The Commission specifies normative levels for these expenses for the control period. The licensee has claimed a total O&M expense of Rs. 98.22 Lakhs for FY 2024-25.</p>
+
+<p class="table-caption">Table 6<br/><b>Summary of O&M Expenses for 2024-25</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>Claimed in Petition</th>
+      <th>Approved by Commission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Employee Cost</td>
+      <td class="num">29.86</td>
+      <td class="num">24.82</td>
+    </tr>
+    <tr>
+      <td>Repair & Maintenance Expenses</td>
+      <td class="num">58.30</td>
+      <td class="num">26.18</td>
+    </tr>
+    <tr>
+      <td>Administrative & General Expenses</td>
+      <td class="num">10.06</td>
+      <td class="num">7.30</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Total O&M Expenses</b></td>
+      <td class="num"><b>98.22</b></td>
+      <td class="num"><b>58.30</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Employee Cost</h4>
+<p><b>24.</b>&nbsp;&nbsp;The licensee has claimed an amount of Rs. 29.86 Lakhs towards Employee Cost for the year 2024-25. As per the petition, this includes expenses towards Basic Salary (Rs. 16.66 Lakhs), Dearness Allowance (Rs. 6.92 Lakhs), House Rent Allowance (Rs. 0.74 Lakhs), and other components such as Medical Reimbursement and Interim Relief.</p>
+
+<p><b>25.</b>&nbsp;&nbsp;As per the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, and the Multi-Year Tariff (MYT) order for the control period, the employee expenses are determined on a normative basis. The approved norm for Infopark for the financial year 2024-25 is Rs. 25.04 Lakhs, as detailed in the ARR order.</p>
+
+<p><b>26.</b>&nbsp;&nbsp;The Commission has examined the claim and finds that the amount of Rs. 29.86 Lakhs claimed by the licensee exceeds the normative ceiling. The Commission, after considering the applicable inflation and other factors, has determined the effective normative ceiling for employee cost for the year to be Rs. 24.82 Lakhs. The excess claim of Rs. 5.04 Lakhs is therefore disallowed as it is beyond the approved regulatory norms for controllable expenses.</p>
+
+<p class="commission-decision"><b>27.</b>&nbsp;&nbsp;After due consideration of the normative framework established in the Tariff Regulations, 2021, the Commission hereby approves an amount of Rs. 24.82 Lakhs for Employee Cost for the financial year 2024-25 against the claim of Rs. 29.86 Lakhs.</p>
+
+<h4>Repair and Maintenance (R&M) Expenses</h4>
+<p><b>28.</b>&nbsp;&nbsp;The licensee has claimed Rs. 58.30 Lakhs towards Repair and Maintenance expenses for FY 2024-25. The petition details that this amount includes Rs. 39.02 Lakhs for the O&M contract with M/s Voltas and Rs. 19.28 Lakhs towards one-time expenditures, the major component of which is the replacement of an EHT bushing of a 220 kV transformer.</p>
+
+<p><b>29.</b>&nbsp;&nbsp;The Tariff Regulations, 2021, specify a normative approach for the determination of R&M expenses. The approved norm for the licensee for the year 2024-25 as per the MYT order is Rs. 26.41 Lakhs. While the regulations allow for consideration of one-time essential expenditures, such claims are subject to strict prudence checks.</p>
+
+<p><b>30.</b>&nbsp;&nbsp;The Commission has examined the claim and notes that it is more than double the approved norm. The Commission, after prudence check, has determined the effective normative ceiling for R&M expenses for the year to be Rs. 26.18 Lakhs. The claim for one-time expenses has not been found to be fully justifiable as an uncontrollable, one-time event beyond the scope of normative O&M. Therefore, the excess claim of Rs. 32.12 Lakhs is disallowed.</p>
+
+<p class="commission-decision"><b>31.</b>&nbsp;&nbsp;Accordingly, the Commission hereby approves an amount of Rs. 26.18 Lakhs for Repair & Maintenance Expenses for the financial year 2024-25 against the claim of Rs. 58.30 Lakhs.</p>
+
+<h4>Administrative and General (A&G) Expenses</h4>
+<p><b>32.</b>&nbsp;&nbsp;The licensee has claimed Rs. 10.06 Lakhs towards Administrative and General expenses. The major components of this claim include Audit Fees (Rs. 2.24 Lakhs), Inspectorate and License Fees (Rs. 3.07 Lakhs), Insurance (Rs. 1.26 Lakhs), and Fees for connectivity (Rs. 1.73 Lakhs).</p>
+
+<p><b>33.</b>&nbsp;&nbsp;As per the Tariff Regulations, 2021, A&G expenses are also governed by a normative ceiling. The approved norm for FY 2024-25 is Rs. 5.11 Lakhs. However, the regulations permit the pass-through of costs incurred due to a 'Change in Law'.</p>
+
+<p><b>34.</b>&nbsp;&nbsp;The Commission has examined the components of the claim. The licensee has included an amount of Rs. 2.24 Lakhs towards the mandatory Energy Audit charge as stipulated by the Bureau of Energy Efficiency (BEE). The Commission recognizes this as a 'Change in Law' event and allows this cost over and above the norm. Therefore, the effective ceiling for A&G expenses is Rs. 7.35 Lakhs (Rs. 5.11 Lakhs norm + Rs. 2.24 Lakhs). The Commission has determined the final approved amount to be Rs. 7.30 Lakhs after prudence check of all components. The remaining excess claim of Rs. 2.76 Lakhs is disallowed.</p>
+
+<p class="commission-decision"><b>35.</b>&nbsp;&nbsp;In view of the above, the Commission hereby approves an amount of Rs. 7.30 Lakhs for Administrative & General Expenses for the financial year 2024-25 against the claim of Rs. 10.06 Lakhs.</p>
+
+<h3>Depreciation</h3>
+<p><b>36.</b>&nbsp;&nbsp;The licensee has claimed a depreciation of Rs. 47.21 Lakhs for FY 2024-25. The claim is based on the straight-line method for assets created using its own funds at Infopark Cherthala and Infopark Phase II, Kakkanad. The detailed asset-wise depreciation schedule has been provided in the petition.</p>
+
+<p><b>37.</b>&nbsp;&nbsp;As per Regulation 26 of the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, the licensee is entitled to recover depreciation on its fixed assets based on the rates specified by the Commission. The value base for depreciation is the historical cost of the asset.</p>
+
+<p><b>38.</b>&nbsp;&nbsp;The Commission has examined the details furnished in the petition, including the Gross Fixed Assets (GFA) schedule and the rates of depreciation applied. The Commission notes that there were no asset additions during the year. The calculation is found to be in line with the provisions of the Tariff Regulations, 2021.</p>
+
+<p class="commission-decision"><b>39.</b>&nbsp;&nbsp;The Commission hereby approves the depreciation of Rs. 47.21 Lakhs for the year 2024-25 as claimed by the licensee.</p>
+
+<h3>Interest and Finance Charges</h3>
+<p><b>40.</b>&nbsp;&nbsp;The licensee has claimed a total of Rs. 136.60 Lakhs towards Interest and Finance Charges. This comprises Interest on Normative Loan, Interest on Consumer Security Deposits, Interest on Working Capital, and Carrying Cost for past revenue gaps. The Commission examines each component separately.</p>
+
+<p class="table-caption">Table 7<br/><b>Approved Interest and Finance Charges for 2024-25</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>Claimed in Petition</th>
+      <th>Approved by Commission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Interest on Normative Long-Term Loan</td>
+      <td class="num">56.33</td>
+      <td class="num">43.68</td>
+    </tr>
+    <tr>
+      <td>Interest on Consumer Deposits & Bank Charges</td>
+      <td class="num">9.13</td>
+      <td class="num">4.91</td>
+    </tr>
+    <tr>
+      <td>Interest on Working Capital</td>
+      <td class="num">8.89</td>
+      <td class="num">3.47</td>
+    </tr>
+    <tr>
+      <td>Carrying Cost for Past Revenue Gaps</td>
+      <td class="num">62.26</td>
+      <td class="num">62.26</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Total</b></td>
+      <td class="num"><b>136.60</b></td>
+      <td class="num"><b>114.32</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>A. Interest on Normative Loan</h4>
+<p><b>41.</b>&nbsp;&nbsp;The licensee has claimed Rs. 56.33 Lakhs as interest on normative loan for FY 2024-25. The claim is based on the average normative loan outstanding during the year and an interest rate of 8.90%.</p>
+<p><b>42.</b>&nbsp;&nbsp;As per Regulation 29 of the Tariff Regulations, 2021, interest on loan is computed on the normative loan, which is 70% of the approved capital cost. The interest rate is linked to the State Bank of India's base rate.</p>
+<p><b>43.</b>&nbsp;&nbsp;The Commission has re-computed the eligible interest on normative loan based on the approved opening Net Fixed Assets and the applicable regulations. The amount approved in the MYT order for FY 2024-25 was Rs. 42.09 Lakhs. After considering all factors, the Commission determines the allowable interest to be Rs. 43.68 Lakhs.</p>
+<p class="commission-decision"><b>44.</b>&nbsp;&nbsp;Accordingly, the Commission approves an amount of Rs. 43.68 Lakhs towards Interest on Normative Loan for the year 2024-25.</p>
+
+<h4>B. Interest on Consumer Security Deposits and Bank Charges</h4>
+<p><b>45.</b>&nbsp;&nbsp;The licensee has claimed Rs. 9.13 Lakhs towards interest payable on consumer security deposits and bank charges. The licensee has stated that the increase is due to a higher consumer base and increased security deposit collection.</p>
+<p><b>46.</b>&nbsp;&nbsp;As per Regulation 30 of the Tariff Regulations, 2021, the interest on security deposits is a legitimate expense. The rate of interest is linked to the Bank Rate as on the 1st of April of the financial year.</p>
+<p><b>47.</b>&nbsp;&nbsp;The Commission has examined the claim and notes a substantial increase compared to the trued-up amount of Rs. 3.78 Lakhs for FY 2022-23. While acknowledging the growth in the consumer base, the Commission finds the claimed increase to be excessive. After prudence check, the Commission has capped the allowable expense.</p>
+<p class="commission-decision"><b>48.</b>&nbsp;&nbsp;The Commission hereby approves an amount of Rs. 4.91 Lakhs towards Interest on Consumer Security Deposits and Bank Charges for the year 2024-25.</p>
+
+<h4>C. Interest on Working Capital</h4>
+<p><b>49.</b>&nbsp;&nbsp;The licensee has claimed an amount of Rs. 8.89 Lakhs as interest on working capital for the year 2024-25, based on an interest rate of 10.9%.</p>
+<p><b>50.</b>&nbsp;&nbsp;Regulation 32 of the Tariff Regulations, 2021, specifies the components for computing the normative working capital requirement. This includes one month of O&M expenses, maintenance spares, and two months of receivables, less consumer security deposits held in cash.</p>
+<p><b>51.</b>&nbsp;&nbsp;The Commission has re-calculated the normative interest on working capital based on the approved O&M expenses and revenues for the year. The normative working capital requirement is computed at Rs. 31.14 Lakhs. Applying the applicable interest rate (SBI EBLR + 2%), which is 11.15%, the eligible interest on working capital works out to Rs. 3.47 Lakhs.</p>
+<p class="commission-decision"><b>52.</b>&nbsp;&nbsp;Accordingly, the Commission approves Rs. 3.47 Lakhs as Interest on Working Capital for the year 2024-25.</p>
+
+<h4>D. Carrying Cost for Past Revenue Gaps</h4>
+<p><b>53.</b>&nbsp;&nbsp;The licensee has claimed Rs. 62.26 Lakhs as carrying cost on the cumulative revenue gap approved by the Commission up to FY 2023-24. The claim is based on the opening cumulative gap of Rs. 915.59 Lakhs and an interest rate of 6.80%.</p>
+<p><b>54.</b>&nbsp;&nbsp;The Commission allows carrying cost on the approved revenue gaps to compensate the licensee for the cost of financing the deficit. The rate of interest is based on the retail term deposit rate of SBI.</p>
+<p><b>55.</b>&nbsp;&nbsp;The Commission has verified the opening cumulative gap and the interest rate applied. The calculation is found to be in order as per the established regulatory practice.</p>
+<p class="commission-decision"><b>56.</b>&nbsp;&nbsp;The Commission hereby approves the carrying cost of Rs. 62.26 Lakhs for the year 2024-25 as claimed by the licensee.</p>
+
+<h3>Return on Net Fixed Assets (RoNFA)</h3>
+<p><b>57.</b>&nbsp;&nbsp;The licensee has claimed an amount of Rs. 36.11 Lakhs as Return on Net Fixed Assets (RoNFA) for the year 2024-25. The claim is calculated at 5.50% on the opening Net Fixed Assets (NFA) of Rs. 656.48 Lakhs.</p>
+<p><b>58.</b>&nbsp;&nbsp;As per Regulation 28 of the Tariff Regulations, 2021, where the equity capital is not clearly identifiable, the return shall be allowed at 5.50 percent on the net fixed assets at the beginning of the financial year.</p>
+<p><b>59.</b>&nbsp;&nbsp;The Commission has examined the claim and the calculation of the opening NFA. The methodology and the rate of return applied are consistent with the provisions of the Tariff Regulations.</p>
+<p class="commission-decision"><b>60.</b>&nbsp;&nbsp;Accordingly, the Commission hereby approves a Return on Net Fixed Assets of Rs. 36.11 Lakhs for the year 2024-25.</p>
+
+<h3>Revenues</h3>
+<h4>Revenue from Sale of Power</h4>
+<p><b>61.</b>&nbsp;&nbsp;The licensee has accounted for a revenue of Rs. 1187.62 Lakhs from the sale of 137.61 lakh units of electricity to its consumers during FY 2024-25. The petition provides a category-wise breakdown of sales and revenue realization.</p>
+<p><b>62.</b>&nbsp;&nbsp;The Commission has examined the details of revenue from the sale of power. The accounted revenue is consistent with the approved quantum of energy sales and the applicable tariff schedule for the period.</p>
+<p class="commission-decision"><b>63.</b>&nbsp;&nbsp;The Commission hereby approves the revenue from sale of power of Rs. 1187.62 Lakhs as claimed by the licensee for the purpose of Truing Up of Accounts for the year 2024-25.</p>
+
+<h4>Wheeling Charges</h4>
+<p><b>64.</b>&nbsp;&nbsp;The licensee has claimed an income of Rs. 64.46 Lakhs as wheeling charges from M/s Smart City. This corresponds to the wheeling of 102.75 lakh units of energy through the licensee's network during the year 2024-25.</p>
+<p><b>65.</b>&nbsp;&nbsp;The Commission has verified the quantum of energy wheeled and the applicable wheeling charges. The accounted income is found to be in order.</p>
+<p class="commission-decision"><b>66.</b>&nbsp;&nbsp;The Commission hereby approves the income from wheeling charges of Rs. 64.46 Lakhs for the year 2024-25.</p>
+
+<h4>Non-Tariff Income</h4>
+<p><b>67.</b>&nbsp;&nbsp;The licensee has claimed a Non-Tariff Income of Rs. 10.24 Lakhs for FY 2024-25. This income includes interest from bank deposits, surcharge on belated payments, meter rent, and other miscellaneous charges.</p>
+<p><b>68.</b>&nbsp;&nbsp;The Commission has reviewed the components of the Non-Tariff Income. The amounts claimed under various heads are found to be reasonable and have been duly accounted for.</p>
+<p class="commission-decision"><b>69.</b>&nbsp;&nbsp;The Commission hereby approves the Non-Tariff Income of Rs. 10.24 Lakhs as claimed by the licensee for the year 2024-25.</p>
+
+<h3>Aggregate Revenue Requirement and Revenue Gap for 2024-25</h3>
+<p><b>70.</b>&nbsp;&nbsp;Based on the detailed analysis in the preceding paragraphs, the approved expenditure and revenue for the year 2024-25 after the Truing Up of accounts are summarized below.</p>
+
+<p class="table-caption">Table 8<br/><b>Income and Expenditure Statement after Truing Up for 2024-25</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>Claimed in Petition</th>
+      <th>Trued Up by Commission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="3" style="text-align:left; background-color:#f2f2f2;"><b>EXPENDITURE</b></td>
+    </tr>
+    <tr>
+      <td>Cost of Power Purchase</td>
+      <td class="num">1023.94</td>
+      <td class="num">1033.71</td>
+    </tr>
+    <tr>
+      <td>Employee Cost</td>
+      <td class="num">29.86</td>
+      <td class="num">24.82</td>
+    </tr>
+    <tr>
+      <td>R&M Expense</td>
+      <td class="num">58.30</td>
+      <td class="num">26.18</td>
+    </tr>
+    <tr>
+      <td>A&G Expense</td>
+      <td class="num">10.06</td>
+      <td class="num">7.30</td>
+    </tr>
+    <tr>
+      <td>Depreciation</td>
+      <td class="num">47.21</td>
+      <td class="num">47.21</td>
+    </tr>
+    <tr>
+      <td>Interest on Normative Long-Term Loan</td>
+      <td class="num">56.33</td>
+      <td class="num">43.68</td>
+    </tr>
+    <tr>
+      <td>Interest on Consumer Deposits & Bank charges</td>
+      <td class="num">9.13</td>
+      <td class="num">4.91</td>
+    </tr>
+    <tr>
+      <td>Interest on Working Capital</td>
+      <td class="num">8.89</td>
+      <td class="num">3.47</td>
+    </tr>
+    <tr>
+      <td>Carrying cost for past revenue gaps</td>
+      <td class="num">62.26</td>
+      <td class="num">62.26</td>
+    </tr>
+    <tr>
+      <td>Return on Net Fixed Assets</td>
+      <td class="num">36.11</td>
+      <td class="num">36.11</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Aggregate Revenue Requirement (ARR)</b></td>
+      <td class="num"><b>1342.09</b></td>
+      <td class="num"><b>1289.65</b></td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align:left; background-color:#f2f2f2;"><b>REVENUE</b></td>
+    </tr>
+    <tr>
+      <td>Revenue from Sale of power</td>
+      <td class="num">1187.62</td>
+      <td class="num">1187.62</td>
+    </tr>
+    <tr>
+      <td>Wheeling Charges</td>
+      <td class="num">64.46</td>
+      <td class="num">64.46</td>
+    </tr>
+    <tr>
+      <td>Non-Tariff Income</td>
+      <td class="num">10.24</td>
+      <td class="num">10.24</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Total Revenue/ERC</b></td>
+      <td class="num"><b>1262.32</b></td>
+      <td class="num"><b>1262.32</b></td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Revenue (Gap) / Surplus</b></td>
+      <td class="num"><b>(79.77)</b></td>
+      <td class="num"><b>(27.33)</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><b>71.</b>&nbsp;&nbsp;The licensee, in its petition, had claimed a revenue gap of Rs. 79.77 Lakhs for the year 2024-25. After a detailed examination of the petition, clarifications submitted, and prudence check of all cost and revenue elements as per the Tariff Regulations, 2021, the Commission has approved a revenue gap for the year 2024-25 as shown below.</p>
+
+<p class="table-caption">Table 9<br/><b>Revenue (Gap)/ Surplus Approved for the year 2024-25</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Particulars</th>
+      <th>Claimed in Petition</th>
+      <th>Approved by Commission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Total Expenditure</td>
+      <td class="num">1342.09</td>
+      <td class="num">1289.65</td>
+    </tr>
+    <tr>
+      <td>Total Income</td>
+      <td class="num">1262.32</td>
+      <td class="num">1262.32</td>
+    </tr>
+    <tr class="total-row">
+      <td><b>Net (Gap)/Surplus</b></td>
+      <td class="num"><b>(79.77)</b></td>
+      <td class="num"><b>(27.33)</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Orders of the Commission</h3>
+<p><b>72.</b>&nbsp;&nbsp;The Commission, after considering the petition filed by M/s. Infopark for Truing Up of Accounts for the year 2024-25, views presented by the licensee during the hearing, and the clarifications and details provided, approves the following:</p>
+<p style="margin-left:32px;"><b>a)</b> Total income is Rs. 1262.32 lakh.</p>
+<p style="margin-left:32px;"><b>b)</b> Total expenditure is Rs. 1289.65 lakh.</p>
+<p style="margin-left:32px;"><b>c)</b> The revenue gap for the year 2024-25 is Rs. 27.33 lakh.</p>
+<p style="margin-left:32px;"><b>d)</b> The total cumulative revenue gap till 2024-25 will be Rs. 942.92 lakh (Rs. 915.59 lakh as opening cumulative revenue gap + current year revenue gap of Rs. 27.33 lakh), which along with applicable carrying cost shall be considered in subsequent tariff orders.</p>
+
+<p><b>73.</b>&nbsp;&nbsp;The petition is disposed of. Ordered accordingly.</p>
+
+<h3>PART C: ANALYSIS AND DECISION OF THE COMMISSION</h3>
+
+<p><b>74.</b>&nbsp;&nbsp;The Commission has undertaken a detailed examination of the petition for Truing Up of Accounts for the financial year 2024-25 filed by M/s Infopark Kerala Power Licensee. This analysis includes a review of the audited financial statements, clarifications provided by the licensee during the hearing, and a prudence check of all claimed expenses and revenues against the provisions of the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021. The Commission's item-wise analysis and decisions are detailed in the subsequent paragraphs.</p>
+
+<h3>Power Purchase Cost</h3>
+<p><b>75.</b>&nbsp;&nbsp;The licensee has claimed a Power Purchase Cost (PPC) of Rs. 1023.94 lakh for the financial year 2024-25. As per the petition, this cost corresponds to the purchase of 139.93 Lakh Units (LU) of energy from KSEBL to meet the demand of its consumers and account for distribution losses. The licensee has also factored in prior period expenses related to solar power settlement as directed by the Commission.</p>
+
+<p><b>76.</b>&nbsp;&nbsp;As per Regulation 73(3) of the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, any efficiency gain or loss on account of deviation in distribution loss from the approved target shall be shared between the licensee and the consumers.</p>
+<blockquote>(3) Any variation between the actual level of distribution losses and the approved level of distribution losses shall be dealt with, as part of the truing up of the respective financial year in the following manner:- ...<br/>ii. if the actual distribution loss is lower than the approved level of distribution loss for any particular financial year of the control period, then the savings in the power purchase cost corresponding to the difference in distribution loss for that financial year at the average cost of power purchase for the respective financial year, shall be shared between the distribution business/licensee and the consumers in the ratio of 2:1.</blockquote>
+
+<p><b>77.</b>&nbsp;&nbsp;The Commission has examined the claim. The approved distribution loss target for the licensee for FY 2024-25 was 4.23%. The licensee has achieved an actual distribution loss of 2.86%, which is a significant improvement. This has resulted in a saving of energy, leading to an efficiency gain of Rs. 14.65 Lakhs. In accordance with the regulations, two-thirds of this gain, amounting to Rs. 9.77 Lakhs, is to be passed on to the licensee. This amount is therefore added to the claimed power purchase cost.</p>
+
+<p class="commission-decision"><b>78.</b>&nbsp;&nbsp;Accordingly, after factoring in the licensee's share of efficiency gain from the reduction in distribution loss, the Commission hereby approves a total Power Purchase Cost of Rs. 1033.71 lakh (Rs. 1023.94 lakh claimed + Rs. 9.77 lakh efficiency gain) for the financial year 2024-25.</p>
+
+<h3>Operation & Maintenance (O&M) Expenses</h3>
+<p><b>79.</b>&nbsp;&nbsp;O&M expenses are controllable in nature and comprise Employee Costs, Repair & Maintenance (R&M) Expenses, and Administration & General (A&G) Expenses. The Commission specifies normative ceilings for these expenses in the Multi-Year Tariff (MYT) order. The licensee has claimed a total O&M expense of Rs. 98.22 lakh against the approved norm. The component-wise analysis is as follows:</p>
+
+<h4>A. Employee Cost</h4>
+<p><b>80.</b>&nbsp;&nbsp;The licensee has claimed Employee Expenses amounting to Rs. 29.86 lakh for FY 2024-25. The claim includes salaries, allowances, and other benefits for the staff engaged in the electricity distribution business.</p>
+<p><b>81.</b>&nbsp;&nbsp;As per the MYT Order for the control period, the Commission has specified normative Employee Expenses for each year, which are subject to escalation based on inflation indices at the time of truing up. The approved norm for FY 2024-25 is Rs. 24.82 lakh.</p>
+<p><b>82.</b>&nbsp;&nbsp;The Commission has examined the claim and notes that it exceeds the approved normative ceiling by Rs. 5.04 lakh. The licensee has not provided sufficient justification for this deviation to be treated as an uncontrollable or one-time expense. This approach is consistent with the precedent set in the Truing Up Order for FY 2022-23 (OP 82/2023), where the Commission disallowed expenses claimed above the normative ceiling.</p>
+<p class="commission-decision"><b>83.</b>&nbsp;&nbsp;Therefore, adhering to the normative principles laid down in the Tariff Regulations, 2021, the Commission hereby disallows the excess claim of Rs. 5.04 lakh and approves Employee Expenses of Rs. 24.82 lakh for the year 2024-25.</p>
+
+<h4>B. Repair & Maintenance (R&M) Expenses</h4>
+<p><b>84.</b>&nbsp;&nbsp;The licensee has claimed R&M Expenses of Rs. 58.30 lakh for FY 2024-25. The petition states that this includes routine maintenance costs and one-time expenses for the replacement of an EHT bushing and other critical equipment.</p>
+<p><b>85.</b>&nbsp;&nbsp;The KSERC Tariff Regulations, 2021, and the corresponding MYT order provide for a normative ceiling for R&M expenses. The approved norm for FY 2024-25 is Rs. 26.18 lakh. Any one-time expenditure of a special nature can be considered over and above the norm, subject to a prudence check.</p>
+<p><b>86.</b>&nbsp;&nbsp;The Commission has analyzed the details of the R&M expenses. The claim is significantly higher than the approved norm. While the licensee has cited one-time expenses, the details provided are not sufficient to justify the entire excess amount of Rs. 32.12 lakh as a prudent, one-time, and uncontrollable expenditure. The Commission, therefore, finds it appropriate to restrict the R&M expenses to the normative level.</p>
+<p class="commission-decision"><b>87.</b>&nbsp;&nbsp;In view of the above, the Commission disallows the excess claim of Rs. 32.12 lakh and hereby approves R&M Expenses of Rs. 26.18 lakh for the financial year 2024-25, in line with the approved MYT norm.</p>
+
+<h4>C. Administration & General (A&G) Expenses</h4>
+<p><b>88.</b>&nbsp;&nbsp;The licensee has claimed A&G Expenses of Rs. 10.06 lakh. This includes insurance, audit fees, license fees, and a charge of Rs. 2.24 lakh for a mandatory Energy Audit conducted as per Bureau of Energy Efficiency (BEE) guidelines.</p>
+<p><b>89.</b>&nbsp;&nbsp;The approved MYT norm for A&G expenses for FY 2024-25 is Rs. 5.06 lakh. However, the Commission recognizes that expenses incurred due to a 'Change in Law', such as a mandatory statutory audit, can be allowed over and above the norms.</p>
+<p><b>90.</b>&nbsp;&nbsp;The Commission has examined the claim. The expense of Rs. 2.24 lakh towards the BEE-mandated Energy Audit qualifies as a 'Change in Law' event and is considered a pass-through. Therefore, the effective ceiling for A&G expenses is Rs. 7.30 lakh (Rs. 5.06 lakh norm + Rs. 2.24 lakh audit fee). The licensee's claim of Rs. 10.06 lakh exceeds this adjusted ceiling by Rs. 2.76 lakh, which is disallowed.</p>
+<p class="commission-decision"><b>91.</b>&nbsp;&nbsp;Accordingly, the Commission hereby approves Administration & General Expenses of Rs. 7.30 lakh for the year 2024-25, which includes the normative expense and the pass-through cost of the mandatory energy audit.</p>
+
+<h3>Depreciation</h3>
+<p><b>92.</b>&nbsp;&nbsp;The licensee has claimed a depreciation of Rs. 47.21 lakh for FY 2024-25. The claim is based on the Gross Fixed Assets (GFA) in service at the beginning of the year. The opening GFA for the distribution business comprises assets such as civil works, substations, transformers, switchgears, distribution lines, and meters across its Cherthala and Kakkanad campuses.</p>
+<p><b>93.</b>&nbsp;&nbsp;As per the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, depreciation is to be calculated using the straight-line method at the rates specified in the schedule to the regulations. The depreciation is charged on the opening GFA for the year, excluding assets funded by grants or consumer contributions.</p>
+<p><b>94.</b>&nbsp;&nbsp;The Commission has examined the asset-wise depreciation calculation submitted by the licensee in Form D 3.5 of the petition. The rates applied for each asset category are found to be in conformity with the Tariff Regulations, 2021. The calculation is based on the opening GFA, and no new assets were added during the year. The claimed amount is consistent with the regulatory framework.</p>
+<p class="commission-decision"><b>95.</b>&nbsp;&nbsp;After verifying the calculations and confirming compliance with the regulations, the Commission hereby approves the depreciation claim of Rs. 47.21 lakh for the financial year 2024-25 as claimed by the licensee.</p>
+
+<p class="table-caption">Table 10<br/><b>Approved Depreciation for FY 2024-25</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Sl. No.</th>
+      <th>Asset Category</th>
+      <th>Rate (%)</th>
+      <th>Opening GFA</th>
+      <th>Depreciation Claimed</th>
+      <th>Depreciation Approved</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Infopark Phase I, Cherthala</td>
+      <td class="num">-</td>
+      <td class="num">971.31</td>
+      <td class="num">44.70</td>
+      <td class="num">44.70</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Infopark Phase II, Kakkanad</td>
+      <td class="num">-</td>
+      <td class="num">47.61</td>
+      <td class="num">2.51</td>
+      <td class="num">2.51</td>
+    </tr>
+    <tr class="total-row">
+      <td colspan="3"><b>Total</b></td>
+      <td class="num"><b>1018.92</b></td>
+      <td class="num"><b>47.21</b></td>
+      <td class="num"><b>47.21</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Interest and Finance Charges</h3>
+<p><b>96.</b>&nbsp;&nbsp;The licensee has claimed a total of Rs. 74.35 lakh towards Interest and Finance Charges, which includes Interest on Normative Long-Term Loan, Interest on Working Capital, and Interest on Consumer Security Deposits.</p>
+
+<h4>A. Interest on Normative Long-Term Loan</h4>
+<p><b>97.</b>&nbsp;&nbsp;The licensee has claimed Rs. 56.33 lakh as interest on the normative long-term loan. This is based on an average normative loan balance calculated from the opening GFA, considering repayments equivalent to the annual depreciation.</p>
+<p><b>98.</b>&nbsp;&nbsp;As per Regulation 29 of the Tariff Regulations, 2021, the normative loan is considered as 70% of the admissible capital cost. The interest is allowed at the weighted average rate of the actual loan portfolio or, in the absence of an actual loan, at the SBI Base Rate.</p>
+<blockquote>Regulation 29(4): ...if the regulated business of the licensee does not have actual loan, but normative loan is outstanding, then interest shall be allowed at the base rate.</blockquote>
+<p><b>99.</b>&nbsp;&nbsp;The Commission has re-computed the interest on the normative loan based on the MYT principles. The approved normative interest for FY 2024-25 as per the MYT order is Rs. 43.68 lakh. The licensee's claim is higher than the approved norm, and the deviation has not been adequately justified.</p>
+<p class="commission-decision"><b>100.</b>&nbsp;&nbsp;Therefore, the Commission disallows the excess claim and approves Interest on Normative Long-Term Loan of Rs. 43.68 lakh for FY 2024-25.</p>
+
+<h4>B. Interest on Working Capital</h4>
+<p><b>101.</b>&nbsp;&nbsp;The licensee has claimed Rs. 8.89 lakh as Interest on Working Capital. The claim is based on a working capital requirement comprising one month of O&M expenses, maintenance spares, and two months of receivables, less consumer security deposits.</p>
+<p><b>102.</b>&nbsp;&nbsp;As per Regulation 32 of the Tariff Regulations, 2021, interest on working capital is allowed on a normative basis. The components are: one month's O&M expenses, maintenance spares at 15% of R&M expenses, and two months of revenue receivables, reduced by consumer security deposits. The interest rate applicable is the SBI EBLR plus 2%.</p>
+<p><b>103.</b>&nbsp;&nbsp;The Commission has re-calculated the normative working capital based on the approved O&M expenses and actual revenue. The approved O&M is Rs. 58.30 lakh, receivables are Rs. 105.20 lakh, and maintenance spares are Rs. 8.74 lakh. After adjusting for security deposits, the net working capital requirement is Rs. 31.14 lakh. Applying the applicable interest rate of 11.15% (SBI EBLR + 2%), the eligible interest on working capital is Rs. 3.47 lakh.</p>
+<p class="commission-decision"><b>104.</b>&nbsp;&nbsp;Accordingly, the Commission disallows the excess claim of Rs. 5.42 lakh and approves Rs. 3.47 lakh as Interest on Working Capital for FY 2024-25.</p>
+
+<h4>C. Interest on Consumer Security Deposits & Bank Charges</h4>
+<p><b>105.</b>&nbsp;&nbsp;The licensee has claimed Rs. 9.13 lakh towards interest payable on consumer security deposits and bank charges. The licensee stated that the increase is due to a higher consumer base and increased security deposit amounts.</p>
+<p><b>106.</b>&nbsp;&nbsp;As per Regulation 30, the licensee is liable to pay interest on security deposits at the prevailing bank rate. The Commission has examined the claim and finds it to be disproportionately high compared to the growth in consumer base and the precedent from FY 2022-23 (Rs. 3.78 lakh). The Commission has capped the allowable interest based on a prudent assessment of the security deposit balance and applicable rates.</p>
+<p class="commission-decision"><b>107.</b>&nbsp;&nbsp;The Commission, after prudence check, hereby approves an amount of Rs. 4.91 lakh towards Interest on Consumer Security Deposits and Bank Charges for the year 2024-25.</p>
+
+<h3>Carrying Cost on Past Revenue Gaps</h3>
+<p><b>108.</b>&nbsp;&nbsp;The licensee has claimed a carrying cost of Rs. 62.26 lakh for FY 2024-25. This cost is claimed on the cumulative revenue gap approved by the Commission up to the end of the previous financial year, FY 2023-24.</p>
+<p><b>109.</b>&nbsp;&nbsp;The Commission, in its previous orders, has established the principle of allowing carrying cost on the approved and unrecovered revenue gaps to compensate the licensee for the time value of money. The applicable rate is the retail term deposit rate of SBI for a tenure of one year as on the first day of the financial year.</p>
+<p><b>110.</b>&nbsp;&nbsp;The Commission notes that the opening cumulative revenue gap for FY 2024-25 is Rs. 915.59 lakh, as established in the previous Truing Up order. The licensee's calculation of carrying cost on this amount is found to be in order and consistent with the established methodology.</p>
+<p class="commission-decision"><b>111.</b>&nbsp;&nbsp;Accordingly, the Commission hereby approves the carrying cost of Rs. 62.26 lakh for the financial year 2024-25 as claimed in the petition.</p>
+
+<h3>Return on Net Fixed Assets (RoNFA)</h3>
+<p><b>112.</b>&nbsp;&nbsp;The licensee has claimed Rs. 36.11 lakh as Return on Net Fixed Assets (RoNFA) for the year 2024-25. The claim is calculated at 5.50% on the opening Net Fixed Assets (NFA) of Rs. 656.48 lakh as on April 1, 2024.</p>
+<p><b>113.</b>&nbsp;&nbsp;As per Regulation 28 of the Tariff Regulations, 2021, where the equity capital is not clearly identifiable, the return shall be allowed at 5.50 percent on the net fixed assets at the beginning of the financial year.</p>
+<p><b>114.</b>&nbsp;&nbsp;The Commission has verified the opening NFA value from the audited accounts and the depreciation schedule. The opening NFA is correctly calculated as the opening GFA less accumulated depreciation. The application of a 5.50% rate of return is in line with the regulations.</p>
+<p class="commission-decision"><b>115.</b>&nbsp;&nbsp;The Commission, finding the claim to be in conformity with the Tariff Regulations, 2021, hereby approves the Return on Net Fixed Assets of Rs. 36.11 lakh for the year 2024-25.</p>
+
+<h3>Revenue from Sale of Power</h3>
+<p><b>116.</b>&nbsp;&nbsp;The licensee has reported a revenue of Rs. 1187.62 lakh from the sale of 137.61 LU of electricity during FY 2024-25. The revenue is realized from various consumer categories such as HT, LT Industrial, and Commercial, based on the tariff determined by the Commission.</p>
+<p><b>117.</b>&nbsp;&nbsp;The Commission has cross-verified the reported sales units and revenue with the audited financial statements and the category-wise sales data provided in Form D 2.1 of the petition. The average billing rate derived from the data is consistent with the applicable tariff schedule for the period.</p>
+<p class="commission-decision"><b>118.</b>&nbsp;&nbsp;The Commission, having found the reported figures to be based on actuals and duly audited, hereby approves the Revenue from Sale of Power of Rs. 1187.62 lakh for the year 2024-25.</p>
+
+<h3>Wheeling Charges</h3>
+<p><b>119.</b>&nbsp;&nbsp;The licensee has accounted for an income of Rs. 64.46 lakh from wheeling charges. This revenue is generated from wheeling energy for M/s Smart City and other open access consumers through the licensee's distribution network.</p>
+<p><b>120.</b>&nbsp;&nbsp;The Commission has examined the details of the wheeled energy and the charges levied. The income is based on actual energy wheeled and the wheeling charges approved by the Commission. The figures are supported by audited statements.</p>
+<p class="commission-decision"><b>121.</b>&nbsp;&nbsp;Accordingly, the Commission hereby approves the income from Wheeling Charges of Rs. 64.46 lakh for the year 2024-25.</p>
+
+<h3>Non-Tariff Income</h3>
+<p><b>122.</b>&nbsp;&nbsp;The licensee has claimed a Non-Tariff Income of Rs. 10.24 lakh for FY 2024-25. This income comprises interest on bank deposits, delayed payment surcharges, meter rent, and other miscellaneous receipts.</p>
+<p><b>123.</b>&nbsp;&nbsp;The Commission has reviewed the components of the Non-Tariff Income as detailed in the petition and verified them with the audited accounts. The claims are found to be based on actual income received during the year.</p>
+<p class="commission-decision"><b>124.</b>&nbsp;&nbsp;The Commission, after due verification, hereby approves the Non-Tariff Income of Rs. 10.24 lakh for the financial year 2024-25.</p>
+
+<h3>Approved Aggregate Revenue Requirement (ARR) and Revenue Gap</h3>
+<p><b>125.</b>&nbsp;&nbsp;Based on the detailed analysis in the preceding paragraphs, the Commission has approved the Aggregate Revenue Requirement (ARR) and the resultant revenue gap for M/s Infopark for the financial year 2024-25. The licensee had claimed a total expenditure of Rs. 1342.09 lakh and a revenue gap of Rs. 79.77 lakh.</p>
+<p><b>126.</b>&nbsp;&nbsp;After conducting a prudence check, the Commission has approved a total expenditure of Rs. 1289.65 lakh. Against this, the total approved revenue, including revenue from sales, wheeling charges, and non-tariff income, is Rs. 1262.32 lakh. A comprehensive summary of the approved ARR is provided in the table below.</p>
+
+<p class="table-caption">Table 15<br/><b>Approved ARR and Revenue Gap for FY 2024-25</b></p>
+<p class="table-subcaption">(Rs. in Lakhs)</p>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Sl. No.</th>
+      <th>Particulars</th>
+      <th>Claimed by Licensee</th>
+      <th>Approved by Commission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="4" style="text-align:left; background-color:#f2f2f2;"><b>A. EXPENDITURE</b></td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Power Purchase Cost</td>
+      <td class="num">1023.94</td>
+      <td class="num">1033.71</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Employee Cost</td>
+      <td class="num">29.86</td>
+      <td class="num">24.82</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Repair & Maintenance Expenses</td>
+      <td class="num">58.30</td>
+      <td class="num">26.18</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Administration & General Expenses</td>
+      <td class="num">10.06</td>
+      <td class="num">7.30</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Depreciation</td>
+      <td class="num">47.21</td>
+      <td class="num">47.21</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Interest on Long Term Loans</td>
+      <td class="num">56.33</td>
+      <td class="num">43.68</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Interest on Working Capital</td>
+      <td class="num">8.89</td>
+      <td class="num">3.47</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Interest on Consumer Security Deposits</td>
+      <td class="num">9.13</td>
+      <td class="num">4.91</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Carrying Cost on Revenue Gap</td>
+      <td class="num">62.26</td>
+      <td class="num">62.26</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Return on Net Fixed Assets</td>
+      <td class="num">36.11</td>
+      <td class="num">36.11</td>
+    </tr>
+    <tr class="total-row">
+      <td></td>
+      <td><b>Total Expenditure (A)</b></td>
+      <td class="num"><b>1342.09</b></td>
+      <td class="num"><b>1289.65</b></td>
+    </tr>
+    <tr>
+      <td colspan="4" style="text-align:left; background-color:#f2f2f2;"><b>B. REVENUE</b></td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Revenue from Sale of Power</td>
+      <td class="num">1187.62</td>
+      <td class="num">1187.62</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Wheeling Charges</td>
+      <td class="num">64.46</td>
+      <td class="num">64.46</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>Non-Tariff Income</td>
+      <td class="num">10.24</td>
+      <td class="num">10.24</td>
+    </tr>
+    <tr class="total-row">
+      <td></td>
+      <td><b>Total Revenue (B)</b></td>
+      <td class="num"><b>1262.32</b></td>
+      <td class="num"><b>1262.32</b></td>
+    </tr>
+    <tr class="total-row">
+      <td></td>
+      <td><b>Revenue Gap for FY 2024-25 (A-B)</b></td>
+      <td class="num"><b>(79.77)</b></td>
+      <td class="num"><b>(27.33)</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><b>127.</b>&nbsp;&nbsp;This results in a revenue gap of Rs. 27.33 lakh for the financial year 2024-25. This gap will be added to the opening cumulative revenue gap. The total cumulative revenue gap at the end of FY 2024-25, which will be carried forward, is Rs. 942.92 lakh (Rs. 915.59 lakh opening gap + Rs. 27.33 lakh current year gap). This cumulative gap, along with the applicable carrying cost, will be considered for recovery in future tariff revisions.</p>
+
+<h3>Orders of the Commission</h3>
+<p><b>128.</b>&nbsp;&nbsp;The Commission, after considering the petition filed by M/s. Infopark for Truing Up of Accounts for the year 2024-25, views presented by the licensee during the hearing, and the clarifications and details provided, hereby approves the following:</p>
+<p style="margin-left:32px;"><b>a)</b> The approved Total Expenditure for the financial year 2024-25 is Rs. 1289.65 lakh.</p>
+<p style="margin-left:32px;"><b>b)</b> The approved Total Revenue for the financial year 2024-25 is Rs. 1262.32 lakh.</p>
+<p style="margin-left:32px;"><b>c)</b> The revenue gap for the year 2024-25 is Rs. 27.33 lakh.</p>
+<p style="margin-left:32px;"><b>d)</b> The total cumulative revenue gap till 2024-25 will be Rs. 942.92 lakh (Rs. 915.59 lakh as opening cumulative revenue gap + current year revenue gap of Rs. 27.33 lakh), which along with applicable carrying cost shall be considered in subsequent tariff orders.</p>
+
+<p><b>129.</b>&nbsp;&nbsp;The licensee is directed to maintain its asset register in the format prescribed by the Commission and submit a compliance report on the directives issued in this order within three months from the date of this order.</p>
+
+<p><b>130.</b>&nbsp;&nbsp;The petition is disposed of. Ordered accordingly.</p>
+
+<table class="sig-table">
+  <tr>
+    <td>Sd/-</td>
+    <td>Sd/-</td>
+    <td>Sd/-</td>
+  </tr>
+  <tr>
+    <td><b>Sri. T.K Jose</b></td>
+    <td><b>Adv. A. J. Wilson</b></td>
+    <td><b>Sri. B. Pradeep</b></td>
+  </tr>
+  <tr>
+    <td><b>Chairman</b></td>
+    <td><b>Member</b></td>
+    <td><b>Member</b></td>
+  </tr>
+</table>
+<div class="secretary-block">
+  <p><b>Approved for issue</b></p>
+  <p>Sd/-</p>
+  <p><b>C.R.Satheesh Chandran</b></p>
+  <p><b>Secretary</b></p>
+</div>

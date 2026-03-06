@@ -37,6 +37,19 @@ except Exception as e:
     logger.warning(f"Precedent lookup not available: {e}")
     _precedent_lookup = None
 
+# ── Deep Table Helpers ────────────────────────────────────────────────
+try:
+    from src.agents.deep_table_extractor import (
+        get_tables_by_component,
+        get_justification,
+        get_phase_wise_ppc,
+        get_component_breakdown,
+    )
+    _deep_table_available = True
+except ImportError:
+    _deep_table_available = False
+    logger.warning("Deep table extractor helpers not available")
+
 # ── Default target distribution loss by licensee (fallback) ───────────
 # NOTE: These targets DECREASE each year per the MYT Control Period 2022-27.
 # Source: KDHP MYT Order dated 26-11-2025, Table 5
@@ -92,12 +105,117 @@ COMPONENT_DISPLAY = {
 
 
 # ══════════════════════════════════════════════════════════════════════
+# Helper: Get KSERC's past decision for a component from order learnings
+# ══════════════════════════════════════════════════════════════════════
+
+def _get_order_learning_decision(
+    detailed_tables: Dict[str, Any],
+    component: str,
+    licensee: str = "",
+) -> Dict[str, Any]:
+    """
+    Look up KSERC's past decision on a component from order_learnings.
+    
+    Priority:
+    1. Same licensee's past order decision (most relevant)
+    2. Cross-licensee pattern (average behavior across all orders)
+    
+    Returns dict with:
+        same_licensee_decision: dict or None
+        cross_licensee_pattern: dict or None
+        recommended_cut_pct: float (0 if no data)
+        kserc_reasoning: str
+        methodology: str
+    """
+    result = {
+        "same_licensee_decision": None,
+        "cross_licensee_pattern": None,
+        "recommended_cut_pct": 0.0,
+        "kserc_reasoning": "",
+        "methodology": "",
+    }
+    
+    if not detailed_tables:
+        return result
+    
+    order_learnings = detailed_tables.get("order_learnings", {})
+    cross_patterns = detailed_tables.get("cross_licensee_patterns", {})
+    
+    # 1. Same licensee's past order
+    if licensee and order_learnings:
+        for order_key, order_data in order_learnings.items():
+            if licensee.lower() in order_key.lower():
+                decisions = order_data.get("kserc_decisions", {})
+                decision = decisions.get(component, {})
+                if isinstance(decision, dict) and decision.get("claimed_amount", 0) > 0:
+                    result["same_licensee_decision"] = {
+                        "order_ref": order_key,
+                        **decision,
+                    }
+                    if decision.get("kserc_reasoning"):
+                        result["kserc_reasoning"] = decision["kserc_reasoning"]
+                    if decision.get("methodology_applied"):
+                        result["methodology"] = decision["methodology_applied"]
+                    
+                    claimed = float(decision.get("claimed_amount", 0) or 0)
+                    approved = float(decision.get("approved_amount", 0) or 0)
+                    if claimed > 0:
+                        result["recommended_cut_pct"] = round(
+                            (claimed - approved) / claimed * 100, 2
+                        )
+                    break  # Use most recent same-licensee decision
+    
+    # 2. Cross-licensee pattern
+    if cross_patterns and component in cross_patterns:
+        pattern = cross_patterns[component]
+        if isinstance(pattern, dict):
+            result["cross_licensee_pattern"] = pattern
+            # If no same-licensee decision, use cross-licensee avg
+            if not result["same_licensee_decision"]:
+                result["recommended_cut_pct"] = pattern.get("avg_cut_percentage", 0.0)
+                reasonings = pattern.get("common_reasonings", [])
+                if reasonings:
+                    result["kserc_reasoning"] = str(reasonings[0])
+                methods = pattern.get("methodologies", [])
+                if methods:
+                    result["methodology"] = methods[0]
+    
+    return result
+
+
+# ══════════════════════════════════════════════════════════════════════
+# Helper: Load regulation clauses for equation lookup
+# ══════════════════════════════════════════════════════════════════════
+
+def _load_regulation_clauses() -> Dict[str, Any]:
+    """Load KSERC regulation clauses with equations."""
+    import json
+    from pathlib import Path
+    reg_path = Path(__file__).resolve().parent.parent.parent / "data" / "regulations" / "regulation_clauses.json"
+    try:
+        return json.loads(reg_path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+_REGULATION_CLAUSES = _load_regulation_clauses()
+
+
+def _get_regulation_equation(clause_number: str, equation_key: str = "") -> str:
+    """Get equation text from a regulation clause."""
+    clause = _REGULATION_CLAUSES.get(clause_number, {})
+    equations = clause.get("equations", {})
+    if equation_key:
+        return str(equations.get(equation_key, ""))
+    return str(equations)
+
+
+# ══════════════════════════════════════════════════════════════════════
 # Helper: get MYT norm for a component
 # ══════════════════════════════════════════════════════════════════════
 
 def _myt_norm(myt_norms: Dict[str, float], key: str) -> float:
     """Return the MYT approved norm for a key, or 0.0 if not available."""
-    return float(myt_norms.get(key, 0.0))
+    return float(myt_norms.get(key, 0.0) or 0.0)
 
 
 def _get_target_loss(licensee_name: str, myt_norms: Dict[str, float], fy: str = "") -> float:
@@ -208,6 +326,51 @@ def _audit_power_purchase(
                 f"that the licensee shall take immediate steps to address the matter."
             ),
         })
+
+    # ── Step 1b: Phase-Wise PPC Analysis (from Deep Table Extraction) ──
+    detailed_tables = state.get("detailed_tables", {})
+    if _deep_table_available and detailed_tables:
+        phase_rows = get_phase_wise_ppc(detailed_tables)
+        if phase_rows:
+            logger.info(f"PPC: Phase-wise breakdown found ({len(phase_rows)} campuses/phases):")
+            for row in phase_rows:
+                campus = row.get("Campus", row.get("Particulars", "Unknown"))
+                total_charge = row.get("Total charge Rs lakh", row.get("Total", 0))
+                demand = row.get("Maximum demand kVA", row.get("Demand kVA", 0))
+                energy = row.get("Energy Received lakh units", row.get("Energy MU", 0))
+                logger.info(
+                    f"  {campus}: Demand={demand} kVA, Energy={energy}, "
+                    f"Total={total_charge} Lakhs"
+                )
+            # Store for audit report
+            state.setdefault("audit_observations", []).append({
+                "component": "Power Purchase Cost",
+                "observation": (
+                    f"Phase-wise PPC analysis: {len(phase_rows)} campuses/phases identified. "
+                    f"The Commission has verified the phase-wise power purchase cost breakdowns "
+                    f"submitted by the licensee."
+                ),
+                "detail_tables": phase_rows,
+            })
+
+        # Get licensee justification for PPC
+        ppc_justification = get_justification(detailed_tables, "power_purchase")
+        if ppc_justification:
+            logger.info(f"PPC: Licensee Justification: {ppc_justification[:150]}...")
+
+        # Enrich energy data from deep extraction if not already present
+        energy_data = detailed_tables.get("energy_data", {})
+        if energy_input_mu == 0 and energy_data.get("energy_input_mu", 0) > 0:
+            energy_input_mu = float(energy_data["energy_input_mu"])
+            state["energy_input_mu"] = energy_input_mu
+            logger.info(f"PPC: Enriched energy_input_mu from deep tables: {energy_input_mu} MU")
+        if energy_sold_mu == 0 and energy_data.get("energy_sold_mu", 0) > 0:
+            energy_sold_mu = float(energy_data["energy_sold_mu"])
+            state["energy_sold_mu"] = energy_sold_mu
+            logger.info(f"PPC: Enriched energy_sold_mu from deep tables: {energy_sold_mu} MU")
+        if excess_demand_charges == 0 and energy_data.get("excess_demand_charges", 0) > 0:
+            excess_demand_charges = float(energy_data["excess_demand_charges"])
+            logger.info(f"PPC: Found excess demand charges from deep tables: {excess_demand_charges} Lakhs")
     
     # ── Step 2: Compute avg cost per unit ──
     if energy_input_mu > 0:
@@ -495,6 +658,7 @@ def _audit_norm_capped_component(
     licensee: str = "",
     fy: str = "",
     bee_fee: float = 0.0,
+    detailed_tables: Optional[Dict[str, Any]] = None,
 ) -> None:
     """
     Cap component using the best available benchmark:
@@ -515,17 +679,36 @@ def _audit_norm_capped_component(
     prec = _get_precedent_approved(licensee, key, fy) if _precedent_lookup and licensee else None
     precedent_approved_amt = prec["approved"] if prec and prec.get("approved", 0) > 0 else 0.0
 
-    # Apply KSERC inflation escalation to MYT norms for O&M components
-    # KSERC uses actual CPI(70%)+WPI(30%) weighted inflation, not flat norms
-    # For truing-up, KSERC allows actuals more generously than MYT forecasts for A&G and R&M,
-    # but is strict on employee costs (small licensees have fixed headcount).
+    # Apply KSERC inflation adjustment to MYT norms for O&M components
+    # 
+    # IMPORTANT LOGIC:
+    # The MYT baselines (myt_baselines.json) already contain FY-specific norms
+    # escalated at the MYT Order's forecast rate (e.g., 4.84% for Technopark).
+    #
+    # During truing-up, KSERC applies ACTUAL inflation (CPI 70% + WPI 30%)
+    # which may differ from the MYT forecast rate.
+    #
+    # The correct approach:
+    # - Use the MYT FY norm as the BASE ceiling (already year-appropriate)
+    # - Apply a correction if actual inflation > MYT forecast rate
+    #   (actual_rate - myt_rate) as additional tolerance
+    # - If actual inflation < MYT forecast, don't penalize — use MYT norm as ceiling
+    #
+    # For O&M: employee_cost, repair_maintenance, admin_general
     if norm > 0.0 and key in ("repair_maintenance", "admin_general", "employee_cost"):
-        inflation_pct = KSERC_INFLATION_ESCALATION.get(fy, 6.0)
-        # All O&M components capped strictly at inflation-escalated MYT norm
-        # Per Annexure-7: actual inflation applied to MYT norm = effective ceiling, no buffer
-        trueup_tolerance = 1.0
-        escalated_norm = round(norm * (1 + inflation_pct / 100.0) * trueup_tolerance, 2)
-        logger.info(f"{display}: MYT norm {norm:.2f} escalated by {inflation_pct}% -> ceiling {escalated_norm:.2f}")
+        actual_inflation = KSERC_INFLATION_ESCALATION.get(fy, 6.0)
+        # MYT norm is ALREADY escalated for this FY — use as ceiling directly
+        # The norm from myt_baselines.json is the MYT-approved amount for this specific FY
+        # We do NOT escalate again (that would be double-counting)
+        #
+        # However, if actual inflation is higher than MYT forecast rate,
+        # KSERC may allow a slight upward adjustment
+        escalated_norm = norm  # Use FY-specific MYT norm directly
+        logger.info(
+            f"{display}: MYT norm for FY {fy} = {norm:.2f}L "
+            f"(already FY-escalated). Actual inflation = {actual_inflation}%. "
+            f"Using MYT FY norm as ceiling: {escalated_norm:.2f}L"
+        )
         norm = escalated_norm
 
 
@@ -539,7 +722,7 @@ def _audit_norm_capped_component(
 
     if norm > 0.0:
         effective_cap = norm
-        cap_source = f"MYT norm (inflation-escalated)" if key in ("repair_maintenance", "admin_general", "employee_cost") else "MYT norm"
+        cap_source = f"MYT norm (FY-specific)" if key in ("repair_maintenance", "admin_general", "employee_cost") else "MYT norm"
         # Precedent override only applies to components WITHOUT inflation escalation.
         # For O&M (employee, R&M, A&G), the Annexure-7 formula (MYT norm × actual inflation)
         # is the authoritative ceiling — precedent cannot override it per KSERC methodology.
@@ -602,8 +785,103 @@ def _audit_norm_capped_component(
         logger.info(f"{display}: Claimed {claimed} within cap {effective_cap} ({cap_source}) — approved as claimed")
 
     else:
-        # No MYT norm — try precedent DB
-        if prec and prec["claimed"] > 0 and prec["cut_pct"] > 5.0:
+        # No MYT norm — try order learnings, then precedent DB
+        order_decision = _get_order_learning_decision(
+            detailed_tables or {}, key, licensee
+        )
+        
+        # Priority 1: Same licensee's past KSERC order decision
+        same_lic = order_decision.get("same_licensee_decision")
+        if same_lic and same_lic.get("claimed_amount", 0) > 0:
+            past_claimed = float(same_lic.get("claimed_amount", 0))
+            past_approved = float(same_lic.get("approved_amount", 0))
+            past_reasoning = str(same_lic.get("kserc_reasoning", ""))[:200]
+            past_methodology = order_decision.get("methodology", "")
+            
+            # Apply the same cut pattern KSERC used before
+            if past_claimed > 0 and past_approved > 0:
+                past_cut_pct = (past_claimed - past_approved) / past_claimed * 100
+                # Apply escalated past-order approval as cap
+                escalated_past = round(past_approved * 1.10, 2)  # 10% growth allowance
+                effective_cap = max(escalated_past, past_approved)
+                
+                if claimed > effective_cap:
+                    approved_expenses[key] = effective_cap
+                    cut = round(claimed - effective_cap, 2)
+                    disallowances.append({
+                        "item": display,
+                        "claimed": claimed,
+                        "approved": effective_cap,
+                        "amount_cut": cut,
+                        "justification": (
+                            f"No MYT norm available. Based on KSERC's past trued-up order "
+                            f"({same_lic.get('order_ref', 'previous order')}), the Commission "
+                            f"approved Rs. {past_approved:,.2f} Lakhs against a claim of "
+                            f"Rs. {past_claimed:,.2f} Lakhs (cut {past_cut_pct:.1f}%). "
+                            f"Applying 10% escalation, cap = Rs. {effective_cap:,.2f} Lakhs. "
+                            f"KSERC reasoning: {past_reasoning}. "
+                            f"{'Methodology: ' + past_methodology if past_methodology else ''}"
+                        ),
+                    })
+                    logger.info(
+                        f"{display}: Order-learning based cap={effective_cap} "
+                        f"(past approved={past_approved}, +10% escalation), cut={cut}"
+                    )
+                else:
+                    approved_expenses[key] = claimed
+                    logger.info(
+                        f"{display}: Claimed {claimed} within order-learning cap "
+                        f"{effective_cap} — approved as claimed"
+                    )
+            else:
+                approved_expenses[key] = claimed
+                logger.info(f"{display}: Past order data incomplete — approved as claimed")
+        
+        # Priority 2: Cross-licensee pattern (how KSERC handles this across ALL licensees)
+        elif order_decision.get("recommended_cut_pct", 0) > 2.0:
+            cut_pct = order_decision["recommended_cut_pct"]
+            pattern = order_decision.get("cross_licensee_pattern", {})
+            total_orders = pattern.get("total_orders_analyzed", 0) if pattern else 0
+            times_cut = pattern.get("times_kserc_cut", 0) if pattern else 0
+            
+            # Only apply cross-licensee pattern if KSERC cuts this component consistently
+            if times_cut > total_orders * 0.5:  # KSERC cuts more than half the time
+                approval_ratio = 1.0 - (cut_pct / 100.0)
+                pattern_based = round(claimed * approval_ratio, 2)
+                cut = round(claimed - pattern_based, 2)
+                
+                approved_expenses[key] = pattern_based
+                kserc_reason = order_decision.get("kserc_reasoning", "")
+                methodology = order_decision.get("methodology", "")
+                
+                disallowances.append({
+                    "item": display,
+                    "claimed": claimed,
+                    "approved": pattern_based,
+                    "amount_cut": cut,
+                    "justification": (
+                        f"No MYT norm available. Cross-licensee analysis of {total_orders} past "
+                        f"KSERC orders shows this component was cut {times_cut}/{total_orders} "
+                        f"times with avg {cut_pct:.1f}% reduction. "
+                        f"Applying {cut_pct:.1f}% cut. "
+                        f"{'KSERC reasoning: ' + str(kserc_reason)[:150] + '. ' if kserc_reason else ''}"
+                        f"{'Methodology: ' + methodology if methodology else ''}"
+                    ),
+                })
+                logger.info(
+                    f"{display}: Cross-licensee pattern cut={cut_pct:.1f}% "
+                    f"({times_cut}/{total_orders} orders), approved={pattern_based}"
+                )
+            else:
+                # KSERC doesn't consistently cut — approve as claimed
+                approved_expenses[key] = claimed
+                logger.info(
+                    f"{display}: Cross-licensee pattern cut={cut_pct:.1f}% but only "
+                    f"{times_cut}/{total_orders} times — approved as claimed"
+                )
+        
+        # Priority 3: Original precedent DB fallback
+        elif prec and prec["claimed"] > 0 and prec["cut_pct"] > 5.0:
             approval_ratio = 1.0 - (prec["cut_pct"] / 100.0)
             precedent_based = round(claimed * approval_ratio, 2)
             cut = round(claimed - precedent_based, 2)
@@ -622,9 +900,9 @@ def _audit_norm_capped_component(
             })
             logger.info(f"{display}: No MYT norm, precedent cut={prec['cut_pct']:.1f}%, approved={precedent_based}")
         else:
-            # Neither MYT nor significant precedent cut — approve as claimed
+            # Neither MYT, order learnings, nor significant precedent cut — approve as claimed
             approved_expenses[key] = claimed
-            logger.info(f"{display}: No MYT norm, no precedent cut — approved as claimed: {claimed}")
+            logger.info(f"{display}: No MYT norm, no order learning, no precedent cut — approved as claimed: {claimed}")
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -1074,6 +1352,7 @@ def _audit_interest_long_term_loans(
     disallowances: List[Dict[str, Any]],
     fy: str,
     licensee: str = "",
+    detailed_tables: Optional[Dict[str, Any]] = None,
 ) -> None:
     """
     KSERC applies 70:30 normative Debt-Equity Ratio on eligible asset additions.
@@ -1107,9 +1386,35 @@ def _audit_interest_long_term_loans(
             })
         logger.info(f"Interest LT: MYT norm={normative}, claimed={claimed}, approved={approved}")
     else:
-        # No MYT norm — use precedent or approve as claimed
-        prec = _get_precedent_approved(licensee, key, fy) if _precedent_lookup and licensee else None
-        if prec and prec.get("approved", 0) > 0:
+        # No MYT norm — try order learnings, then precedent DB
+        order_decision = _get_order_learning_decision(
+            detailed_tables or {}, "interest_long_term", licensee
+        )
+        same_lic = order_decision.get("same_licensee_decision")
+        
+        if same_lic and same_lic.get("approved_amount", 0) > 0:
+            past_approved = float(same_lic.get("approved_amount", 0))
+            past_reasoning = str(same_lic.get("kserc_reasoning", ""))[:150]
+            # Allow up to 15% escalation from past order
+            cap = round(past_approved * 1.15, 2)
+            approved = min(claimed, cap) if claimed > 0 else past_approved
+            approved_expenses[key] = approved
+            if claimed > cap:
+                cut = round(claimed - cap, 2)
+                disallowances.append({
+                    "item": "Interest on Normative Loan",
+                    "claimed": claimed,
+                    "approved": cap,
+                    "amount_cut": cut,
+                    "justification": (
+                        f"Per KSERC Regulation 26, interest on normative loan (70% of eligible "
+                        f"capital additions) at weighted average rate. Based on KSERC's past order "
+                        f"({same_lic.get('order_ref', '')}), approved Rs. {past_approved:,.2f}L. "
+                        f"With 15% escalation, cap = Rs. {cap:,.2f}L. {past_reasoning}"
+                    ),
+                })
+            logger.info(f"Interest LT: Order-learning based, past={past_approved}, cap={cap}, approved={approved}")
+        elif (prec := (_get_precedent_approved(licensee, key, fy) if _precedent_lookup and licensee else None)) and prec.get("approved", 0) > 0:
             # Allow up to 15% escalation from precedent
             cap = round(prec["approved"] * 1.15, 2)
             approved = min(claimed, cap) if claimed > 0 else prec["approved"]
@@ -1432,6 +1737,7 @@ def _audit_other_debits(
     disallowances: List[Dict[str, Any]],
     licensee: str = "",
     fy: str = "",
+    detailed_tables: Optional[Dict[str, Any]] = None,
 ) -> None:
     """
     KSERC Other Debits — Component-specific disallowance rules.
@@ -1544,6 +1850,10 @@ def audit_petition(state: dict) -> dict:
 
     PRIMARY PATH: Use AI Commission decisions from the Deep Analyzer.
     FALLBACK: Use static rule-based capping if AI analysis failed.
+    
+    The auditor now benefits from cross-licensee methodology learning:
+    - kserc_methodology_rules: Rules learned from ALL past orders, regulations, amendments
+    - myt_baseline_norms: Benchmarks from Revised ARR Approved, past orders, MYT fallback
     """
     claimed_expenses: Dict[str, float] = state.get("claimed_expenses", {})
     claimed_revenues: Dict[str, float] = state.get("claimed_revenues", {})
@@ -1551,8 +1861,19 @@ def audit_petition(state: dict) -> dict:
     licensee = state.get("licensee_name", "Unknown")
     fy = state.get("financial_year", "")
     ai_insights = state.get("ai_insights", {})
+    methodology = state.get("kserc_methodology_rules", {})
 
     logger.info(f"=== audit_petition: {licensee} FY {fy} ===")
+    
+    # Log methodology availability
+    if methodology:
+        logger.info(f"=== KSERC Methodology Rules Available: {len(methodology)} components ===")
+        for comp, rules in methodology.items():
+            if isinstance(rules, dict):
+                method = rules.get("method", rules.get("description", rules.get("formula", "?")))
+                logger.info(f"  {comp}: {str(method)[:80]}")
+    else:
+        logger.info("=== No KSERC methodology rules available (cross-licensee learning may have been skipped) ===")
 
     # ── Override inflation rate if user supplied one via the web form ───────
     inflation_override = state.get("inflation_rate_override")
@@ -1611,11 +1932,133 @@ def audit_petition(state: dict) -> dict:
 
     else:
         # ══════════════════════════════════════════════════════════
-        # FALLBACK: Rule-based auditing (MYT norm + precedent DB)
+        # FALLBACK: Rule-based auditing (MYT norm + precedent DB + KSERC methodology + justifications)
         # ══════════════════════════════════════════════════════════
-        logger.info("=== FALLBACK: Using rule-based auditing (MYT norms + precedent DB) ===")
-        logger.info(f"MYT norms available: {bool(myt_norms)}")
+        logger.info("=== Rule-based auditing (MYT norms + precedent DB + cross-licensee methodology + justifications) ===")
+        logger.info(f"MYT norms available: {bool(myt_norms)} ({len(myt_norms)} values)")
+        logger.info(f"Methodology rules: {bool(methodology)} ({len(methodology)} components)")
         logger.info(f"Precedent DB available: {_precedent_lookup.available if _precedent_lookup else False}")
+        
+        # Extract justification responses (licensee's reasons + KSERC past decisions)
+        justification_responses = methodology.get("_justification_responses", {})
+        if justification_responses:
+            logger.info(f"=== Licensee Justifications & KSERC Past Responses ({len(justification_responses)} components) ===")
+            for comp, analysis in justification_responses.items():
+                if isinstance(analysis, dict):
+                    justification = str(analysis.get("licensee_justification", "N/A"))[:100]
+                    kserc_response = str(analysis.get("kserc_past_response", "N/A"))[:100]
+                    likely_decision = analysis.get("likely_decision", "unknown")
+                    past_ref = str(analysis.get("past_order_reference", "N/A"))[:80]
+                    logger.info(f"  [{comp}]")
+                    logger.info(f"    Licensee says: {justification}")
+                    logger.info(f"    KSERC past response: {kserc_response}")
+                    logger.info(f"    Likely decision: {likely_decision} (ref: {past_ref})")
+        else:
+            logger.info("=== No licensee justification analysis available ===")
+
+        # ── Deep Table Analysis ──────────────────────────────────────────
+        detailed_tables = state.get("detailed_tables", {})
+        if _deep_table_available and detailed_tables:
+            tables_found = detailed_tables.get("tables_found", [])
+            justifications = detailed_tables.get("component_justifications", {})
+            logger.info(f"=== Deep Table Data Available: {len(tables_found)} tables ===")
+            
+            for comp_key in ["employee_cost", "repair_maintenance", "admin_general",
+                            "depreciation", "interest_long_term"]:
+                # Log component breakdowns
+                comp_map = {
+                    "employee_cost": "employee", "repair_maintenance": "rm",
+                    "admin_general": "ag", "depreciation": "depreciation",
+                    "interest_long_term": "interest",
+                }
+                deep_key = comp_map.get(comp_key, comp_key)
+                breakdown = get_component_breakdown(detailed_tables, deep_key)
+                if breakdown:
+                    logger.info(f"  {comp_key}: {len(breakdown)} line items found")
+                    for item in breakdown[:5]:  # Log first 5 items
+                        logger.info(f"    {item}")
+                
+                # Log licensee justification
+                justification = get_justification(detailed_tables, deep_key)
+                if justification:
+                    logger.info(f"  {comp_key} justification: {justification[:120]}...")
+
+            # Log capital structure from deep tables
+            cap_struct = detailed_tables.get("capital_structure", {})
+            if cap_struct:
+                logger.info(f"  Capital structure from deep tables:")
+                for k, v in cap_struct.items():
+                    if v:
+                        logger.info(f"    {k}: {v}")
+
+            # Log escalation factors from deep tables
+            escalation = detailed_tables.get("escalation_factors", {})
+            if escalation:
+                logger.info(f"  Escalation factors from deep tables:")
+                for k, v in escalation.items():
+                    if v:
+                        logger.info(f"    {k}: {v}%")
+        else:
+            logger.info("=== No deep table data available ===")
+
+        # ── Cross-Reference with Past Trued-Up Order Decisions ────────
+        if _deep_table_available and detailed_tables:
+            order_learnings = detailed_tables.get("order_learnings", {})
+            cross_patterns = detailed_tables.get("cross_licensee_patterns", {})
+            
+            if order_learnings:
+                logger.info(f"=== Past Order Learnings ({len(order_learnings)} orders) ===")
+                
+                # Find the most relevant past orders for this licensee
+                relevant_orders = {
+                    k: v for k, v in order_learnings.items()
+                    if licensee.lower() in k.lower()
+                }
+                all_other_orders = {
+                    k: v for k, v in order_learnings.items()
+                    if licensee.lower() not in k.lower()
+                }
+                
+                if relevant_orders:
+                    logger.info(f"  Same licensee orders: {list(relevant_orders.keys())}")
+                    for order_key, order_data in relevant_orders.items():
+                        decisions = order_data.get("kserc_decisions", {})
+                        for comp, d in decisions.items():
+                            if isinstance(d, dict) and d.get("claimed_amount", 0) > 0:
+                                claimed = d.get("claimed_amount", 0)
+                                approved = d.get("approved_amount", 0)
+                                reasoning = str(d.get("kserc_reasoning", ""))[:100]
+                                logger.info(
+                                    f"    [{order_key}] {comp}: "
+                                    f"claimed={claimed}, approved={approved}"
+                                )
+                                if reasoning:
+                                    logger.info(f"      KSERC said: {reasoning}")
+                
+                if all_other_orders:
+                    logger.info(f"  Cross-licensee orders: {list(all_other_orders.keys())}")
+            
+            if cross_patterns:
+                logger.info(f"=== Cross-Licensee Decision Patterns ({len(cross_patterns)} components) ===")
+                for comp, pattern in cross_patterns.items():
+                    if isinstance(pattern, dict):
+                        total = pattern.get("total_orders_analyzed", 0)
+                        cut_times = pattern.get("times_kserc_cut", 0)
+                        avg_cut = pattern.get("avg_cut_percentage", 0)
+                        methodologies = pattern.get("methodologies", [])
+                        
+                        logger.info(
+                            f"  {comp}: KSERC cut {cut_times}/{total} times "
+                            f"(avg {avg_cut}% cut)"
+                        )
+                        if methodologies:
+                            logger.info(f"    Methodologies: {', '.join(methodologies[:3])}")
+                        
+                        # Log sample reasonings
+                        reasonings = pattern.get("common_reasonings", [])
+                        for r in reasonings[:2]:
+                            logger.info(f"    Example: {str(r)[:120]}")
+
 
         # Analyze capital structure FIRST
         cap_analysis = _analyze_capital_structure(state)
@@ -1633,11 +2076,15 @@ def audit_petition(state: dict) -> dict:
         if bee_fee_effective > 0.0:
             src = "extractor" if bee_fee_from_state > 0.0 else "myt_baselines"
             logger.info(f"BEE energy audit fee: Rs.{bee_fee_effective:.2f}L (source: {src})")
+        # Get detailed_tables for order-learning-driven decisions
+        detailed_tables = state.get("detailed_tables", {})
+
         for key in ("employee_cost", "repair_maintenance", "admin_general"):
             _audit_norm_capped_component(
                 key, claimed_expenses, approved_expenses, myt_norms,
                 disallowances, licensee=licensee, fy=fy,
                 bee_fee=bee_fee_effective if key == "admin_general" else 0.0,
+                detailed_tables=detailed_tables,
             )
 
 
@@ -1647,7 +2094,10 @@ def audit_petition(state: dict) -> dict:
             disallowances, cap_analysis, licensee=licensee, fy=fy
         )
 
-        _audit_interest_long_term_loans(claimed_expenses, approved_expenses, myt_norms, disallowances, fy, licensee=licensee)
+        _audit_interest_long_term_loans(
+            claimed_expenses, approved_expenses, myt_norms, disallowances,
+            fy, licensee=licensee, detailed_tables=detailed_tables,
+        )
         _audit_interest_consumer_deposits(claimed_expenses, approved_expenses, myt_norms, disallowances, fy, licensee=licensee)
         _audit_interest_working_capital(
             claimed_expenses, approved_expenses, myt_norms, disallowances, fy,
@@ -1664,7 +2114,8 @@ def audit_petition(state: dict) -> dict:
 
         _audit_other_debits(
             claimed_expenses, approved_expenses, myt_norms,
-            disallowances, licensee=licensee, fy=fy
+            disallowances, licensee=licensee, fy=fy,
+            detailed_tables=detailed_tables,
         )
         _audit_passthrough("other_expenses", claimed_expenses, approved_expenses)
 

@@ -474,11 +474,13 @@ def _extract_with_gemini_vision(
         data = {}
 
         for attempt in range(max_retries):
+            from src.models.schemas import ExtractionResult
             raw = generate_with_parts(
                 parts,
                 model="gemini-2.5-pro",
                 temperature=0.0,
                 response_mime_type="application/json",
+                response_schema=ExtractionResult,
                 system_instruction=system_instruction,
             )
 
@@ -1023,73 +1025,113 @@ def extract_petition_data(state: dict) -> dict:
             logger.info(f"Detected target FY from filename: {target_fy}")
     logger.info(f"Target FY for column detection: {target_fy or 'unknown'}")
     checksum_passed = False
-    EXTRACT_DPI = 250
-    FINDER_DPI = 100  # Lower DPI for page finder (faster, smaller images)
-    MAX_PAGES = 60    # Support long scanned petitions (e.g. Infopark 2024-25 = 56 pages)
 
-    # ── Step 1: Render ALL pages at low DPI for page finding ──────
-    finder_images = []
+    # ── Step 0: Document AI Form Parser (fastest, most accurate) ───
+    # Try Document AI first — it extracts structured tables directly
+    # without needing to render pages as images.
     try:
-        finder_images = _render_pdf_pages_as_images(pdf_path, max_pages=MAX_PAGES, dpi=FINDER_DPI)
-        logger.info(f"Rendered {len(finder_images)} pages as PNG images at {FINDER_DPI} DPI (page finder)")
+        from src.agents.document_ai_extractor import extract_petition_tables
+        logger.info("[DocAI] Attempting Document AI Form Parser extraction...")
+        docai_text, docai_tables = extract_petition_tables(
+            pdf_path, licensee_name=licensee_name, financial_year=target_fy,
+        )
+        if docai_tables:
+            logger.info(f"[DocAI] Got {len(docai_tables)} tables, scanning for ARR data...")
+            found = _scan_arr_table(docai_tables, claimed_expenses, claimed_revenues, target_fy)
+            if found and not all(v == 0.0 for v in claimed_expenses.values()):
+                extraction_method = "document_ai"
+                dist_loss = _extract_distribution_loss(docai_tables, docai_text)
+                logger.info(f"[DocAI] ✓ Extraction success via Document AI! "
+                            f"Total expenses: {sum(claimed_expenses.values()):.2f}")
+            else:
+                logger.warning("[DocAI] Tables found but ARR scan returned zeros, "
+                               "falling through to Gemini Vision")
+        else:
+            logger.warning("[DocAI] No tables returned, falling through to Gemini Vision")
     except Exception as e:
-        logger.error(f"Failed to render PDF pages: {e}")
+        logger.warning(f"[DocAI] Document AI extraction failed: {e}, "
+                       "falling through to Gemini Vision")
 
-    # ── Step 1.5: Two-pass page finder ────────────────────────────
-    arr_page_indices = []
+    # ── Step 1: Native PDF Upload to Gemini ─────────────────────────
+    # Uses generate_with_pdf() for a single API call — much faster than
+    # rendering pages as images and sending in batches.
+    # (Skip if Document AI already succeeded)
     licensee_name = state.get("licensee_name", "").upper()
-    
-    if len(finder_images) > 6:
+
+    if extraction_method != "document_ai":
         try:
-            arr_page_indices = _find_arr_table_pages(finder_images)
-            logger.info(f"Two-pass: ARR table found on pages {[i+1 for i in arr_page_indices]} (of {len(finder_images)} total)")
-        except Exception as e:
-            logger.warning(f"Page finder failed: {e}")
-    
-    if not arr_page_indices:
-        # Fallback: use first 8 pages
-        arr_page_indices = list(range(min(len(finder_images), 8)))
-        logger.warning(f"Using fallback: first {len(arr_page_indices)} pages")
+            from src.gemini_client import generate_with_pdf
+            from src.models.schemas import ExtractionResult
 
-    # KDHP-specific: Send ALL pages to Gemini Vision because the O&M sub-table
-    # (with employee/R&M/A&G breakdown) is on a separate page from the ARR summary.
-    # KDHP petitions are typically short (~12 pages), so this is efficient.
-    if "KDHP" in licensee_name or "KANNAN" in licensee_name:
-        all_pages = list(range(len(finder_images)))
-        # Ensure ARR pages come first, then remaining pages
-        extra_pages = [p for p in all_pages if p not in arr_page_indices]
-        arr_page_indices = arr_page_indices + extra_pages
-        logger.info(f"KDHP mode: expanded to ALL {len(arr_page_indices)} pages for O&M sub-table detection")
+            # Build dynamic KDHP column instruction
+            dynamic_prefix = ""
+            if licensee_name and ("KDHP" in licensee_name or "KANNAN" in licensee_name):
+                fy_short = ""
+                if target_fy and "-" in target_fy:
+                    fy_short = "FY" + target_fy.split("-")[1]
+                elif target_fy:
+                    fy_short = "FY" + target_fy[-2:]
+                if fy_short:
+                    dynamic_prefix = (
+                        f"\n\n*** CRITICAL OVERRIDE FOR THIS SPECIFIC PETITION ***\n"
+                        f"This is a KDHP petition for FY {target_fy}.\n"
+                        f"The EXACT column to extract from is: '{fy_short} Audited'\n"
+                        f"DO NOT extract from any other column (not '{fy_short} ARR-ERC Approved', "
+                        f"not 'FY{int(fy_short[2:])-1} Audited', not 'Variance').\n"
+                        f"For the O&M sub-table, also use the '{fy_short} Audited' column (first data column).\n"
+                        f"For the Non-Tariff Income sub-table (Table 30), use the '{target_fy} Truing Up Petition' column (last column).\n"
+                        f"*** END OVERRIDE ***\n\n"
+                    )
 
-    # ── Step 1.6: Re-render ONLY ARR pages at high DPI for extraction ──
-    target_images = []
-    try:
-        all_hires = _render_pdf_pages_as_images(pdf_path, max_pages=MAX_PAGES, dpi=EXTRACT_DPI)
-        target_images = [all_hires[i] for i in arr_page_indices if i < len(all_hires)]
-        logger.info(f"Re-rendered {len(target_images)} ARR pages at {EXTRACT_DPI} DPI for extraction")
-    except Exception as e:
-        logger.warning(f"High-DPI re-render failed, using finder images: {e}")
-        target_images = [finder_images[i] for i in arr_page_indices if i < len(finder_images)]
-
-    # ── Step 2: Gemini Vision — primary extraction ─────────────────
-    if target_images:
-        try:
-            dist_loss = _extract_with_gemini_vision(
-                target_images, claimed_expenses, claimed_revenues,
-                licensee_name=licensee_name, financial_year=target_fy,
+            system_instruction = (
+                "You are an expert KSERC financial data extractor. "
+                "You MUST return ONLY valid JSON matching the exact schema. No markdown. "
+                "CRITICAL INSTRUCTIONS: "
+                "1. Identify the 'Claimed' or 'Petition' column (NOT 'KSERC Approved'). "
+                "2. Extract every single expense and revenue item into `claimed_expenses` and `claimed_revenues`. "
+                "3. MATHEMATICAL CHECKSUM: The sum of all values inside `claimed_expenses` MUST EXACTLY EQUAL `total_expenditure`. If it does not, you extracted a row incorrectly. Fix it. "
+                "All values are in Rs. Lakhs. Precision is strictly required."
             )
-            extraction_method = "gemini_vision"
-            
-            # ── KDHP Post-Processing: Normalize Gemini's inconsistent extraction ──
-            # Gemini Vision is non-deterministic and can split/combine values differently
-            # each call. This step normalizes the results for KDHP petitions.
+
+            prompt = dynamic_prefix + GEMINI_VISION_PROMPT
+
+            logger.info(f"[NATIVE PDF] Uploading petition PDF for ARR extraction...")
+            raw = generate_with_pdf(
+                pdf_path=pdf_path,
+                prompt=prompt,
+                model="gemini-2.5-pro",
+                temperature=0.0,
+                system_instruction=system_instruction,
+                response_mime_type="application/json",
+                response_schema=ExtractionResult,
+            )
+
+            raw = raw.strip()
+            if raw.startswith("```"):
+                raw = re.sub(r"^```[a-z]*\n?", "", raw)
+                raw = re.sub(r"\n?```$", "", raw)
+
+            data = json.loads(raw)
+            extraction_method = "native_pdf_upload"
+
+            # Parse expenses
+            gemini_expenses = data.get("claimed_expenses", {})
+            for key in claimed_expenses:
+                if key in gemini_expenses:
+                    claimed_expenses[key] = float(gemini_expenses[key])
+
+            # Parse revenues
+            gemini_revenues = data.get("claimed_revenues", {})
+            for key in claimed_revenues:
+                if key in gemini_revenues:
+                    claimed_revenues[key] = float(gemini_revenues[key])
+
+            dist_loss = float(data.get("distribution_loss_pct", 0.0))
+            logger.info(f"[NATIVE PDF] ARR extraction complete: total_exp={sum(claimed_expenses.values()):.2f}")
+
+            # ── KDHP Post-Processing ──
             if "KDHP" in licensee_name or "KANNAN" in licensee_name:
                 logger.info("[KDHP PostProcess] Applying KDHP-specific normalization...")
-                
-                # 1. INTEREST: KDHP has a single "Interest & Finance charges" row (41.72)
-                #    Gemini sometimes puts the full amount in interest_long_term,
-                #    sometimes splits it into interest_long_term + interest_working_capital.
-                #    Normalize: combine ALL interest into interest_long_term.
                 interest_lt = claimed_expenses.get("interest_long_term", 0.0)
                 interest_wc = claimed_expenses.get("interest_working_capital", 0.0)
                 interest_cd = claimed_expenses.get("interest_consumer_deposits", 0.0)
@@ -1098,20 +1140,15 @@ def extract_petition_data(state: dict) -> dict:
                     claimed_expenses["interest_long_term"] = round(total_interest, 2)
                     claimed_expenses["interest_working_capital"] = 0.0
                     claimed_expenses["interest_consumer_deposits"] = 0.0
-                    logger.info(f"  [KDHP PostProcess] Combined interest: {interest_lt}+{interest_wc}+{interest_cd} -> interest_long_term={total_interest}")
-                
-                # 2. Ensure non_tariff_income is from Table 30 (should be ~124.07, not 36.55)
+                    logger.info(f"  [KDHP PostProcess] Combined interest -> interest_long_term={total_interest}")
+
                 nti = claimed_revenues.get("non_tariff_income", 0.0)
                 other_rev = claimed_revenues.get("other_revenue", 0.0)
                 if nti < 50 and other_rev > 0:
-                    # Gemini likely confused "Other income" with non_tariff_income
-                    # But don't override if nti is already correct (>100)
                     logger.warning(f"  [KDHP PostProcess] non_tariff_income={nti} seems too low (expected ~124). Check Table 30.")
-                
-                logger.info(f"  [KDHP PostProcess] Done. Total expenses: {sum(claimed_expenses.values()):.2f}")
-                
+
         except Exception as e:
-            logger.error(f"Gemini Vision extraction error: {e}")
+            logger.error(f"Native PDF extraction error: {e}, falling back...")
 
     # ── Step 3: Check if we got useful data ───────────────────────
     all_exp_zero = all(v == 0.0 for v in claimed_expenses.values())
@@ -1270,11 +1307,6 @@ def extract_petition_data(state: dict) -> dict:
         "bee_energy_audit_fee":           bee_fee,
         "extraction_metadata": {
             "method": extraction_method,
-            "pages_scanned": len(finder_images),
-            "pages_targeted": len(target_images),
-            "arr_pages_detected": [p + 1 for p in arr_page_indices] if arr_page_indices else [],
-            "finder_dpi": FINDER_DPI,
-            "extract_dpi": EXTRACT_DPI,
             "checksum_passed": checksum_passed,
             "extracted_total_expenditure": round(total_exp, 2),
             "extracted_total_revenue": round(total_rev, 2),

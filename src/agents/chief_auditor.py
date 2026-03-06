@@ -112,11 +112,13 @@ class ChiefAuditor:
         """
 
         try:
+            from src.models.schemas import AuditorDecision
             raw = generate(
                 prompt,
                 model="gemini-2.5-pro",
                 temperature=0.0,
                 response_mime_type="application/json",
+                response_schema=AuditorDecision,
             )
             data = json.loads(raw)
             

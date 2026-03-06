@@ -32,6 +32,8 @@ from src.state import TruingUpState
 from src.agents.extractor import extract_petition_data
 from src.agents.auditor import audit_petition
 from src.agents.drafter import draft_order
+from src.agents.myt_norm_extractor import myt_extract_node
+from src.agents.deep_table_extractor import deep_extract_node
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +57,33 @@ def extract_node(state: TruingUpState) -> dict:
     return extract_petition_data(state)
 
 
+def myt_extract(state: TruingUpState) -> dict:
+    """Node 1.5: Cross-Licensee Learning & Norm Extraction.
+    
+    Studies ALL past orders (every licensee), regulations, amendments,
+    and the petition's Annex B to learn KSERC methodology and extract benchmarks.
+    """
+    logger.info("═" * 60)
+    logger.info("NODE 1.5: CROSS-LICENSEE LEARNING & NORM EXTRACTION")
+    logger.info("Studying ALL past orders, regulations, and amendments...")
+    logger.info("═" * 60)
+    return myt_extract_node(state)
+
+
+def deep_extract(state: TruingUpState) -> dict:
+    """Node 1.6: Deep Table Extraction.
+    
+    Extracts ALL tables from the petition PDF (not just ARR summary).
+    Phase-wise PPC, employee breakdowns, R&M details, GFA schedules,
+    escalation factors, loan details, licensee justifications, etc.
+    """
+    logger.info("═" * 60)
+    logger.info("NODE 1.6: DEEP TABLE EXTRACTION")
+    logger.info("Extracting ALL tables from petition PDF...")
+    logger.info("═" * 60)
+    return deep_extract_node(state)
+
+
 def audit_node(state: TruingUpState) -> dict:
     """Node 2: Apply compliance rules and audit the petition."""
     logger.info("═" * 60)
@@ -62,6 +91,9 @@ def audit_node(state: TruingUpState) -> dict:
     logger.info("═" * 60)
     return audit_petition(state)
 
+
+# Global flag for auto-approve mode (set by CLI --auto-approve)
+_AUTO_APPROVE = False
 
 def review_node(state: TruingUpState) -> dict:
     """
@@ -113,7 +145,12 @@ def review_node(state: TruingUpState) -> dict:
 
     summary_text = "\n".join(summary_lines)
 
-    # ── Interrupt for human approval ───────────────────────────────
+    # ── Auto-approve or interrupt for human approval ───────────────
+    if _AUTO_APPROVE:
+        logger.info("AUTO-APPROVE: Skipping human review, proceeding to draft.")
+        logger.info(summary_text)
+        return {"human_override_notes": None}
+
     human_response = interrupt({
         "summary": summary_text,
         "prompt": (
@@ -215,19 +252,26 @@ def draft_node(state: TruingUpState) -> dict:
 def build_graph() -> StateGraph:
     """
     Construct the LangGraph StateGraph:
-        START → extract → audit → review → draft → END
+        START → extract → [deep_extract ∥ myt_extract] → audit → review → draft → END
     """
     graph = StateGraph(TruingUpState)
 
     # Add nodes
     graph.add_node("extract", extract_node)
+    graph.add_node("deep_extract", deep_extract)
+    graph.add_node("myt_extract", myt_extract)
     graph.add_node("audit", audit_node)
     graph.add_node("review", review_node)
     graph.add_node("draft", draft_node)
 
-    # Define edges
+    # Define edges: extract → [deep_extract ∥ myt_extract] → audit → review → draft
     graph.add_edge(START, "extract")
-    graph.add_edge("extract", "audit")
+    # Fan-out: both deep_extract and myt_extract depend on extract output
+    graph.add_edge("extract", "deep_extract")
+    graph.add_edge("extract", "myt_extract")
+    # Fan-in: audit waits for both to complete
+    graph.add_edge("deep_extract", "audit")
+    graph.add_edge("myt_extract", "audit")
     graph.add_edge("audit", "review")
     graph.add_edge("review", "draft")
     graph.add_edge("draft", END)
@@ -262,7 +306,7 @@ def run_pipeline(
     financial_year : str
         e.g. "2022-23"
     petition_pdf_path : str
-        Path to the petition PDF file.
+        Path to a petition PDF file OR a folder containing petition + annexures.
     myt_baseline_norms : dict, optional
         MYT-approved baseline norms for O&M comparison.
     accumulated_surplus : float
@@ -283,23 +327,37 @@ def run_pipeline(
             f"Must be one of: {valid_licensees}"
         )
 
-    # Validate PDF exists
-    if not Path(petition_pdf_path).exists():
-        raise FileNotFoundError(
-            f"Petition PDF not found: {petition_pdf_path}"
-        )
+    # Resolve input — handles both single PDF and folder
+    from src.petition_resolver import resolve_petition_input
+    resolved = resolve_petition_input(petition_pdf_path)
+    
+    main_pdf = resolved["main_petition"]
+    annexures = resolved["annexures"]
+    
+    logger.info(f"Input type: {resolved['input_type']}")
+    logger.info(f"Main petition: {main_pdf}")
+    if annexures:
+        logger.info(f"Annexures: {len(annexures)} files")
+        for a in annexures:
+            logger.info(f"  → {Path(a).name}")
 
     # Build initial state
     initial_state: Dict[str, Any] = {
         "licensee_name": licensee_name,
         "financial_year": financial_year,
-        "petition_pdf_path": petition_pdf_path,
+        "petition_pdf_path": main_pdf,
+        "petition_input_path": petition_pdf_path,
+        "annexure_pdf_paths": annexures,
+        "petition_text": "",
         "claimed_expenses": {},
         "claimed_revenues": {},
         "asset_register": [],
         "claimed_distribution_loss_pct": 0.0,
         "target_distribution_loss_pct": 0.0,
         "myt_baseline_norms": myt_baseline_norms or {},
+        "kserc_methodology_rules": {},
+        "ai_insights": {},
+        "detailed_tables": {},
         "approved_expenses": {},
         "disallowance_log": [],
         "total_claimed_expenditure": 0.0,
@@ -316,7 +374,7 @@ def run_pipeline(
     config = {"configurable": {"thread_id": thread_id}}
 
     logger.info(f"Starting pipeline for {licensee_name} FY {financial_year}")
-    logger.info(f"PDF: {petition_pdf_path}")
+    logger.info(f"Input: {petition_pdf_path}")
 
     # Run the graph
     result = compiled_graph.invoke(initial_state, config)
@@ -352,7 +410,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--pdf",
         required=True,
-        help="Path to the petition PDF file",
+        help="Path to the petition PDF file OR folder containing petition + annexures",
     )
     parser.add_argument(
         "--surplus",
@@ -360,8 +418,19 @@ if __name__ == "__main__":
         default=0.0,
         help="Accumulated regulatory surplus (Rs. Lakhs)",
     )
+    parser.add_argument(
+        "--auto-approve",
+        action="store_true",
+        default=False,
+        help="Skip human review and auto-approve the audit",
+    )
 
     args = parser.parse_args()
+
+    # Set auto-approve mode
+    if args.auto_approve:
+        import sys
+        sys.modules[__name__]._AUTO_APPROVE = True
 
     result = run_pipeline(
         licensee_name=args.licensee,
@@ -370,13 +439,13 @@ if __name__ == "__main__":
         accumulated_surplus=args.surplus,
     )
 
-    print("\n" + "═" * 60)
+    print("\n" + "=" * 60)
     print("PIPELINE RESULT")
-    print("═" * 60)
+    print("=" * 60)
     print(f"  Licensee:         {result.get('licensee_name')}")
     print(f"  Financial Year:   {result.get('financial_year')}")
     print(f"  Total Claimed:    Rs. {result.get('total_claimed_expenditure', 0):,.2f} Lakhs")
     print(f"  Total Approved:   Rs. {result.get('total_approved_expenditure', 0):,.2f} Lakhs")
     print(f"  Gap/Surplus:      Rs. {result.get('final_revenue_gap_surplus', 0):,.2f} Lakhs")
     print(f"  Output PDF:       {result.get('output_pdf_path', 'N/A')}")
-    print("═" * 60)
+    print("=" * 60)

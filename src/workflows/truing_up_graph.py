@@ -75,11 +75,14 @@ def component_processing_node(state: AgentState) -> AgentState:
         licensee_narrative = extract_narrative(petition_text, component)
         logger.info(f"[Graph] Licensee Narrative for {component} extracted.")
             
-        # 3. Legal Context: Will be replaced by File Search in Phase 2
-        # For now, use a placeholder
-        legal_context = "Regulation-based legal context. (File Search integration pending - Phase 2)"
-        # TODO Phase 2: Replace with File Search query
-        # legal_context = file_search_query(targeted_query)
+        # 3. Legal Context via Gemini File Search (replaces old RAG)
+        try:
+            from src.rag.file_search_store import query_regulations
+            targeted_query = f"{base_query}. Precedent for: {licensee_narrative}"
+            legal_context = query_regulations(targeted_query)
+        except Exception as e:
+            logger.error(f"File Search failed for {component}: {e}")
+            legal_context = "Legal context unavailable."
                 
         # 4. Chief Auditor Agent: Synthesize Truth
         decision = auditor.analyze_component(

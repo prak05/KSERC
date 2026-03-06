@@ -75,17 +75,17 @@ def generate(
     model: str = "gemini-2.5-pro",
     temperature: float = 0.0,
     response_mime_type: str = "application/json",
+    response_schema: Optional[type] = None,
     system_instruction: Optional[str] = None,
     max_output_tokens: Optional[int] = None,
 ) -> str:
     """
     Simple wrapper to generate content with Gemini.
     
-    Returns the raw response text.
+    Args:
+        response_schema: Optional Pydantic model class for structured output.
     
-    Usage:
-        from src.gemini_client import generate
-        result = generate("Extract data from...", model="gemini-2.5-pro")
+    Returns the raw response text.
     """
     client = get_client()
     from google.genai import types
@@ -94,6 +94,8 @@ def generate(
         "temperature": temperature,
         "response_mime_type": response_mime_type,
     }
+    if response_schema:
+        config_kwargs["response_schema"] = response_schema
     if system_instruction:
         config_kwargs["system_instruction"] = system_instruction
     if max_output_tokens:
@@ -115,20 +117,14 @@ def generate_with_parts(
     model: str = "gemini-2.5-pro",
     temperature: float = 0.0,
     response_mime_type: str = "application/json",
+    response_schema: Optional[type] = None,
     system_instruction: Optional[str] = None,
 ) -> str:
     """
     Generate content with multimodal parts (text + images/files).
     
-    Replaces the old vertexai Part.from_data pattern.
-    
-    Usage:
-        from google.genai import types
-        parts = [
-            types.Part.from_text("Analyze this image"),
-            types.Part.from_bytes(data=image_bytes, mime_type="image/png"),
-        ]
-        result = generate_with_parts(parts, model="gemini-2.5-pro")
+    Args:
+        response_schema: Optional Pydantic model class for structured output.
     """
     client = get_client()
     from google.genai import types
@@ -137,6 +133,8 @@ def generate_with_parts(
         "temperature": temperature,
         "response_mime_type": response_mime_type,
     }
+    if response_schema:
+        config_kwargs["response_schema"] = response_schema
     if system_instruction:
         config_kwargs["system_instruction"] = system_instruction
     
@@ -148,6 +146,120 @@ def generate_with_parts(
         config=config,
     )
     
+    return response.text
+
+
+def generate_with_pdf(
+    pdf_path: str,
+    prompt: str,
+    model: str = "gemini-2.5-flash",
+    temperature: float = 0.0,
+    response_mime_type: str = "application/json",
+    system_instruction: Optional[str] = None,
+    response_schema = None,
+) -> str:
+    """
+    Generate content by uploading an ENTIRE PDF file to Gemini.
+    
+    This is MUCH faster than rendering pages to PNG and batching:
+    - 1 API call instead of 3-4 batch calls
+    - No page rendering overhead
+    - Better accuracy (Gemini sees full document context)
+    - No context loss across batch boundaries
+    
+    Uses Gemini Files API: client.files.upload() to upload the PDF,
+    then passes the file reference in a single generate_content call.
+    """
+    import time
+    client = get_client()
+    from google.genai import types
+
+    # Upload the PDF file to Gemini Files API
+    logger.info(f"Uploading PDF to Gemini Files API: {pdf_path}")
+    upload_start = time.time()
+
+    uploaded_file = client.files.upload(
+        file=pdf_path,
+        config=types.UploadFileConfig(
+            mime_type="application/pdf",
+        ),
+    )
+    
+    upload_time = time.time() - upload_start
+    logger.info(f"PDF uploaded in {upload_time:.1f}s — file: {uploaded_file.name}")
+
+    # Build the content with file reference + prompt
+    parts = [
+        types.Part.from_uri(
+            file_uri=uploaded_file.uri,
+            mime_type="application/pdf",
+        ),
+        types.Part.from_text(text=prompt),
+    ]
+
+    config_kwargs = {
+        "temperature": temperature,
+        "response_mime_type": response_mime_type,
+    }
+    if system_instruction:
+        config_kwargs["system_instruction"] = system_instruction
+    if response_schema:
+        config_kwargs["response_schema"] = response_schema
+
+    config = types.GenerateContentConfig(**config_kwargs)
+
+    gen_start = time.time()
+    response = client.models.generate_content(
+        model=model,
+        contents=parts,
+        config=config,
+    )
+    gen_time = time.time() - gen_start
+    logger.info(f"PDF generation completed in {gen_time:.1f}s")
+
+    # Clean up uploaded file (best effort)
+    try:
+        client.files.delete(name=uploaded_file.name)
+    except Exception:
+        pass  # Non-critical — files auto-expire after 48h
+
+    return response.text
+
+
+def generate_grounded(
+    prompt: str,
+    model: str = "gemini-2.5-flash",
+    temperature: float = 0.3,
+    system_instruction: Optional[str] = None,
+) -> str:
+    """
+    Generate content with Google Search grounding enabled.
+    
+    Gemini will automatically search the web when needed to provide
+    factual, up-to-date information with inline citations.
+    
+    Best for: legal research, regulation lookups, electricity tariff queries.
+    """
+    client = get_client()
+    from google.genai import types
+
+    grounding_tool = types.Tool(google_search=types.GoogleSearch())
+    
+    config_kwargs = {
+        "temperature": temperature,
+        "tools": [grounding_tool],
+    }
+    if system_instruction:
+        config_kwargs["system_instruction"] = system_instruction
+
+    config = types.GenerateContentConfig(**config_kwargs)
+
+    response = client.models.generate_content(
+        model=model,
+        contents=prompt,
+        config=config,
+    )
+
     return response.text
 
 
