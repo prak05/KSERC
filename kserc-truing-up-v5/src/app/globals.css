@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Aadhunik';
+  src: url('/fonts/Aadhunik.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aadhunik';
+  src: url('/fonts/Aadhunik-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --navy: #1A3557;
+    --navy-d: #0F2238;
+    --navy-m: #243F6E;
+    --blue: #2C6FAC;
+    --blu2: #3B82C4;
+    --gold: #C8960C;
+    --gold2: #E6B020;
+    --page: #F2F4F7;
+    --card: #ffffff;
+    --bdr: #DEE2E8;
+    --blt: #EEF0F4;
+    --tx: #1C2B3A;
+    --tx2: #5A6A7A;
+    --muted: #9AAABB;
+    --grn: #1A7F4B;
+    --gbg: #DCFCE7;
+    --red: #C0392B;
+    --rbg: #FEE2E2;
+    --amb: #D97706;
+    --abg: #FEF3C7;
+    --blbg: #EFF6FF;
+    
+    --background: var(--page);
+    --foreground: var(--tx);
+    --card: #ffffff;
+    --card-foreground: var(--tx);
+    --popover: #ffffff;
+    --popover-foreground: var(--tx);
+    --primary: var(--navy);
+    --primary-foreground: #ffffff;
+    --secondary: var(--blue);
+    --secondary-foreground: #ffffff;
+    --muted: var(--muted);
+    --muted-foreground: var(--tx2);
+    --accent: var(--blue);
+    --accent-foreground: #ffffff;
+    --destructive: var(--red);
+    --destructive-foreground: #ffffff;
+    --border: var(--bdr);
+    --input: var(--bdr);
+    --ring: var(--blue);
+    --radius: 0.5rem;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .fade {
+    animation: fadein 0.22s ease;
+  }
+  
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+body {
+  font-family: 'Aadhunik', var(--font-noto-sans), sans-serif;
+  background: var(--page);
+  color: var(--tx);
+  font-size: 15px;
+  line-height: 1.6;
+}

@@ -1,0 +1,81 @@
+{
+    "TECHNOPARK": {
+        "2020-21": {
+            "claimed_expenses": {},
+            "approved_expenses": {},
+            "_meta": {
+                "order_ref": "KSERC OP 12/2023"
+            },
+            "key_disallowances": [],
+            "final_result": {
+                "cumulative_gap_surplus": -280.42
+            }
+        }
+    },
+    "CSEZA": {
+        "2022-23": {
+            "claimed_expenses": {},
+            "approved_expenses": {},
+            "_meta": {
+                "order_ref": "KSERC OP 19/1/24"
+            },
+            "key_disallowances": [],
+            "final_result": {
+                "cumulative_gap_surplus": -135.14
+            }
+        },
+        "2023-24": {
+            "final_result": {
+                "cumulative_gap_surplus": -87.85
+            }
+        }
+    },
+    "KDHPCL": {
+        "2022-23": {
+            "claimed_expenses": {},
+            "approved_expenses": {},
+            "_meta": {
+                "order_ref": "KSERC OP 26-11-25"
+            },
+            "key_disallowances": [],
+            "final_result": {
+                "cumulative_gap_surplus": -116.91
+            }
+        },
+        "2021-22": {
+            "claimed_expenses": {
+                "total": -13.61
+            },
+            "approved_expenses": {
+                "total": -58.72
+            },
+            "final_result": {
+                "outcome": "overshoot"
+            }
+        }
+    },
+    "INFOPARK": {
+        "2020-21": {
+            "claimed_expenses": {
+                "total": 76.53
+            },
+            "approved_expenses": {
+                "total": 60.80
+            },
+            "final_result": {
+                "cumulative_gap_surplus": 60.80
+            }
+        },
+        "2024-25": {
+            "claimed_expenses": {
+                "total": 79.76
+            },
+            "approved_expenses": {
+                "total": 64.72
+            },
+            "final_result": {
+                "cumulative_gap_surplus": 64.72
+            }
+        }
+    }
+}
