@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ═══ KSERC Premium Palette ═══ */
+    --kserc-navy: #0c1b2e;
+    --kserc-navy-light: #142d4a;
+    --kserc-navy-dark: #070f1a;
+    --kserc-gold: #c9a03c;
+    --kserc-gold-light: #e8c75a;
+    --kserc-gold-dark: #a17e2a;
+    --kserc-blue: #1a5276;
+    --kserc-blue-light: #2980b9;
+    --kserc-green: #1a7a4c;
+    --kserc-green-light: #27ae60;
+    --kserc-red: #922b21;
+    --kserc-red-light: #c0392b;
+    --kserc-amber: #b7950b;
+    --kserc-surface: #f4f6f9;
+    --kserc-border: #d5dbe3;
+    --kserc-text: #1a1a2e;
+    --kserc-text-muted: #5d6d7e;
+
+    /* Shadcn compatibility */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-kserc-surface text-kserc-text;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* ═══ Premium Animations ═══ */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ═══ Custom Components ═══ */
+.kserc-card {
+  @apply bg-white rounded-xl border border-kserc-border shadow-sm transition-shadow hover:shadow-md;
+}
+
+.kserc-glass {
+  @apply bg-white/80 backdrop-blur-md border border-white/20;
+}
+
+.kserc-btn-primary {
+  @apply bg-kserc-navy text-white hover:bg-kserc-navy-light transition-all rounded-lg font-bold;
+}
