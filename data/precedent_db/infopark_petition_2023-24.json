@@ -1,0 +1,56 @@
+{
+  "licensee_name": "Infoparks Kerala",
+  "financial_year": "2023-24",
+  "petition_type": "truing_up_petition",
+  "claimed_expenses": {
+    "power_purchase_cost": 874.59,
+    "section3_1_duty": 0.0,
+    "employee_cost": 29.79,
+    "repair_maintenance": 45.28,
+    "admin_general": 12.29,
+    "depreciation": 47.21,
+    "interest_long_term": 53.76,
+    "interest_consumer_deposits": 6.71,
+    "interest_working_capital": 3.76,
+    "return_on_nfa": 36.08,
+    "carrying_cost": 58.03,
+    "other_debits": 0.65,
+    "total_expenditure": 1168.17
+  },
+  "claimed_revenues": {
+    "revenue_from_sale": 1055.68,
+    "non_tariff_income": 9.0,
+    "wheeling_charges": 45.98,
+    "total_revenue": 1110.66
+  },
+  "energy_data": {
+    "total_energy_purchased_lakh_units": 122.88,
+    "energy_sold_lakh_units": 120.0,
+    "distribution_loss_pct": 3.15,
+    "solar_generation_lakh_units": 0.058
+  },
+  "capital_structure": {
+    "gross_fixed_assets": 421.05,
+    "additions_during_year": 0.0,
+    "accumulated_depreciation": 219.74,
+    "net_fixed_assets": 201.31,
+    "consumer_contribution": 0.0,
+    "grants_subsidies": 421.05,
+    "total_loans_outstanding": 0.0,
+    "equity_share_capital": 0.0
+  },
+  "balance_sheet_highlights": {
+    "total_assets": 0.0,
+    "total_liabilities": 0.0,
+    "reserves_surplus": 0.0,
+    "current_assets": 0.0,
+    "current_liabilities": 0.0
+  },
+  "om_details": {
+    "employee_count": 0,
+    "rm_contract_summary": "Total R&M is Rs. 45.28 Lakhs, including O&M contract costs of Rs. 36.32 Lakhs (M/s Voltas) and one-time expenditure of Rs. 8.96 Lakhs. One-time expenses include ABT meter purchase (0.95), transformer oil filtration (0.74), MCCB purchase (1.00), LA supply (0.55), fire alarm replacement (1.99), cable joint purchase (0.03), testing fees (0.89), and testing of cables & circuit breakers (2.79).",
+    "ag_breakdown": "Total A&G is Rs. 12.29 Lakhs. Breakdown: Insurance (1.41), License and filing fee (0.31), Inspectorate fee (4.62), Telephone and postage (0.22), Audit Fees (2.47), Vehicle Running Expenses (0.76), Printing and Stationery (0.20), Other professional fees (0.83), Consultancy charge (1.48)."
+  },
+  "revenue_gap_surplus_claimed": -57.26,
+  "interim_relief_if_any": 0.0
+}

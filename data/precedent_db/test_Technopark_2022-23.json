@@ -1,0 +1,134 @@
+{
+  "order_structure": {
+    "sections": [
+      "Energy sales and consumer mix",
+      "Energy Requirement and Distribution loss",
+      "Solar Generation",
+      "Power Purchase Cost",
+      "Operation & Maintenance Expenses",
+      "Employee cost",
+      "R & M Expenses",
+      "Administration and General Expenses",
+      "Assets Addition",
+      "Depreciation",
+      "Interest and Finance Charges",
+      "Return on Net Fixed Assets",
+      "Revenue from Sale of Power",
+      "Non-Tariff Income",
+      "Revenue Surplus/Gap for 2022-23",
+      "Orders of the Commission"
+    ],
+    "has_numbered_paragraphs": true,
+    "has_tables": true,
+    "total_paragraphs": 68
+  },
+  "energy_data": {
+    "total_energy_purchased_lakh_units": 669.67,
+    "energy_sold_lakh_units": 643.34,
+    "actual_distribution_loss_pct": 4.42,
+    "approved_distribution_loss_pct": 3.45,
+    "target_distribution_loss_pct": 3.45
+  },
+  "claimed_expenses": {
+    "power_purchase_cost": 4652.88,
+    "employee_cost": 54.54,
+    "repair_maintenance": 447.65,
+    "admin_general": 92.05,
+    "depreciation": 162.45,
+    "interest_long_term": 8.96,
+    "interest_consumer_deposits": 72.7,
+    "interest_working_capital": 0.0,
+    "carrying_cost": 0.0,
+    "return_on_nfa": 86.6,
+    "other_debits": 0.0,
+    "section3_1_duty": 36.98
+  },
+  "approved_expenses": {
+    "power_purchase_cost": 4606.04,
+    "employee_cost": 27.82,
+    "repair_maintenance": 402.43,
+    "admin_general": 36.99,
+    "depreciation": 75.43,
+    "interest_long_term": 8.5,
+    "interest_consumer_deposits": 72.7,
+    "interest_working_capital": 0.0,
+    "carrying_cost": 0.0,
+    "return_on_nfa": 35.95,
+    "other_debits": 0.0,
+    "section3_1_duty": 0.0
+  },
+  "claimed_revenues": {
+    "revenue_from_sale": 5750.11,
+    "non_tariff_income": 78.09,
+    "wheeling_charges": 0.0,
+    "other_revenue": 0.0
+  },
+  "approved_revenues": {
+    "revenue_from_sale": 5750.11,
+    "non_tariff_income": 167.38,
+    "wheeling_charges": 0.0,
+    "other_revenue": 0.0
+  },
+  "capital_structure": {
+    "gross_fixed_assets": 7251.11,
+    "accumulated_depreciation": 2065.39,
+    "net_fixed_assets": 5185.72,
+    "consumer_contribution": 612.06,
+    "grants_subsidies": 612.06,
+    "normative_loan_70pct": 0.0,
+    "normative_equity_30pct": 0.0,
+    "weighted_avg_interest_rate_pct": 8.49
+  },
+  "interim_relief": {
+    "interim_order_ref": "",
+    "interim_amount_lakhs": 0.0,
+    "adjusted_in_final": false
+  },
+  "key_disallowances": [
+    {
+      "component": "power_purchase_cost",
+      "claimed": 4652.88,
+      "approved": 4606.04,
+      "kserc_reasoning": "As mentioned in previous paragraphs, as per the Tariff Regulations 2021, if the actual distribution loss is higher than the approved level of distribution loss, then the quantum of power purchased corresponding to the excess distribution loss shall be disallowed at the average cost of power purchase. Accordingly, the power purchase cost based on the approved distribution loss of 3.45% for the year 2022-23 is as shown below."
+    },
+    {
+      "component": "employee_cost",
+      "claimed": 54.54,
+      "approved": 27.82,
+      "kserc_reasoning": "As per the Tariff Regulations, 2021, the licensee shall be allowed to recover the operation and maintenance expenses as per the norms specified in Annexure-7 of Tariff Regulations for each financial year of the Control Period."
+    },
+    {
+      "component": "admin_general",
+      "claimed": 92.05,
+      "approved": 36.99,
+      "kserc_reasoning": "The Commission examined the submission of the licensee and observed that, the licensee has booked Rs. 36.98 lakh towards Electricity Duty for the year 2022-23. The Commission in the previous Orders had stated that duty under Section 3 cannot be passed on to the consumers in view of the statutory provisions of the Kerala Electricity Duty Act, 1963. Hence the same is disallowed."
+    },
+    {
+      "component": "depreciation",
+      "claimed": 162.45,
+      "approved": 75.43,
+      "kserc_reasoning": "Accordingly, the Commission hereby approves depreciation of Rs.94.17 lakh for the year 2019-20, Rs. 96.59 for the year 2020-21 Rs. 75.50 lakh for the year 2021-22 and Rs. 75.43 lakh for the year 2022-23 as per the revised calculation as shown above."
+    },
+    {
+      "component": "return_on_nfa",
+      "claimed": 86.6,
+      "approved": 35.95,
+      "kserc_reasoning": "As per the above table the Commission hereby approves Rs. 35.95 lakh as RoNFA for the year 2022-23 and claws back Rs. 14.23 lakh as excess amount of RoNFA allowed in the past years."
+    }
+  ],
+  "final_result": {
+    "total_expenditure_claimed": 5577.83,
+    "total_expenditure_approved": 5104.68,
+    "total_revenue_approved": 5917.49,
+    "revenue_gap_surplus": 812.81,
+    "cumulative_gap_surplus": 3367.92,
+    "imputed_interest_on_surplus": 89.29
+  },
+  "_meta": {
+    "licensee": "Technopark",
+    "fy": "2022-23",
+    "order_ref": "OP 84/2023",
+    "source_file": "Technopark True-Up 2022-23 (OP 84 2023).pdf",
+    "pages_processed": 32
+  }
+}

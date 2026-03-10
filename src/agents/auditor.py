@@ -67,7 +67,7 @@ DEFAULT_TARGET_DIST_LOSS = {
         "2025-26": 1.41, "2026-27": 1.39,
     },
     "kdhp": {
-        "2022-23": 9.60, "2023-24": 9.35, "2024-25": 9.10,
+        "2022-23": 9.60, "2023-24": 9.35, "2024-25": 9.07,
         "2025-26": 8.85, "2026-27": 8.60,
     },
 }
@@ -221,23 +221,28 @@ def _myt_norm(myt_norms: Dict[str, float], key: str) -> float:
 def _get_target_loss(licensee_name: str, myt_norms: Dict[str, float], fy: str = "") -> float:
     """
     Get target distribution loss % — year-specific value from MYT Control Period.
-    
+
     PRIORITY ORDER:
-    1. Year-specific defaults (from MYT Order Table 5 — targets decrease each year)
-    2. MYT norms dict (may contain stale base-year value)
-    3. Hardcoded fallback (5.0%)
+    1. MYT norms dict — freshly extracted from the actual MYT Order PDF (most accurate)
+    2. Year-specific hardcoded defaults (fallback if myt_norms not loaded)
+    3. Generic fallback (5.0%)
     """
-    # Check year-specific defaults FIRST (these are from the actual MYT Order)
+    # Priority 1: MYT norms dict — this is extracted directly from the MYT Order
+    # e.g. 9.07% for KDHP 2024-25 from OP 41/2025, overrides any hardcoded value
+    if "target_distribution_loss_pct" in myt_norms:
+        val = float(myt_norms["target_distribution_loss_pct"])
+        if val > 0:
+            logger.info(f"Target dist loss from myt_norms: {val}% (FY={fy})")
+            return val
+
+    # Priority 2: Year-specific hardcoded defaults (from MYT Order study)
     for key, val in DEFAULT_TARGET_DIST_LOSS.items():
         if key in licensee_name.lower():
             if isinstance(val, dict) and fy in val:
+                logger.info(f"Target dist loss from hardcoded DEFAULT ({key}): {val[fy]}% (FY={fy})")
                 return val[fy]
-    
-    # Fallback to MYT norms dict (may be base-year value)
-    if "target_distribution_loss_pct" in myt_norms:
-        return float(myt_norms["target_distribution_loss_pct"])
-    
-    # Fallback to any non-year-specific default
+
+    # Priority 3: Any non-year-specific default
     for key, val in DEFAULT_TARGET_DIST_LOSS.items():
         if key in licensee_name.lower():
             if isinstance(val, dict):
@@ -371,17 +376,202 @@ def _audit_power_purchase(
         if excess_demand_charges == 0 and energy_data.get("excess_demand_charges", 0) > 0:
             excess_demand_charges = float(energy_data["excess_demand_charges"])
             logger.info(f"PPC: Found excess demand charges from deep tables: {excess_demand_charges} Lakhs")
-    
-    # ── Step 2: Compute avg cost per unit ──
+
+    # ── Step 2: Energy Balance Data ──────────────────────────────────────────
+    # Populated by extractor from Annexure B (energy input) or petition table.
+    # Target loss % always comes from myt_norms — never hardcoded here.
+    actual_loss_lakh_units   = float(state.get("actual_loss_lakh_units", 0.0) or 0.0)
+    approved_loss_lakh_units = float(state.get("approved_loss_lakh_units", 0.0) or 0.0)
+    energy_input_lakh_units  = float(state.get("energy_input_lakh_units", 0.0) or 0.0)
+    energy_sales_lakh_units  = float(state.get("energy_sales_lakh_units", 0.0) or 0.0)
+    actual_loss_pct_balance  = float(state.get("actual_loss_pct_energy_balance", 0.0) or 0.0)
+    appc_from_state          = float(state.get("appc_rs_per_unit", 0.0) or 0.0)
+
+    logger.info(
+        f"PPC: energy_input={energy_input_lakh_units} LU, energy_sales={energy_sales_lakh_units} LU, "
+        f"actual_loss={actual_loss_lakh_units} LU, actual_loss_pct(balance)={actual_loss_pct_balance}%, "
+        f"appc={appc_from_state}, target_pct={target_loss_pct}"
+    )
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Regulation 73(3) — Deterministic PPC Formula
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # Step 0: Actual Loss % = (Actual Loss Units / Energy Input) × 100
+    # Step 1: Compute Approved Loss Units (two formula branches):
+    #   If energy_input exists:
+    #       approved_loss = energy_input × target% / (1 − target%)
+    #   If only energy_sales exists:
+    #       approved_loss = energy_sales × target% / (1 − target%)
+    # Step 2: Compare approved_loss vs actual_loss.
+    # Step 3: Convert difference × APPC.
+    # Step 4: Adjust claimed PPC.
+    #
+    # IMPORTANT: Do NOT reconstruct energy_input from sales + loss.
+    #            Use the values directly as extracted from Annexure B / petition.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    target_decimal = target_loss_pct / 100.0
+
+    # ── Step 0: Compute Actual Loss % ────────────────────────────────────
+    actual_loss_pct = 0.0
+    if actual_loss_lakh_units > 0 and energy_input_lakh_units > 0:
+        actual_loss_pct = round((actual_loss_lakh_units / energy_input_lakh_units) * 100.0, 2)
+    elif actual_loss_lakh_units > 0 and energy_sales_lakh_units > 0:
+        actual_loss_pct = round((actual_loss_lakh_units / (energy_sales_lakh_units + actual_loss_lakh_units)) * 100.0, 2)
+    state["actual_distribution_loss_pct"] = actual_loss_pct
+    logger.info(f"PPC Step 0: actual_loss_pct = {actual_loss_lakh_units} / {energy_input_lakh_units} × 100 = {actual_loss_pct}%")
+
+    if actual_loss_lakh_units > 0 and target_decimal > 0:
+
+        # ── Resolve APPC first (needed for Step 4) ──
+        if appc_from_state > 0:
+            avg_cost = appc_from_state
+            logger.info(f"PPC: APPC from petition (direct): {avg_cost} Rs/unit")
+        elif energy_purchased_lakh_units > 0 and claimed_ppc > 0:
+            avg_cost = round(claimed_ppc / energy_purchased_lakh_units, 4)
+            logger.info(f"PPC: APPC = {claimed_ppc:.2f} / {energy_purchased_lakh_units:.2f} LU = {avg_cost:.4f} Rs/unit")
+        elif energy_input_lakh_units > 0 and claimed_ppc > 0:
+            avg_cost = round(claimed_ppc / energy_input_lakh_units, 4)
+            logger.info(f"PPC: APPC (via energy_input) = {claimed_ppc:.2f} / {energy_input_lakh_units:.2f} LU = {avg_cost:.4f} Rs/unit")
+        else:
+            avg_cost = float(myt_norms.get("avg_power_purchase_cost_rs_per_kwh", 0.0) or 0.0)
+            logger.warning(f"PPC: Cannot compute APPC — using MYT norm fallback: {avg_cost} Rs/unit")
+
+        # ── Step 1: Compute Approved Loss Units ──
+        # Base variable depends on whether Annexure B is present in the petition:
+        #   - Annexure B present → energy_input × target% / (1 − target%)  [e.g. KDHP]
+        #   - No Annexure B (petition table only) → energy_sales × target% / (1 − target%)  [e.g. Infopark]
+        # Both use the same formula — only the base variable changes.
+        formula_used = ""
+
+        # Detect Annexure B from petition filenames
+        filenames = state.get("original_filenames", [])
+        has_annexure_b = any("annex" in str(f).lower() for f in filenames)
+        logger.info(f"PPC: has_annexure_b={has_annexure_b} (filenames={filenames})")
+
+        if has_annexure_b and energy_input_lakh_units > 0:
+            # Annexure B present → use energy_input as base
+            energy_base = energy_input_lakh_units
+            formula_used = "energy_input"
+            logger.info(f"PPC Step 1 [Annexure B]: base = energy_input({energy_base}) LU")
+        elif energy_sales_lakh_units > 0:
+            # No Annexure B (or energy_input missing) → use energy_sales as base
+            energy_base = energy_sales_lakh_units
+            formula_used = "energy_sales"
+            logger.info(f"PPC Step 1 [petition table]: base = energy_sales({energy_base}) LU")
+        elif energy_input_lakh_units > 0:
+            # Last fallback: use energy_input even without Annexure B
+            energy_base = energy_input_lakh_units
+            formula_used = "energy_input_fallback"
+            logger.info(f"PPC Step 1 [fallback]: base = energy_input({energy_base}) LU")
+        else:
+            logger.warning(
+                "PPC: Cannot compute approved_loss — need energy_input or energy_sales "
+                "from Annexure B / petition table."
+            )
+            approved_expenses["power_purchase_cost"] = claimed_ppc
+            return
+
+        approved_loss_lakh_units = round(
+            energy_base * target_decimal / (1.0 - target_decimal), 2
+        )
+        logger.info(
+            f"PPC Step 1: approved_loss = {energy_base} × {target_loss_pct}% "
+            f"/ (1 − {target_loss_pct}%) = {approved_loss_lakh_units} LU"
+        )
+
+        # ── Step 2: Compare Actual vs Approved Loss ──
+        loss_difference = round(approved_loss_lakh_units - actual_loss_lakh_units, 4)
+        logger.info(
+            f"PPC Step 2: loss_difference = approved({approved_loss_lakh_units}) − "
+            f"actual({actual_loss_lakh_units}) = {loss_difference} LU "
+            f"({'EFFICIENCY GAIN' if loss_difference > 0 else 'EXCESS LOSS'})"
+        )
+
+        # ── Step 3: Financial Impact ──
+        financial_impact = round(abs(loss_difference) * avg_cost, 2)
+        logger.info(
+            f"PPC Step 3: financial_impact = |{loss_difference}| × {avg_cost} "
+            f"= {financial_impact} Rs Lakhs"
+        )
+
+        # ── Step 4: Apply Regulatory Rule ──
+        if loss_difference > 0:
+            # Efficiency Gain — actual loss < approved loss
+            # Regulation 73(3): 2/3 to licensee, 1/3 to consumers
+            licensee_share = round(financial_impact * 2.0 / 3.0, 2)
+            approved_ppc = round(claimed_ppc + licensee_share, 2)
+            approved_expenses["power_purchase_cost"] = approved_ppc
+            logger.info(
+                f"PPC Step 4: EFFICIENCY GAIN — licensee_share = {financial_impact} × 2/3 = {licensee_share} "
+                f"→ approved_ppc = {claimed_ppc} + {licensee_share} = {approved_ppc}"
+            )
+            disallowances.append({
+                "item": "Power Purchase Cost — Distribution Loss Efficiency Gain",
+                "claimed": claimed_ppc,
+                "approved": approved_ppc,
+                "amount_cut": round(claimed_ppc - approved_ppc, 2),
+                "justification": (
+                    f"The actual distribution loss ({actual_loss_lakh_units:.2f} Lakh units) "
+                    f"is below the approved target loss ({approved_loss_lakh_units:.2f} Lakh units, "
+                    f"target {target_loss_pct:.2f}%), yielding an efficiency gain of "
+                    f"{abs(loss_difference):.2f} Lakh units = Rs. {financial_impact:.2f} Lakhs "
+                    f"at APPC Rs. {avg_cost:.2f}/unit. Per Regulation 73(3), 2/3rd "
+                    f"(Rs. {licensee_share:.2f} Lakhs) is passed to the licensee. "
+                    f"Approved PPC: Rs. {approved_ppc:.2f} Lakhs."
+                ),
+            })
+        else:
+            # Excess Loss — actual loss > approved loss
+            # Entire excess cost is disallowed
+            approved_ppc = round(max(claimed_ppc - financial_impact, 0.0), 2)
+            approved_expenses["power_purchase_cost"] = approved_ppc
+            logger.info(
+                f"PPC Step 4: EXCESS LOSS — penalty = {financial_impact} "
+                f"→ approved_ppc = {claimed_ppc} − {financial_impact} = {approved_ppc}"
+            )
+            disallowances.append({
+                "item": "Power Purchase Cost — Distribution Loss Penalty",
+                "claimed": claimed_ppc,
+                "approved": approved_ppc,
+                "amount_cut": round(claimed_ppc - approved_ppc, 2),
+                "justification": (
+                    f"The actual distribution loss ({actual_loss_lakh_units:.2f} Lakh units) "
+                    f"exceeds the approved target loss ({approved_loss_lakh_units:.2f} Lakh units, "
+                    f"target {target_loss_pct:.2f}%). Excess loss of {abs(loss_difference):.2f} "
+                    f"Lakh units at APPC Rs. {avg_cost:.2f}/unit = Rs. {financial_impact:.2f} Lakhs "
+                    f"disallowed per Regulation 73(3). "
+                    f"Approved PPC: Rs. {approved_ppc:.2f} Lakhs."
+                ),
+            })
+
+        # Store all intermediate values for transparency
+        state["ppc_reg73_details"] = {
+            "formula_used": formula_used,
+            "energy_input_lakh_units": energy_input_lakh_units,
+            "energy_sales_lakh_units": energy_sales_lakh_units,
+            "actual_loss_lakh_units": actual_loss_lakh_units,
+            "actual_loss_pct": actual_loss_pct,
+            "target_loss_pct": target_loss_pct,
+            "approved_loss_lakh_units": approved_loss_lakh_units,
+            "loss_difference_lakh_units": loss_difference,
+            "appc_rs_per_unit": avg_cost,
+            "financial_impact_rs_lakhs": financial_impact,
+            "outcome": "efficiency_gain" if loss_difference > 0 else "excess_loss",
+            "approved_ppc_rs_lakhs": approved_ppc,
+        }
+        return  # Done — no need to proceed to derived path below
+
     if energy_input_mu > 0:
         # Use actual petition data (MU = Million Units = 10 lakh kWh)
         total_lakh_kwh = energy_input_mu * 10.0  # 1 MU = 10 lakh kWh
-        avg_cost = claimed_ppc / total_lakh_kwh  # Rs/lakh kWh → Rs/kWh
+        avg_cost = claimed_ppc / total_lakh_kwh  # Rs Lakhs / lakh kWh = Rs/kWh
         energy_sales_lakh_kwh = (energy_sold_mu + energy_wheeled_mu) * 10.0
         logger.info(f"PPC: Using petition energy data: input={energy_input_mu} MU, sold={energy_sold_mu} MU, wheeled={energy_wheeled_mu} MU")
     elif actual_loss_pct > 0:
         # Derive from PPC and avg cost from MYT norms
-        avg_cost = myt_norms.get("avg_power_purchase_cost_rs_per_kwh", 6.95)
+        avg_cost = float(myt_norms.get("avg_power_purchase_cost_rs_per_kwh", 0.0) or 0.0)
         total_lakh_kwh = claimed_ppc / avg_cost
         energy_sales_lakh_kwh = total_lakh_kwh * (1 - actual_loss_pct / 100.0)
         logger.info(f"PPC: Deriving energy from PPC/avg_cost: total={total_lakh_kwh:.2f} lakh kWh")
@@ -415,6 +605,7 @@ def _audit_power_purchase(
     # Approved loss volume at target %:
     approved_loss_lakh_kwh = energy_sales_lakh_kwh * (target_loss_pct / 100.0) / (1 - target_loss_pct / 100.0)
     actual_loss_lakh_kwh = total_lakh_kwh - energy_sales_lakh_kwh
+
 
     if actual_loss_pct > target_loss_pct:
         excess_lakh_kwh   = actual_loss_lakh_kwh - approved_loss_lakh_kwh
@@ -659,6 +850,8 @@ def _audit_norm_capped_component(
     fy: str = "",
     bee_fee: float = 0.0,
     detailed_tables: Optional[Dict[str, Any]] = None,
+    wage_revision: float = 0.0,
+    wage_revision_prior_period: float = 0.0,
 ) -> None:
     """
     Cap component using the best available benchmark:
@@ -744,6 +937,33 @@ def _audit_norm_capped_component(
             cap_source += f" + BEE Energy Audit fee (change-in-law Rs. {bee_allowed:.2f}L)"
             logger.info(f"{display}: BEE fee Rs.{bee_fee:.2f}L -> allowing Rs.{bee_allowed:.2f}L above norm, cap now {effective_cap:.2f}")
 
+    # Wage Revision — uncontrollable expense addition for employee_cost
+    # Per KSERC precedent: KDHP 2020-21 (Rs.14.17L allowed), 2021-22 (Rs.23.65L allowed)
+    # Wage revision is approved over and above the MYT norm after prudence check.
+    # ARR Order OP 28/2022 para 26: "any additional expenses relating to pay revision
+    # can be considered at the time of Truing Up after prudence check."
+    wage_rev_allowed = 0.0
+    if key == "employee_cost" and wage_revision > 0.0:
+        wage_rev_allowed = round(wage_revision, 2)
+        if effective_cap > 0.0:
+            effective_cap = round(effective_cap + wage_rev_allowed, 2)
+            cap_source += f" + Wage Revision (Rs. {wage_rev_allowed:.2f}L)"
+            logger.info(
+                f"{display}: Wage revision Rs.{wage_revision:.2f}L -> "
+                f"allowing Rs.{wage_rev_allowed:.2f}L above norm, cap now {effective_cap:.2f}"
+            )
+
+    # Prior period wage revision — shown as a separate line item
+    # If wage revision was denied in the previous year's order, the petitioner
+    # may claim it as prior period expense. This is tracked separately.
+    if key == "employee_cost" and wage_revision_prior_period > 0.0:
+        prior_amt = round(wage_revision_prior_period, 2)
+        approved_expenses["prior_period_employee_cost"] = prior_amt
+        logger.info(
+            f"{display}: Prior period wage revision Rs.{prior_amt:.2f}L "
+            f"(denied in previous year) — added as separate line item"
+        )
+
     if effective_cap > 0.0 and claimed > effective_cap:
         approved_expenses[key] = effective_cap
         cut = round(claimed - effective_cap, 2)
@@ -755,12 +975,20 @@ def _audit_norm_capped_component(
                 f"Energy Audit fee (change in law, per KSERC precedent)."
             )
 
+        wage_note = ""
+        if wage_rev_allowed > 0.0:
+            wage_note = (
+                f" This includes Rs. {wage_rev_allowed:,.2f} Lakhs approved on account of "
+                f"wage revision (uncontrollable expense, per KSERC precedent and "
+                f"ARR Order OP 28/2022 para 26)."
+            )
+
         justification = (
             f"The claimed {display} of Rs. {claimed:,.2f} Lakhs exceeds the "
             f"effective ceiling of Rs. {effective_cap:,.2f} Lakhs ({cap_source}). "
             f"The excess of Rs. {cut:,.2f} Lakhs is disallowed as per KSERC "
             f"Tariff Regulations. The Commission approves Rs. {effective_cap:,.2f} Lakhs."
-            f"{bee_note}"
+            f"{bee_note}{wage_note}"
         )
 
         if _precedent_lookup and licensee:
@@ -1928,6 +2156,47 @@ def audit_petition(state: dict) -> dict:
         _audit_section3_duty(claimed_expenses, approved_expenses, disallowances)
         _audit_power_purchase(state, approved_expenses, disallowances, myt_norms)
 
+        # BEE Energy Audit fee — petition-specific actual expense, extracted by Gemini/regex
+        # MUST come from the petition itself — not from MYT norms (which are regulatory baselines).
+        # If the petition doesn't mention it, fee is 0 (no adjustment).
+        bee_fee_effective = float(state.get("bee_energy_audit_fee", 0.0) or 0.0)
+
+        if bee_fee_effective > 0.0:
+            ag_norm    = _myt_norm(myt_norms, "admin_general")
+            ag_claimed = claimed_expenses.get("admin_general", 0.0)
+            ag_current = approved_expenses.get("admin_general", ag_norm)
+            # BEE fee is allowed only up to the excess above the norm
+            bee_allowed = round(min(bee_fee_effective, max(0.0, ag_claimed - ag_norm)), 2)
+            if bee_allowed > 0.0:
+                new_ag = round(ag_current + bee_allowed, 2)
+                if new_ag > ag_current:
+                    approved_expenses["admin_general"] = new_ag
+                    # Update or append disallowance entry
+                    disp = COMPONENT_DISPLAY.get("admin_general", "Administration & General Expenses")
+                    cut  = round(ag_claimed - new_ag, 2)
+                    # Remove stale AI entry for A&G if present
+                    disallowances[:] = [d for d in disallowances
+                                        if "admin" not in d.get("item", "").lower()
+                                        and "general" not in d.get("item", "").lower()]
+                    if cut > 0.01:
+                        disallowances.append({
+                            "item": disp,
+                            "claimed": ag_claimed,
+                            "approved": new_ag,
+                            "amount_cut": cut,
+                            "justification": (
+                                f"The claimed {disp} of Rs. {ag_claimed:,.2f} Lakhs is capped at "
+                                f"the MYT norm of Rs. {ag_norm:,.2f} Lakhs. Additionally, "
+                                f"Rs. {bee_allowed:,.2f} Lakhs is approved as BEE-mandated Energy "
+                                f"Audit fee (change in law, per KSERC precedent). "
+                                f"Total approved: Rs. {new_ag:,.2f} Lakhs."
+                            ),
+                        })
+                    logger.info(
+                        f"A&G (AI path): BEE fee Rs.{bee_fee_effective:.2f}L applied. "
+                        f"Approved {ag_current:.2f} → {new_ag:.2f}"
+                    )
+
         logger.info("=== AI Commission decisions applied ===")
 
     else:
@@ -2079,12 +2348,23 @@ def audit_petition(state: dict) -> dict:
         # Get detailed_tables for order-learning-driven decisions
         detailed_tables = state.get("detailed_tables", {})
 
+        # Extract wage revision data from state (populated by extractor/Gemini Vision)
+        wage_revision_current = float(state.get("wage_revision_current_year", 0.0) or 0.0)
+        wage_revision_prior = float(state.get("wage_revision_prior_period", 0.0) or 0.0)
+        if wage_revision_current > 0.0 or wage_revision_prior > 0.0:
+            logger.info(
+                f"Wage revision detected: current year Rs.{wage_revision_current:.2f}L, "
+                f"prior period Rs.{wage_revision_prior:.2f}L"
+            )
+
         for key in ("employee_cost", "repair_maintenance", "admin_general"):
             _audit_norm_capped_component(
                 key, claimed_expenses, approved_expenses, myt_norms,
                 disallowances, licensee=licensee, fy=fy,
                 bee_fee=bee_fee_effective if key == "admin_general" else 0.0,
                 detailed_tables=detailed_tables,
+                wage_revision=wage_revision_current if key == "employee_cost" else 0.0,
+                wage_revision_prior_period=wage_revision_prior if key == "employee_cost" else 0.0,
             )
 
 

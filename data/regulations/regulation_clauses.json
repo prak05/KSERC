@@ -1,0 +1,211 @@
+{
+    "24": {
+        "clause_number": "24",
+        "title": "Capital Cost and Capital Structure",
+        "topic": "capex, capital expenditure, prior approval, debt equity",
+        "text_snippet": "Capital cost for a project shall include the expenditure incurred or projected to be incurred... Provided that the approval of the Commission shall be obtained for all capital expenditure.",
+        "equations": {
+            "normative_debt_equity": "70:30 (70% debt, 30% equity)",
+            "eligible_additions": "Only additions with prior KSERC approval or MYT Order approval",
+            "grant_funded_exclusion": "Assets created through consumer contribution, deposit works, capital subsidies and grants shall be excluded from GFA for depreciation, RoNFA, and interest calculation."
+        },
+        "amendments": [
+            "Amendment 2019: Prior approval threshold increased",
+            "MYT Order 2022-27: Capital expenditure plan approved for control period"
+        ],
+        "applies_to": "all"
+    },
+    "25": {
+        "clause_number": "25",
+        "title": "O&M Expenses (Employee Cost, R&M, A&G)",
+        "topic": "operation maintenance, employee cost, repairs, admin, escalation, inflation",
+        "text_snippet": "The Operation and Maintenance expenses shall be determined based on the norms approved in the Multi-Year Tariff Order for the Control Period. During truing-up, the Commission shall apply actual escalation rate computed using CPI (70% weight) and WPI (30% weight) indices.",
+        "equations": {
+            "escalation_formula": "Escalation Rate = (CPI weight × CPI change%) + (WPI weight × WPI change%)",
+            "cpi_weight": 0.70,
+            "wpi_weight": 0.30,
+            "truing_up_norm": "MYT Base Year Norm × (1 + actual escalation rate for year)",
+            "employee_cost_cap": "min(claimed, MYT escalated norm for FY)",
+            "rm_cap": "min(claimed, MYT escalated norm for FY)",
+            "ag_cap": "min(claimed, MYT escalated norm for FY)",
+            "bee_fee_treatment": "BEE Energy Audit Fee treated as change-in-law, approved additionally over A&G norm"
+        },
+        "amendments": [
+            "MYT Order 2022-27: O&M norms approved yearly with forecast escalation rate",
+            "Truing-up practice: Actual CPI+WPI used instead of forecast rate during truing-up",
+            "Annexure-7 methodology: KSERC computes actual escalation from official CPI/WPI indices"
+        ],
+        "applies_to": "all"
+    },
+    "26": {
+        "clause_number": "26",
+        "title": "Interest on Long-Term Loans (Normative Loan)",
+        "topic": "interest, loans, normative, debt equity, weighted average rate",
+        "text_snippet": "Interest on long-term loans shall be computed on normative loan component (70% of eligible capital additions) at weighted average interest rate. The normative loan shall be reduced by cumulative repayment of loans from approved depreciation.",
+        "equations": {
+            "normative_loan": "70% of approved capital additions (net of grants/contributions)",
+            "interest_calculation": "Normative Loan Balance × Weighted Average SBI Rate",
+            "loan_repayment": "Cumulative depreciation used as deemed repayment",
+            "rate_source": "Weighted average of actual loan interest rates OR SBI MCLR as applicable"
+        },
+        "amendments": [
+            "Amendment Reg 26: For licensees with no identifiable loans, normative loan at 70:30 ratio applies",
+            "MYT Practice: Specific loan schedules verified, interest re-computed normatively"
+        ],
+        "applies_to": "all"
+    },
+    "27": {
+        "clause_number": "27",
+        "title": "Depreciation",
+        "topic": "depreciation, capital cost, asset life, straight line method, SLM",
+        "text_snippet": "Depreciation shall be allowed up to a maximum of 90% of the approved capital cost of the asset. No depreciation shall be allowed on the increase in value of the assets, on account of revaluation of assets. Depreciation shall not be allowed on the assets created through consumer contribution, deposit works, capital subsidies and grants.",
+        "equations": {
+            "method": "Straight Line Method (SLM)",
+            "rate": "As per CERC Regulations 2019 notified rates (typically 5.28% weighted average for distribution assets)",
+            "base": "KSERC-approved GFA (excluding grant/consumer-funded assets)",
+            "formula": "Depreciation = Approved GFA × SLM Rate",
+            "max_cumulative": "90% of approved capital cost",
+            "salvage_value": "10% of capital cost",
+            "exclusions": "Revalued assets, consumer contribution assets, grant-funded assets, deposit works"
+        },
+        "amendments": [
+            "CERC 2019: Updated depreciation rates for various asset classes",
+            "KSERC verification: GFA additions verified against capital expenditure approved in MYT"
+        ],
+        "applies_to": "all"
+    },
+    "28": {
+        "clause_number": "28",
+        "title": "Return on Net Fixed Assets (RoNFA)",
+        "topic": "return, ronfa, equity, net fixed assets",
+        "text_snippet": "If there is no equity invested in the business or equity invested in the regulated business of the distribution licensee is not clearly identifiable, return at the rate of 5.50% shall be allowed on the net fixed assets at the beginning of the financial year for such regulated business.",
+        "equations": {
+            "formula_equity_identifiable": "RoNFA = 14% on Equity + weighted avg interest on Debt (based on 70:30 D-E ratio)",
+            "formula_equity_not_identifiable": "RoNFA = 3% on average NFA (weighted rate considering 70:30 D-E)",
+            "nfa_calculation": "NFA = GFA - Cumulative Depreciation",
+            "average_nfa": "Average NFA = (Opening NFA + Closing NFA) / 2",
+            "sdl_rate": "3% for SDL licensees where equity is not clearly identifiable",
+            "general_rate": "5.50% where equity is identifiable but not separately accounted",
+            "fully_grant_funded": "0% — No RoNFA on fully grant-funded assets"
+        },
+        "amendments": [
+            "KSERC practice: SDL licensees typically get 3% on NFA",
+            "MYT Order: RoNFA rate specified in control period order"
+        ],
+        "applies_to": "distribution"
+    },
+    "29": {
+        "clause_number": "29",
+        "title": "Interest on Working Capital",
+        "topic": "working capital, interest, O&M expenses, maintenance spares, receivables",
+        "text_snippet": "Interest on Working Capital shall be computed on the normative Working Capital requirement at SBI short-term lending rate (MCLR + spread). Working Capital = (1/12 of approved O&M) + (Maintenance Spares @ 15% of approved O&M) + (Receivables equivalent to 2 months of approved revenue less 1 month's estimated billing).",
+        "equations": {
+            "working_capital": "(1/12 of approved O&M) + (15% of approved O&M as maintenance spares) + (2 months approved revenue - 1 month billing)",
+            "simplified_wc": "For SDL licensees: (1/12 of approved O&M) + (15% of O&M)",
+            "interest_rate": "SBI 1-year MCLR + applicable spread (typically 8.5-10.5%)",
+            "formula": "IWC = Working Capital × SBI Short-term Rate",
+            "om_components": "Approved (Employee Cost + R&M + A&G)"
+        },
+        "amendments": [
+            "KSERC Order practice: Uses approved O&M (not claimed) for WC calculation",
+            "Infopark 2022-23: KSERC computed WC as (1/12 O&M + 15% O&M spares) × SBI rate"
+        ],
+        "applies_to": "all"
+    },
+    "30": {
+        "clause_number": "30",
+        "title": "Interest on Consumer Security Deposits",
+        "topic": "consumer deposits, security deposit, interest, SBI rate",
+        "text_snippet": "Interest on consumer security deposits shall be computed at the rate applicable to savings deposits with the State Bank of India as on 1st April of the relevant financial year. The actual consumer security deposit balance as per audited accounts shall be the base for computation.",
+        "equations": {
+            "formula": "Interest = Actual Consumer Deposit Balance × SBI 1-year Term Deposit Rate as on April 1",
+            "sbi_rates_historical": {
+                "2018-19": 6.90,
+                "2019-20": 6.80,
+                "2020-21": 5.40,
+                "2021-22": 5.10,
+                "2022-23": 5.10,
+                "2023-24": 6.80,
+                "2024-25": 6.80
+            },
+            "base": "Actual consumer deposit balance from audited annual accounts"
+        },
+        "amendments": [
+            "KSERC verification: Cross-checks deposit balance with audited financials",
+            "Interest rate: SBI rate as on April 1 of the relevant FY"
+        ],
+        "applies_to": "all"
+    },
+    "73": {
+        "clause_number": "73(3)",
+        "title": "Distribution Loss — Penalty and Incentive",
+        "topic": "distribution loss, penalty, efficiency gain, target loss",
+        "text_snippet": "If the actual distribution loss is higher than the approved level of distribution loss, then the quantum of power purchased corresponding to the excess distribution loss shall be disallowed at the average cost of power purchase. If the actual distribution loss is lower than the approved level, the efficiency gain shall be shared between the licensee and the consumers in the ratio 2:1.",
+        "equations": {
+            "excess_loss_penalty": "Penalty = (Actual Loss% - Target Loss%) × Energy Input (MU) × Avg PPC Rate (Rs/kWh)",
+            "efficiency_gain": "Gain = (Target Loss% - Actual Loss%) × Energy Input (MU) × Avg PPC Rate (Rs/kWh)",
+            "gain_sharing": "Licensee share = 2/3 of Gain; Consumer share = 1/3 of Gain",
+            "avg_ppc_rate": "Total Power Purchase Cost / Total Energy Input (MU)",
+            "target_loss_source": "MYT Order Table 5 — year-specific target for each licensee"
+        },
+        "amendments": [
+            "MYT Order 2022-27: Year-wise target distribution loss set for control period",
+            "KSERC practice: Target loss decreases annually per MYT trajectory",
+            "Excess demand charges: Disallowed if attributable to poor load management"
+        ],
+        "applies_to": "distribution"
+    },
+    "31": {
+        "clause_number": "31",
+        "title": "Non-Tariff Income",
+        "topic": "non-tariff income, NTI, imputed interest, surplus funds",
+        "text_snippet": "Non-tariff income shall be considered as per actuals. Where the licensee has accumulated surplus/reserve, the Commission may impute interest on such surplus at SBI savings bank rate and add it to revenue.",
+        "equations": {
+            "nti_treatment": "Actual NTI as per audited accounts",
+            "imputed_interest": "If surplus exists: Imputed Interest = Accumulated Surplus × SBI Savings Rate",
+            "surplus_definition": "Excess of revenue over expenditure carried forward"
+        },
+        "applies_to": "all"
+    },
+    "34": {
+        "clause_number": "34",
+        "title": "Section 3(1) Electricity Duty",
+        "topic": "electricity duty, statutory, disallowed",
+        "text_snippet": "Section 3(1) Electricity Duty shall not be considered as part of the ARR. It is a statutory levy collected on behalf of the State Government and passed through separately.",
+        "equations": {
+            "treatment": "Always disallowed from ARR — it is a pass-through statutory levy"
+        },
+        "applies_to": "all"
+    },
+    "_amendments_general": {
+        "title": "General Amendments and Practice Notes",
+        "items": [
+            {
+                "topic": "Truing-up methodology",
+                "note": "KSERC compares claimed amounts with MYT approved norms, verifies with audited accounts, and applies regulation-specific formulas.",
+                "source": "Multiple KSERC orders"
+            },
+            {
+                "topic": "Escalation Rate computation — Annexure-7",
+                "note": "Actual escalation = CPI change% × 0.70 + WPI change% × 0.30. Applied to base year O&M norm. Differs from MYT forecast escalation.",
+                "formula": "escalation_pct = (CPI_current/CPI_base - 1)*100*0.70 + (WPI_current/WPI_base - 1)*100*0.30",
+                "source": "KSERC Annexure-7 in MYT and Truing-Up Orders"
+            },
+            {
+                "topic": "Prior year surplus/deficit",
+                "note": "Revenue gap/surplus from previous truing-up is carried forward. KSERC may direct recovery through tariff adjustment.",
+                "source": "KSERC truing-up order practice"
+            },
+            {
+                "topic": "Change in Law provisions",
+                "note": "Items like BEE Energy Audit Fee, new statutory levies are treated as change-in-law and allowed over and above norms.",
+                "source": "Multiple KSERC orders (KDHP 2022-23, Infopark 2024-25)"
+            },
+            {
+                "topic": "Capital expenditure verification",
+                "note": "KSERC verifies capital additions against MYT-approved plan. Unapproved additions may be excluded from GFA for depreciation and RoNFA.",
+                "source": "KSERC Regulation 24, MYT Orders"
+            }
+        ]
+    }
+}

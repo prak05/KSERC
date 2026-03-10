@@ -210,7 +210,7 @@ CRITICAL INSTRUCTIONS:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders", "regulations", "myt_orders"],
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
         )
         parsed = _parse_json_response(result, "KSERC Methodology")
         if parsed:
@@ -239,22 +239,52 @@ def extract_myt_norms(
     """
     Extract audit benchmarks by studying ALL past orders and regulations.
 
-    Priority:
-    0. LEARN methodology from ALL past orders across ALL licensees
-    1. Petition's own Annex B — "Revised ARR&ERC Approved" column
-    2. Past truing-up orders — KSERC's final approved amounts (ALL licensees)
-    3. MYT Order — original control period norms (fallback)
-    4. Regulations + Amendments — methodology overrides
-    5. Licensee justifications vs KSERC past responses
+    Priority (HARDCODED JSON IS PRIMARY — Gemini CANNOT override):
+    0. LOAD hardcoded myt_baselines.json as the AUTHORITATIVE numeric source
+    1. LEARN methodology from ALL past orders across ALL licensees (Gemini)
+    2. Licensee justifications vs KSERC past responses (Gemini)
+    3. Gemini queries fill ONLY gaps not covered by hardcoded JSON
     """
     logger.info(f"=== Cross-Licensee Learning & Norm Extraction: {licensee_name} FY {financial_year} ===")
 
     from concurrent.futures import ThreadPoolExecutor, as_completed
+    import json as _json
+    from pathlib import Path
 
     result: Dict[str, Any] = {}
 
-    # ── Steps 0-3 run IN PARALLEL (independent queries) ─────────────
-    logger.info("[MYT PARALLEL] Running Steps 0-3 in parallel (4 workers)...")
+    # ══════════════════════════════════════════════════════════════════
+    # STEP 0 (PRIMARY): Load hardcoded myt_baselines.json
+    # These values are AUTHORITATIVE and CANNOT be overridden by Gemini
+    # ══════════════════════════════════════════════════════════════════
+    hardcoded_norms = {}
+    try:
+        baselines_path = Path(__file__).resolve().parents[2] / "data" / "myt_baselines" / "myt_baselines.json"
+        with open(baselines_path, "r", encoding="utf-8") as f:
+            all_baselines = _json.load(f)
+        # Find the matching licensee (case-insensitive substring match)
+        for lic_key, lic_data in all_baselines.items():
+            if lic_key.lower() in licensee_name.lower() or licensee_name.lower() in lic_key.lower():
+                year_data = lic_data.get("baselines", {}).get(financial_year, {})
+                if year_data:
+                    for k, v in year_data.items():
+                        if isinstance(v, (int, float)) and not k.startswith("_"):
+                            hardcoded_norms[k] = float(v)
+                            result[k] = float(v)
+                    logger.info(f"[PRIMARY] Loaded {len(hardcoded_norms)} hardcoded norms from myt_baselines.json for {lic_key} FY {financial_year}")
+                    for k, v in sorted(hardcoded_norms.items()):
+                        logger.info(f"  [HARDCODED] {k}: {v}")
+                else:
+                    logger.warning(f"No baselines found in myt_baselines.json for {lic_key} FY {financial_year}")
+                break
+    except Exception as e:
+        logger.error(f"Failed to load myt_baselines.json: {e}")
+
+    # ══════════════════════════════════════════════════════════════════
+    # STEP 1: Run Gemini queries for METHODOLOGY and JUSTIFICATIONS
+    # (These provide non-numeric context that hardcoded JSON cannot)
+    # ══════════════════════════════════════════════════════════════════
+    logger.info("[MYT PARALLEL] Running methodology + justification queries...")
 
     def _step0_methodology():
         return ("methodology", _learn_kserc_methodology(licensee_name, financial_year))
@@ -284,48 +314,56 @@ def extract_myt_norms(
             except Exception as e:
                 logger.error(f"  [MYT PARALLEL] query failed: {e}")
 
-    # ── Merge parallel results (same priority order as before) ────────
-    # Step 0: Methodology
+    # ── Merge parallel results — ONLY for values NOT in hardcoded JSON ──
+    # Step 0: Methodology (always store — non-numeric)
     methodology = parallel_results.get("methodology")
     if methodology:
         result["_methodology_rules"] = methodology
         logger.info(f"Methodology rules learned from ALL past orders: {len(methodology)} components")
 
-    # Step 1: Annex B (primary)
+    # Step 1: Annex B — fill ONLY gaps not covered by hardcoded JSON
     annex_norms = parallel_results.get("annex_norms")
     if annex_norms:
+        filled = 0
         for k, v in annex_norms.items():
-            if not k.startswith("_"):
+            if not k.startswith("_") and k not in hardcoded_norms:
                 result[k] = v
-        logger.info(f"Revised ARR&ERC Approved from Annex B: {len(annex_norms)} values")
+                filled += 1
+                logger.info(f"Annex B (gap-fill): {k} = {v}")
+            elif not k.startswith("_") and k in hardcoded_norms:
+                logger.info(f"Annex B SKIPPED (hardcoded exists): {k} = {v} (keeping hardcoded {hardcoded_norms[k]})")
+        logger.info(f"Annex B: {filled} gap-fill values used, {len(annex_norms) - filled} skipped (hardcoded)")
 
-    # Step 2: Cross-licensee precedents (fill gaps only)
+    # Step 2: Cross-licensee precedents (fill gaps only, never override hardcoded)
     past_norms = parallel_results.get("past_norms")
     if past_norms:
         for key, val in past_norms.items():
-            if not key.startswith("_") and (key not in result or result.get(key, 0.0) == 0.0):
+            if not key.startswith("_") and key not in hardcoded_norms and (key not in result or result.get(key, 0.0) == 0.0):
                 result[key] = val
-                logger.info(f"Cross-licensee precedent: {key} = {val}")
+                logger.info(f"Cross-licensee precedent (gap-fill): {key} = {val}")
 
-    # Step 3: MYT order norms (fallback for gaps)
+    # Step 3: MYT order norms (fill gaps only, never override hardcoded)
     myt_norms = parallel_results.get("myt_norms")
     if myt_norms:
         for key, val in myt_norms.items():
-            if not key.startswith("_") and (key not in result or result.get(key, 0.0) == 0.0):
+            if not key.startswith("_") and key not in hardcoded_norms and (key not in result or result.get(key, 0.0) == 0.0):
                 result[key] = val
-                logger.info(f"MYT norm (fallback): {key} = {val}")
+                logger.info(f"MYT norm (gap-fill): {key} = {val}")
 
-    # ── Step 4: SEQUENTIAL — Amendments override earlier values ────────
+    # ── Step 4: Amendments — never override hardcoded norms ────────
     amendment_rules = _query_all_regulations_and_amendments(licensee_name, financial_year)
     if amendment_rules:
         for key, val in amendment_rules.items():
             if not key.startswith("_") and isinstance(val, (int, float)) and val > 0:
-                old = result.get(key, 0.0)
-                result[key] = val
-                if isinstance(old, (int, float)) and old > 0:
-                    logger.info(f"Amendment override: {key} = {val} (was {old})")
+                if key not in hardcoded_norms:
+                    old = result.get(key, 0.0)
+                    result[key] = val
+                    if isinstance(old, (int, float)) and old > 0:
+                        logger.info(f"Amendment override (gap-fill): {key} = {val} (was {old})")
+                else:
+                    logger.info(f"Amendment SKIPPED (hardcoded exists): {key} = {val} (keeping hardcoded {hardcoded_norms[key]})")
 
-    # ── Step 5: SEQUENTIAL — Justification analysis depends on methodology ──
+    # ── Step 5: Justification analysis ──
     justification_analysis = _analyze_licensee_justifications(licensee_name, financial_year)
     if justification_analysis:
         result["_justification_analysis"] = justification_analysis
@@ -337,7 +375,8 @@ def extract_myt_norms(
                 f"{sum(1 for k,v in result.items() if not k.startswith('_') and isinstance(v, (int,float)) and v > 0)} numeric values")
     for k, v in sorted(result.items()):
         if not k.startswith("_") and isinstance(v, (int, float)) and v > 0:
-            logger.info(f"  {k}: {v}")
+            source = "[HARDCODED]" if k in hardcoded_norms else "[GEMINI]"
+            logger.info(f"  {source} {k}: {v}")
 
     return result
 
@@ -416,7 +455,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["myt_orders", "past_orders", "regulations"],
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
         )
         parsed = _parse_json_response(result, "Revised ARR&ERC")
         
@@ -515,7 +554,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders"],
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
         )
         return _parse_json_response(result, "Cross-Licensee Precedents")
     except Exception as e:
@@ -584,7 +623,7 @@ Return ONLY the JSON object, no other text.
         result = query_regulations(
             prompt,
             categories=["myt_orders"],
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
         )
         return _parse_json_response(result, "MYT Order")
     except Exception as e:
@@ -668,7 +707,7 @@ Use 0 for unchanged values. Return ONLY the JSON object, no other text.
         result = query_regulations(
             prompt,
             categories=["regulations"],
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
         )
         parsed = _parse_json_response(result, "Regulations & Amendments")
         # Filter to only numeric non-zero values (amendments_summary is string, keep it in methodology)
@@ -864,7 +903,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders", "myt_orders", "regulations"],
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
         )
         parsed = _parse_json_response(result, "Justification Analysis")
         if parsed:
@@ -951,3 +990,238 @@ def myt_extract_node(state: dict) -> dict:
     except Exception as e:
         logger.error(f"Cross-licensee learning failed: {e}")
         return {}
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Reference Data Upload: Extract norms from an uploaded MYT/Interim PDF
+# ═══════════════════════════════════════════════════════════════════════
+
+MYT_NORMS_JSON_PATH = Path(__file__).resolve().parents[2] / "data" / "myt_baselines" / "myt_baselines.json"
+
+_MYT_EXTRACT_PROMPT = """You are reading a KSERC (Kerala State Electricity Regulatory Commission) order document.
+This may be a Multi-Year Tariff (MYT) Order, an Interim Tariff Order, or a Truing-Up Order.
+
+Extract ALL financial norms and targets from this document into a structured table.
+
+For EACH financial year covered in this document AND for EACH licensee mentioned, extract:
+- All expense norms (employee cost, R&M, A&G, depreciation, interest, return on NFA, etc.)
+- Distribution loss targets
+- Average power purchase cost (Rs/kWh)
+- Escalation rates (if mentioned)
+- Control period information
+
+Return a JSON object structured as:
+{
+  "document_type": "<MYT_ORDER | INTERIM_TARIFF | TRUING_UP_ORDER>",
+  "order_number": "<e.g. OP 09/2023>",
+  "control_period": "<e.g. 2022-2027>",
+  "licensees": {
+    "<LicenseeName>": {
+      "escalation_rates": {
+        "<year>": <rate_pct>
+      },
+      "baselines": {
+        "<year e.g. 2024-25>": {
+          "power_purchase_cost": <Rs Lakhs>,
+          "employee_cost": <Rs Lakhs>,
+          "repair_maintenance": <Rs Lakhs>,
+          "admin_general": <Rs Lakhs>,
+          "depreciation": <Rs Lakhs>,
+          "interest_long_term": <Rs Lakhs>,
+          "interest_consumer_deposits": <Rs Lakhs>,
+          "interest_working_capital": <Rs Lakhs>,
+          "carrying_cost": <Rs Lakhs>,
+          "return_on_nfa": <Rs Lakhs>,
+          "other_debits": <Rs Lakhs>,
+          "target_distribution_loss_pct": <percent>,
+          "avg_power_purchase_cost_rs_per_kwh": <rate>
+        }
+      }
+    }
+  },
+  "extracted_rows": [
+    {
+      "field": "<human readable field name>",
+      "licensee": "<licensee name>",
+      "year": "<financial year>",
+      "value": <numeric value>,
+      "unit": "<Rs Lakhs | % | Rs/kWh>",
+      "page": <page_number_if_known>
+    }
+  ]
+}
+
+IMPORTANT:
+- Use 0.0 for values not found
+- Include ALL years present in the document
+- The extracted_rows array is the flat table for UI display
+- Return ONLY the JSON, no other text
+"""
+
+
+def extract_from_uploaded_pdf(pdf_path: str) -> dict:
+    """
+    Extract MYT norms / financial data from an uploaded reference PDF
+    using Gemini's direct PDF upload (NOT RAG — the PDF is new and not indexed yet).
+
+    Returns:
+        {
+          "document_type": ...,
+          "order_number": ...,
+          "licensees": { LicenseeName: { "baselines": { year: {norms} } } },
+          "extracted_rows": [ {field, licensee, year, value, unit, page}, ... ]
+        }
+    """
+    try:
+        from src.gemini_client import generate_with_pdf
+    except ImportError:
+        logger.error("gemini_client not available for PDF extraction")
+        return {"error": "gemini_client not available", "extracted_rows": []}
+
+    logger.info(f"Extracting norms from uploaded PDF: {pdf_path}")
+    try:
+        raw = generate_with_pdf(
+            pdf_path=pdf_path,
+            prompt=_MYT_EXTRACT_PROMPT,
+            model="gemini-2.5-pro",
+            temperature=0.0,
+            response_mime_type="application/json",
+        )
+        result = _parse_json_response(raw, "PDF Reference Upload")
+        if not result:
+            return {"error": "Extraction returned empty result", "extracted_rows": []}
+
+        # ALWAYS rebuild extracted_rows from licensees.baselines structure.
+        # Gemini may return extracted_rows directly but they often lack field_key,
+        # which is required by write_norms_to_json. Rebuilding guarantees consistency.
+        if result.get("licensees"):
+            result["extracted_rows"] = _build_extracted_rows(result)
+        elif "extracted_rows" in result:
+            # Gemini only returned flat rows without licensees structure — ensure field_key exists
+            for row in result["extracted_rows"]:
+                if "field_key" not in row and "field" in row:
+                    # Convert human-readable "Employee Cost" → "employee_cost"
+                    row["field_key"] = row["field"].lower().replace(" ", "_").replace("&", "and")
+
+        logger.info(f"Extracted {len(result.get('extracted_rows', []))} rows from PDF")
+        return result
+    except Exception as e:
+        logger.error(f"Reference PDF extraction failed: {e}")
+        return {"error": str(e), "extracted_rows": []}
+
+
+def _build_extracted_rows(data: dict) -> list:
+    """Flatten the licensees.baselines structure into rows for UI display."""
+    rows = []
+    licensees = data.get("licensees", {})
+    for licensee_name, lic_data in licensees.items():
+        baselines = lic_data.get("baselines", {})
+        for year, norms in baselines.items():
+            for field, value in norms.items():
+                if isinstance(value, (int, float)):
+                    unit = "%" if "pct" in field or "loss" in field or "rate" in field else \
+                           "Rs/kWh" if "rs_per_kwh" in field else "Rs Lakhs"
+                    rows.append({
+                        "field": field.replace("_", " ").title(),
+                        "field_key": field,
+                        "licensee": licensee_name,
+                        "year": year,
+                        "value": value,
+                        "unit": unit,
+                        "page": None,
+                    })
+    return rows
+
+
+def write_norms_to_json(confirmed_rows: list, order_number: str = "",
+                        control_period: str = "", document_type: str = "") -> dict:
+    """
+    Merge confirmed extracted rows into myt_baselines.json.
+
+    Args:
+        confirmed_rows: List of {field_key, licensee, year, value} dicts
+                        (edited by the user in the UI before confirming).
+        order_number: e.g. "OP 09/2023"
+        control_period: e.g. "2022-2027"
+        document_type: "MYT_ORDER" | "INTERIM_TARIFF" | "TRUING_UP_ORDER"
+
+    Returns:
+        {"status": "ok", "updated_entries": N} or {"error": ...}
+    """
+    try:
+        # Load existing JSON
+        if MYT_NORMS_JSON_PATH.exists():
+            with open(MYT_NORMS_JSON_PATH, "r", encoding="utf-8") as f:
+                baselines = json.load(f)
+        else:
+            baselines = {}
+
+        updated = 0
+        # Licensee name normalization: Gemini uses full names, baselines use short keys
+        _LICENSEE_ALIASES = {
+            "kdhp": "KDHP", "kannan": "KDHP", "kanan": "KDHP", "kdhpcl": "KDHP",
+            "kannan devan": "KDHP", "kanan devan": "KDHP",
+            "infopark": "Infopark",
+            "technopark": "Technopark",
+            "cseza": "CSEZA", "cochin special": "CSEZA", "cochin sez": "CSEZA",
+        }
+
+        def _normalize_licensee(name: str) -> str:
+            """Map Gemini's long licensee names to short keys in myt_baselines.json."""
+            lower = name.lower().strip()
+            # Try exact match first
+            for alias, short in _LICENSEE_ALIASES.items():
+                if alias in lower:
+                    return short
+            # Also check if exact key already exists in baselines
+            for existing_key in baselines:
+                if existing_key.lower() == lower:
+                    return existing_key
+            return name  # fallback: use as-is
+
+        for row in confirmed_rows:
+            licensee = _normalize_licensee(row.get("licensee", "").strip())
+            year = row.get("year", "").strip()
+            field_key = row.get("field_key", "").strip()
+            # Fallback: derive field_key from human-readable field name
+            if not field_key and row.get("field"):
+                field_key = row["field"].lower().strip().replace(" ", "_").replace("&", "and")
+            value = row.get("value")
+
+            if not (licensee and year and field_key and value is not None):
+                continue
+
+            # Create nested structure if missing
+            if licensee not in baselines:
+                baselines[licensee] = {
+                    "control_period": control_period,
+                    "myt_order": order_number,
+                    "escalation_rates": {},
+                    "baselines": {},
+                }
+            if "baselines" not in baselines[licensee]:
+                baselines[licensee]["baselines"] = {}
+            if year not in baselines[licensee]["baselines"]:
+                baselines[licensee]["baselines"][year] = {}
+
+            # Update the specific field
+            baselines[licensee]["baselines"][year][field_key] = float(value)
+
+            # Update metadata if provided
+            if order_number:
+                baselines[licensee]["myt_order"] = order_number
+            if control_period:
+                baselines[licensee]["control_period"] = control_period
+
+            updated += 1
+
+        # Write back
+        with open(MYT_NORMS_JSON_PATH, "w", encoding="utf-8") as f:
+            json.dump(baselines, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Updated myt_baselines.json: {updated} values written")
+        return {"status": "ok", "updated_entries": updated}
+
+    except Exception as e:
+        logger.error(f"Failed to write norms to JSON: {e}")
+        return {"error": str(e)}

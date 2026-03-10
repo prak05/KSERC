@@ -4,7 +4,7 @@ export default function Header() {
     })
 
     return (
-        <header className="bg-gradient-to-r from-kserc-navy via-kserc-navy-light to-kserc-navy relative overflow-hidden">
+        <header className="bg-kserc-navy/80 backdrop-blur-md relative overflow-hidden">
             {/* Subtle pattern overlay */}
             <div className="absolute inset-0 opacity-5"
                 style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)' }}

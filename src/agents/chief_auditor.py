@@ -115,7 +115,7 @@ class ChiefAuditor:
             from src.models.schemas import AuditorDecision
             raw = generate(
                 prompt,
-                model="gemini-2.5-pro",
+                model="gemini-2.5-pro",  # Fast structured JSON — no AFC loops needed
                 temperature=0.0,
                 response_mime_type="application/json",
                 response_schema=AuditorDecision,
@@ -141,11 +141,7 @@ class ChiefAuditor:
 
         except Exception as e:
             logger.error(f"[ChiefAuditor] Failed to analyze {component_name}: {e}")
-            return {
-                "amount": myt_norm_lakhs, # Fallback to norm
-                "variance": round(myt_norm_lakhs - claimed_lakhs, 2),
-                "justification": f"Analysis failed due to system error. Defaulted to MYT norm. Error: {str(e)}"
-            }
+            raise  # Let the caller (pipeline) handle it — no silent fallbacks
 
 # Singleton instance
 auditor = ChiefAuditor()

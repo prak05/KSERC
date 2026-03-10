@@ -5,7 +5,9 @@ import Navigation from './components/Navigation'
 import UploadForm from './components/UploadForm'
 import LoadingScreen from './components/LoadingScreen'
 import ResultsDashboard from './components/ResultsDashboard'
+import ReferenceDataPage from './components/ReferenceDataPage'
 import Footer from './components/Footer'
+import TubesBackground from './components/TubesBackground'
 
 const LICENSEES = ['Technopark', 'Infopark', 'CSEZA', 'KDHP']
 const FINANCIAL_YEARS = ['2024-25', '2023-24', '2022-23', '2021-22', '2020-21', '2019-20', '2018-19']
@@ -48,9 +50,12 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('upload') // upload | loading | results
+  const [currentView, setCurrentView] = useState('upload') // upload | loading | results | reference
   const [analysisResult, setAnalysisResult] = useState(null)
   const [error, setError] = useState(null)
+  const [progressLog, setProgressLog] = useState([])
+
+  const STAGE_ICONS = { extract: '📄', audit: '🔢', ai_audit: '🤖', draft: '📝' }
 
   const handleAnalyze = async (formData) => {
     setCurrentView('loading')
@@ -77,10 +82,13 @@ export default function App() {
           if (!statusRes.ok) throw new Error('Failed to fetch status')
 
           const statusData = await statusRes.json()
-          console.log("Polled Status:", statusData)
+
+          // Update live progress log
+          if (statusData.progress && statusData.progress.length > 0) {
+            setProgressLog(statusData.progress)
+          }
 
           if (statusData.status === 'COMPLETED') {
-            console.log("Setting results view", statusData.result)
             clearInterval(pollInterval)
             setAnalysisResult(statusData.result)
             setCurrentView('results')
@@ -89,7 +97,6 @@ export default function App() {
             setError(statusData.result?.error || 'Analysis failed during processing.')
             setCurrentView('upload')
           }
-          // If 'RUNNING', just keep polling
         } catch (pollingErr) {
           console.error("Polling error:", pollingErr)
           // Optionally we could show a warning, but we keep trying in case of temporary disconnect
@@ -110,44 +117,99 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-kserc-surface">
-      <GovBar />
-      <Header />
-      <Navigation
-        currentView={currentView}
-        onNavigate={setCurrentView}
-        hasResults={!!analysisResult}
-      />
-
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-kserc-red animate-fade-in-up">
-            <p className="font-semibold">⚠️ Error</p>
-            <p className="text-sm mt-1">{error}</p>
-          </div>
-        )}
-
-        {currentView === 'upload' && (
-          <UploadForm
-            licensees={LICENSEES}
-            financialYears={FINANCIAL_YEARS}
-            onSubmit={handleAnalyze}
+    <TubesBackground>
+      <div className="min-h-screen flex flex-col pointer-events-none text-kserc-navy w-full relative z-20">
+        <div className="pointer-events-auto w-full">
+          <GovBar />
+          <Header />
+          <Navigation
+            currentView={currentView}
+            onNavigate={setCurrentView}
+            hasResults={!!analysisResult}
           />
-        )}
+        </div>
 
-        {currentView === 'loading' && <LoadingScreen />}
+        <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 pointer-events-auto">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-kserc-red animate-fade-in-up">
+              <p className="font-semibold">⚠️ Error</p>
+              <p className="text-sm mt-1">{error}</p>
+            </div>
+          )}
 
-        {currentView === 'results' && analysisResult && (
-          <ErrorBoundary>
-            <ResultsDashboard
-              data={analysisResult}
-              onNewAnalysis={handleNewAnalysis}
+          {currentView === 'upload' && (
+            <UploadForm
+              licensees={LICENSEES}
+              financialYears={FINANCIAL_YEARS}
+              onSubmit={handleAnalyze}
             />
-          </ErrorBoundary>
-        )}
-      </main>
+          )}
 
-      <Footer />
-    </div>
+          {currentView === 'loading' && (
+            <div className="flex flex-col items-center justify-start py-10 animate-fade-in-up">
+              <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                {/* Header */}
+                <div className="bg-kserc-navy text-white px-6 py-4 flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
+                  <span className="font-semibold text-lg">Pipeline Running</span>
+                  <span className="ml-auto text-sm text-blue-200 font-mono">
+                    {progressLog.length} step{progressLog.length !== 1 ? 's' : ''} logged
+                  </span>
+                </div>
+
+                {/* Progress feed */}
+                <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                  {progressLog.length === 0 ? (
+                    <div className="px-6 py-8 text-center text-gray-400">
+                      <div className="text-3xl mb-2">⏳</div>
+                      <p className="text-sm">Starting pipeline…</p>
+                    </div>
+                  ) : (
+                    progressLog.map((entry, i) => (
+                      <div key={i} className="px-6 py-3 flex items-start gap-3 hover:bg-gray-50">
+                        <span className="text-lg mt-0.5 shrink-0">
+                          {STAGE_ICONS[entry.stage] || '🔄'}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-800 leading-snug">{entry.msg}</p>
+                        </div>
+                        <span className="text-xs text-gray-400 font-mono shrink-0 mt-0.5">
+                          {entry.ts}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                  {/* Live pulse at end */}
+                  <div className="px-6 py-3 flex items-center gap-2 text-sm text-gray-400">
+                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse inline-block" />
+                    Processing…
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentView === 'results' && analysisResult && (
+            <ErrorBoundary>
+              <ResultsDashboard
+                data={analysisResult}
+                onNewAnalysis={handleNewAnalysis}
+              />
+            </ErrorBoundary>
+          )}
+
+          {currentView === 'reference' && (
+            <ErrorBoundary>
+              <ReferenceDataPage />
+            </ErrorBoundary>
+          )}
+        </main>
+
+        <div className="pointer-events-auto w-full mt-auto">
+          <Footer />
+        </div>
+      </div>
+    </TubesBackground>
   )
 }
+

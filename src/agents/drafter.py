@@ -115,39 +115,41 @@ KSERC_CSS = """
         line-height: 0;
     }
 
-    /* ── Data tables (financial data) ─────────────────── */
+    /* ── Data tables (financial data) — matches reference KSERC order ── */
     table.data-table {
         border-collapse: collapse;
         width: 100%;
-        margin-top: 18px;
+        margin-top: 10px;
         margin-bottom: 18px;
-        font-size: 12.0pt;
+        font-size: 11.5pt;
     }
     table.data-table th,
     table.data-table td {
         border: 1px solid #000;
-        padding: 8px 10px;
-        font-size: 12.0pt;
+        padding: 4px 7px;
+        font-size: 11.5pt;
         vertical-align: middle;
-        line-height: 2.3;
+        line-height: 1.35;
     }
     table.data-table th {
         font-weight: bold;
         text-align: center;
         background: none;
+        vertical-align: middle;
     }
     table.data-table td {
         text-align: left;
     }
     table.data-table td.num {
         text-align: right;
+        white-space: nowrap;
     }
     table.data-table td.center-cell {
         text-align: center;
     }
     table.data-table tr.total-row td {
         font-weight: bold;
-        border-top: 2px solid #000;
+        border-top: 1px solid #000;
     }
     .table-wrapper {
         margin-bottom: 8px;
@@ -157,16 +159,18 @@ KSERC_CSS = """
     .table-caption {
         text-align: center;
         font-weight: bold;
-        font-size: 11pt;
+        font-size: 12pt;
         margin-bottom: 0;
-        margin-top: 10px;
+        margin-top: 14px;
+        line-height: 1.4;
     }
     .table-subcaption {
         text-align: center;
-        font-weight: bold;
-        font-size: 10.5pt;
-        margin-bottom: 0;
+        font-weight: normal;
+        font-size: 11pt;
+        margin-bottom: 2px;
         margin-top: 1px;
+        line-height: 1.4;
     }
     .table-unit {
         text-align: right;
@@ -211,12 +215,12 @@ KSERC_CSS = """
     blockquote {
         margin-left: 28px;
         margin-right: 16px;
-        margin-top: 18px;
-        margin-bottom: 18px;
+        margin-top: 14px;
+        margin-bottom: 14px;
         font-style: italic;
-        border-left: 2px solid #555;
-        padding-left: 10px;
-        font-size: 11pt;
+        border-left: none;
+        padding-left: 0;
+        font-size: 12pt;
         line-height: 2.3;
     }
 
@@ -265,43 +269,133 @@ def _generate_document_with_gemini(state: dict) -> str:
     claimed_exp = state.get("claimed_expenses", {})
     approved_exp = state.get("approved_expenses", {})
     claimed_rev = state.get("claimed_revenues", {})
+    myt_norms   = state.get("myt_baseline_norms", {})
+    detailed_tb = state.get("detailed_tables", {}) or {}
 
-    data_block = "=== AUDITED FINANCIAL DATA (Rs. Lakhs) ===\n"
-    data_block += f"{'Component':<45} {'Claimed':>12} {'Approved':>12} {'Variance':>12}\n"
-    data_block += "-" * 85 + "\n"
-    total_c, total_a = 0.0, 0.0
+    # ── 4-column data block: MYT ARR | Claimed | Approved | Variance ──────────
+    # This is the AUTHORITATIVE source for all table values and justification numbers.
+    # Gemini MUST use these exact numbers — NEVER hallucinate from the reference PDF.
+    data_block  = "=== AUTHORITATIVE FINANCIAL DATA — USE THESE EXACT NUMBERS (Rs. Lakhs) ===\n"
+    data_block += "\nCRITICAL: Column 'MYT ARR Approved' is the Commission's approved ceiling for this year.\n"
+    data_block += "          Column 'For Truing Up (Claimed)' is what the licensee claimed in the petition.\n"
+    data_block += "          Column 'Trued Up (Approved)' is what the Commission approves after prudence check.\n"
+    data_block += "          Variance = Approved minus Claimed (negative = disallowance).\n\n"
+
+    col_w = 42
+    data_block += f"{'Component':<{col_w}} {'MYT ARR Approved':>18} {'For TrUp Claimed':>18} {'TrUp Approved':>15} {'Variance':>12}\n"
+    data_block += "-" * (col_w + 67) + "\n"
+    total_c, total_a, total_myt = 0.0, 0.0, 0.0
     for k in exp_keys:
-        c = claimed_exp.get(k, 0.0)
-        a = approved_exp.get(k, 0.0)
+        c = float(claimed_exp.get(k, 0.0) or 0.0)
+        a = float(approved_exp.get(k, 0.0) or 0.0)
+        m = float(myt_norms.get(k, 0.0) or 0.0)
+        if c > 0 or a > 0 or m > 0:
+            name = k.replace("_", " ").title()
+            data_block += f"{name:<{col_w}} {m:>18.2f} {c:>18.2f} {a:>15.2f} {(a-c):>12.2f}\n"
+            total_c   += c
+            total_a   += a
+            total_myt += m
+    data_block += "-" * (col_w + 67) + "\n"
+    data_block += f"{'TOTAL EXPENDITURE':<{col_w}} {total_myt:>18.2f} {total_c:>18.2f} {total_a:>15.2f} {(total_a-total_c):>12.2f}\n\n"
+
+    # ── Revenue rows ──────────────────────────────────────────────────────────
+    data_block += "REVENUES (approved = claimed unless stated otherwise):\n"
+    rev_total = 0.0
+    myt_rev   = {
+        "revenue_from_sale": float(myt_norms.get("revenue_from_sale", 0.0) or 0.0),
+        "wheeling_charges":  float(myt_norms.get("wheeling_charges",  0.0) or 0.0),
+        "non_tariff_income": float(myt_norms.get("non_tariff_income", 0.0) or 0.0),
+    }
+    approved_rev = state.get("approved_revenues", {})
+    for k in rev_keys:
+        c = float(claimed_rev.get(k, 0.0) or 0.0)
+        a = float(approved_rev.get(k, c) or c)
+        m = float(myt_rev.get(k, 0.0) or 0.0)
         if c > 0 or a > 0:
             name = k.replace("_", " ").title()
-            data_block += f"{name:<45} {c:>12.2f} {a:>12.2f} {(a-c):>12.2f}\n"
-            total_c += c
-            total_a += a
-    data_block += "-" * 85 + "\n"
-    data_block += f"{'TOTAL EXPENDITURE':<45} {total_c:>12.2f} {total_a:>12.2f} {(total_a-total_c):>12.2f}\n\n"
-    data_block += "REVENUES:\n"
-    rev_total = 0.0
-    for k in rev_keys:
-        c = claimed_rev.get(k, 0.0)
-        if c > 0:
-            name = k.replace("_", " ").title()
-            data_block += f"  {name}: {c:.2f}\n"
-            rev_total += c
-    data_block += f"  TOTAL REVENUE: {rev_total:.2f}\n\n"
-    data_block += f"Total Claimed Expenditure: {state.get('total_claimed_expenditure', 0):.2f}\n"
-    data_block += f"Total Approved Expenditure: {state.get('total_approved_expenditure', 0):.2f}\n"
-    data_block += f"Total Revenue: {state.get('total_claimed_revenue', 0):.2f}\n"
-    data_block += f"Revenue Gap/Surplus: {state.get('final_revenue_gap_surplus', 0):.2f} (Negative = Gap)\n"
+            data_block += f"  {name}: MYT={m:.2f}  Claimed={c:.2f}  Approved={a:.2f}\n"
+            rev_total += a
+    data_block += f"  TOTAL APPROVED REVENUE: {rev_total:.2f}\n\n"
+
+    # ── Summary ───────────────────────────────────────────────────────────────
+    data_block += f"Total Claimed Expenditure   : {state.get('total_claimed_expenditure', total_c):.2f}\n"
+    data_block += f"Total Approved Expenditure  : {state.get('total_approved_expenditure', total_a):.2f}\n"
+    data_block += f"Total Approved Revenue      : {rev_total:.2f}\n"
+    revenue_gap = state.get('final_revenue_gap_surplus', rev_total - total_a)
+    gap_label   = "Surplus" if revenue_gap >= 0 else "Gap (deficit)"
+    data_block += f"Revenue {gap_label}            : {abs(revenue_gap):.2f} (positive = surplus, negative = gap)\n"
+
+    # ── Disallowances with full justification text ────────────────────────────
     disallowances = state.get("disallowance_log", [])
     if disallowances:
-        data_block += "\nDISALLOWANCES & JUSTIFICATIONS:\n"
+        data_block += "\n=== DISALLOWANCES & DETAILED JUSTIFICATIONS (USE THESE EXACT NUMBERS) ===\n"
         for d in disallowances:
-            data_block += f"  - {d['item']}: Claimed {d.get('claimed',0):.2f}, Approved {d.get('approved',0):.2f}\n"
-            data_block += f"    Reason: {d.get('justification', 'N/A')}\n"
-    data_block += f"\nDISTRIBUTION LOSS:\n"
-    data_block += f"  Claimed: {state.get('claimed_distribution_loss_pct', 0):.2f}%\n"
-    data_block += f"  Target:  {state.get('target_distribution_loss_pct', 0):.2f}%\n"
+            claimed_d  = d.get('claimed', 0.0)
+            approved_d = d.get('approved', 0.0)
+            variance_d = approved_d - claimed_d
+            data_block += f"\n  ITEM: {d['item']}\n"
+            data_block += f"    Claimed    : Rs. {claimed_d:.2f} Lakhs\n"
+            data_block += f"    Approved   : Rs. {approved_d:.2f} Lakhs\n"
+            data_block += f"    Variance   : Rs. {variance_d:.2f} Lakhs ({'disallowed' if variance_d < 0 else 'additional approved'})\n"
+            data_block += f"    Justification: {d.get('justification', 'N/A')}\n"
+            # Include any additional details from the log
+            for extra_key in ['myt_norm', 'norm_used', 'opening_loan', 'interest_rate', 'equity_base',
+                               'efficiency_gain', 'licensee_share', 'consumer_share',
+                               'bee_fee', 'interim_relief', 'one_time_allowed',
+                               'special_allowance', 'penalty', 'savings_lakh_kwh']:
+                if extra_key in d:
+                    data_block += f"    {extra_key}: {d[extra_key]}\n"
+
+    # ── Distribution loss details ─────────────────────────────────────────────
+    actual_loss = state.get('claimed_distribution_loss_pct', 0.0)
+    target_loss = state.get('target_distribution_loss_pct', 0.0)
+    data_block += f"\n=== DISTRIBUTION LOSS ===\n"
+    data_block += f"  Actual (Claimed) : {actual_loss:.2f}%\n"
+    data_block += f"  Target (MYT Norm): {target_loss:.2f}%\n"
+    if actual_loss > 0 and target_loss > 0:
+        if actual_loss < target_loss:
+            data_block += f"  Status: EFFICIENCY GAIN (actual < target) → licensee retains 2/3 of savings\n"
+        else:
+            data_block += f"  Status: EXCESS LOSS (actual > target) → penalty applied per Regulation 73(3)\n"
+    ei = state.get('energy_input_mu', 0.0)
+    es = state.get('energy_sold_mu', 0.0)
+    ew = state.get('energy_wheeled_mu', 0.0)
+    if ei > 0:
+        data_block += f"  Energy Input (MU)     : {ei:.4f}\n"
+        data_block += f"  Energy Sold (MU)      : {es:.4f}\n"
+        data_block += f"  Energy Wheeled (MU)   : {ew:.4f}\n"
+
+    # ── Special items from detailed tables (BEE fee, one-time items, etc.) ────
+    special_items = {}
+    if detailed_tb:
+        # BEE energy audit fee
+        bee_fee = float(myt_norms.get('bee_energy_audit_fee', 0.0) or
+                        detailed_tb.get('bee_energy_audit_fee', 0.0) or 0.0)
+        if bee_fee > 0:
+            special_items['BEE Energy Audit Fee (Change in Law — allow over norm)'] = bee_fee
+        # Interim relief / DA arrears
+        interim = float(detailed_tb.get('interim_relief', 0.0) or 0.0)
+        if interim > 0:
+            special_items['Interim Relief / DA Arrears (allow over norm)'] = interim
+        # One-time R&M items
+        one_time_rm = float(detailed_tb.get('one_time_rm', 0.0) or 0.0)
+        if one_time_rm > 0:
+            special_items['One-time R&M (allowed over norm after prudence check)'] = one_time_rm
+        # Commission opening normative loan (from precedent / previous order)
+        opening_loan = float(detailed_tb.get('approved_opening_normative_loan', 0.0) or 0.0)
+        if opening_loan > 0:
+            special_items['Commission-approved Opening Normative Loan'] = opening_loan
+        # Equity base
+        equity_base = float(detailed_tb.get('approved_equity_base', 0.0) or 0.0)
+        if equity_base > 0:
+            special_items['Commission-approved Equity Base'] = equity_base
+
+    if special_items:
+        data_block += "\n=== SPECIAL ITEMS & ALLOWANCES OVER NORM ===\n"
+        for label, val in special_items.items():
+            data_block += f"  {label}: Rs. {val:.2f} Lakhs\n"
+
+    data_block += "\n=== END OF AUTHORITATIVE DATA ===\n"
 
     petition_path = state.get("petition_pdf_path", "")
 
@@ -309,25 +403,45 @@ def _generate_document_with_gemini(state: dict) -> str:
 === OUTPUT FORMAT: CLEAN HTML ONLY ===
 ABSOLUTELY NO markdown. NEVER use pipe tables (|). Do NOT include html/head/body tags.
 
-CRITICAL DATA RULE: ALL numbers and justifications MUST come from the PETITION PDF (PDF 2).
-  - PDF 1 (reference order) is for FORMAT ONLY — copy its structure, headings, paragraph style.
-  - NEVER copy any number from PDF 1 — those are FY 2022-23 values, not the current petition.
-  - If a number is not in the petition, use 0.00 or state 'as per petition'.
-  - Commission decisions are based on AUDITED DATA provided, not reference order values.
+=== CRITICAL NUMBER DISCIPLINE — READ THIS FIRST ===
+You have been given AUTHORITATIVE FINANCIAL DATA above (the data_block). Follow this strictly:
 
-HTML ELEMENT RULES:
-- Table name (ABOVE table, two lines): <p class="table-caption">Table N<br/><b>Title of Table</b></p>
-- Unit line BELOW caption: <p class="table-subcaption">(Rs. in Lakhs unless specified)</p>
+1. PDF 1 (reference order OP 82/2023) is for FORMAT/STRUCTURE ONLY.
+   NEVER copy ANY NUMBER from PDF 1. It has FY 2022-23 values which must NOT appear here.
+
+2. The AUTHORITATIVE FINANCIAL DATA above is the SINGLE SOURCE OF TRUTH for all numbers:
+   'MYT ARR Approved'     → use for Table 1's 'ARR Approved' / 'Projected ARR' column.
+   'For TrUp Claimed'     → use for Table 1's 'For Truing Up' / 'Claimed' column.
+   'TrUp Approved'        → use for Table 1's 'Trued Up' / 'Approved' column.
+   These are the ONLY values to use in ALL tables. Do not invent or round differently.
+
+3. JUSTIFICATION PARAGRAPHS — for each cost head you MUST state:
+   a) Exact claimed amount: "The licensee has claimed Rs.XX.XX lakh on account of [item]..."
+   b) MYT norm ceiling: "...the MYT approved norm for this component is Rs.YY.YY lakh..."
+   c) Variance: "The claimed amount exceeds/equals the norm by Rs.ZZ.ZZ lakh..." (use data_block variance)
+   d) Special allowances (if any in SPECIAL ITEMS section): name each one and its Rs. amount explicitly
+   e) Commission decision amount = EXACTLY the 'TrUp Approved' value from data_block, no rounding
+
+4. DISALLOWANCES section in data_block contains pre-computed justification text. Use it verbatim.
+   It includes exact regulation citations, calculations, and intermediate values (efficiency gain,
+   opening normative loan, equity base, BEE fee, interim relief). Include all of them.
+
+5. If 'Trued Up Approved' > 'MYT ARR Approved' for any item, this means the Commission approved
+   MORE than its original norm — explain why (e.g., higher actual normative loan, efficiency gain).
+
+=== HTML ELEMENT RULES ===
+- Table caption (ABOVE table, centered): <p class="table-caption">Table N<br/><b>Title of Table</b></p>
+- Unit note BELOW caption: <p class="table-subcaption">(Rs. in Lakhs unless specified)</p>
 - Every financial table: <table class="data-table">
-- Number cells (right-aligned): <td class="num">123.45</td>
+- Number cells (right-aligned, no wrapping): <td class="num">123.45</td>
 - Total rows: <tr class="total-row"><td><b>Total</b></td><td class="num"><b>123.45</b></td></tr>
 - Numbered paragraphs: <p><b>5.</b>&nbsp;&nbsp;Text of paragraph...</p>
 - Section headings: <h3>Section Title</h3>
-- Commission decision (bold+italic): <p class="commission-decision">After analyzing the details, the Commission hereby approves...</p>
-- Regulation: <blockquote>Regulation XX: exact text</blockquote>
+- Commission decision (bold+italic): <p class="commission-decision">The Commission hereby approves Rs.XX.XX lakh...</p>
+- Regulation quote: <blockquote>Regulation XX: exact text of regulation</blockquote>
 - Sub-items: <p style="margin-left:32px;"><b>a)</b> Text...</p>
 
-STYLE: No background-color on cells. Bold centered header row. 1px solid borders.
+STYLE: No background-color on any table cell. Bold centered header row. 1px solid black borders.
 """
 
 
@@ -962,9 +1076,8 @@ def draft_order(state: dict) -> dict:
             alt_filename = f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}_{ts}.pdf"
             final_pdf_path = output_dir / alt_filename
             logger.warning(f"Original PDF is locked. Writing to: {final_pdf_path}")
-
+    html_uri = f"file:///{html_path.resolve().as_posix()}"
     try:
-        html_uri = f"file:///{str(html_path).resolve().as_posix()}"
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
@@ -985,8 +1098,9 @@ def draft_order(state: dict) -> dict:
             )
             browser.close()
         logger.info(f"Successfully generated PDF at: {final_pdf_path}")
+        state["output_pdf_path"] = str(final_pdf_path)
     except Exception as e:
-        logger.error(f"Error generating PDF with Playwright: {e}")
+        logger.error(f"PDF generation failed: {e}", exc_info=True)
+        raise  # Propagate so pipeline marks FAILED — no silent swallow
 
-    state["output_pdf_path"] = str(output_path)
     return state

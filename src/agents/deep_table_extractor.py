@@ -172,7 +172,7 @@ def _render_all_pages(pdf_path: str, max_pages: int = 40, dpi: int = 150) -> Lis
 # ══════════════════════════════════════════════════════════════════════════
 
 def extract_all_tables(
-    pdf_path: str,
+    all_pdf_paths: List[str],
     licensee_name: str = "",
     financial_year: str = "",
     max_pages: int = 40,
@@ -197,7 +197,13 @@ def extract_all_tables(
     # ── Check cache first ──────────────────────────────────────────────
     import hashlib
     cache_dir = Path(__file__).resolve().parent.parent.parent / ".extraction_cache"
-    pdf_hash = hashlib.sha256(Path(pdf_path).read_bytes()).hexdigest()[:16]
+    
+    # Hash all PDFs together for multi-file cache key
+    hasher = hashlib.sha256()
+    for p in all_pdf_paths:
+        hasher.update(Path(p).read_bytes())
+    pdf_hash = hasher.hexdigest()[:16]
+    
     cache_key = f"deep_{pdf_hash}_{licensee_name}_{financial_year}".replace(" ", "_")
     cache_file = cache_dir / f"{cache_key}.json"
 
@@ -227,11 +233,11 @@ def extract_all_tables(
     )
 
     try:
-        logger.info(f"[Deep Extract] Uploading entire PDF for single-call extraction...")
+        logger.info(f"[Deep Extract] Uploading {len(all_pdf_paths)} PDF(s) for single-call extraction...")
         raw = generate_with_pdf(
-            pdf_path=pdf_path,
+            pdf_path=all_pdf_paths if len(all_pdf_paths) > 1 else all_pdf_paths[0],
             prompt=prompt,
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=system_instruction,
@@ -614,7 +620,7 @@ def extract_order_tables(
         raw = generate_with_pdf(
             pdf_path=pdf_path,
             prompt=prompt,
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=system_instruction,
@@ -881,8 +887,9 @@ def deep_extract_node(state: dict) -> dict:
 
     # ── Phase 1: Extract tables from current petition ──────────────────
     logger.info("--- Phase 1: Deep table extraction from petition ---")
+    all_pdf_paths = [pdf_path] + state.get("annexure_pdf_paths", [])
     result = extract_all_tables(
-        pdf_path=pdf_path,
+        all_pdf_paths=all_pdf_paths,
         licensee_name=licensee,
         financial_year=fy,
     )
@@ -934,6 +941,175 @@ def deep_extract_node(state: dict) -> dict:
 
     if enrichments:
         logger.info(f"Enriched state with energy data: {enrichments}")
+
+    # ── Phase 3: Extract wage revision data from employee cost details ──
+    # Wage revision is petition-specific (any licensee can have it in any year).
+    # Sources:
+    #   1. Employee cost table rows mentioning "wage/pay revision" or "prior period"
+    #   2. Employee cost justification text mentioning revision amounts
+    wage_revision_current = 0.0
+    wage_revision_prior = 0.0
+
+    # Source 1: Scan employee cost tables for wage revision line items
+    employee_tables = get_tables_by_component(result, "employee")
+    for t in employee_tables:
+        for row in t.get("rows", []):
+            # Check each column for wage/pay revision keywords
+            row_text = " ".join(str(v).lower() for v in row.values())
+            if any(kw in row_text for kw in ["wage revision", "pay revision", "salary revision"]):
+                # Try to find the amount value — look for numeric columns
+                for col_name, val in row.items():
+                    col_lower = col_name.lower()
+                    if any(fy_kw in col_lower for fy_kw in [fy, "current", "amount", "total", "actual"]):
+                        try:
+                            amt = float(str(val).replace(",", "").replace("(", "-").replace(")", ""))
+                            if amt > 0:
+                                if "prior" in row_text:
+                                    wage_revision_prior = amt
+                                    logger.info(f"Found prior period wage revision: Rs.{amt:.2f}L from table")
+                                else:
+                                    wage_revision_current = amt
+                                    logger.info(f"Found current year wage revision: Rs.{amt:.2f}L from table")
+                        except (ValueError, TypeError):
+                            pass
+            elif "prior period" in row_text:
+                for col_name, val in row.items():
+                    col_lower = col_name.lower()
+                    if any(fy_kw in col_lower for fy_kw in [fy, "current", "amount", "total", "actual"]):
+                        try:
+                            amt = float(str(val).replace(",", "").replace("(", "-").replace(")", ""))
+                            if amt > 0:
+                                wage_revision_prior = amt
+                                logger.info(f"Found prior period amount: Rs.{amt:.2f}L from table")
+                        except (ValueError, TypeError):
+                            pass
+
+    # Source 2: Parse employee justification text for revision amounts
+    if wage_revision_current == 0.0 or wage_revision_prior == 0.0:
+        emp_justification = get_justification(result, "employee")
+        if emp_justification:
+            import re as _re
+
+            # ── Pattern A: Cumulative breakdown like
+            # "Rs.48.12 (Rs.27.21 for 2023-24 and Rs.20.91 for 2024-25)"
+            cumulative_pattern = _re.compile(
+                r"(?:rs\.?\s*|₹\s*)([\d,.]+)\s*(?:lakh|lac)?\s*"
+                r"\(\s*(?:rs\.?\s*|₹\s*)([\d,.]+)\s*(?:lakh|lac)?\s*"
+                r"(?:for\s+)?(\d{4}[-–]\d{2,4})\s*"
+                r"(?:and|&|,)\s*"
+                r"(?:rs\.?\s*|₹\s*)([\d,.]+)\s*(?:lakh|lac)?\s*"
+                r"(?:for\s+)?(\d{4}[-–]\d{2,4})\s*\)",
+                _re.IGNORECASE,
+            )
+            cm = cumulative_pattern.search(emp_justification)
+            if cm:
+                try:
+                    amt1 = float(cm.group(2).replace(",", ""))
+                    fy1 = cm.group(3)
+                    amt2 = float(cm.group(4).replace(",", ""))
+                    fy2 = cm.group(5)
+                    # Match year to current FY to decide which is current vs prior
+                    fy_short = fy[-2:] if len(fy) >= 2 else fy  # e.g. "25" from "2024-25"
+                    if fy_short in fy2 or fy in fy2:
+                        wage_revision_current = amt2
+                        wage_revision_prior = amt1
+                    elif fy_short in fy1 or fy in fy1:
+                        wage_revision_current = amt1
+                        wage_revision_prior = amt2
+                    else:
+                        # Can't determine — assign larger as current
+                        wage_revision_current = max(amt1, amt2)
+                        wage_revision_prior = min(amt1, amt2)
+                    logger.info(
+                        f"Cumulative wage breakdown: {fy1}=Rs.{amt1:.2f}L, {fy2}=Rs.{amt2:.2f}L → "
+                        f"current={wage_revision_current:.2f}L, prior={wage_revision_prior:.2f}L"
+                    )
+                except (ValueError, TypeError, IndexError):
+                    pass
+
+            # ── Pattern B: "additional impact of wage revision... amounts to Rs.20.91"
+            if wage_revision_current == 0.0:
+                additional_pattern = _re.compile(
+                    r"(?:additional\s+impact|current\s+(?:financial\s+)?year)[^.]*?"
+                    r"(?:rs\.?\s*|₹\s*)([\d,.]+)\s*(?:lakh|lac)",
+                    _re.IGNORECASE,
+                )
+                am = additional_pattern.search(emp_justification)
+                if am:
+                    try:
+                        amt = float(am.group(1).replace(",", ""))
+                        if amt > 0:
+                            wage_revision_current = amt
+                            logger.info(f"Found current year wage revision (additional impact): Rs.{amt:.2f}L")
+                    except (ValueError, TypeError):
+                        pass
+
+            # ── Pattern C: "claim of Rs.27.21... was not allowed" → prior period
+            if wage_revision_prior == 0.0:
+                denied_pattern = _re.compile(
+                    r"(?:claim|claimed)[^.]*?(?:rs\.?\s*|₹\s*)([\d,.]+)\s*(?:lakh|lac)[^.]*?"
+                    r"(?:not\s+allowed|denied|rejected|disallowed)",
+                    _re.IGNORECASE,
+                )
+                dm = denied_pattern.search(emp_justification)
+                if dm:
+                    try:
+                        amt = float(dm.group(1).replace(",", ""))
+                        if amt > 0:
+                            wage_revision_prior = amt
+                            logger.info(f"Found prior period wage revision (denied earlier): Rs.{amt:.2f}L")
+                    except (ValueError, TypeError):
+                        pass
+
+            # ── Pattern D (fallback): Generic wage revision amount extraction
+            if wage_revision_current == 0.0:
+                wage_pattern = _re.compile(
+                    r"(?:wage|pay|salary)\s*revision[^.]*?"
+                    r"(?:rs\.?\s*|₹\s*)([\d,.]+)\s*(?:lakh|lac|cr)",
+                    _re.IGNORECASE,
+                )
+                # Collect all matches and try to assign correctly
+                all_matches = []
+                for m in wage_pattern.finditer(emp_justification):
+                    try:
+                        amt = float(m.group(1).replace(",", ""))
+                        context = emp_justification[max(0, m.start()-100):m.end()+100].lower()
+                        is_denied = any(kw in context for kw in ["not allowed", "denied", "rejected", "disallowed"])
+                        is_prior = "prior" in context or is_denied
+                        all_matches.append({"amt": amt, "is_prior": is_prior, "context": context[:60]})
+                    except (ValueError, TypeError):
+                        pass
+
+                for match in all_matches:
+                    if match["is_prior"] and wage_revision_prior == 0.0:
+                        wage_revision_prior = match["amt"]
+                        logger.info(f"Found prior period wage revision: Rs.{match['amt']:.2f}L")
+                    elif not match["is_prior"] and wage_revision_current == 0.0:
+                        wage_revision_current = match["amt"]
+                        logger.info(f"Found current year wage revision from justification: Rs.{match['amt']:.2f}L")
+
+            # ── Pattern E (fallback): "prior period" amounts
+            if wage_revision_prior == 0.0:
+                prior_pattern = _re.compile(
+                    r"prior\s*period[^.]*?"
+                    r"(?:rs\.?\s*|₹\s*)([\d,.]+)\s*(?:lakh|lac|cr)",
+                    _re.IGNORECASE,
+                )
+                for m in prior_pattern.finditer(emp_justification):
+                    try:
+                        amt = float(m.group(1).replace(",", ""))
+                        if amt > 0 and wage_revision_prior == 0.0:
+                            wage_revision_prior = amt
+                            logger.info(f"Found prior period from justification text: Rs.{amt:.2f}L")
+                    except (ValueError, TypeError):
+                        pass
+
+    if wage_revision_current > 0.0:
+        enrichments["wage_revision_current_year"] = wage_revision_current
+        logger.info(f"Wage revision (current year): Rs.{wage_revision_current:.2f}L → state")
+    if wage_revision_prior > 0.0:
+        enrichments["wage_revision_prior_period"] = wage_revision_prior
+        logger.info(f"Wage revision (prior period): Rs.{wage_revision_prior:.2f}L → state")
 
     return {
         "detailed_tables": result,

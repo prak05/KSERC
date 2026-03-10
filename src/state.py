@@ -40,6 +40,16 @@ class TruingUpState(TypedDict):
     target_distribution_loss_pct: float
     energy_units_purchased_mu: float
 
+    # ── Energy Balance and Loss Data (from Extractor, for PPC Audit) ────
+    actual_loss_lakh_units: float       # Actual distribution loss from petition Energy Balance table (LU)
+    approved_loss_lakh_units: float     # Computed by auditor: energy_input × target% / 100 (LU)
+    energy_input_lakh_units: float      # Total energy into system (ALL sources) from Energy Balance table (LU)
+    energy_purchased_lakh_units: float  # Energy purchased from KSEB — from Power Purchase table (LU)
+    appc_rs_per_unit: float             # Average Power Purchase Cost from petition (Rs/unit)
+    bee_energy_audit_fee: float         # BEE Energy Audit Fee (Rs Lakhs) — from petition or MYT norms
+    wage_revision_current_year: float   # Current FY wage/pay revision impact (Rs Lakhs) — from petition
+    wage_revision_prior_period: float   # Prior period wage revision arrears (Rs Lakhs) — from petition
+
     # ── MYT Baseline Data (loaded from JSONs) ─────────────────────────
     myt_baseline_norms: Dict[str, float]
     # Keys mirror claimed_expenses for side-by-side comparison

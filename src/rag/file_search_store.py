@@ -259,7 +259,7 @@ _regulation_cache_name: Optional[str] = None
 def create_regulation_cache(
     categories: Optional[List[str]] = None,
     ttl: str = "3600s",
-    model: str = "gemini-2.5-flash",
+    model: str = "gemini-2.5-pro",
 ) -> Optional[str]:
     """
     Create a Gemini context cache for regulation documents.
@@ -349,7 +349,7 @@ def create_regulation_cache(
 def query_regulations(
     question: str,
     categories: Optional[List[str]] = None,
-    model: str = "gemini-2.5-flash",
+    model: str = "gemini-2.5-pro",
     use_cache: bool = True,
 ) -> str:
     """

@@ -1,9 +1,9 @@
 # Environment & Secrets
 .env
-*.json
-!package.json
+.env.*
 service_account.json
 vertex_sa.json
+*_sa.json
 
 # Python
 __pycache__/
@@ -17,6 +17,7 @@ env/
 *.egg-info/
 dist/
 build/
+.pytest_cache/
 
 # Data & Cache
 .extraction_cache/
@@ -27,6 +28,8 @@ data/*.pickle
 chroma_db/
 *.jsonl
 data/audit_trail/
+.file_upload_cache.json
+.benchmarks/
 
 # IDE
 .vscode/
@@ -45,15 +48,22 @@ output_orders/*.pdf
 # Uploads (user data, not committed)
 uploads/
 
-# Documents (too large for git)
-# Documents/
-
 # Logs
 *.log
+log_summary.txt
+log_summary_details.txt
 
 # Large PDFs in project root
 /*.pdf
 
 # Temp
+tmp_pdf_pages/
 /tmp/
 *.tmp
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Gemini AI
+.gemini/

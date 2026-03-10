@@ -1,137 +1,204 @@
 import logging
-from typing import Dict, Any, List, TypedDict
+from typing import Dict, Any, TypedDict
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError as FuturesTimeout
 from langgraph.graph import StateGraph, START, END
 
-# Import the specialized agents
-from src.agents.calculator import evaluate_om_expense, evaluate_financial_expense
 from src.agents.chief_auditor import auditor
 from src.gemini_client import generate
 
 logger = logging.getLogger("truing_up_graph")
 
+COMPONENT_TIMEOUT = 60   # 60s per component max
+MAX_WORKERS       = 5    # parallel Gemini calls
+
+
 def extract_narrative(petition_text: str, component: str) -> str:
-    """Scans the entire petition and finds the Licensee's narrative justification for a specific line item."""
+    """Extract the licensee's justification for a specific cost component."""
     if not petition_text:
         return "No narrative text provided in petition."
-    
-    prompt = f"""You are a legal summarizer. 
-Scan this True Up Petition and extract the EXACT paragraphs where the Licensee justifies their '{component}' expense.
-If there are specific contracts, vendors, or reasons mentioned (e.g. 'paid to KINFRA'), extract them!
-If no specific justification is found, just say 'No specific justification provided.'
 
-PETITION TEXT:
-{petition_text}
+    trimmed = petition_text[:8000]
+
+    prompt = f"""You are a legal summarizer reading a KSERC Truing-Up Petition.
+Extract ONLY the paragraphs where the licensee justifies their '{component}' expense.
+Include any specific contracts, vendors, rates, or reasons mentioned.
+If no justification is found, reply: 'No specific justification provided.'
+
+PETITION (excerpt):
+{trimmed}
 """
-    try:
-        result = generate(
-            prompt,
-            model="gemini-2.5-flash",
-            temperature=0.0,
-            response_mime_type="text/plain",
-        )
-        return result.strip()
-    except Exception as e:
-        logger.error(f"Flash failed to extract narrative for {component}: {e}")
-        return "Failed to extract narrative."
+    # Let any exception propagate — don't suppress failures
+    result = generate(
+        prompt,
+        model="gemini-2.5-pro",
+        temperature=0.0,
+        response_mime_type="text/plain",
+    )
+    return result.strip()
+
+
+def process_one_component(
+    component: str,
+    claimed_val: float,
+    petition_text: str,
+    myt_expenses: dict,
+    deterministic_math: dict,
+    analysis_id: str = "",
+) -> tuple[str, dict]:
+    """
+    Process a single expense component.
+    DOES NOT catch exceptions — any failure surfaces immediately.
+    """
+    def _log(msg: str):
+        if analysis_id:
+            try:
+                from src.tools.db import update_progress
+                update_progress(analysis_id, "ai_audit", msg)
+            except Exception:
+                pass
+        logger.info(f"[Graph|{component}] {msg}")
+
+    myt_norm      = myt_expenses.get(component, claimed_val)
+    math_approved = deterministic_math.get(component, myt_norm)
+    math_result   = {
+        "amount": math_approved,
+        "status": "Deterministic Calculation",
+        "rule_applied": f"Math Engine Limit: {math_approved}",
+    }
+
+    if component in ["Employee Cost", "Repairs & Maintenance", "Administration & General"]:
+        base_query = f"Regulations regarding {component} operation and maintenance expenses truing up"
+    else:
+        base_query = f"Regulations regarding {component} capital expenditure true up"
+
+    # Step 1: Narrative extraction (let exceptions surface)
+    _log(f"Extracting narrative for '{component}'…")
+    licensee_narrative = extract_narrative(petition_text, component)
+
+    # Step 2: RAG legal context (let exceptions surface)
+    _log(f"Querying legal precedents for '{component}'…")
+    from src.rag.file_search_store import query_regulations
+    legal_context = query_regulations(f"{base_query}. Precedent for: {licensee_narrative[:300]}")
+
+    # Step 3: Chief Auditor decision (let exceptions surface)
+    _log(f"Chief Auditor analysing '{component}'…")
+    decision = auditor.analyze_component(
+        component_name=component,
+        claimed_lakhs=claimed_val,
+        myt_norm_lakhs=myt_norm,
+        math_result=math_result,
+        legal_context=legal_context,
+        licensee_narrative=licensee_narrative,
+    )
+
+    result = {
+        "claimed":       claimed_val,
+        "approved":      decision["amount"],
+        "variance":      decision["variance"],
+        "justification": decision["justification"],
+        "myt_norm":      myt_norm,
+    }
+    _log(f"✓ '{component}' done — approved=₹{decision['amount']:.2f}L")
+    return component, result
+
 
 class AgentState(TypedDict):
-    petition_data: Dict[str, Any]  # The raw extracted JSON from the Vision Agent
-    myt_baselines: Dict[str, Any]  # The historical baselines
-    results: Dict[str, Any]        # The final analyzed output
-    current_component: str         # The component currently being processed in the loop
+    petition_data:     Dict[str, Any]
+    myt_baselines:     Dict[str, Any]
+    results:           Dict[str, Any]
+    current_component: str
+    analysis_id:       str   # passed through for per-component progress logging
+
 
 def routing_node(state: AgentState) -> AgentState:
-    """Initializes processing or ends if all components are done."""
     return state
 
+
 def component_processing_node(state: AgentState) -> AgentState:
-    """Iterates through extracted components and applies RAG + Math + Auditor logic."""
-    claimed_expenses = state["petition_data"].get("expenses", {})
-    petition_text = state["petition_data"].get("petition_text", "")
-    myt_expenses = state["myt_baselines"].get("expenses", {})
+    """
+    Process all components IN PARALLEL.
+    If ANY component fails or times out, raises immediately with the full error details.
+    """
+    claimed_expenses   = state["petition_data"].get("expenses", {})
+    petition_text      = state["petition_data"].get("petition_text", "")
+    myt_expenses       = state["myt_baselines"].get("expenses", {})
     deterministic_math = state.get("deterministic_math", {})
-    
+    analysis_id        = state.get("analysis_id", "")
+
+    if not claimed_expenses:
+        logger.warning("[Graph] No expenses found in petition_data")
+        state["results"] = {"expenses": {}}
+        return state
+
+    logger.info(f"[Graph] Starting parallel processing of {len(claimed_expenses)} components "
+                f"(workers={MAX_WORKERS}, timeout={COMPONENT_TIMEOUT}s each)")
+
     final_expenses = {}
-    
-    for component, claimed_val in claimed_expenses.items():
-        logger.info(f"[Graph] Processing component: {component}")
-        
-        # 1. Deterministic Bounds (provided by legacy math engine)
-        myt_norm = myt_expenses.get(component, claimed_val) # Fallback to claimed if no norm
-        math_approved = deterministic_math.get(component, myt_norm)
-        
-        math_result = {
-            "amount": math_approved,
-            "status": "Deterministic Calculation",
-            "rule_applied": f"Math Engine Calculated Limit: {math_approved}"
+    failed = []  # collect all failures before raising
+
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        future_to_comp = {
+            executor.submit(
+                process_one_component,
+                comp, val, petition_text, myt_expenses, deterministic_math, analysis_id,
+            ): comp
+            for comp, val in claimed_expenses.items()
         }
-        
-        if component in ["Employee Cost", "Repairs & Maintenance", "Administration & General"]:
-            base_query = f"Regulations regarding {component} operation and maintenance expenses truing up"
-        else:
-            base_query = f"Regulations regarding {component} capital expenditure true up"
-            
-        # 2. Context Extraction (Flash): Get the Licensee's Specific Reason
-        licensee_narrative = extract_narrative(petition_text, component)
-        logger.info(f"[Graph] Licensee Narrative for {component} extracted.")
-            
-        # 3. Legal Context via Gemini File Search (replaces old RAG)
-        try:
-            from src.rag.file_search_store import query_regulations
-            targeted_query = f"{base_query}. Precedent for: {licensee_narrative}"
-            legal_context = query_regulations(targeted_query)
-        except Exception as e:
-            logger.error(f"File Search failed for {component}: {e}")
-            legal_context = "Legal context unavailable."
-                
-        # 4. Chief Auditor Agent: Synthesize Truth
-        decision = auditor.analyze_component(
-            component_name=component,
-            claimed_lakhs=claimed_val,
-            myt_norm_lakhs=myt_norm,
-            math_result=math_result,
-            legal_context=legal_context,
-            licensee_narrative=licensee_narrative
+
+        for future in as_completed(future_to_comp):
+            comp = future_to_comp[future]
+            try:
+                name, result = future.result(timeout=COMPONENT_TIMEOUT)
+                final_expenses[name] = result
+                logger.info(f"[Graph] ✓ {name}")
+            except FuturesTimeout:
+                err = f"TIMEOUT after {COMPONENT_TIMEOUT}s"
+                logger.error(f"[Graph] ✗ {comp}: {err}")
+                failed.append(f"{comp}: {err}")
+            except Exception as e:
+                logger.error(f"[Graph] ✗ {comp}: {e}", exc_info=True)
+                failed.append(f"{comp}: {e}")
+
+    if failed:
+        summary = "; ".join(failed)
+        logger.error(f"[Graph] Pipeline FAILED — {len(failed)} component(s) errored: {summary}")
+        raise RuntimeError(
+            f"Agentic audit failed for {len(failed)} component(s):\n" +
+            "\n".join(f"  • {f}" for f in failed)
         )
-        
-        final_expenses[component] = {
-            "claimed": claimed_val,
-            "approved": decision["amount"],
-            "variance": decision["variance"],
-            "justification": decision["justification"],
-            "myt_norm": myt_norm
-        }
-        
+
+    logger.info(f"[Graph] All {len(final_expenses)} components resolved successfully")
     state["results"] = {"expenses": final_expenses}
     return state
 
-# ---- Define the Graph ----
+
+# ── LangGraph Graph ──────────────────────────────────────────────────
 workflow = StateGraph(AgentState)
-
-# Add Nodes
-workflow.add_node("router", routing_node)
+workflow.add_node("router",    routing_node)
 workflow.add_node("processor", component_processing_node)
-
-# Add Edges
-workflow.add_edge(START, "router")
-workflow.add_edge("router", "processor")
+workflow.add_edge(START,       "router")
+workflow.add_edge("router",    "processor")
 workflow.add_edge("processor", END)
-
-# Compile the Graph
 truing_up_app = workflow.compile()
 
-def run_agentic_audit(extracted_data: Dict[str, Any], historical_baselines: Dict[str, Any], deterministic_math: Dict[str, Any] = None) -> Dict[str, Any]:
-    """Entrypoint function to run the full LangGraph Agentic Pipeline."""
+
+def run_agentic_audit(
+    extracted_data:       Dict[str, Any],
+    historical_baselines: Dict[str, Any],
+    deterministic_math:   Dict[str, Any] = None,
+    analysis_id:          str = "",
+) -> Dict[str, Any]:
+    """Run the full LangGraph agentic audit pipeline. Raises on any component failure."""
     initial_state = {
-        "petition_data": extracted_data,
-        "myt_baselines": historical_baselines,
+        "petition_data":      extracted_data,
+        "myt_baselines":      historical_baselines,
         "deterministic_math": deterministic_math or {},
-        "results": {},
-        "current_component": ""
+        "results":            {},
+        "current_component":  "",
+        "analysis_id":        analysis_id,
     }
-    
-    logger.info("Starting Agentic RAG Pipeline...")
+    logger.info(f"[Agentic] Starting parallel audit for "
+                f"{len(extracted_data.get('expenses', {}))} components…")
     final_state = truing_up_app.invoke(initial_state)
-    logger.info("Agentic RAG Pipeline complete.")
-    
+    logger.info("[Agentic] Complete.")
     return final_state["results"]

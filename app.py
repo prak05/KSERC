@@ -28,7 +28,7 @@ import shutil
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
 load_dotenv()  # loads GOOGLE_API_KEY and other vars from .env into os.environ
@@ -93,7 +93,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -150,14 +150,14 @@ async def health():
 async def analyze_petition(
     request: Request,
     background_tasks: BackgroundTasks,
-    file: UploadFile = File(...),
+    files: List[UploadFile] = File(...),
     licensee: str = Form(...),
     financial_year: str = Form(...),
     inflation_rate: Optional[float] = Form(None),
     bee_energy_audit_fee: Optional[float] = Form(None),
 ):
     """
-    Upload and analyze a petition PDF.
+    Upload and analyze petition PDFs (supports multiple files).
     Returns analysis results with component-level justifications.
     """
     client_ip = request.client.host if request.client else "unknown"
@@ -173,27 +173,32 @@ async def analyze_petition(
     if not financial_year or len(financial_year) < 4:
         raise HTTPException(400, "Invalid financial year format")
 
-    _validate_file(file)
-
-    # Save uploaded file with secure name
+    # Validate and save all uploaded files
     analysis_id = str(uuid.uuid4())
-    safe_filename = f"{analysis_id}.pdf"
-    upload_path = UPLOAD_DIR / safe_filename
+    upload_paths: List[str] = []
+    original_filenames: List[str] = []
 
-    try:
-        content = await file.read()
-        if len(content) > MAX_FILE_SIZE_MB * 1024 * 1024:
-            raise HTTPException(400, f"File too large. Maximum size: {MAX_FILE_SIZE_MB}MB")
+    for idx, file in enumerate(files):
+        _validate_file(file)
+        safe_filename = f"{analysis_id}_{idx}.pdf"
+        upload_path = UPLOAD_DIR / safe_filename
 
-        with open(upload_path, "wb") as f:
-            f.write(content)
+        try:
+            content = await file.read()
+            if len(content) > MAX_FILE_SIZE_MB * 1024 * 1024:
+                raise HTTPException(400, f"File '{file.filename}' too large. Maximum size: {MAX_FILE_SIZE_MB}MB")
 
-        logger.info(f"File uploaded: {file.filename} -> {safe_filename}")
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Upload failed: {e}")
-        raise HTTPException(500, "File upload failed")
+            with open(upload_path, "wb") as f:
+                f.write(content)
+
+            upload_paths.append(str(upload_path))
+            original_filenames.append(file.filename or f"file_{idx}.pdf")
+            logger.info(f"File uploaded: {file.filename} -> {safe_filename}")
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Upload failed for {file.filename}: {e}")
+            raise HTTPException(500, "File upload failed")
 
     # Run analysis asynchronously via BackgroundTasks
     save_analysis(analysis_id, "RUNNING")
@@ -204,10 +209,10 @@ async def analyze_petition(
         try:
             result = await _run_analysis(
                 analysis_id=analysis_id,
-                pdf_path=str(upload_path),
+                pdf_paths=upload_paths,
                 licensee_name=licensee,
                 financial_year=financial_year,
-                original_filename=file.filename,
+                original_filenames=original_filenames,
                 inflation_rate=inflation_rate,
                 bee_energy_audit_fee=bee_energy_audit_fee,
             )
@@ -352,15 +357,171 @@ async def override_component(req: OverrideRequest):
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# Reference Data Routes
+# ═══════════════════════════════════════════════════════════════════════
+
+from src.tools.db import (
+    get_all_economic_indicators, get_economic_indicators,
+    upsert_economic_indicators, save_reference_order, get_reference_orders,
+)
+
+REFERENCE_ORDERS_DIR = BASE_DIR / "data" / "reference_orders"
+REFERENCE_ORDERS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+# ── Economic Indicators ────────────────────────────────────────────────
+
+@app.get("/api/reference/economic-indicators")
+async def list_economic_indicators():
+    """List all stored economic indicators by financial year."""
+    return {"indicators": get_all_economic_indicators()}
+
+
+class EconomicIndicatorsRequest(BaseModel):
+    financial_year: str
+    wpi_pct: Optional[float] = None
+    cpi_pct: Optional[float] = None
+    sbi_plr_pct: Optional[float] = None
+    hsd_price_rs: Optional[float] = None
+    power_purchase_rate_rs_per_kwh: Optional[float] = None
+
+@app.post("/api/reference/economic-indicators")
+async def save_economic_indicators(req: EconomicIndicatorsRequest):
+    """Create or update economic indicators for a financial year."""
+    upsert_economic_indicators(req.financial_year, req.dict())
+    return {"status": "saved", "financial_year": req.financial_year}
+
+
+# ── Reference PDF Upload → Gemini Extract ─────────────────────────────
+
+@app.post("/api/reference/orders/extract")
+async def extract_reference_order(
+    request: Request,
+    file: UploadFile = File(...),
+    order_type: str = Form(...),   # 'myt_order' | 'interim_tariff' | 'past_order'
+    licensee: str = Form(""),
+    financial_year: str = Form(""),
+    order_number: str = Form(""),
+):
+    """
+    Upload a reference PDF → Gemini extracts all financial values.
+    Returns extracted_rows (flat table) + full JSON for the UI to display.
+    Staff can edit values before confirming.
+    """
+    client_ip = request.client.host if request.client else "unknown"
+    if not _check_rate_limit(client_ip):
+        raise HTTPException(429, "Too many requests.")
+
+    _validate_file(file)
+
+    # Save file with unique name
+    order_id = str(uuid.uuid4())
+    safe_filename = f"ref_{order_id}.pdf"
+    file_path = REFERENCE_ORDERS_DIR / safe_filename
+
+    content = await file.read()
+    if len(content) > MAX_FILE_SIZE_MB * 1024 * 1024:
+        raise HTTPException(400, f"File too large. Maximum: {MAX_FILE_SIZE_MB}MB")
+    with open(file_path, "wb") as f:
+        f.write(content)
+
+    # Save metadata
+    save_reference_order(
+        order_id=order_id, order_type=order_type,
+        licensee=licensee, financial_year=financial_year,
+        order_number=order_number, file_path=str(file_path),
+    )
+
+    # Run Gemini extraction
+    loop = asyncio.get_event_loop()
+    from src.agents.myt_norm_extractor import extract_from_uploaded_pdf
+    extraction = await loop.run_in_executor(None, extract_from_uploaded_pdf, str(file_path))
+
+    return JSONResponse({
+        "status": "extracted",
+        "order_id": order_id,
+        "order_type": order_type,
+        "document_type": extraction.get("document_type", order_type),
+        "order_number": extraction.get("order_number", order_number),
+        "control_period": extraction.get("control_period", ""),
+        "extracted_rows": extraction.get("extracted_rows", []),
+        "licensees": extraction.get("licensees", {}),
+        "error": extraction.get("error"),
+    })
+
+
+# ── Confirm & Write Extracted Norms to JSON ────────────────────────────
+
+class ConfirmNormsRequest(BaseModel):
+    order_id: str
+    order_type: str
+    order_number: str = ""
+    control_period: str = ""
+    document_type: str = ""
+    confirmed_rows: list  # [{field_key, field, licensee, year, value, unit}]
+
+@app.post("/api/reference/orders/confirm")
+async def confirm_reference_norms(req: ConfirmNormsRequest):
+    """
+    Staff has reviewed the extracted table and confirmed values.
+    For MYT/interim orders: writes norms directly into myt_baselines.json.
+    For past orders: saves metadata only (used for RAG/precedent later).
+    """
+    if req.order_type in ("myt_order", "interim_tariff"):
+        from src.agents.myt_norm_extractor import write_norms_to_json
+        # Debug: log what the frontend sent
+        logger.info(f"[CONFIRM] order_type={req.order_type}, order_number={req.order_number}")
+        logger.info(f"[CONFIRM] confirmed_rows count: {len(req.confirmed_rows)}")
+        for i, row in enumerate(req.confirmed_rows[:5]):
+            logger.info(f"[CONFIRM] Row {i}: {row}")
+        result = write_norms_to_json(
+            confirmed_rows=[dict(r) if hasattr(r, '__iter__') else r for r in req.confirmed_rows],
+            order_number=req.order_number,
+            control_period=req.control_period,
+            document_type=req.document_type,
+        )
+        if "error" in result:
+            raise HTTPException(500, result["error"])
+        return {
+            "status": "saved",
+            "message": f"Norms written to myt_baselines.json — {result['updated_entries']} values updated.",
+            "updated_entries": result["updated_entries"],
+        }
+    else:
+        # Past accepted order — metadata saved on upload; just confirm
+        return {"status": "saved", "message": "Past order reference saved."}
+
+
+# ── List Reference Orders ──────────────────────────────────────────────
+
+@app.get("/api/reference/orders")
+async def list_reference_orders(order_type: Optional[str] = None):
+    """List uploaded reference orders with metadata."""
+    orders = get_reference_orders(order_type)
+    return {"orders": orders}
+
+
+@app.get("/api/reference/myt-baselines")
+async def get_myt_baselines():
+    """Return full myt_baselines.json content for the UI editor."""
+    import json as _json
+    path = BASE_DIR / "data" / "myt_baselines" / "myt_baselines.json"
+    if not path.exists():
+        return {"baselines": {}}
+    with open(path, "r", encoding="utf-8") as f:
+        return {"baselines": _json.load(f)}
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # Analysis Engine
 # ═══════════════════════════════════════════════════════════════════════
 
 async def _run_analysis(
     analysis_id: str,
-    pdf_path: str,
+    pdf_paths: List[str],
     licensee_name: str,
     financial_year: str,
-    original_filename: str,
+    original_filenames: List[str],
     inflation_rate: Optional[float] = None,
     bee_energy_audit_fee: Optional[float] = None,
 ) -> dict:
@@ -370,78 +531,96 @@ async def _run_analysis(
     from src.agents.auditor import audit_petition
     from src.agents.drafter import draft_order
     from src.tools.normative_math import calculate_revenue_gap_surplus
+    from src.tools.db import update_progress
+
+    def log(stage: str, msg: str):
+        update_progress(analysis_id, stage, msg)
+        logger.info(f"[{analysis_id}] [{stage}] {msg}")
 
     # ── Step 1: Extract ────────────────────────────────────────────
-    logger.info(f"[{analysis_id}] Extracting from {original_filename}")
+    filenames_str = ", ".join(original_filenames)
+    log("extract", f"Loading {len(pdf_paths)} petition PDF(s): {filenames_str}")
 
+    # Primary PDF is the first file; all paths are passed to extractor
+    primary_pdf = pdf_paths[0]
     state = {
-        "petition_pdf_path": pdf_path,
+        "petition_pdf_path": primary_pdf,
+        "petition_pdf_paths": pdf_paths,  # All PDFs for multi-file extraction
         "licensee_name": licensee_name,
         "financial_year": financial_year,
     }
 
-    # Extract petition text for the Narrative RAG Context
+    # Extract petition text from ALL PDFs for the Narrative RAG Context
     try:
         import fitz
-        doc = fitz.open(pdf_path)
-        text = ""
-        for i, page in enumerate(doc):
-            if i >= 50: break # Safety cap
-            text += page.get_text() + "\n"
-        doc.close()
-        state["petition_text"] = text
-        logger.info(f"[{analysis_id}] Extracted {len(text)} characters of petition text for narrative Context-Aware RAG.")
+        all_text = ""
+        total_pages = 0
+        for pdf_path in pdf_paths:
+            doc = fitz.open(pdf_path)
+            for i, page in enumerate(doc):
+                if i >= 50: break  # Safety cap per file
+                all_text += page.get_text() + "\n"
+            total_pages += len(doc)
+            doc.close()
+        state["petition_text"] = all_text
+        log("extract", f"PDF text extracted ({len(all_text):,} chars from {total_pages} pages across {len(pdf_paths)} files)")
     except Exception as e:
-        logger.error(f"[{analysis_id}] Failed to extract text from {pdf_path}: {e}")
+        logger.error(f"[{analysis_id}] Failed to extract text from PDFs: {e}")
         state["petition_text"] = ""
 
     # Run extraction in a thread to not block the event loop
+    log("extract", "Running Gemini Vision extraction on petition tables…")
     loop = asyncio.get_event_loop()
-    extraction_result = await loop.run_in_executor(
-        None, extract_petition_data, state
-    )
+    try:
+        extraction_result = await asyncio.wait_for(
+            loop.run_in_executor(None, extract_petition_data, state),
+            timeout=240,  # 4 min
+        )
+    except asyncio.TimeoutError:
+        log("extract", "ERROR: Extraction timed out after 4 minutes")
+        raise RuntimeError("Petition extraction timed out. The PDF may be too large or Gemini is overloaded.")
+    n_exp = len(extraction_result.get("claimed_expenses", {}))
+    log("extract", f"Extraction complete — {n_exp} expense components found")
     state.update(extraction_result)
 
     # ── Step 2: Legacy Deterministic Audit ────────────────────────
-    logger.info(f"[{analysis_id}] Running deterministic compliance audit")
+    log("audit", "Loading MYT norms and running deterministic compliance audit…")
 
-    # Load actual MYT baselines and surplus
     from src.knowledge.myt_loader import MYTLoader
     loader = MYTLoader()
     state["myt_baseline_norms"] = loader.load_myt_baselines(licensee_name, financial_year)
     state["accumulated_surplus"] = 0.0
 
-    # We run the old deterministic auditor first to get the mathematically perfect baselines
-    # like Distribution Loss Penalties, correct MYT componding, etc.
     from src.agents.auditor import audit_petition
     if inflation_rate is not None:
         state["inflation_rate_override"] = inflation_rate
-        logger.info(f"[{analysis_id}] Using user-supplied inflation rate: {inflation_rate}%")
+        log("audit", f"Using user-supplied inflation rate: {inflation_rate}%")
     if bee_energy_audit_fee is not None:
         state["bee_energy_audit_fee"] = bee_energy_audit_fee
-        logger.info(f"[{analysis_id}] Using user-supplied BEE fee: Rs.{bee_energy_audit_fee}L")
-    audit_result = await loop.run_in_executor(
-        None, audit_petition, state
+        log("audit", f"Using user-supplied BEE energy audit fee: ₹{bee_energy_audit_fee}L")
+    audit_result = await asyncio.wait_for(
+        loop.run_in_executor(None, audit_petition, state),
+        timeout=180,  # 3 min
     )
     state.update(audit_result)
+    log("audit", "Deterministic audit complete")
 
     # ── Step 2.5: Deep AI Analysis (Agentic RAG) ──────────────────
-    logger.info(f"[{analysis_id}] Running Deep AI Analysis (PDF + Knowledge Base + Web)")
+    n_comps = len(state.get("claimed_expenses", {}))
+    log("ai_audit", f"Starting parallel AI audit for {n_comps} components (gemini-2.5-pro)…")
     try:
         from src.workflows.truing_up_graph import run_agentic_audit
         
-        # Prepare state formats for LangGraph
         extracted_formatted = {
             "expenses": state.get("claimed_expenses", {}),
             "petition_text": state.get("petition_text", "")
         }
         baselines_formatted = {"expenses": state.get("myt_baseline_norms", {})}
-        
-        # Pass the deterministically approved expenses as the math baseline!
         deterministic_math = state.get("approved_expenses", {})
         
-        ai_raw = await loop.run_in_executor(
-            None, run_agentic_audit, extracted_formatted, baselines_formatted, deterministic_math
+        ai_raw = await asyncio.wait_for(
+            loop.run_in_executor(None, run_agentic_audit, extracted_formatted, baselines_formatted, deterministic_math, analysis_id),
+            timeout=480,  # 8 min
         )
         
         # Reformulate into legacy ai_insights structure
@@ -454,38 +633,41 @@ async def _run_analysis(
             
         ai_insights = {
             "approved_expenses": approved_exp,
-            "justifications": {}, # Not needed separately anymore
+            "justifications": {},
             "grants_discovered": {"found": False, "total_lakhs": 0.0, "details": ""},
             "interim_relief": {"found": False, "amount_lakhs": 0.0, "details": ""}
         }
         state["ai_insights"] = ai_insights
         ai_exp = ai_insights.get("approved_expenses", {})
-        logger.info(f"[{analysis_id}] Deep AI Analysis complete: "
-                     f"{len(ai_exp)} component decisions made, "
-                     f"grants_found={ai_insights.get('grants_discovered', {}).get('found', False)}")
+        log("ai_audit", f"AI audit complete — {len(ai_exp)} component decisions made")
         if not ai_exp:
-            logger.warning(f"[{analysis_id}] AI Analyzer returned NO approved_expenses! "
-                            f"Keys in response: {list(ai_insights.keys())}")
+            logger.warning(f"[{analysis_id}] AI Analyzer returned NO approved_expenses!")
+    except asyncio.TimeoutError:
+        log("ai_audit", "AI audit timed out after 8 min — using deterministic results only")
+        state["ai_insights"] = {}
     except Exception as e:
+        log("ai_audit", f"AI audit failed: {e}")
         logger.error(f"[{analysis_id}] Deep AI Analysis FAILED: {e}", exc_info=True)
         state["ai_insights"] = {}
 
-    # We now USE the AI agentic auditor results. But we still run the old deterministic
-    # auditor as a fallback or cross-check if needed. For now, we'll try to use the AI results.
-    audit_result = await loop.run_in_executor(
-        None, audit_petition, state
+    log("audit", "Running final compliance check…")
+    audit_result = await asyncio.wait_for(
+        loop.run_in_executor(None, audit_petition, state),
+        timeout=180,  # 3 min
     )
     state.update(audit_result)
 
-
-
-
     # ── Step 3: Generate PDF ───────────────────────────────────────
-    logger.info(f"[{analysis_id}] Generating PDF report")
+    log("draft", "Generating PDF order…")
 
-    draft_result = await loop.run_in_executor(
-        None, draft_order, state
-    )
+    try:
+        draft_result = await asyncio.wait_for(
+            loop.run_in_executor(None, draft_order, state),
+            timeout=240,  # 4 min
+        )
+    except asyncio.TimeoutError:
+        logger.error(f"[{analysis_id}] PDF drafting TIMED OUT after 4 minutes")
+        draft_result = {"pdf_output_path": None}
     state.update(draft_result)
 
     # ── Build response with justifications ─────────────────────────
@@ -503,7 +685,7 @@ async def _run_analysis(
         "analysis_id": analysis_id,
         "licensee_name": licensee_name,
         "financial_year": financial_year,
-        "original_filename": original_filename,
+        "original_filename": ", ".join(original_filenames),
         "timestamp": datetime.now().isoformat(),
 
         # Summary

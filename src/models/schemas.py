@@ -47,6 +47,13 @@ class ExtractionResult(BaseModel):
     total_revenue: float = Field(0.0, description="Sum of all revenues")
     distribution_loss_pct: float = Field(0.0, description="Distribution loss percentage")
     bee_energy_audit_fee: float = Field(0.0, description="BEE energy audit fee (A&G sub-item)")
+    # Distribution loss unit values (in Lakh units = lakh kWh) — used for PPC Reg 73(3) calc
+    actual_loss_lakh_units: float = Field(0.0, description="Actual distribution loss in Lakh units (lakh kWh) from petition energy balance table")
+    approved_loss_lakh_units: float = Field(0.0, description="Approved/target distribution loss in Lakh units (lakh kWh) from petition table (ignore — re-computed from MYT norms)")
+    energy_input_lakh_units: float = Field(0.0, description="Energy Input to Distribution System in Lakh units (lakh kWh) — this is the energy that enters the distribution network AFTER upstream adjustments, NOT 'Total Energy Purchased'. Look for row labeled 'Energy Input to Distribution System' or similar in Annexure B / energy balance table.")
+    energy_sales_lakh_units: float = Field(0.0, description="Total energy output / energy sold / energy delivered to consumers in Lakh units (lakh kWh). Look for rows labeled 'Total Energy Output', 'Energy Sold', 'Energy Delivered to Consumers', 'Energy Sales', 'Total Output'. This equals Energy Input minus Distribution Loss.")
+    appc_rs_per_unit: float = Field(0.0, description="Average Power Purchase Cost in Rs/unit (Rs/kWh) from petition table")
+    ppc_net_charges_rs_lakhs: float = Field(0.0, description="KDHP-specific: Net Charges (Rs/Lakhs) from the detailed Power Purchase Cost sub-table — this is the BOLD 'Net Charges-Rs/Lakhs' row after deducting excess line loss adjustment. Use this for power_purchase_cost for KDHP. If no adjustment, equals Total Charges.")
 
 
 # ═══════════════════════════════════════════════════════════════════

@@ -150,52 +150,58 @@ def generate_with_parts(
 
 
 def generate_with_pdf(
-    pdf_path: str,
+    pdf_path,  # str or List[str] — single path or multiple paths
     prompt: str,
-    model: str = "gemini-2.5-flash",
+    model: str = "gemini-2.5-pro",
     temperature: float = 0.0,
     response_mime_type: str = "application/json",
     system_instruction: Optional[str] = None,
     response_schema = None,
 ) -> str:
     """
-    Generate content by uploading an ENTIRE PDF file to Gemini.
+    Generate content by uploading PDF file(s) to Gemini.
     
-    This is MUCH faster than rendering pages to PNG and batching:
-    - 1 API call instead of 3-4 batch calls
-    - No page rendering overhead
-    - Better accuracy (Gemini sees full document context)
-    - No context loss across batch boundaries
+    Accepts either a single PDF path (str) or a list of PDF paths (List[str]).
+    When multiple PDFs are provided, ALL are uploaded and sent together
+    in a single Gemini call — enabling cross-referencing between files
+    (e.g., main petition + annexures + audit reports).
     
-    Uses Gemini Files API: client.files.upload() to upload the PDF,
-    then passes the file reference in a single generate_content call.
+    Uses Gemini Files API: client.files.upload() for each PDF,
+    then passes all file references + prompt in one generate_content call.
     """
     import time
     client = get_client()
     from google.genai import types
 
-    # Upload the PDF file to Gemini Files API
-    logger.info(f"Uploading PDF to Gemini Files API: {pdf_path}")
-    upload_start = time.time()
+    # Normalize to list
+    pdf_paths = pdf_path if isinstance(pdf_path, list) else [pdf_path]
 
-    uploaded_file = client.files.upload(
-        file=pdf_path,
-        config=types.UploadFileConfig(
-            mime_type="application/pdf",
-        ),
-    )
+    # Upload all PDF files to Gemini Files API
+    uploaded_files = []
+    upload_start = time.time()
+    
+    for path in pdf_paths:
+        logger.info(f"Uploading PDF to Gemini Files API: {path}")
+        uploaded = client.files.upload(
+            file=path,
+            config=types.UploadFileConfig(
+                mime_type="application/pdf",
+            ),
+        )
+        uploaded_files.append(uploaded)
+        logger.info(f"  Uploaded: {uploaded.name}")
     
     upload_time = time.time() - upload_start
-    logger.info(f"PDF uploaded in {upload_time:.1f}s — file: {uploaded_file.name}")
+    logger.info(f"{len(uploaded_files)} PDF(s) uploaded in {upload_time:.1f}s")
 
-    # Build the content with file reference + prompt
-    parts = [
-        types.Part.from_uri(
-            file_uri=uploaded_file.uri,
+    # Build parts: all file references first, then the prompt
+    parts = []
+    for uf in uploaded_files:
+        parts.append(types.Part.from_uri(
+            file_uri=uf.uri,
             mime_type="application/pdf",
-        ),
-        types.Part.from_text(text=prompt),
-    ]
+        ))
+    parts.append(types.Part.from_text(text=prompt))
 
     config_kwargs = {
         "temperature": temperature,
@@ -217,18 +223,19 @@ def generate_with_pdf(
     gen_time = time.time() - gen_start
     logger.info(f"PDF generation completed in {gen_time:.1f}s")
 
-    # Clean up uploaded file (best effort)
-    try:
-        client.files.delete(name=uploaded_file.name)
-    except Exception:
-        pass  # Non-critical — files auto-expire after 48h
+    # Clean up uploaded files (best effort)
+    for uf in uploaded_files:
+        try:
+            client.files.delete(name=uf.name)
+        except Exception:
+            pass  # Non-critical — files auto-expire after 48h
 
     return response.text
 
 
 def generate_grounded(
     prompt: str,
-    model: str = "gemini-2.5-flash",
+    model: str = "gemini-2.5-pro",
     temperature: float = 0.3,
     system_instruction: Optional[str] = None,
 ) -> str:

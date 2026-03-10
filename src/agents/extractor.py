@@ -114,6 +114,14 @@ The table typically has these rows (names may vary slightly):
 
 EXPENDITURE SIDE:
   1. Cost of Power Purchase / Purchase of Power / Power purchase cost => power_purchase_cost
+     KDHP-SPECIFIC: KDHP petitions have a detailed "Power Purchase Cost" sub-table with rows:
+       - "Normal Demand Charge", "Excess Demand Charge", "Total Demand Charges", "Energy Charge"
+       - "Total Charges-Rs/Lakhs"
+       - "Less: Adjustment for excess line loss" (may be blank/dash = 0)
+       - "Net Charges-Rs/Lakhs" ← USE THIS ROW (bold row, final net amount after adjustment)
+       - "Rate per unit-Rs/kWh purchased"
+     Always use "Net Charges-Rs/Lakhs" from the FY25 Audited column as power_purchase_cost.
+     If no adjustment, Net Charges = Total Charges (both will have the same value).
   2. Employee Cost / Employee Expenses => employee_cost
   3. Repairs & Maintenance / R&M Expenses => repair_maintenance
   4. Administration & General / A&G Expenses (use ONLY the gross A&G subtotal, NOT including Electricity Duty) => admin_general
@@ -204,19 +212,73 @@ Scan ALL pages for the following specific items that are sometimes in sub-tables
      - "Provision for doubtful debts" / "Provision for bad debts" => add to other_expenses
      - "Duty-III" / "Duty III" => map to other_debits
 
-STEP 4 — EXTRACT THE DISTRIBUTION LOSS:
-Find the actual distribution loss percentage for the current financial year.
-IMPORTANT: The distribution loss is usually found UNDER or WITHIN the Power Purchase Cost section.
-Look in these places (in order of priority):
-  1. The Power Purchase Cost / Cost of Power Purchase section — look for:
-     - "Distribution Loss: X.XX%"
-     - Energy balance data: "Input Energy" vs "Output/Sales Energy" (in MU or lakh kWh)
-     - If you find input and output energy, calculate: loss% = (input - output) / input * 100
-  2. A separate table or paragraph mentioning:
-     - "Actual Distribution Loss: X.XX%"
-     - "Distribution loss during the year: X.XX%"
-     - "T&D Loss / Distribution Loss / Line Loss"
-  3. Energy sales data showing units purchased vs units sold
+STEP 4 — EXTRACT DISTRIBUTION LOSS AND ENERGY DATA:
+
+IMPORTANT: Tables in these petitions often show MULTIPLE YEARS side by side as column groups
+(e.g., one group of columns for 2023-24 and another for 2024-25).
+ALWAYS use values from the column group that matches THIS petition's financial year.
+Within that year group, use the "Total" sub-column (not individual location columns).
+
+UNIT RULE: All energy values MUST be returned in Lakh units (LU = lakh kWh).
+- If the petition shows values in "Lakh units", "lakh kWh", or "LU" → use the value as-is.
+- If the petition shows values in "MU" (Million Units) or "Million kWh" → MULTIPLY by 10 to convert to Lakh units.
+  (Example: 80.67 MU × 10 = 806.7 Lakh Units)
+- If the petition shows values in kWh → DIVIDE by 100,000 to convert to Lakh units.
+
+MULTI-PHASE ENERGY TABLES (e.g. Technopark):
+Some licensees (like Technopark) have energy data split across multiple phases/campuses
+(e.g. "Phase -1", "Phase - 2&3", "Phase -4 Technocity", "Phase -5 Kollam").
+When you see a multi-phase energy table, SUM UP all phases to get the TOTAL values for
+energy_input, energy_sales, actual_loss. Use the "Total" row if available; otherwise add all phases.
+Also look for summary tables showing overall "Energy Sales (MU)" — convert MU to Lakh Units.
+
+PRIORITY: First try to find the value in narrative text (more reliable). Fall back to the table.
+
+4A — energy_input_lakh_units (Energy Input to the Distribution System — NOT Total Energy Purchased):
+  ⚠️ CRITICAL DISTINCTION:
+  - "Total Energy Purchased / Total Energy Received" (e.g. 606 LU) = energy bought from ALL sources.
+    DO NOT USE THIS VALUE.
+  - "Energy Input to Distribution System" (e.g. 548 LU) = energy AFTER upstream adjustments
+    that actually enters the distribution network. THIS IS THE CORRECT VALUE.
+  The relationship is: Total Purchased > Energy Input to Distribution > Energy Sales.
+  TABLE: In Annexure B / Energy Balance table, find the row labeled:
+         "Energy Input to Distribution System" or "Energy Input to Distribution" or
+         "Energy Available for Distribution" or "Net Energy Input".
+         Take the value from the current financial year's "Total" column.
+  TEXT: Look for "energy input to distribution system is X lakh units".
+  If only "Total Energy Purchased" is available and no separate "Energy Input to Distribution"
+  row exists, then use the Total Energy Purchased value as a fallback.
+
+4B — energy_purchased_lakh_units (energy bought from KSEB/KSEBL only):
+  TEXT: In the "Power Purchase Cost" section, look for:
+        "power purchase cost of Rs X Lakhs for Y LU of energy purchased from KSEBL"
+        The Y value is energy_purchased_lakh_units.
+  TABLE: Power Purchase Cost table → KSEB or KSEBL row → "Energy purchased" column → 
+         current year's Total value.
+  NOTE: This is ≤ energy_input (excludes solar/wheeled energy from other sources).
+
+4B2 — energy_sales_lakh_units (total energy output / energy delivered to consumers):
+  TABLE: In Annexure B / Energy Balance table, find the row labeled:
+         "Total Energy Output" or "Energy Sold" or "Energy Delivered to Consumers"
+         or "Energy Sales" or "Total Output" or "Units Sold".
+         Take the value from the current financial year's "Total" column.
+  CONSISTENCY CHECK: energy_sales = energy_input − actual_loss.
+  This is the energy that REACHES consumers after distribution losses.
+
+4C — actual_loss_lakh_units (measured distribution loss in LU):
+  TABLE: Energy Balance table → "Loss" row (input Total minus output Total) → 
+         current financial year's "Total" column.
+  If not in table: compute as energy_input_lakh_units − total energy sold.
+
+4D — distribution_loss_pct (actual loss as a percentage):
+  TABLE: Energy Balance table → "% loss" row → current financial year's "Total" column.
+
+4E — appc_rs_per_unit (average cost per unit of purchased power in Rs/unit):
+  TABLE: Power Purchase Cost table → "Average cost (Rs/unit)" column → Total row → current year.
+  OR compute: total_ppc_lakhs ÷ energy_purchased_lakh_units.
+
+approved_loss_lakh_units: ALWAYS return 0.0 — this value is never in the petition.
+
 
 RULES:
 - ALL values are in Rs. LAKHS. Numbers like 4,652.88 = 4652.88 lakhs.
@@ -251,7 +313,12 @@ EXAMPLE 1 (Technopark 2023-24 — standard format):
   },
   "total_expenditure": 7400.25,
   "total_revenue": 7400.25,
-  "distribution_loss_pct": 3.45
+  "distribution_loss_pct": 3.50,
+  "actual_loss_lakh_units": 8.12,
+  "approved_loss_lakh_units": 0.0,
+  "energy_input_lakh_units": 180.00,
+  "energy_purchased_lakh_units": 110.00,
+  "appc_rs_per_unit": 6.50
 }
 
 EXAMPLE 2 (KDHP 2024-25 — consolidated O&M format):
@@ -285,7 +352,12 @@ Use the SUB-TABLE breakdown values:
   "total_expenditure": 3855.06,
   "total_revenue": 3868.08,
   "distribution_loss_pct": 0.0,
-  "bee_energy_audit_fee": 2.15
+  "bee_energy_audit_fee": 2.15,
+  "actual_loss_lakh_units": 0.0,
+  "approved_loss_lakh_units": 0.0,
+  "energy_input_lakh_units": 0.0,
+  "energy_purchased_lakh_units": 0.0,
+  "appc_rs_per_unit": 0.0
 }
 
 Now extract the data from the provided PDF pages. Return ONLY valid JSON.
@@ -553,6 +625,20 @@ def _extract_with_gemini_vision(
         bee_fee = float(data.get("bee_energy_audit_fee", 0.0) or 0.0)
         logger.info(f"  [GeminiVision] bee_energy_audit_fee: {bee_fee}L")
         claimed_expenses["__bee_energy_audit_fee__"] = bee_fee
+
+        # Distribution loss unit values (already in Lakh units — no conversion)
+        actual_loss_lakh = float(data.get("actual_loss_lakh_units", 0.0) or 0.0)
+        approved_loss_lakh = float(data.get("approved_loss_lakh_units", 0.0) or 0.0)
+        appc = float(data.get("appc_rs_per_unit", 0.0) or 0.0)
+        if actual_loss_lakh > 0:
+            claimed_expenses["__actual_loss_lakh_units__"] = actual_loss_lakh
+            logger.info(f"  [GeminiVision] actual_loss_lakh_units: {actual_loss_lakh}")
+        if approved_loss_lakh > 0:
+            claimed_expenses["__approved_loss_lakh_units__"] = approved_loss_lakh
+            logger.info(f"  [GeminiVision] approved_loss_lakh_units: {approved_loss_lakh}")
+        if appc > 0:
+            claimed_expenses["__appc_rs_per_unit__"] = appc
+            logger.info(f"  [GeminiVision] appc_rs_per_unit: {appc}")
 
         return dist_loss
 
@@ -960,6 +1046,90 @@ def _extract_bee_fee_from_text(full_text: str) -> float:
     return 0.0
 
 
+def _extract_loss_units_from_text(full_text: str) -> tuple:
+    """
+    Extract distribution loss unit values and APPC from petition text.
+
+    KSERC petitions (Infopark, Technopark, CSEZA) express energy/loss in Lakh units.
+    The energy balance / distribution loss section typically contains a table like:
+
+        Distribution Loss (Actual)    6.94  Lakh units
+        Distribution Loss (Approved)  10.41 Lakh units
+        Average Power Purchase Cost   7.31  Rs/unit
+
+    Returns: (actual_loss_lakh_units, approved_loss_lakh_units, appc_rs_per_unit)
+    All 0.0 when not found.
+    """
+    if not full_text:
+        return 0.0, 0.0, 0.0
+
+    actual, approved, appc = 0.0, 0.0, 0.0
+
+    # ── Actual distribution loss units ─────────────────────────────────
+    actual_patterns = [
+        # "Distribution Loss (Actual)  6.94  Lakh units"
+        r"distribution\s+loss\s*\(actual\)[^\d]*([\d,]+\.?\d*)\s*(?:lakh\s*units?|lakh\s*kwh|l\.?\s*units?)",
+        r"actual\s+distribution\s+loss[^\d]*([\d,]+\.?\d*)\s*(?:lakh\s*units?|lakh\s*kwh)",
+        r"distribution\s+loss[\s\-:]*actual[^\d]*([\d,]+\.?\d*)\s*(?:lakh\s*units?|lakh\s*kwh)",
+        # Unambiguous: value directly after "Actual"
+        r"actual\s+loss\s+(?:units?)?[^\d]*([\d,]+\.?\d*)\s*(?:lakh|l\.?\s*unit)",
+    ]
+    for pat in actual_patterns:
+        m = re.search(pat, full_text, re.IGNORECASE | re.DOTALL)
+        if m:
+            try:
+                val = float(m.group(1).replace(",", ""))
+                if 0.1 <= val <= 5000:
+                    actual = val
+                    logger.info(f"[LossUnits] actual_loss_lakh_units={actual} from text")
+                    break
+            except ValueError:
+                continue
+
+    # ── Approved / normative distribution loss units ────────────────────
+    approved_patterns = [
+        r"distribution\s+loss\s*\(approved\)[^\d]*([\d,]+\.?\d*)\s*(?:lakh\s*units?|lakh\s*kwh)",
+        r"approved\s+distribution\s+loss[^\d]*([\d,]+\.?\d*)\s*(?:lakh\s*units?|lakh\s*kwh)",
+        r"distribution\s+loss[\s\-:]*approved[^\d]*([\d,]+\.?\d*)\s*(?:lakh\s*units?|lakh\s*kwh)",
+        r"normative\s+(?:distribution\s+)?loss[^\d]*([\d,]+\.?\d*)\s*(?:lakh\s*units?|lakh\s*kwh)",
+        r"approved\s+loss\s+(?:units?)?[^\d]*([\d,]+\.?\d*)\s*(?:lakh|l\.?\s*unit)",
+    ]
+    for pat in approved_patterns:
+        m = re.search(pat, full_text, re.IGNORECASE | re.DOTALL)
+        if m:
+            try:
+                val = float(m.group(1).replace(",", ""))
+                if 0.1 <= val <= 5000:
+                    approved = val
+                    logger.info(f"[LossUnits] approved_loss_lakh_units={approved} from text")
+                    break
+            except ValueError:
+                continue
+
+    # ── Average Power Purchase Cost (APPC) ──────────────────────────────
+    appc_patterns = [
+        # "Average Power Purchase Cost  7.31  Rs/unit"
+        r"average\s+power\s+purchase\s+cost[^\d]*([\d,]+\.?\d*)\s*(?:rs|₹)[/\s]*(?:unit|kwh|kw\.?h)",
+        r"appc[^\d]*([\d,]+\.?\d*)\s*(?:rs|₹)?[/\s]*(?:unit|kwh)",
+        r"(?:rs|₹)\.?\s*([\d,]+\.?\d*)\s*per\s+(?:unit|kwh)[^\n]{0,60}(?:average|appc|power\s+purchase)",
+        # APPC value after "average cost" heading
+        r"average\s+cost[^\d]*([\d,]+\.?\d*)\s*(?:rs|₹)?[/\s]*(?:unit|kwh)",
+    ]
+    for pat in appc_patterns:
+        m = re.search(pat, full_text, re.IGNORECASE | re.DOTALL)
+        if m:
+            try:
+                val = float(m.group(1).replace(",", ""))
+                if 1.0 <= val <= 30.0:  # sanity: APPC should be between Rs.1 and Rs.30/unit
+                    appc = val
+                    logger.info(f"[LossUnits] appc_rs_per_unit={appc} from text")
+                    break
+            except ValueError:
+                continue
+
+    return actual, approved, appc
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # Main LangGraph Node Function
 # ══════════════════════════════════════════════════════════════════════════
@@ -997,22 +1167,41 @@ def extract_petition_data(state: dict) -> dict:
     # Gemini Vision is non-deterministic — each API call can return different
     # values for the same PDF. To ensure consistent results between terminal
     # tests and frontend, cache extraction results by PDF file hash.
+    all_pdf_paths = [pdf_path] + state.get("annexure_pdf_paths", [])
     cache_dir = Path(__file__).resolve().parent.parent.parent / ".extraction_cache"
-    pdf_hash = hashlib.sha256(Path(pdf_path).read_bytes()).hexdigest()[:16]
+    # Hash all PDFs together for multi-file cache key
+    hasher = hashlib.sha256()
+    for p in all_pdf_paths:
+        hasher.update(Path(p).read_bytes())
+    pdf_hash = hasher.hexdigest()[:16]
     cache_key = f"{pdf_hash}_{licensee_name}_{target_fy}".replace(" ", "_")
     cache_file = cache_dir / f"{cache_key}.json"
     
     if cache_file.exists():
         try:
             cached = json.loads(cache_file.read_text(encoding="utf-8"))
-            logger.info(f"[CACHE HIT] Using cached extraction result from {cache_file.name}")
-            return cached
+            # Only use cache if it has valid expense data (non-zero total)
+            # A zero-valued cache means a previous run failed/was interrupted mid-extraction
+            cached_exp = cached.get("claimed_expenses", {})
+            cached_total = sum(v for v in cached_exp.values() if isinstance(v, (int, float)))
+            if cached_total > 0:
+                logger.info(f"[CACHE HIT] Using cached extraction result from {cache_file.name}")
+                return cached
+            else:
+                logger.warning(f"[CACHE] Cache has zero expenses — discarding stale cache, re-extracting...")
+                cache_file.unlink(missing_ok=True)
         except Exception as e:
             logger.warning(f"[CACHE] Failed to read cache: {e}, re-extracting...")
 
     claimed_expenses = _empty_expenses()
     claimed_revenues = _empty_revenues()
     dist_loss = 0.0
+    actual_loss_lakh_units = 0.0
+    approved_loss_lakh_units = 0.0
+    energy_input_lakh_units = 0.0    # Total energy into system — P1 priority for approved_loss calc
+    energy_sales_lakh_units = 0.0    # Energy sold/supplied to consumers — P2 derivation of energy_input
+    energy_purchased_lakh_units = 0.0   # Total energy purchased (for APPC = PPC / energy_purchased)
+    appc_rs_per_unit = 0.0
     extraction_method = "none"
     
     # Extract target financial year from state or PDF filename
@@ -1095,9 +1284,9 @@ def extract_petition_data(state: dict) -> dict:
 
             prompt = dynamic_prefix + GEMINI_VISION_PROMPT
 
-            logger.info(f"[NATIVE PDF] Uploading petition PDF for ARR extraction...")
+            logger.info(f"[NATIVE PDF] Uploading {len(all_pdf_paths)} petition PDF(s) for ARR extraction...")
             raw = generate_with_pdf(
-                pdf_path=pdf_path,
+                pdf_path=all_pdf_paths if len(all_pdf_paths) > 1 else pdf_path,
                 prompt=prompt,
                 model="gemini-2.5-pro",
                 temperature=0.0,
@@ -1127,7 +1316,41 @@ def extract_petition_data(state: dict) -> dict:
                     claimed_revenues[key] = float(gemini_revenues[key])
 
             dist_loss = float(data.get("distribution_loss_pct", 0.0))
+            
+            # Extract energy and loss values from Gemini's structured output
+            actual_loss_lakh_units      = float(data.get("actual_loss_lakh_units", 0.0) or 0.0)
+            approved_loss_lakh_units    = float(data.get("approved_loss_lakh_units", 0.0) or 0.0)
+            energy_input_lakh_units     = float(data.get("energy_input_lakh_units", 0.0) or 0.0)
+            energy_sales_lakh_units     = float(data.get("energy_sales_lakh_units", 0.0) or 0.0)
+            energy_purchased_lakh_units = float(data.get("energy_purchased_lakh_units", 0.0) or 0.0)
+            appc_rs_per_unit            = float(data.get("appc_rs_per_unit", 0.0) or 0.0)
+            logger.info(
+                f"[NATIVE PDF] Energy: input={energy_input_lakh_units}, sales={energy_sales_lakh_units}, "
+                f"purchased={energy_purchased_lakh_units} LU | "
+                f"Loss: actual={actual_loss_lakh_units}, approved={approved_loss_lakh_units} LU | "
+                f"APPC={appc_rs_per_unit} Rs/unit"
+            )
+            
             logger.info(f"[NATIVE PDF] ARR extraction complete: total_exp={sum(claimed_expenses.values()):.2f}")
+
+            # ── MU → Lakh Units auto-detection ──
+            # Some petitions (e.g. Technopark) report energy in MU (Million Units).
+            # If energy_sales > 0 but suspiciously small (< 200) while PPC is large (> 1000),
+            # the values are likely in MU and need ×10 conversion.
+            ppc_val = claimed_expenses.get("power_purchase_cost", 0.0)
+            if energy_sales_lakh_units > 0 and energy_sales_lakh_units < 200 and ppc_val > 1000:
+                logger.warning(
+                    f"  [MU Detection] energy_sales={energy_sales_lakh_units} looks like MU "
+                    f"(too small vs PPC={ppc_val}). Converting ×10 to Lakh Units."
+                )
+                energy_input_lakh_units     *= 10
+                energy_sales_lakh_units     *= 10
+                actual_loss_lakh_units      *= 10
+                energy_purchased_lakh_units *= 10
+                logger.info(
+                    f"  [MU Detection] After conversion: input={energy_input_lakh_units}, "
+                    f"sales={energy_sales_lakh_units}, loss={actual_loss_lakh_units} LU"
+                )
 
             # ── KDHP Post-Processing ──
             if "KDHP" in licensee_name or "KANNAN" in licensee_name:
@@ -1142,10 +1365,19 @@ def extract_petition_data(state: dict) -> dict:
                     claimed_expenses["interest_consumer_deposits"] = 0.0
                     logger.info(f"  [KDHP PostProcess] Combined interest -> interest_long_term={total_interest}")
 
+                # ── Override power_purchase_cost with Net Charges from PPC sub-table ──
+                ppc_net = float(data.get("ppc_net_charges_rs_lakhs", 0.0) or 0.0)
+                if ppc_net > 0:
+                    old_ppc = claimed_expenses.get("power_purchase_cost", 0.0)
+                    claimed_expenses["power_purchase_cost"] = round(ppc_net, 2)
+                    logger.info(f"  [KDHP PostProcess] power_purchase_cost overridden: {old_ppc} → {ppc_net} (from PPC sub-table Net Charges)")
+                else:
+                    logger.warning("  [KDHP PostProcess] ppc_net_charges_rs_lakhs not found — power_purchase_cost may be wrong")
+
                 nti = claimed_revenues.get("non_tariff_income", 0.0)
                 other_rev = claimed_revenues.get("other_revenue", 0.0)
                 if nti < 50 and other_rev > 0:
-                    logger.warning(f"  [KDHP PostProcess] non_tariff_income={nti} seems too low (expected ~124). Check Table 30.")
+                    logger.warning(f"  [KDHP PostProcess] non_tariff_income={nti} seems too low. Check Table 30 for sub-total.")
 
         except Exception as e:
             logger.error(f"Native PDF extraction error: {e}, falling back...")
@@ -1197,7 +1429,36 @@ def extract_petition_data(state: dict) -> dict:
         bee_fee    = gemini_bee if gemini_bee > 0.0 else regex_bee
         if bee_fee > 0.0:
             logger.info(f"BEE fee resolved: Rs.{bee_fee:.2f}L (source: {'gemini' if gemini_bee > 0.0 else 'regex'})")
-        
+
+        # Priority 1: from claimed_expenses hidden keys (older Gemini prompt style)
+        # Priority 2: from top-level JSON keys (newer Gemini prompt style — lines 1282-1286 above)
+        # Keep whichever source gave a non-zero value.
+        hidden_actual   = float(claimed_expenses.pop("__actual_loss_lakh_units__", 0.0) or 0.0)
+        hidden_approved = float(claimed_expenses.pop("__approved_loss_lakh_units__", 0.0) or 0.0)
+        hidden_appc     = float(claimed_expenses.pop("__appc_rs_per_unit__", 0.0) or 0.0)
+        # Merge: prefer hidden key if non-zero, else keep top-level value already parsed
+        actual_loss_lakh_units   = hidden_actual   if hidden_actual   > 0 else actual_loss_lakh_units
+        approved_loss_lakh_units = hidden_approved if hidden_approved > 0 else approved_loss_lakh_units
+        appc_rs_per_unit         = hidden_appc     if hidden_appc     > 0 else appc_rs_per_unit
+
+        if actual_loss_lakh_units == 0.0 or approved_loss_lakh_units == 0.0:
+            # Gemini didn't get them — try regex on full petition text
+            regex_actual, regex_approved, regex_appc = _extract_loss_units_from_text(full_text)
+            if actual_loss_lakh_units == 0.0:
+                actual_loss_lakh_units = regex_actual
+            if approved_loss_lakh_units == 0.0:
+                approved_loss_lakh_units = regex_approved
+            if appc_rs_per_unit == 0.0:
+                appc_rs_per_unit = regex_appc
+
+        if actual_loss_lakh_units > 0:
+            src = "gemini" if claimed_expenses.get("__actual_loss_lakh_units__") else "regex"
+            logger.info(
+                f"Loss units resolved ({src}): actual={actual_loss_lakh_units} L units, "
+                f"approved={approved_loss_lakh_units} L units, APPC={appc_rs_per_unit} Rs/unit"
+            )
+
+
         # ── KDHP Cross-Validation: PyMuPDF deterministic override ──────────
         # Gemini Vision is non-deterministic — each call can read different columns.
         # PyMuPDF row-scan is deterministic (same input → same output every time).
@@ -1292,6 +1553,89 @@ def extract_petition_data(state: dict) -> dict:
         for w in extraction_warnings:
             logger.warning(f"  ⚠ {w}")
     
+    # ── PyMuPDF Energy Table Fallback ─────────────────────────────────
+    # If Gemini returned 0 for energy, scan the PDF tables directly with PyMuPDF
+    if energy_sales_lakh_units == 0.0:
+        logger.info("[Energy PyMuPDF] Gemini returned 0 energy — scanning PDF tables...")
+        try:
+            import fitz
+            doc = fitz.open(pdf_path)
+            for pi in range(len(doc)):
+                page = doc[pi]
+                page_text = page.get_text()
+                # Look for pages containing energy balance / Form D tables
+                if not any(kw in page_text for kw in ['Energy Sales', 'Energy purchase', 'Distribution Loss', 'Energy Input']):
+                    continue
+                
+                logger.info(f"  [Energy PyMuPDF] Found energy keywords on page {pi+1}")
+                tabs = page.find_tables()
+                for ti, tab in enumerate(tabs):
+                    df = tab.to_pandas()
+                    flat_text = df.to_string().lower()
+                    if 'energy' not in flat_text and 'distribution loss' not in flat_text:
+                        continue
+                    
+                    # Search each row for "Overall Distribution Loss" or "Total" summary row
+                    for ri in range(len(df)):
+                        row_text = ' '.join(str(c) for c in df.iloc[ri] if c is not None).lower()
+                        is_total_row = ('overall' in row_text or 
+                                       ('total' in row_text and 'distribution' in flat_text))
+                        if not is_total_row:
+                            continue
+                        
+                        logger.info(f"  [Energy PyMuPDF] Found total row on page {pi+1}: {row_text[:80]}")
+                        # Extract numeric values from this row
+                        nums = []
+                        for cell in df.iloc[ri]:
+                            if cell is None:
+                                continue
+                            s = str(cell).strip().replace(',', '')
+                            # Skip percentage values
+                            if '%' in s:
+                                continue
+                            try:
+                                v = float(s)
+                                if v > 0:
+                                    nums.append(v)
+                            except ValueError:
+                                pass
+                        
+                        if len(nums) >= 3:
+                            # Sort to identify: smallest=solar/gen, middle=loss, largest=purchase/sales
+                            # Typical pattern: [solar_gen, energy_purchase, energy_sales, dist_loss]
+                            # energy_purchase > energy_sales > dist_loss > solar_gen
+                            sorted_nums = sorted(nums, reverse=True)
+                            energy_purchased_lakh_units = round(sorted_nums[0], 2)  # Largest = purchase
+                            energy_sales_lakh_units = round(sorted_nums[1], 2)      # 2nd largest = sales
+                            actual_loss_lakh_units = round(sorted_nums[2], 2)       # 3rd = loss
+                            energy_input_lakh_units = round(energy_purchased_lakh_units + nums[0] if nums[0] < 10 else energy_purchased_lakh_units, 2)
+                            
+                            # Better: energy_input = energy_sales + actual_loss
+                            energy_input_lakh_units = round(energy_sales_lakh_units + actual_loss_lakh_units, 2)
+                            
+                            logger.info(
+                                f"  [Energy PyMuPDF] Extracted: purchase={energy_purchased_lakh_units}, "
+                                f"sales={energy_sales_lakh_units}, loss={actual_loss_lakh_units}, "
+                                f"input={energy_input_lakh_units} LU"
+                            )
+                            break
+                    
+                    if energy_sales_lakh_units > 0:
+                        break
+                if energy_sales_lakh_units > 0:
+                    break
+            doc.close()
+            
+            # Compute APPC if we have energy values
+            if appc_rs_per_unit == 0.0 and energy_purchased_lakh_units > 0:
+                ppc_val = claimed_expenses.get("power_purchase_cost", 0.0)
+                if ppc_val > 0:
+                    appc_rs_per_unit = round(ppc_val / energy_purchased_lakh_units, 2)
+                    logger.info(f"  [Energy PyMuPDF] Computed APPC = {ppc_val}/{energy_purchased_lakh_units} = {appc_rs_per_unit} Rs/unit")
+            
+        except Exception as e:
+            logger.error(f"[Energy PyMuPDF] Table scan failed: {e}")
+
     logger.info(f"claimed_expenses total: {total_exp:.2f} Lakhs")
     logger.info(f"claimed_revenues total: {total_rev:.2f} Lakhs")
     logger.info(f"distribution_loss_pct: {dist_loss}%")
@@ -1305,6 +1649,12 @@ def extract_petition_data(state: dict) -> dict:
         "asset_register":                 asset_register,
         "claimed_distribution_loss_pct":  dist_loss,
         "bee_energy_audit_fee":           bee_fee,
+        "actual_loss_lakh_units":         actual_loss_lakh_units,
+        "approved_loss_lakh_units":       approved_loss_lakh_units,
+        "energy_input_lakh_units":        energy_input_lakh_units,
+        "energy_sales_lakh_units":        energy_sales_lakh_units,
+        "energy_purchased_lakh_units":    energy_purchased_lakh_units,
+        "appc_rs_per_unit":               appc_rs_per_unit,
         "extraction_metadata": {
             "method": extraction_method,
             "checksum_passed": checksum_passed,
@@ -1313,6 +1663,7 @@ def extract_petition_data(state: dict) -> dict:
             "extraction_warnings": extraction_warnings,
         },
     }
+
     
     # ── Save to extraction cache ──────────────────────────────────────
     # Cache successful extractions so the same PDF always returns the same result.
