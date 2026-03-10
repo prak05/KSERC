@@ -60,6 +60,8 @@ function ResultsContent() {
     useEffect(() => {
         if (caseId) {
             fetchReportData();
+        } else {
+            setLoading(false);
         }
     }, [caseId]);
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UploadCloud, BarChart2, FileText, BookOpen } from "lucide-react";
+import { UploadCloud, BarChart2, FileText, BookOpen, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Sidebar() {
@@ -39,6 +39,10 @@ export function Sidebar() {
                 <Link href="/report" className={navItemClass("/report")}>
                     <FileText className={cn("h-[15px] w-[15px] shrink-0", isActive("/report") ? "opacity-100" : "opacity-70")} />
                     Generate Report
+                </Link>
+                <Link href="/history" className={navItemClass("/history")}>
+                    <Clock className={cn("h-[15px] w-[15px] shrink-0", isActive("/history") ? "opacity-100" : "opacity-70")} />
+                    Historical Data
                 </Link>
             </div>
 

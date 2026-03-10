@@ -1,0 +1,1125 @@
+{
+  "Technopark": {
+    "2022-23": {
+      "order_structure": {
+        "sections": [
+          "Energy sales and consumer mix",
+          "Energy Requirement and Distribution loss",
+          "Power Purchase Cost",
+          "Operation & Maintenance Expenses",
+          "Employee cost",
+          "R & M Expenses",
+          "Administration and General Expenses",
+          "Assets Addition",
+          "Depreciation",
+          "Interest and Finance Charges",
+          "Return on Net Fixed Assets",
+          "Revenue from Sale of Power",
+          "Non-Tariff Income",
+          "Revenue Surplus/Gap for 2022-23"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 68
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 673.07,
+        "energy_sold_lakh_units": 643.34,
+        "actual_distribution_loss_pct": 4.42,
+        "approved_distribution_loss_pct": 3.45,
+        "target_distribution_loss_pct": 3.45
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 4652.88,
+        "employee_cost": 54.54,
+        "repair_maintenance": 447.65,
+        "admin_general": 92.05,
+        "depreciation": 162.45,
+        "interest_long_term": 8.96,
+        "interest_consumer_deposits": 72.7,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 86.6,
+        "other_debits": 0.0,
+        "section3_1_duty": 36.98
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 4606.04,
+        "employee_cost": 27.82,
+        "repair_maintenance": 402.43,
+        "admin_general": 36.99,
+        "depreciation": 75.43,
+        "interest_long_term": 8.5,
+        "interest_consumer_deposits": 72.7,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 35.95,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 5750.11,
+        "non_tariff_income": 78.09,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 5750.11,
+        "non_tariff_income": 167.38,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 7251.11,
+        "accumulated_depreciation": 2065.39,
+        "net_fixed_assets": 5185.72,
+        "consumer_contribution": 0.0,
+        "grants_subsidies": 612.06,
+        "normative_loan_70pct": 0.0,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 8.49
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "employee_cost",
+          "claimed": 54.54,
+          "approved": 27.82,
+          "kserc_reasoning": "As per the Tariff Regulations, 2021, the licensee shall be allowed to recover the operation and maintenance expenses as per the norms specified in Annexure-7 of Tariff Regulations 2021 for each financial year of the Control Period. ... Considering the above, the Commission hereby approves the employee cost of Rs. 27.82 lakh for the year 2022-23 as per the norm after adjusting actual inflation."
+        },
+        {
+          "component": "power_purchase_cost",
+          "claimed": 4652.88,
+          "approved": 4606.04,
+          "kserc_reasoning": "As per the Tariff Regulations 2021, if the actual distribution loss is higher than the approved level of distribution loss, then the quantum of power purchased corresponding to the excess distribution loss shall be disallowed at the average cost of power purchase. Accordingly, the power purchase cost based on the approved distribution loss of 3.45% for the year 2022-23 is as shown below."
+        },
+        {
+          "component": "section3_1_duty",
+          "claimed": 36.98,
+          "approved": 0.0,
+          "kserc_reasoning": "The Commission examined the submission of the licensee and observed that, the licensee has booked Rs. 36.98 lakh towards Electricity Duty for the year 2022-23. The Commission in the previous Orders had stated that duty under Section 3 cannot be passed on to the consumers in view of the statutory provisions of the Kerala Electricity Duty Act, 1963. Hence the same is disallowed."
+        },
+        {
+          "component": "depreciation",
+          "claimed": 162.45,
+          "approved": 75.43,
+          "kserc_reasoning": "Accordingly, the Commission hereby approves depreciation of Rs.94.17 lakh for the year 2019-20, Rs. 96.59 for the year 2020-21 Rs.75.50 lakh for the year 2021-22 and Rs.75.43 lakh for the year 2022-23 as per the revised calculation as shown above. ... Accordingly, the Commission hereby claws back Rs. 162.56 lakh as excess amount of depreciation provisionally approved in previous years."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 5577.83,
+        "total_expenditure_approved": 5104.68,
+        "total_revenue_approved": 5917.49,
+        "revenue_gap_surplus": 812.81,
+        "cumulative_gap_surplus": 3367.92,
+        "imputed_interest_on_surplus": 89.29
+      },
+      "_meta": {
+        "licensee": "Technopark",
+        "fy": "2022-23",
+        "order_ref": "OP 84/2023",
+        "source_file": "Technopark True-Up 2022-23 (OP 84 2023).pdf",
+        "pages_processed": 32
+      }
+    }
+  },
+  "Infopark": {
+    "2022-23": {
+      "order_structure": {
+        "sections": [
+          "Energy sales and consumer mix",
+          "Energy Requirement and Distribution Loss",
+          "Power purchase cost",
+          "Operation & Maintenance Expenses",
+          "Employee Cost",
+          "Repair and Maintenance Expenses",
+          "Administration & General expenses",
+          "Asset Addition",
+          "Depreciation",
+          "Interest and finance charges",
+          "Return on Net Fixed Assets",
+          "Revenue from Sale of Power",
+          "Wheeling Charges",
+          "Non-Tariff Income",
+          "Revenue Surplus/Gap for 2022-23"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 72
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 102.26,
+        "energy_sold_lakh_units": 98.58,
+        "actual_distribution_loss_pct": 3.93,
+        "approved_distribution_loss_pct": 4.23,
+        "target_distribution_loss_pct": 4.23
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 704.72,
+        "employee_cost": 24.99,
+        "repair_maintenance": 49.71,
+        "admin_general": 8.79,
+        "depreciation": 47.21,
+        "interest_long_term": 50.91,
+        "interest_consumer_deposits": 3.79,
+        "interest_working_capital": 2.7,
+        "carrying_cost": 40.55,
+        "return_on_nfa": 38.7,
+        "other_debits": 0.48,
+        "section3_1_duty": 0.0
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 706.94,
+        "employee_cost": 23.53,
+        "repair_maintenance": 35.57,
+        "admin_general": 6.04,
+        "depreciation": 47.21,
+        "interest_long_term": 48.36,
+        "interest_consumer_deposits": 3.78,
+        "interest_working_capital": 2.93,
+        "carrying_cost": 41.36,
+        "return_on_nfa": 41.3,
+        "other_debits": 0.48,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 874.03,
+        "non_tariff_income": 4.95,
+        "wheeling_charges": 36.1,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 874.03,
+        "non_tariff_income": 4.95,
+        "wheeling_charges": 36.1,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 1168.92,
+        "accumulated_depreciation": 268.92,
+        "net_fixed_assets": 750.9,
+        "consumer_contribution": 0.0,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 703.69,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 6.65
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "employee_cost",
+          "claimed": 24.99,
+          "approved": 23.53,
+          "kserc_reasoning": "Accordingly, the Commission hereby approves the employee expenses of Rs.23.53 lakh based on actual inflation rate for the year 2022-23 against the licensee’s claim of Rs.24.99 lakh."
+        },
+        {
+          "component": "repair_maintenance",
+          "claimed": 49.71,
+          "approved": 35.57,
+          "kserc_reasoning": "Considering the above provisions, the Commission noted that, the expenses of Rs.2.72 lakh for Transformer painting, Rs.3.16 lakh for Replacement of LA at Cherthala, Rs.3.81 lakh for 110 kV Switchyard painting and Rs.0.98 lakh for cable cellar painting at 220 kV substation can be considered as One-time expenses (Total Expenses of Rs.10.67 lakh) for the year 2022-23 and the other expenses cannot be considered as a one-time maintenance expense."
+        },
+        {
+          "component": "admin_general",
+          "claimed": 8.79,
+          "approved": 6.04,
+          "kserc_reasoning": "Considering Para 31 of this Order, the Commission has already approved Rs.4.80 lakh as A&G Expenses based on actual inflation rate for the year 2022-23. Accordingly, the Commission hereby approves an amount of Rs.6.04 lakh (Rs.4.80 lakh + Rs.1.24 lakh) including one-time expense, as the A&G expenses for the year 2022-23."
+        },
+        {
+          "component": "interest_long_term",
+          "claimed": 50.91,
+          "approved": 48.36,
+          "kserc_reasoning": "As per second proviso to Regulation 29 (4) of the Tariff Regulations 2021, if there is no actual loan portfolio, interest charge is to be allowed at the base rate. The base rate is the External Benchmark-Linked Lending Rate (EBLR) declared by the State Bank of India as applicable on first day of April of respective financial year."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 972.56,
+        "total_expenditure_approved": 957.5,
+        "total_revenue_approved": 915.08,
+        "revenue_gap_surplus": -42.42,
+        "cumulative_gap_surplus": 853.43,
+        "imputed_interest_on_surplus": 0.0
+      },
+      "_meta": {
+        "licensee": "Infopark",
+        "fy": "2022-23",
+        "order_ref": "OP 82/2023",
+        "source_file": "Infopark True-Up 2022-23 (OP 82 2023).pdf",
+        "pages_processed": 25
+      }
+    },
+    "2024-25": {
+      "order_structure": {
+        "sections": [
+          "Hearing on the Petition",
+          "Analysis and decision of the Commission",
+          "Energy sales and consumer mix",
+          "Energy Requirement and Distribution Loss",
+          "Power purchase cost",
+          "Operation & Maintenance expenses",
+          "Employee Cost",
+          "Repair and Maintenance Expenses",
+          "Administration & General Expenses",
+          "O&M Expenses Approved",
+          "Depreciation",
+          "Interest and finance charges",
+          "Return on Net Fixed Assets",
+          "Revenue from Sale of Power",
+          "Wheeling Charges",
+          "Non-Tariff Income",
+          "Revenue Surplus/Gap for 2024-25",
+          "Orders of the Commission"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 68
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 139.93,
+        "energy_sold_lakh_units": 137.61,
+        "actual_distribution_loss_pct": 2.86,
+        "approved_distribution_loss_pct": 4.23,
+        "target_distribution_loss_pct": 4.23
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 1023.94,
+        "employee_cost": 29.86,
+        "repair_maintenance": 58.3,
+        "admin_general": 10.06,
+        "depreciation": 47.21,
+        "interest_long_term": 56.33,
+        "interest_consumer_deposits": 8.41,
+        "interest_working_capital": 8.89,
+        "carrying_cost": 62.26,
+        "return_on_nfa": 36.11,
+        "other_debits": 0.72,
+        "section3_1_duty": 0.0
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 1040.85,
+        "employee_cost": 25.07,
+        "repair_maintenance": 34.13,
+        "admin_general": 7.35,
+        "depreciation": 47.21,
+        "interest_long_term": 56.33,
+        "interest_consumer_deposits": 8.41,
+        "interest_working_capital": 8.6,
+        "carrying_cost": 62.26,
+        "return_on_nfa": 36.11,
+        "other_debits": 0.72,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 1187.62,
+        "non_tariff_income": 10.24,
+        "wheeling_charges": 64.46,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 1187.62,
+        "non_tariff_income": 10.24,
+        "wheeling_charges": 64.46,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 1168.92,
+        "accumulated_depreciation": 0.0,
+        "net_fixed_assets": 656.48,
+        "consumer_contribution": 0.0,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 0.0,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 8.9
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "employee_cost",
+          "claimed": 29.86,
+          "approved": 25.07,
+          "kserc_reasoning": "The major heads under employee expense are basic salary, DA, other allowances etc. The Commission analysed the details submitted by the licensee and is of the view that, O&M expense being a controllable expense may be limited to the approved norms. Accordingly, the Commission hereby approves the employee expenses of Rs.25.07 lakh based on actual inflation rate for the year 2024-25 as worked out in Table 13 as against the licensee’s claim of Rs.29.86 lakh."
+        },
+        {
+          "component": "repair_maintenance",
+          "claimed": 58.3,
+          "approved": 34.13,
+          "kserc_reasoning": "During the hearing with regard to the onetime expenditure incurred for the replacement of EHT bushing (220 KV grade) at Phase II and for LA at Cherthala installations, the Commission was of the opinion that it shall be treated as capital expenditure instead of claiming it under the head Repair and Maintenance expense. The licensee vide clarifications dated 21.01.2026 treating it as asset addition and the eligible depreciation for the replacement of the EHT bushing and LA will be claimed in the ensuing year as prior period depreciation. Therefore, after analysing the details the Commission hereby approves Rs.7.69 lakh (Excluding the onetime expense of Rs.8.80 lakh for replacement of EHT bushing and Rs.2.79 lakh for Replacement of LA) as onetime expenditure for the year 2024-25."
+        },
+        {
+          "component": "admin_general",
+          "claimed": 10.06,
+          "approved": 7.35,
+          "kserc_reasoning": "The Commission examined the submissions by the licensee as well as the explanations given in the hearing and noted that Energy audit fee can be considered as an additional item which was not reckoned at the time of arriving at the norms. Therefore, the Commission approves Rs.2.24 lakh as Energy Audit fee under A&G Expenses. Considering Para 28 of this Order, the Commission has already approved Rs.5.11 lakh as A&G Expenses based on actual inflation rate for the year 2024-25 which aligns with the approved norms as per Tariff Regulations 2021. Therefore, Commission hereby approves an amount of Rs.7.35 lakh (Rs.5.11 lakh+ Rs.2.24 lakh) as the A&G expenses for the year 2024-25."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 1342.08,
+        "total_expenditure_approved": 1327.04,
+        "total_revenue_approved": 1262.32,
+        "revenue_gap_surplus": 64.72,
+        "cumulative_gap_surplus": 980.31,
+        "imputed_interest_on_surplus": 0.0
+      },
+      "_meta": {
+        "licensee": "Infopark",
+        "fy": "2024-25",
+        "order_ref": "OP 59/2025",
+        "source_file": "Infopark True-Up 2024-25 (OP 59 2025).pdf",
+        "pages_processed": 25
+      }
+    }
+  },
+  "CSEZA": {
+    "2020-21": {
+      "order_structure": {
+        "sections": [
+          "Public Hearing on the Petition",
+          "Analysis and decision of the Commission",
+          "Energy Sales and Number of Consumers",
+          "Energy Requirement and Distribution loss",
+          "Power Purchase Cost",
+          "Operation & Maintenance Expenses",
+          "Employee cost",
+          "Administration and General Expenses",
+          "Repair and Maintenance Charges",
+          "Asset Additions during the year 2020-21",
+          "Depreciation",
+          "Interest and Finance Charges",
+          "Return on NFA",
+          "Revenue from sale of power",
+          "Non-Tariff Income",
+          "Revenue (Gap)/Surplus after Truing Up of Accounts for 2020-21",
+          "Orders of the Commission"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 73
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 494.3,
+        "energy_sold_lakh_units": 503.57,
+        "actual_distribution_loss_pct": 1.27,
+        "approved_distribution_loss_pct": 1.38,
+        "target_distribution_loss_pct": 1.38
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 3167.46,
+        "employee_cost": 137.93,
+        "repair_maintenance": 8.95,
+        "admin_general": 35.69,
+        "depreciation": 96.47,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 0.0,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 34.85,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 3169.77,
+        "employee_cost": 137.93,
+        "repair_maintenance": 8.95,
+        "admin_general": 35.69,
+        "depreciation": 36.65,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 0.0,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 15.73,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 3553.4,
+        "non_tariff_income": 97.05,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 3553.4,
+        "non_tariff_income": 100.19,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 2284.74,
+        "accumulated_depreciation": 0.0,
+        "net_fixed_assets": 1161.61,
+        "consumer_contribution": 0.0,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 0.0,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 0.0
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "depreciation",
+          "claimed": 96.47,
+          "approved": 36.65,
+          "kserc_reasoning": "The total depreciation applicable for the year is Rs.85.56 lakh. However, as shown above, the assets created out of accumulated surplus is Rs.948.39 lakh. Depreciation is not allowable on these assets amounting to Rs.948.39 lakh. Hence the depreciation of Rs.48.91 lakh applicable to the said assets @5.28% is deducted from the total depreciation of Rs.85.56 lakh. Hence the depreciation approved for the year is Rs.36.65 lakh."
+        },
+        {
+          "component": "return_on_nfa",
+          "claimed": 34.85,
+          "approved": 15.73,
+          "kserc_reasoning": "As shown above, after deducting the assets created out of accumulated surplus, the RoNFA eligible for the year 2020-21 is Rs. 15.73 lakh. Accordingly, the Commission hereby approves Rs.15.73 lakh (3% of Rs.524.17 lakh) as return on net fixed assets for the year 2020-21 as against Rs.34.85 lakh claimed by the licensee."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 3481.35,
+        "total_expenditure_approved": 3423.83,
+        "total_revenue_approved": 3653.59,
+        "revenue_gap_surplus": 229.76,
+        "cumulative_gap_surplus": 1621.29,
+        "imputed_interest_on_surplus": 0.0
+      },
+      "_meta": {
+        "licensee": "CSEZA",
+        "fy": "2020-21",
+        "order_ref": "CSEZA TU 2020-21",
+        "source_file": "Cochin Special Economic Zone Authority FY 2020-21 Truing Up Order.pdf",
+        "pages_processed": 34
+      }
+    },
+    "2019-20": {
+      "order_structure": {
+        "sections": [
+          "Energy Sales and No of Consumers",
+          "Energy Requirement and Distribution loss",
+          "Power Purchase Cost",
+          "Operation & Maintenance expenses",
+          "Employee cost",
+          "Repair and Maintenance Charges",
+          "Administration and General Expenses",
+          "O&M expenses approved for 2019-20",
+          "Asset Additions during the year 2019-20",
+          "Depreciation",
+          "Interest and Finance Charges",
+          "Return on NFA",
+          "Revenue from sale of power",
+          "Non-Tariff Income",
+          "Revenue Surplus after Truing Up of Accounts for 2019-20",
+          "Orders of the Commission",
+          "Directives"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 73
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 575.2,
+        "energy_sold_lakh_units": 567.1,
+        "actual_distribution_loss_pct": 1.41,
+        "approved_distribution_loss_pct": 1.41,
+        "target_distribution_loss_pct": 1.4
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 3582.29,
+        "employee_cost": 138.96,
+        "repair_maintenance": 5.2,
+        "admin_general": 29.73,
+        "depreciation": 76.93,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 0.0,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 36.04,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 3582.29,
+        "employee_cost": 192.29,
+        "repair_maintenance": 0.0,
+        "admin_general": 0.0,
+        "depreciation": 36.65,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 0.0,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 16.82,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 3880.28,
+        "non_tariff_income": 124.36,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 3880.28,
+        "non_tariff_income": 124.36,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 1839.68,
+        "accumulated_depreciation": 0.0,
+        "net_fixed_assets": 560.82,
+        "consumer_contribution": 0.0,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 0.0,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 0.0
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "Depreciation",
+          "claimed": 76.93,
+          "approved": 36.65,
+          "kserc_reasoning": "The total depreciation applicable for the year is Rs.68.68 lakh. However, as shown above, the assets created out of accumulated surplus is Rs.608.67 lakh. Depreciation is not allowable to this asset amounting to Rs.606.67 lakh. Hence the depreciation of Rs.32.03 lakh applicable to the said assets @5.28% is deducted from the total depreciation of Rs.68.68 lakh. Hence the depreciation for approved for the year is Rs.36.65 lakh. Accordingly, against a claim of Rs.76.93 lakh in the Truing Up of account petition, the Commission hereby approves the depreciation of Rs.36.65 lakh for the year 2019-20."
+        },
+        {
+          "component": "Return on NFA",
+          "claimed": 36.04,
+          "approved": 16.82,
+          "kserc_reasoning": "While Truing Up the accounts for the year 2018-19, the Commission had approved an amount of Rs.17.84 lakh as against Rs.37.79 lakh claimed by the licensee. The licensee has created assets from 2016-17 using their accumulated surplus. Since the same has no cost of funds, the return on NFA is not allowable for the said assets. ... As shown above, after deducting the assets created out of accumulated surplus, the RoNFA eligible for the year 2019-20 is Rs. 16.82 lakh. Accordingly, the Commission hereby approves the amount of Rs.16.82 lakh (3% of Rs.560.82 lakh) as return on net fixed assets for the year 2019-20."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 3869.15,
+        "total_expenditure_approved": 3828.05,
+        "total_revenue_approved": 4004.64,
+        "revenue_gap_surplus": 176.59,
+        "cumulative_gap_surplus": 1391.53,
+        "imputed_interest_on_surplus": 0.0
+      },
+      "_meta": {
+        "licensee": "CSEZA",
+        "fy": "2019-20",
+        "order_ref": "CSEZA TU 2019-20",
+        "source_file": "Cochin Special Economic Zone Authority FY 2019-20 Truing Up Order.pdf",
+        "pages_processed": 28
+      }
+    },
+    "2018-19": {
+      "order_structure": {
+        "sections": [
+          "Energy Sales, Consumer Mix and Distribution loss",
+          "Power Purchase Cost",
+          "O&M expenses",
+          "Employee cost",
+          "Repair and Maintenance Expenses",
+          "Administration and General Expenses",
+          "Capital expenditure",
+          "Depreciation",
+          "Interest and Finance Charges",
+          "Return on Net Fixed Assets",
+          "Gross Revenue requirements",
+          "Revenue from Sale of Power",
+          "Non- Tariff Income",
+          "Total Income",
+          "Summary of Truing up of Accounts 2018-19",
+          "Orders of the Commission"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 58
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 567.34,
+        "energy_sold_lakh_units": 559.11,
+        "actual_distribution_loss_pct": 2.085,
+        "approved_distribution_loss_pct": 1.45,
+        "target_distribution_loss_pct": 1.45
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 3435.9,
+        "employee_cost": 137.58,
+        "repair_maintenance": 12.24,
+        "admin_general": 29.16,
+        "depreciation": 76.68,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 0.0,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 37.79,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 3413.42,
+        "employee_cost": 137.58,
+        "repair_maintenance": 12.24,
+        "admin_general": 29.16,
+        "depreciation": 33.85,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 0.0,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 17.84,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 3556.29,
+        "non_tariff_income": 114.6,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 3556.29,
+        "non_tariff_income": 114.6,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 1836.99,
+        "accumulated_depreciation": 692.58,
+        "net_fixed_assets": 1144.41,
+        "consumer_contribution": 0.0,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 0.0,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 0.0
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "depreciation",
+          "claimed": 76.68,
+          "approved": 33.85,
+          "kserc_reasoning": "Accordingly, as shown above, the depreciation attributable to assets created out of accumulated surplus is deducted from the depreciation claimed by the licensee. Accordingly, against a claim of Rs.76.68 lakh in the truing up petition, the Commission approves a depreciation of Rs.33.85 lakh for the year 2018-19."
+        },
+        {
+          "component": "return_on_nfa",
+          "claimed": 37.79,
+          "approved": 17.84,
+          "kserc_reasoning": "However, as noted in the previous section, the licensee has created assets from 2016-17 using the accumulated surplus. Since the same has no cost of funds, the return on NFA is not allowable for the said assets. Accordingly the Commission approves Rs.17.84 lakh (3% of Rs.594.67 lakh) as return on basis of net fixed assets for the year 2018-19"
+        },
+        {
+          "component": "power_purchase_cost",
+          "claimed": 3435.9,
+          "approved": 3413.42,
+          "kserc_reasoning": "As per Regulation 72(4) of Tariff Regulations, 2018, the quantum of power purchase corresponding to the excess distribution loss shall be disallowed at the average cost of power purchase. Accordingly, based on the approved distribution loss of 1.450%, the power purchase cost approved for the year is as shown below."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 3729.35,
+        "total_expenditure_approved": 3652.89,
+        "total_revenue_approved": 3670.89,
+        "revenue_gap_surplus": 18.0,
+        "cumulative_gap_surplus": 1214.94,
+        "imputed_interest_on_surplus": 0.0
+      },
+      "_meta": {
+        "licensee": "CSEZA",
+        "fy": "2018-19",
+        "order_ref": "CSEZA TU 2018-19",
+        "source_file": "Cochin Special Economic Zone Authority FY 2018-19 Truing Up Order.pdf",
+        "pages_processed": 22
+      }
+    }
+  },
+  "KDHP": {
+    "2022-23": {
+      "order_structure": {
+        "sections": [
+          "Public Hearing on the Petition",
+          "Analysis and decision of the Commission",
+          "Energy sales and consumer mix",
+          "Energy Requirement and Distribution Loss",
+          "Power purchase cost",
+          "Operation & Maintenance expenses",
+          "Employee Cost",
+          "Administration & General Expenses",
+          "Repair and Maintenance Expenses",
+          "Asset Addition during the year 2022-23",
+          "Depreciation",
+          "Interest and finance charges",
+          "Other Debits",
+          "Return on Net Fixed Assets",
+          "Revenue from Sale of Power",
+          "Non-Tariff Income",
+          "Revenue Surplus/Gap for 2022-23",
+          "Orders of the Commission"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 82
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 541.2,
+        "energy_sold_lakh_units": 484.9,
+        "actual_distribution_loss_pct": 9.53,
+        "approved_distribution_loss_pct": 9.6,
+        "target_distribution_loss_pct": 9.6
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 3161.7,
+        "employee_cost": 179.8,
+        "repair_maintenance": 57.54,
+        "admin_general": 30.5,
+        "depreciation": 13.11,
+        "interest_long_term": 5.31,
+        "interest_consumer_deposits": 9.12,
+        "interest_working_capital": 34.55,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 6.34,
+        "other_debits": 18.07,
+        "section3_1_duty": 14.34
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 3163.37,
+        "employee_cost": 171.67,
+        "repair_maintenance": 43.06,
+        "admin_general": 19.37,
+        "depreciation": 12.18,
+        "interest_long_term": 5.07,
+        "interest_consumer_deposits": 8.34,
+        "interest_working_capital": 32.96,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 7.03,
+        "other_debits": 1.22,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 3508.93,
+        "non_tariff_income": 64.69,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 3508.93,
+        "non_tariff_income": 76.0,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 431.76,
+        "accumulated_depreciation": 241.53,
+        "net_fixed_assets": 127.76,
+        "consumer_contribution": 14.96,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 77.59,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 0.0
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "employee_cost",
+          "claimed": 179.8,
+          "approved": 171.67,
+          "kserc_reasoning": "Accordingly, the Commission hereby approves the employee expenses of Rs.171.67 lakh based on actual inflation rate for the year 2022-23 against the licensee’s claim of Rs.179.80 lakh."
+        },
+        {
+          "component": "section3_1_duty",
+          "claimed": 14.34,
+          "approved": 0.0,
+          "kserc_reasoning": "The Commission has, in its previous orders also, consistently pointed out that the Electricity Duty payable by the licensee under Section 3 (1) of the Kerala Electricity Duty Act cannot be passed on to the consumers and it cannot be admitted as an item of expenditure in the Truing Up Petition. Hence, the Commission disallows the licensee’s claim of Rs.14.34 lakh as Section 3(1) duty."
+        },
+        {
+          "component": "repair_maintenance",
+          "claimed": 57.54,
+          "approved": 43.06,
+          "kserc_reasoning": "There is no convincing reasoning for higher expenses considering Para 31 of this Order, the Commission has already approved Rs.43.06 lakh as R&M Expenses based on actual inflation rate for the year 2022-23. Accordingly, the Commission hereby approves an amount of Rs.43.06 lakh as the R&M expenses for the year 2022-23."
+        },
+        {
+          "component": "provision_for_doubtful_debts",
+          "claimed": 2.51,
+          "approved": 0.0,
+          "kserc_reasoning": "With regard to the claim of Rs.2.51 lakh as provision for doubtful debts, the Commission has been disallowing the claim as no amount is written off during the year as bad debt and the amount claimed is only a provision created for doubtful debts during the year. Since the amount is not declared as Bad debt and not written off in the accounts, the Commission hereby disallows the claim."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 3526.1,
+        "total_expenditure_approved": 3468.02,
+        "total_revenue_approved": 3584.93,
+        "revenue_gap_surplus": 116.91,
+        "cumulative_gap_surplus": 1150.99,
+        "imputed_interest_on_surplus": 52.74
+      },
+      "_meta": {
+        "licensee": "KDHP",
+        "fy": "2022-23",
+        "order_ref": "KDHP TU 2022-23",
+        "source_file": "Kannan Devan Hills Plantations Company FY 2022-23 Truing Up Order.pdf",
+        "pages_processed": 28
+      }
+    },
+    "2021-22": {
+      "order_structure": {
+        "sections": [
+          "Public Hearing on the Petition",
+          "Analysis and decision of the Commission",
+          "Energy sales and consumer mix",
+          "Energy Requirement and Distribution Loss",
+          "Power purchase cost",
+          "Operation & Maintenance expenses",
+          "Employee Cost",
+          "Administration & General Expenses",
+          "Repair and Maintenance Expenses",
+          "Summary of O&M Expenses approved for 2021-22",
+          "Asset Addition during the year 2021-22",
+          "Depreciation",
+          "Interest and finance charges",
+          "Other Debits",
+          "Return on Net Fixed Assets",
+          "Revenue from Sale of Power",
+          "Non-Tariff Income",
+          "Revenue Surplus/Gap for 2021-22",
+          "Orders of the Commission"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 74
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 484.0,
+        "energy_sold_lakh_units": 425.7,
+        "actual_distribution_loss_pct": 10.99,
+        "approved_distribution_loss_pct": 10.0,
+        "target_distribution_loss_pct": 10.0
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 2665.23,
+        "employee_cost": 172.12,
+        "repair_maintenance": 52.84,
+        "admin_general": 17.33,
+        "depreciation": 13.16,
+        "interest_long_term": 5.36,
+        "interest_consumer_deposits": 10.03,
+        "interest_working_capital": 28.48,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 3.46,
+        "other_debits": 14.08,
+        "section3_1_duty": 12.95
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 2661.77,
+        "employee_cost": 169.31,
+        "repair_maintenance": 50.9,
+        "admin_general": 14.96,
+        "depreciation": 12.37,
+        "interest_long_term": 5.73,
+        "interest_consumer_deposits": 10.03,
+        "interest_working_capital": 28.43,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 3.83,
+        "other_debits": 1.13,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 2955.48,
+        "non_tariff_income": 50.97,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 2949.85,
+        "non_tariff_income": 71.25,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 431.76,
+        "accumulated_depreciation": 199.08,
+        "net_fixed_assets": 232.68,
+        "consumer_contribution": 14.96,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 77.59,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 7.0
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "admin_general",
+          "claimed": 17.33,
+          "approved": 14.96,
+          "kserc_reasoning": "The licensee in the truing up petition claimed Rs.2.37 lakh as Legal Charges incurred towards fee and expenses paid to the advocates to file appeal before the Appellate Tribunal for Electricity against the orders of KSERC. During the previous year also, the licensee claimed similar expenses and the Commission has taken a consistent stand that the expenses incurred towards legal proceedings cannot be charged to the A&G expenses unless there is an order from the respective Courts regarding payment of costs. Hence this amount of Rs.2.37 lakh is disallowed by the Commission."
+        },
+        {
+          "component": "repair_maintenance",
+          "claimed": 52.84,
+          "approved": 50.9,
+          "kserc_reasoning": "As the Commission had approved Rs.48.55 lakh towards R&M expenses while truing up the accounts for the year 2020-21, the commission is inclined to approve R&M expenses for the year 2021-22 by applying the escalation factor of 4.84 %. Accordingly, the Commission hereby approves the R&M expenses of Rs.50.90 lakh (48.55+4.84%) for the year 2021-22."
+        },
+        {
+          "component": "section3_1_duty",
+          "claimed": 12.95,
+          "approved": 0.0,
+          "kserc_reasoning": "The Commission has, in its previous orders also, consistently pointed out that the Electricity Duty payable by the licensee under Section 3 (1) of the Kerala Electricity Duty Act cannot be passed on to the consumers and it cannot be admitted as an item of expenditure in the Truing Up Petition. Hence, the Commission disallows the licensee's claim of Rs.12.95 lakh as Section 3(1) duty."
+        },
+        {
+          "component": "Bank Charges on Bank Guarantee/L.C to KSEB Ltd",
+          "claimed": 6.83,
+          "approved": 0.0,
+          "kserc_reasoning": "With regard to the bank guarantee provided to KSEB Ltd as per the Orders of Hon. Supreme Court, the Commission in the previous orders has specifically directed the licensee that bank guarantee charges for the above purpose shall not be included in the allowable expenses. This is because the licensee has filed first appeal against the order of the Commission approving the arrear amount payable to KSEB Ltd. In the first Appeal, Hon. APTEL has upheld the order of the Commission. The licensee has filed second appeal before the Hon. Supreme Court and Hon. Supreme Court in the previous order directed to provide bank guarantee for the said amount. The Commission is of the opinion that pending the outcome of the case before the Hon’ble Supreme Court, this amount shall not be considered at present."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 2992.84,
+        "total_expenditure_approved": 2962.38,
+        "total_revenue_approved": 3021.1,
+        "revenue_gap_surplus": 58.72,
+        "cumulative_gap_surplus": 1034.08,
+        "imputed_interest_on_surplus": 48.77
+      },
+      "_meta": {
+        "licensee": "KDHP",
+        "fy": "2021-22",
+        "order_ref": "KDHP TU 2021-22",
+        "source_file": "Kannan Devan Hills Plantations Company FY 2021-22 Truing Up Order.pdf",
+        "pages_processed": 27
+      }
+    },
+    "2013-14": {
+      "order_structure": {
+        "sections": [
+          "Number of Consumers",
+          "Sale of Power",
+          "Energy requirement",
+          "Distribution Loss",
+          "Power Purchase Cost",
+          "Employee cost",
+          "Interest and Finance Charges",
+          "Repair and Maintenance Charges",
+          "Administration and General Expenses",
+          "Depreciation",
+          "Others debits",
+          "Return on Equity",
+          "Gross Revenue requirements",
+          "Revenue from sale of power",
+          "Non tariff income"
+        ],
+        "has_numbered_paragraphs": true,
+        "has_tables": true,
+        "total_paragraphs": 27
+      },
+      "energy_data": {
+        "total_energy_purchased_lakh_units": 514.3,
+        "energy_sold_lakh_units": 374.6,
+        "actual_distribution_loss_pct": 13.89,
+        "approved_distribution_loss_pct": 12.0,
+        "target_distribution_loss_pct": 12.0
+      },
+      "claimed_expenses": {
+        "power_purchase_cost": 1949.58,
+        "employee_cost": 102.64,
+        "repair_maintenance": 20.23,
+        "admin_general": 18.51,
+        "depreciation": 15.79,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 9.26,
+        "interest_working_capital": 87.51,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 5.0,
+        "other_debits": 13.11,
+        "section3_1_duty": 12.17
+      },
+      "approved_expenses": {
+        "power_purchase_cost": 1864.83,
+        "employee_cost": 72.48,
+        "repair_maintenance": 20.23,
+        "admin_general": 12.29,
+        "depreciation": 15.03,
+        "interest_long_term": 0.0,
+        "interest_consumer_deposits": 9.26,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 5.0,
+        "other_debits": 0.42,
+        "section3_1_duty": 0.0
+      },
+      "claimed_revenues": {
+        "revenue_from_sale": 2065.14,
+        "non_tariff_income": 16.21,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "approved_revenues": {
+        "revenue_from_sale": 2065.14,
+        "non_tariff_income": 16.21,
+        "wheeling_charges": 0.0,
+        "other_revenue": 0.0
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 295.19,
+        "accumulated_depreciation": 0.0,
+        "net_fixed_assets": 0.0,
+        "consumer_contribution": 14.96,
+        "grants_subsidies": 0.0,
+        "normative_loan_70pct": 0.0,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 0.0
+      },
+      "interim_relief": {
+        "interim_order_ref": "",
+        "interim_amount_lakhs": 0.0,
+        "adjusted_in_final": false
+      },
+      "key_disallowances": [
+        {
+          "component": "employee_cost",
+          "claimed": 102.64,
+          "approved": 72.48,
+          "kserc_reasoning": "The Commission generally approves a due share of employee expenses of senior management in the distribution business. The Commission had approved Rs.5 lakh towards this head as a proportion of salary of senior management in 2013-14.Accordingly, as has been done in previous years, a notional provision of Rs.5 lakhs is approved as a proportion of salary of senior management. Hence, the employee cost approved for the year 2013-14 is Rs. 72.48 lakhs."
+        },
+        {
+          "component": "interest_working_capital",
+          "claimed": 87.51,
+          "approved": 0.0,
+          "kserc_reasoning": "It is seen that the average investments in Current Assets for the year 2013-14 is Rs.255.43 lakh. However the average security deposit from customers and other current liabilities comes to Rs.362.05 lakh, which clearly shows that the company has negative working capital and whatever amount booked under finance charges for working capital is incurred for capital liabilities. Hence no interest is approved for working capital."
+        },
+        {
+          "component": "admin_general",
+          "claimed": 18.51,
+          "approved": 12.29,
+          "kserc_reasoning": "The Commission had, in its order on ARR dated 15-05-2013, clearly stated that the charges for the bank guarantee provided to KSEB as per the directions of the Hon’ble Supreme Court in Civil Appeal No.2144/2011 against the order of the Commission dated 25.05.2010 revising the BST retrospectively from 01.12.2011, is not admissible... The actual amount booked under A&G expenses is Rs.18.51 lakh and it includes bank charges of Rs.6.22 lakh as detailed below."
+        }
+      ],
+      "final_result": {
+        "total_expenditure_claimed": 2216.63,
+        "total_expenditure_approved": 1999.54,
+        "total_revenue_approved": 2081.35,
+        "revenue_gap_surplus": 81.81,
+        "cumulative_gap_surplus": 0.0,
+        "imputed_interest_on_surplus": 0.0
+      },
+      "_meta": {
+        "licensee": "KDHP",
+        "fy": "2013-14",
+        "order_ref": "KDHP TU 2013-14",
+        "source_file": "Kannan Devan Hills Plantations Company FY 2013-14 Truing Up Order.pdf",
+        "pages_processed": 13
+      }
+    }
+  }
+}

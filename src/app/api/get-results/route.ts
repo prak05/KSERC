@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
             const rawData = fs.readFileSync(DB_PATH, 'utf8');
             const data = JSON.parse(rawData);
             const savedCases = data.truing_cases
-                .filter((c: any) => c.status === 'SAVED' || c.status === 'COMPLETED')
+                .filter((c: any) => c.status === 'SAVED' || c.status === 'COMPLETED' || c.status === 'analysis_done' || c.status === 'PARTIAL')
                 .map((c: any) => ({
                     ...c,
                     licensees: data.licensees.find((l: any) => l.id === c.licensee_id)

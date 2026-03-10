@@ -1,0 +1,30 @@
+{
+    "24": {
+        "clause_number": "24",
+        "title": "Capital Cost and Capital Structure",
+        "topic": "capex, capital expenditure, prior approval",
+        "text_snippet": "Capital cost for a project shall include the expenditure incurred or projected to be incurred... Provided that the approval of the Commission shall be obtained for all capital expenditure.",
+        "applies_to": "all"
+    },
+    "27": {
+        "clause_number": "27",
+        "title": "Depreciation",
+        "topic": "depreciation, capital cost, asset life",
+        "text_snippet": "Depreciation shall be allowed up to a maximum of 90% of the approved capital cost of the asset. No depreciation shall be allowed on the increase in value of the assets, on account of revaluation of assets. Depreciation shall not be allowed on the assets created through consumer contribution, deposit works, capital subsidies and grants.",
+        "applies_to": "all"
+    },
+    "28": {
+        "clause_number": "28",
+        "title": "Return on Net Fixed Assets (RoNFA)",
+        "topic": "return, ronfa, equity, net fixed assets",
+        "text_snippet": "If there is no equity invested in the business or equity invested in the regulated business of the distribution licensee is not clearly identifiable, return at the rate of 5.50% shall be allowed on the net fixed assets at the beginning of the financial year for such regulated business.",
+        "applies_to": "distribution"
+    },
+    "73": {
+        "clause_number": "73(3)",
+        "title": "Distribution Loss",
+        "topic": "distribution loss, penalty, efficiency gain",
+        "text_snippet": "If the actual distribution loss is higher than the approved level of distribution loss, then the quantum of power purchased corresponding to the excess distribution loss shall be disallowed at the average cost of power purchase. If the actual distribution loss is lower than the approved level, the efficiency gain shall be shared between the licensee and the consumers in the ratio 2:1.",
+        "applies_to": "distribution"
+    }
+}

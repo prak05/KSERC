@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Info, FileText, FileSpreadsheet, Folder, Zap, Play, ChevronRight, CheckCircle2, Loader2, ArrowLeft } from "lucide-react";
+import { Info, FileText, FileSpreadsheet, Folder, Zap, Play, ChevronRight, CheckCircle2, Loader2, ArrowLeft, Terminal as TerminalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,8 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
+import ReviewModal from "@/components/ReviewModal";
 
-type Step = 'dashboard' | 'setup' | 'upload' | 'analysis';
+type Step = 'dashboard' | 'setup' | 'upload' | 'analysis' | 'review';
 
 export default function DashboardClient() {
     const router = useRouter();
@@ -29,11 +30,26 @@ export default function DashboardClient() {
     const [statusText, setStatusText] = useState("");
     const [log, setLog] = useState<string[]>([]);
 
+    // HITL State
+    const [analysisId, setAnalysisId] = useState<string | null>(null);
+    const [reviewSummary, setReviewSummary] = useState<any>(null);
+    const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
     const [recentCases, setRecentCases] = useState<any[]>([]);
     const [loadingCases, setLoadingCases] = useState(true);
 
+    const pollRef = useRef<NodeJS.Timeout | null>(null);
+
+    const cleanupPoll = () => {
+        if (pollRef.current) {
+            clearInterval(pollRef.current);
+            pollRef.current = null;
+        }
+    };
+
     useEffect(() => {
         fetchCases();
+        return cleanupPoll;
     }, []);
 
     const fetchCases = async () => {
@@ -71,6 +87,7 @@ export default function DashboardClient() {
     };
 
     const uploadCount = files.filter(Boolean).length;
+    // 2 mandatory: ARR and Truing Up (Annual Accounts)
     const canRun = files[0] && files[1] && licensee;
 
     const addLog = (msg: string) => {
@@ -85,6 +102,55 @@ export default function DashboardClient() {
         }
     };
 
+    const startPolling = (id: string) => {
+        cleanupPoll();
+        let lastStatus = "";
+        pollRef.current = setInterval(async () => {
+            try {
+                const res = await fetch(`/api/status/${id}`, { cache: 'no-store' });
+                if (!res.ok) return;
+                const data = await res.json();
+
+                if (data.status !== lastStatus) {
+                    lastStatus = data.status;
+                    if (data.status === 'RUNNING') {
+                        setProgress(prev => Math.min(prev + 10, 90));
+                        addLog("Processing analysis node...");
+                    } else if (data.status === 'AWAITING_REVIEW') {
+                        setProgress(95);
+                        setStatusText("Human-in-the-Loop review required.");
+                        addLog("Pipeline paused at HITL gate. Awaiting expert review...");
+                        setReviewSummary(data.review_summary);
+                        setCurrentStep('review');
+                        cleanupPoll();
+                    } else if (data.status === 'COMPLETED') {
+                        setProgress(100);
+                        setStatusText("Analysis Complete.");
+                        addLog("Audit pipeline finished successfully.");
+                        cleanupPoll();
+                        // Save to local DB if needed, or redirect
+                        // For this demo, we assume the backend handles persistence or we redirect to results
+                        // But since we are using the v6 backend, it doesn't know about our Next.js local-db.json
+                        // We might need to save it here or just redirect to a results view that handles the data.
+                        // Given the user wants it Integrated, we'll redirect to results.
+
+                        // We need a way to pass the data to the results page if it's not in the local DB.
+                        // For now, let's assume we can fetch it by analysisId.
+                        setTimeout(() => {
+                            router.push(`/results?analysisId=${id}`);
+                        }, 1000);
+                    } else if (data.status === 'FAILED') {
+                        setStatusText("Analysis Failed");
+                        addLog(`ERROR: ${data.result?.error || 'Unknown pipeline failure'}`);
+                        cleanupPoll();
+                    }
+                }
+            } catch (e) {
+                console.error("Polling error", e);
+            }
+        }, 3000);
+    };
+
     const runAnalysis = async () => {
         try {
             setCurrentStep('analysis');
@@ -95,68 +161,63 @@ export default function DashboardClient() {
             setStatusText("Initializing analysis...");
             addLog(`Session: ${activeLicensee} · FY ${fy}`);
 
-            // Upload documents to API
+            // Prepare for FastAPI
             setProgress(20);
-            setStatusText("Uploading and parsing documents...");
+            setStatusText("Uploading documents to Audit Engine...");
 
             const formData = new FormData();
             formData.append("licensee", activeLicensee);
-            formData.append("fy", fy);
-            files.forEach((f) => {
-                if (f) formData.append("file", f);
-            });
+            formData.append("financial_year", fy);
+            // v6 backend expects 'pdf' field
+            if (files[0]) formData.append("pdf", files[0]);
+            // If we wanted to support multiple, we'd need to update backend/main.py
 
-            addLog("Extracting text and structured data via LLM...");
-            const extractRes = await fetch("/api/extract", {
+            addLog("Uploading primary petition for deep analysis...");
+            const res = await fetch("/api/analyse", {
                 method: "POST",
                 body: formData,
             });
 
-            const extractData = await extractRes.json();
-            if (!extractRes.ok) throw new Error(extractData.error);
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to start analysis");
 
-            setProgress(60);
-            setStatusText("Extraction complete. Running analysis...");
-            addLog("Data successfully structured. Running KSERC rules engine...");
+            setAnalysisId(data.analysis_id);
+            setStatusText("Analysis in progress...");
+            addLog(`Analysis ID: ${data.analysis_id}`);
+            addLog("Parsing documents and Extracting Regulatory Entities...");
 
-            // Initialize case via Local DB API
-            const initRes = await fetch("/api/init-case", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ fy, activeLicensee, extractData })
-            });
-            const initData = await initRes.json();
-            if (!initRes.ok) throw new Error(initData.error || "Failed to initialize case");
-            const caseRecordId = initData.caseId;
-
-            // Run Analysis Endpoint
-            setProgress(80);
-            setStatusText("Generating Prudence Checks & AI Veridcts...");
-            addLog("Consulting knowledge base and computing deviations...");
-
-            const analyseRes = await fetch("/api/analyse", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ caseId: caseRecordId, aicpi: parseFloat(aicpi), licenseeName: activeLicensee })
-            });
-
-            const analyseData = await analyseRes.json();
-            if (!analyseRes.ok) throw new Error(analyseData.error);
-
-            setProgress(100);
-            setStatusText("Complete.");
-            addLog("Analysis pipeline finished successfully.");
-
-            setTimeout(() => {
-                router.push(`/results?caseId=${caseRecordId}`);
-            }, 1000);
+            startPolling(data.analysis_id);
 
         } catch (e: unknown) {
             console.error(e);
-            setStatusText("Analysis Failed");
-            const msg = e instanceof Error ? e.message : (typeof e === 'object' ? JSON.stringify(e) : String(e));
+            setStatusText("Initialization Failed");
+            const msg = e instanceof Error ? e.message : String(e);
             addLog(`ERROR: ${msg}`);
             setProgress(100);
+        }
+    };
+
+    const handleReview = async (approve: boolean, overrideText?: string) => {
+        if (!analysisId) return;
+        setIsSubmittingReview(true);
+        try {
+            const responseText = approve ? "Approve" : (overrideText || "Override");
+            const res = await fetch('/api/review', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ analysis_id: analysisId, response: responseText }),
+            });
+            if (!res.ok) throw new Error('Review submission failed');
+
+            setCurrentStep('analysis');
+            setStatusText("Resume analysis with review context...");
+            addLog(approve ? "Review Approved. Resuming pipeline..." : `Override applied: "${overrideText}". Resuming...`);
+            startPolling(analysisId);
+        } catch (err: any) {
+            setStatusText("Review Submission Failed");
+            addLog(`ERROR: ${err.message}`);
+        } finally {
+            setIsSubmittingReview(false);
         }
     };
 
@@ -177,7 +238,7 @@ export default function DashboardClient() {
                         <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">KSERC Internal System</p>
                     </div>
                 </div>
-                {currentStep !== 'dashboard' && currentStep !== 'analysis' && (
+                {currentStep !== 'dashboard' && currentStep !== 'analysis' && currentStep !== 'review' && (
                     <Button variant="ghost" size="sm" onClick={() => setCurrentStep('dashboard')} className="text-muted-foreground">
                         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
                     </Button>
@@ -454,7 +515,7 @@ export default function DashboardClient() {
                                     <div className="h-2.5 w-2.5 rounded-full bg-green-500/80"></div>
                                 </div>
                                 <div className="text-[10px] uppercase tracking-widest text-slate-400 font-mono">
-                                    KSERC Rules Engine v1.0
+                                    KSERC Rules Engine v6.0 (Advanced)
                                 </div>
                                 <div className="font-mono text-xs font-bold text-cyan-400">{progress}%</div>
                             </div>
@@ -481,7 +542,7 @@ export default function DashboardClient() {
                                             animate={{ opacity: 1, x: 0 }}
                                             className={l.includes('ERROR:') ? 'text-red-400 font-bold' : l.includes('Session:') ? 'text-blue-400' : ''}
                                         >
-                                            <span className="opacity-50 text-slate-500 mr-2">{new Date().toISOString().substring(11, 19)}</span>
+                                            <span className="opacity-50 text-slate-500 mr-2">{new Date().toLocaleTimeString()}</span>
                                             {l}
                                         </motion.div>
                                     ))}
@@ -490,7 +551,6 @@ export default function DashboardClient() {
                                     <motion.div
                                         animate={{ opacity: [0.4, 1, 0.4] }}
                                         transition={{ repeat: Infinity, duration: 1.5 }}
-                                        className="text-cyan-400/50"
                                     >
                                         _ blinking cursor
                                     </motion.div>
@@ -501,8 +561,19 @@ export default function DashboardClient() {
                         <div className="mt-8 text-center text-[11px] text-muted-foreground uppercase tracking-widest">
                             {statusText === "Analysis Failed"
                                 ? "Analysis encountered a fatal error. Please review the logs."
-                                : "Please do not close this window while AI extraction is running."}
+                                : "The AI is performing multi-stage regulation checks. Please stay on this page."}
                         </div>
+                    </motion.div>
+                )}
+
+                {/* STEP 5: HITL REVIEW */}
+                {currentStep === 'review' && reviewSummary && (
+                    <motion.div key="review" variants={variants} initial="initial" animate="animate" exit="exit">
+                        <ReviewModal
+                            summary={reviewSummary}
+                            onReviewSubmit={handleReview}
+                            isSubmitting={isSubmittingReview}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>

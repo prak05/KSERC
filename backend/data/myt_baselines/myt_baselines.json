@@ -1,0 +1,195 @@
+{
+    "Technopark": {
+        "control_period": "2022-2027",
+        "myt_order": "OP No.12/2023",
+        "escalation_rates": {
+            "2022-23": 4.84,
+            "2023-24": 3.14,
+            "2024-25": 4.84,
+            "2025-26": 4.84,
+            "2026-27": 4.84
+        },
+        "baselines": {
+            "2022-23": {
+                "power_purchase_cost": 5919.11,
+                "employee_cost": 27.14,
+                "repair_maintenance": 280.42,
+                "admin_general": 36.09,
+                "depreciation": 142.60,
+                "interest_long_term": 7.87,
+                "interest_consumer_deposits": 76.11,
+                "interest_working_capital": 0.0,
+                "carrying_cost": 0.0,
+                "return_on_nfa": 21.07,
+                "other_debits": 0.0,
+                "target_distribution_loss_pct": 3.45,
+                "avg_power_purchase_cost_rs_per_kwh": 6.95,
+                "_note": "From OP No.12/2023 - approved ARR for FY 2022-23"
+            },
+            "2023-24": {
+                "power_purchase_cost": 6296.10,
+                "employee_cost": 28.00,
+                "repair_maintenance": 289.23,
+                "admin_general": 37.22,
+                "depreciation": 171.89,
+                "interest_long_term": 3.24,
+                "interest_consumer_deposits": 89.54,
+                "interest_working_capital": 0.0,
+                "carrying_cost": 0.0,
+                "return_on_nfa": 21.07,
+                "other_debits": 0.0,
+                "target_distribution_loss_pct": 3.70,
+                "avg_power_purchase_cost_rs_per_kwh": 7.20,
+                "_note": "OAM escalated at 3.14% from 2022-23 base. RoNFA as per OP 12/2023 = 21.07. Source: Technopark True-Up Petition FY 2023-24 approved column."
+            },
+            "2024-25": {
+                "power_purchase_cost": 6757.10,
+                "employee_cost": 28.88,
+                "repair_maintenance": 298.32,
+                "admin_general": 38.39,
+                "depreciation": 171.19,
+                "interest_long_term": 0.0,
+                "interest_consumer_deposits": 105.31,
+                "interest_working_capital": 0.0,
+                "carrying_cost": 0.0,
+                "return_on_nfa": 29.97,
+                "other_debits": 0.0,
+                "target_distribution_loss_pct": 3.40,
+                "avg_power_purchase_cost_rs_per_kwh": 7.50,
+                "_note": "OAM escalated at 4.84% from 2023-24. RoNFA from NFA schedule in OP 12/2023 = 29.97."
+            }
+        }
+    },
+    "Infopark": {
+        "control_period": "2022-2027",
+        "myt_order": "OP No.09/2023",
+        "escalation_rates": {
+            "2022-23": 4.84,
+            "2023-24": 3.14,
+            "2024-25": 4.84,
+            "2025-26": 4.84,
+            "2026-27": 4.84
+        },
+        "baselines": {
+            "2022-23": {
+                "power_purchase_cost": 538.24,
+                "employee_cost": 22.95,
+                "repair_maintenance": 24.21,
+                "admin_general": 4.68,
+                "depreciation": 47.21,
+                "interest_long_term": 46.78,
+                "interest_consumer_deposits": 4.98,
+                "interest_working_capital": 0.37,
+                "carrying_cost": 53.93,
+                "return_on_nfa": 41.30,
+                "other_debits": 0.0,
+                "target_distribution_loss_pct": 4.23,
+                "avg_power_purchase_cost_rs_per_kwh": 6.90
+            },
+            "2023-24": {
+                "power_purchase_cost": 541.95,
+                "employee_cost": 23.67,
+                "repair_maintenance": 24.97,
+                "admin_general": 4.83,
+                "depreciation": 47.21,
+                "interest_long_term": 45.23,
+                "interest_consumer_deposits": 4.71,
+                "interest_working_capital": 0.39,
+                "carrying_cost": 53.93,
+                "return_on_nfa": 38.70,
+                "other_debits": 0.0,
+                "target_distribution_loss_pct": 4.23,
+                "avg_power_purchase_cost_rs_per_kwh": 7.12,
+                "_note": "OAM escalated at 3.14% from 2022-23 base."
+            }
+        }
+    },
+    "CSEZA": {
+        "control_period": "2022-2027",
+        "myt_order": "OP No.10/2023",
+        "escalation_rates": {
+            "2022-23": 4.84,
+            "2023-24": 3.14,
+            "2024-25": 4.84,
+            "2025-26": 4.84,
+            "2026-27": 4.84
+        },
+        "baselines": {
+            "2022-23": {
+                "power_purchase_cost": 3774.16,
+                "employee_cost": 0.0,
+                "repair_maintenance": 229.40,
+                "admin_general": 0.0,
+                "depreciation": 101.82,
+                "interest_long_term": 0.0,
+                "interest_consumer_deposits": 0.0,
+                "interest_working_capital": 0.0,
+                "carrying_cost": 0.0,
+                "return_on_nfa": 72.06,
+                "other_debits": 0.0,
+                "target_distribution_loss_pct": 1.45,
+                "avg_power_purchase_cost_rs_per_kwh": 6.79
+            },
+            "2023-24": {
+                "power_purchase_cost": 3923.46,
+                "employee_cost": 0.0,
+                "repair_maintenance": 236.61,
+                "admin_general": 0.0,
+                "depreciation": 110.41,
+                "interest_long_term": 0.0,
+                "interest_consumer_deposits": 0.0,
+                "interest_working_capital": 0.0,
+                "carrying_cost": 0.0,
+                "return_on_nfa": 74.97,
+                "other_debits": 0.0,
+                "target_distribution_loss_pct": 1.44,
+                "avg_power_purchase_cost_rs_per_kwh": 7.00,
+                "_note": "R&M escalated at 3.14% from 2022-23 base."
+            }
+        }
+    },
+    "KDHP": {
+        "control_period": "2022-2027",
+        "myt_order": "OP No.11/2023",
+        "escalation_rates": {
+            "2022-23": 4.84,
+            "2023-24": 3.14,
+            "2024-25": 4.84,
+            "2025-26": 4.84,
+            "2026-27": 4.84
+        },
+        "baselines": {
+            "2022-23": {
+                "power_purchase_cost": 2956.36,
+                "employee_cost": 167.50,
+                "repair_maintenance": 42.01,
+                "admin_general": 13.88,
+                "depreciation": 13.07,
+                "interest_long_term": 41.38,
+                "interest_consumer_deposits": 0.0,
+                "interest_working_capital": 0.0,
+                "carrying_cost": 0.0,
+                "return_on_nfa": 7.03,
+                "other_debits": 1.19,
+                "target_distribution_loss_pct": 9.60,
+                "avg_power_purchase_cost_rs_per_kwh": 5.84
+            },
+            "2023-24": {
+                "power_purchase_cost": 3103.55,
+                "employee_cost": 172.76,
+                "repair_maintenance": 43.33,
+                "admin_general": 14.32,
+                "depreciation": 15.07,
+                "interest_long_term": 48.71,
+                "interest_consumer_deposits": 0.0,
+                "interest_working_capital": 0.0,
+                "carrying_cost": 0.0,
+                "return_on_nfa": 7.03,
+                "other_debits": 1.23,
+                "target_distribution_loss_pct": 9.60,
+                "avg_power_purchase_cost_rs_per_kwh": 6.20,
+                "_note": "OAM escalated at 3.14% from 2022-23 base."
+            }
+        }
+    }
+}
