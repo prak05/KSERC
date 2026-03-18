@@ -7,7 +7,7 @@ Uses Annotated + operator.add for the disallowance_log so that
 each agent node *appends* rather than overwrites.
 """
 
-from typing import TypedDict, List, Dict, Any, Annotated, Optional
+from typing import TypedDict, List, Dict, Any, Annotated, Optional, Tuple
 import operator
 
 
@@ -67,6 +67,33 @@ class TruingUpState(TypedDict):
     # Contains: tables_found, component_justifications, energy_data,
     # capital_structure, escalation_factors, loan_details, etc.
 
+    # ── R&M Line Items (from Extractor, for AI classifier) ────────────
+    rm_line_items: List[Dict[str, Any]]
+    # Each dict: {"description": str, "amount": float}
+    # Extracted from the R&M breakdown table in the petition
+
+    rm_classification_result: Dict[str, Any]
+    # Output from rm_classifier.process_rm_petition()
+    # Keys: line_items, financial_summary, clarifications_to_send, total_approved_rm
+
+    # ── Anomaly Detection (Gemini flags after extraction) ─────────────
+    anomaly_flags: List[Dict[str, Any]]
+    # Each dict: {"component": str, "severity": HIGH/MEDIUM/LOW,
+    #             "flag": str, "suggested_action": str}
+
+    # ── Clarification Items (for auto-generated query letter) ─────────
+    clarification_items: List[Dict[str, Any]]
+    # Merged from R&M classifier + anomaly detector
+    # Each dict: {"source": str, "item": str, "amount": float, "query": str}
+
+    # ── Order Quality Validation ───────────────────────────────────────
+    order_validation_result: Dict[str, Any]
+    # Output from order_validator.validate_drafted_order()
+    # Keys: passed, issues, suggestions, confidence_score
+
+    # ── Extra energy fields used in PPC audit ─────────────────────────
+    energy_sales_lakh_units: float  # Energy sold (lakh units) from energy balance table
+
     # ── Processed Data (from Auditor Agent) ────────────────────────────
     approved_expenses: Dict[str, float]
     approved_revenues: Dict[str, float]
@@ -94,3 +121,4 @@ class TruingUpState(TypedDict):
 
     # ── Final Output ───────────────────────────────────────────────────
     output_pdf_path: str
+    clarification_pdf_path: Optional[str]  # Path to generated clarification letter PDF

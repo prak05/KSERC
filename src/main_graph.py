@@ -2,20 +2,16 @@
 KSERC SDL Truing Up — LangGraph Orchestrator
 ==============================================
 
-Wires the three agents (Extractor → Auditor → Drafter) into a
-LangGraph StateGraph with Human-in-the-Loop approval before drafting.
+Wires all agents into a LangGraph StateGraph with Human-in-the-Loop.
 
-Graph: Extract → Audit → Review (HITL interrupt) → Draft
+Enhanced Pipeline (Phase 2):
+  Extract → [DeepExtract ∥ MYTExtract] → AnomalyDetect → Audit
+         → Review (HITL) → Draft → Clarification → Validate → END
 
-Usage
------
-    from src.main_graph import run_pipeline
-
-    result = run_pipeline(
-        licensee_name="Technopark",
-        financial_year="2022-23",
-        petition_pdf_path="data/input_petitions/technopark_2022_23.pdf",
-    )
+New AI Nodes:
+  • anomaly_detect : Gemini flags suspicious patterns pre-audit
+  • clarification  : Auto-generates KSERC query letters
+  • validate       : Peer-reviews the drafted order for quality
 """
 
 from __future__ import annotations
@@ -34,6 +30,9 @@ from src.agents.auditor import audit_petition
 from src.agents.drafter import draft_order
 from src.agents.myt_norm_extractor import myt_extract_node
 from src.agents.deep_table_extractor import deep_extract_node
+from src.agents.anomaly_detector import detect_anomalies
+from src.tools.clarification_generator import clarification_node as _clarification_node
+from src.agents.order_validator import validate_drafted_order
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +89,56 @@ def audit_node(state: TruingUpState) -> dict:
     logger.info("NODE 2: COMPLIANCE AUDIT")
     logger.info("═" * 60)
     return audit_petition(state)
+
+
+def anomaly_detect_node(state: TruingUpState) -> dict:
+    """
+    Node 2a: AI Anomaly Detection (runs after extraction, before audit).
+
+    Gemini reviews all extracted financial data and flags:
+    - Year-over-year spikes in any expense
+    - Internal inconsistencies between tables
+    - Regulatory red flags (items KSERC always disallows)
+    - Missing or suspicious data
+    Results stored in state["anomaly_flags"] for the auditor to use.
+    """
+    logger.info("═" * 60)
+    logger.info("NODE 2a: AI ANOMALY DETECTION")
+    logger.info("═" * 60)
+    return detect_anomalies(state)
+
+
+def clarification_letter_node(state: TruingUpState) -> dict:
+    """
+    Node 4b: Auto-generate KSERC clarification query letter.
+
+    Merges clarification items from:
+    - R&M Classifier (items too vague to classify)
+    - Anomaly Detector (HIGH severity flags needing licensee response)
+    Generates a formal KSERC query letter and saves it to output_orders/.
+    """
+    logger.info("═" * 60)
+    logger.info("NODE 4b: CLARIFICATION LETTER GENERATION")
+    logger.info("═" * 60)
+    return _clarification_node(state)
+
+
+def validate_node(state: TruingUpState) -> dict:
+    """
+    Node 5: Order Quality Validation.
+
+    Gemini reviews the drafted order as a peer reviewer:
+    - Completeness: every claimed item addressed
+    - Legal soundness: correct regulation citations
+    - Arithmetic consistency
+    - KSERC language quality
+    - Internal contradictions
+    Results in state["order_validation_result"].
+    """
+    logger.info("═" * 60)
+    logger.info("NODE 5: ORDER QUALITY VALIDATION")
+    logger.info("═" * 60)
+    return validate_drafted_order(state)
 
 
 # Global flag for auto-approve mode (set by CLI --auto-approve)
@@ -251,30 +300,53 @@ def draft_node(state: TruingUpState) -> dict:
 
 def build_graph() -> StateGraph:
     """
-    Construct the LangGraph StateGraph:
-        START → extract → [deep_extract ∥ myt_extract] → audit → review → draft → END
+    Construct the full enhanced LangGraph StateGraph:
+
+    START → extract
+          → [deep_extract ∥ myt_extract]   (fan-out)
+          → anomaly_detect                  (fan-in, NEW)
+          → audit
+          → review  (HITL interrupt)
+          → draft
+          → clarification                   (NEW)
+          → validate                        (NEW)
+          → END
     """
     graph = StateGraph(TruingUpState)
 
-    # Add nodes
-    graph.add_node("extract", extract_node)
-    graph.add_node("deep_extract", deep_extract)
-    graph.add_node("myt_extract", myt_extract)
-    graph.add_node("audit", audit_node)
-    graph.add_node("review", review_node)
-    graph.add_node("draft", draft_node)
+    # ── Register all nodes ────────────────────────────────────────────
+    graph.add_node("extract",       extract_node)
+    graph.add_node("deep_extract",  deep_extract)
+    graph.add_node("myt_extract",   myt_extract)
+    graph.add_node("anomaly_detect", anomaly_detect_node)  # NEW
+    graph.add_node("audit",         audit_node)
+    graph.add_node("review",        review_node)
+    graph.add_node("draft",         draft_node)
+    graph.add_node("clarification", clarification_letter_node)  # NEW
+    graph.add_node("validate",      validate_node)             # NEW
 
-    # Define edges: extract → [deep_extract ∥ myt_extract] → audit → review → draft
+    # ── Define edges ──────────────────────────────────────────────────
     graph.add_edge(START, "extract")
-    # Fan-out: both deep_extract and myt_extract depend on extract output
+
+    # Fan-out: parallel extraction
     graph.add_edge("extract", "deep_extract")
     graph.add_edge("extract", "myt_extract")
-    # Fan-in: audit waits for both to complete
-    graph.add_edge("deep_extract", "audit")
-    graph.add_edge("myt_extract", "audit")
-    graph.add_edge("audit", "review")
-    graph.add_edge("review", "draft")
-    graph.add_edge("draft", END)
+
+    # Fan-in with anomaly detection (NEW: anomaly runs after both extractors)
+    graph.add_edge("deep_extract", "anomaly_detect")
+    graph.add_edge("myt_extract",  "anomaly_detect")
+
+    # Audit reads anomaly flags from state
+    graph.add_edge("anomaly_detect", "audit")
+
+    # HITL review and drafting
+    graph.add_edge("audit",   "review")
+    graph.add_edge("review",  "draft")
+
+    # Post-draft: clarification letter + quality validation
+    graph.add_edge("draft",         "clarification")  # NEW
+    graph.add_edge("clarification", "validate")        # NEW
+    graph.add_edge("validate",      END)               # NEW (was draft → END)
 
     return graph
 
@@ -358,6 +430,14 @@ def run_pipeline(
         "kserc_methodology_rules": {},
         "ai_insights": {},
         "detailed_tables": {},
+        # Phase 2 new fields ──────────────────────────────
+        "rm_line_items": [],
+        "rm_classification_result": {},
+        "anomaly_flags": [],
+        "clarification_items": [],
+        "order_validation_result": {},
+        "energy_sales_lakh_units": 0.0,
+        # ───────────────────────────────────────
         "approved_expenses": {},
         "disallowance_log": [],
         "total_claimed_expenditure": 0.0,
@@ -369,6 +449,7 @@ def run_pipeline(
         "imputed_interest_on_surplus": 0.0,
         "human_override_notes": None,
         "output_pdf_path": "",
+        "clarification_pdf_path": None,
     }
 
     config = {"configurable": {"thread_id": thread_id}}
@@ -448,4 +529,14 @@ if __name__ == "__main__":
     print(f"  Total Approved:   Rs. {result.get('total_approved_expenditure', 0):,.2f} Lakhs")
     print(f"  Gap/Surplus:      Rs. {result.get('final_revenue_gap_surplus', 0):,.2f} Lakhs")
     print(f"  Output PDF:       {result.get('output_pdf_path', 'N/A')}")
+    # Phase 2 outputs
+    anomaly_count = len(result.get('anomaly_flags', []))
+    high_anomalies = sum(1 for f in result.get('anomaly_flags', []) if f.get('severity') == 'HIGH')
+    clarif_path   = result.get('clarification_pdf_path', None)
+    val_result    = result.get('order_validation_result', {})
+    val_passed    = val_result.get('passed', 'N/A')
+    val_score     = val_result.get('confidence_score', 0)
+    print(f"  Anomalies:        {anomaly_count} total ({high_anomalies} HIGH)")
+    print(f"  Clarification:    {clarif_path or 'None (no items)'}")
+    print(f"  Order Validation: {'PASSED' if val_passed else 'ISSUES FOUND'} (score={val_score:.2f})")
     print("=" * 60)

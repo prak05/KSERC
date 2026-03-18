@@ -2485,7 +2485,65 @@ def audit_petition(state: dict) -> dict:
                 f"prior period Rs.{wage_revision_prior:.2f}L"
             )
 
+        # ── R&M Classifier (Regulation 80(3) one-time items) ──────────────
+        # If the extractor found individual R&M line items, run the AI
+        # classifier to distinguish CAPITAL / ONE_TIME_RM / ROUTINE_RM.
+        # Approved R&M = MYT norm + allowed one-time items.
+        # Falls back to norm-cap if no items or classifier fails.
+        rm_classifier_used = False
+        rm_line_items = state.get("rm_line_items", [])
+        norm_rm = _myt_norm(myt_norms, "repair_maintenance")
+
+        if rm_line_items and norm_rm > 0.0:
+            try:
+                from src.tools.rm_classifier import process_rm_petition
+                rm_result = process_rm_petition(
+                    licensee_name=licensee,
+                    financial_year=fy,
+                    norm_rm=norm_rm,
+                    items=rm_line_items,
+                )
+                total_approved_rm = rm_result.get("total_approved_rm", norm_rm)
+                claimed_rm = claimed_expenses.get("repair_maintenance", 0.0)
+                approved_expenses["repair_maintenance"] = total_approved_rm
+                rm_classifier_used = True
+                # Store full result in state for drafter and clarification node
+                state["rm_classification_result"] = rm_result
+
+                summary = rm_result.get("financial_summary", {})
+                logger.info(
+                    f"R&M Classifier applied: norm={summary.get('norm_rm_approved',0):.2f}L + "
+                    f"one_time_allowed={summary.get('one_time_allowed',0):.2f}L = "
+                    f"total_approved={total_approved_rm:.2f}L | "
+                    f"capitalised={summary.get('to_be_capitalised',0):.2f}L | "
+                    f"disallowed_routine={summary.get('disallowed_routine',0):.2f}L"
+                )
+                cut = round(claimed_rm - total_approved_rm, 2)
+                if abs(cut) > 0.01:
+                    disallowances.append({
+                        "item": "Repairs & Maintenance (AI-classified)",
+                        "claimed": claimed_rm,
+                        "approved": total_approved_rm,
+                        "amount_cut": cut,
+                        "justification": (
+                            f"The claimed R&M of Rs. {claimed_rm:,.2f} Lakhs was analysed "
+                            f"item-by-item using KSERC Regulation 80(3). "
+                            f"The Commission approves Rs. {norm_rm:,.2f} Lakhs as the "
+                            f"normative O&M component, plus Rs. "
+                            f"{summary.get('one_time_allowed',0):,.2f} Lakhs for genuine "
+                            f"one-time expenses. "
+                            f"Rs. {summary.get('to_be_capitalised',0):,.2f} Lakhs are directed "
+                            f"to be capitalised, and Rs. {summary.get('disallowed_routine',0):,.2f} "
+                            f"Lakhs are disallowed as routine expenses already within the norm. "
+                            f"Total approved: Rs. {total_approved_rm:,.2f} Lakhs."
+                        ),
+                    })
+            except Exception as e:
+                logger.warning(f"R&M classifier failed ({e}) — falling back to norm cap")
+
         for key in ("employee_cost", "repair_maintenance", "admin_general"):
+            if key == "repair_maintenance" and rm_classifier_used:
+                continue  # Already handled by AI classifier above
             _audit_norm_capped_component(
                 key, claimed_expenses, approved_expenses, myt_norms,
                 disallowances, licensee=licensee, fy=fy,
