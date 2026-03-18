@@ -34,13 +34,20 @@ import logging
 import os
 from typing import Any, Dict, List, Optional
 
+# Load .env early so VERTEX_SEARCH_APP_ID etc. are available at module init
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 logger = logging.getLogger("kserc.vertex_search")
 
 # ─────────────────────────────────────────────────────────────────────
 # Configuration
 # ─────────────────────────────────────────────────────────────────────
 
-GCP_PROJECT_ID         = os.getenv("GCP_PROJECT_ID", "kserc-489315")
+GCP_PROJECT_ID         = os.getenv("GCP_PROJECT_ID", "kserc-489316")
 VERTEX_SEARCH_APP_ID   = os.getenv("VERTEX_SEARCH_APP_ID", "")
 VERTEX_SEARCH_LOCATION = os.getenv("VERTEX_SEARCH_LOCATION", "global")
 _AVAILABLE: Optional[bool] = None  # Cached availability check
@@ -102,50 +109,53 @@ def search(
         return []
 
     try:
-        from google.cloud import discoveryengine_v1 as discoveryengine
+        import google.auth
+        import google.auth.transport.requests
+        import requests as _requests
 
-        client = discoveryengine.SearchServiceClient()
+        creds, _ = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
+        creds.refresh(google.auth.transport.requests.Request())
 
-        serving_config = (
-            f"projects/{GCP_PROJECT_ID}/locations/{VERTEX_SEARCH_LOCATION}"
-            f"/collections/default_collection/engines/{VERTEX_SEARCH_APP_ID}"
-            f"/servingConfigs/default_config"
+        hdrs = {
+            "Authorization": f"Bearer {creds.token}",
+            "Content-Type": "application/json",
+        }
+
+        # Use data store path directly — engine-based path returns 404 on new engines
+        DATA_STORE_ID = "kserc-regulatory-docs"
+        url = (
+            f"https://discoveryengine.googleapis.com/v1/projects/{GCP_PROJECT_ID}"
+            f"/locations/{VERTEX_SEARCH_LOCATION}/collections/default_collection"
+            f"/dataStores/{DATA_STORE_ID}/servingConfigs/default_search:search"
         )
 
-        request = discoveryengine.SearchRequest(
-            serving_config=serving_config,
-            query=query,
-            page_size=num_results,
-            query_expansion_spec=discoveryengine.SearchRequest.QueryExpansionSpec(
-                condition=discoveryengine.SearchRequest.QueryExpansionSpec.Condition.AUTO,
-            ),
-            spell_correction_spec=discoveryengine.SearchRequest.SpellCorrectionSpec(
-                mode=discoveryengine.SearchRequest.SpellCorrectionSpec.Mode.AUTO,
-            ),
-        )
-
+        payload: dict = {"query": query, "pageSize": num_results}
         if filter_expr:
-            request.filter = filter_expr
+            payload["filter"] = filter_expr
 
-        response = client.search(request)
+        resp = _requests.post(url, headers=hdrs, json=payload, timeout=10)
+
+        if resp.status_code != 200:
+            logger.error(f"Vertex AI Search REST error: {resp.status_code} {resp.text[:200]}")
+            return []
 
         results = []
-        for result in response.results:
-            doc = result.document
-            data = dict(doc.derived_struct_data) if doc.derived_struct_data else {}
-
+        for item in resp.json().get("results", []):
+            doc = item.get("document", {})
+            derived = doc.get("derivedStructData", {})
+            snippets = derived.get("snippets", [])
             snippet = ""
-            if "snippets" in data:
-                snippets = data["snippets"]
-                if snippets and isinstance(snippets, list):
-                    snippet = snippets[0].get("snippet", "")
+            if snippets:
+                snippet = snippets[0].get("snippet", "") if isinstance(snippets[0], dict) else str(snippets[0])
 
             results.append({
-                "title": data.get("title", doc.name.split("/")[-1]),
+                "title": derived.get("title", doc.get("name", "").split("/")[-1]),
                 "snippet": snippet,
-                "document_name": doc.name,
-                "relevance_score": getattr(result, "relevance_score", 0.0),
-                "source_url": data.get("link", ""),
+                "document_name": doc.get("name", ""),
+                "relevance_score": item.get("relevanceScore", 0.0),
+                "source_url": derived.get("link", ""),
             })
 
         logger.info(f"Vertex AI Search: '{query[:50]}' → {len(results)} results")
