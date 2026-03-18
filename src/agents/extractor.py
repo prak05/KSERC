@@ -238,14 +238,19 @@ PRIORITY: First try to find the value in narrative text (more reliable). Fall ba
   ⚠️ CRITICAL DISTINCTION:
   - "Total Energy Purchased / Total Energy Received" (e.g. 606 LU) = energy bought from ALL sources.
     DO NOT USE THIS VALUE.
-  - "Energy Input to Distribution System" (e.g. 548 LU) = energy AFTER upstream adjustments
-    that actually enters the distribution network. THIS IS THE CORRECT VALUE.
+  - "Energy Received at State boundary" or "Energy Input to Distribution System" (e.g. 54.88 MU = 548.8 LU)
+    = energy AFTER upstream adjustments that actually enters the distribution network.
+    THIS IS THE CORRECT VALUE.
   The relationship is: Total Purchased > Energy Input to Distribution > Energy Sales.
-  TABLE: In Annexure B / Energy Balance table, find the row labeled:
+  TABLE: Look in the PPC table (Form D 3.1) for the row labeled:
+         "Energy Received at State boundary (MU)" — this is the primary source.
+         OR in Annexure B / Energy Balance table, find the row labeled:
          "Energy Input to Distribution System" or "Energy Input to Distribution" or
          "Energy Available for Distribution" or "Net Energy Input".
-         Take the value from the current financial year's "Total" column.
-  TEXT: Look for "energy input to distribution system is X lakh units".
+         Take the value from the current financial year's "Actual" or "Truing Up" column.
+  ⚠️ UNIT CONVERSION: If the value is in MU (Million Units), multiply by 10 to convert to Lakh Units.
+     For example: 54.88 MU × 10 = 548.8 Lakh Units.
+  TEXT: Look for "energy input to distribution system is X lakh units" or "energy received is X MU".
   If only "Total Energy Purchased" is available and no separate "Energy Input to Distribution"
   row exists, then use the Total Energy Purchased value as a fallback.
 
@@ -278,6 +283,21 @@ PRIORITY: First try to find the value in narrative text (more reliable). Fall ba
   OR compute: total_ppc_lakhs ÷ energy_purchased_lakh_units.
 
 approved_loss_lakh_units: ALWAYS return 0.0 — this value is never in the petition.
+
+STEP 5 — EXTRACT INTEREST ON WORKING CAPITAL (IWC) SUB-COMPONENTS:
+Look for a table titled "Interest on Working Capital" or "Working Capital Requirement".
+This table typically has rows:
+  - "O&M expenses (as per norms)" or "Approved O&M Expenses for One month" → maintenance_spares_wc (0.0 if row shows 0 or is missing)
+  - "Maintenance Spares (as per norms)" → maintenance_spares_wc
+  - "Receivables (2 Months revenue from sale of power)" → (already computed from revenue_from_sale)
+  - "Security deposits" or "Security Deposit from Consumers" → consumer_security_deposit_balance
+  - "Total working capital" → (computed, not needed)
+  - "Interest Rate (MCLR+2)" → (already have the rate)
+  - "Interest on Working capital" → (already extracted as interest_working_capital)
+
+Extract from the CLAIMED / "Truing up filed" column (NOT the Trued Up or Approved column):
+  - consumer_security_deposit_balance: The security deposit amount (Rs Lakhs). If not found, return 0.0.
+  - maintenance_spares_wc: The maintenance spares as per norms amount (Rs Lakhs). If not found, return 0.0.
 
 
 RULES:
@@ -318,7 +338,9 @@ EXAMPLE 1 (Technopark 2023-24 — standard format):
   "approved_loss_lakh_units": 0.0,
   "energy_input_lakh_units": 180.00,
   "energy_purchased_lakh_units": 110.00,
-  "appc_rs_per_unit": 6.50
+  "appc_rs_per_unit": 6.50,
+  "consumer_security_deposit_balance": 124.59,
+  "maintenance_spares_wc": 0.0
 }
 
 EXAMPLE 2 (KDHP 2024-25 — consolidated O&M format):
@@ -357,7 +379,9 @@ Use the SUB-TABLE breakdown values:
   "approved_loss_lakh_units": 0.0,
   "energy_input_lakh_units": 0.0,
   "energy_purchased_lakh_units": 0.0,
-  "appc_rs_per_unit": 0.0
+  "appc_rs_per_unit": 0.0,
+  "consumer_security_deposit_balance": 0.0,
+  "maintenance_spares_wc": 0.0
 }
 
 Now extract the data from the provided PDF pages. Return ONLY valid JSON.
@@ -639,6 +663,16 @@ def _extract_with_gemini_vision(
         if appc > 0:
             claimed_expenses["__appc_rs_per_unit__"] = appc
             logger.info(f"  [GeminiVision] appc_rs_per_unit: {appc}")
+
+        # IWC sub-components (Working Capital table)
+        sec_dep = float(data.get("consumer_security_deposit_balance", 0.0) or 0.0)
+        maint_spares = float(data.get("maintenance_spares_wc", 0.0) or 0.0)
+        if sec_dep > 0:
+            claimed_expenses["__consumer_security_deposit_balance__"] = sec_dep
+            logger.info(f"  [GeminiVision] consumer_security_deposit_balance: {sec_dep}")
+        if maint_spares > 0:
+            claimed_expenses["__maintenance_spares_wc__"] = maint_spares
+            logger.info(f"  [GeminiVision] maintenance_spares_wc: {maint_spares}")
 
         return dist_loss
 
@@ -1643,6 +1677,98 @@ def extract_petition_data(state: dict) -> dict:
     logger.info(f"claimed_expenses breakdown: {claimed_expenses}")
     logger.info(f"claimed_revenues breakdown: {claimed_revenues}")
 
+    # Extract IWC sub-components from hidden keys (populated by Gemini Vision)
+    consumer_security_deposit_balance = float(claimed_expenses.pop("__consumer_security_deposit_balance__", 0.0) or 0.0)
+    maintenance_spares_wc = float(claimed_expenses.pop("__maintenance_spares_wc__", 0.0) or 0.0)
+    if consumer_security_deposit_balance > 0:
+        logger.info(f"  IWC sub-component: consumer_security_deposit_balance = {consumer_security_deposit_balance}")
+    if maintenance_spares_wc > 0:
+        logger.info(f"  IWC sub-component: maintenance_spares_wc = {maintenance_spares_wc}")
+
+    # ── Targeted IWC Fallback ─────────────────────────────────────────────
+    # If the main extraction didn't capture the security deposit (common for
+    # multi-page petitions where the IWC table is on a later page), run a
+    # focused Gemini call specifically for the IWC Working Capital table.
+    om_annual_for_iwc = 0.0
+    normative_loan_opening = 0.0
+    normative_loan_additional = 0.0
+    normative_loan_repayment = 0.0
+    normative_loan_rate = 0.0
+    
+    iwc_claimed = float(claimed_expenses.get("interest_working_capital", 0.0) or 0.0)
+    ilt_claimed = float(claimed_expenses.get("interest_long_term", 0.0) or 0.0)
+    needs_iwc_fallback = (consumer_security_deposit_balance == 0.0 and iwc_claimed > 0)
+    needs_loan_fallback = (ilt_claimed > 0)
+
+    if needs_iwc_fallback or needs_loan_fallback:
+        logger.info(f"  Targeted fallback: IWC={needs_iwc_fallback}, Loan={needs_loan_fallback} — running extraction...")
+        try:
+            from src.gemini_client import generate_with_parts
+            from google.genai import types as gtypes
+
+            fallback_prompt = (
+                "Extract the following financial data from this petition PDF. All values in Rs Lakhs.\n\n"
+                "1. FROM THE 'Interest on Working Capital' TABLE (CLAIMED / 'Truing up filed' column):\n"
+                "   - consumer_security_deposit_balance: 'Security deposits' or 'Security Deposit from Consumers'\n"
+                "   - maintenance_spares_wc: 'Maintenance Spares (as per norms)'\n"
+                "   - om_expenses_annual_for_iwc: The ANNUAL O&M figure. If monthly shown (e.g. 5.55), multiply by 12.\n\n"
+                "2. FROM THE 'Interest on Normative Loan' TABLE (CLAIMED / 'Truing up filed' column):\n"
+                "   - normative_loan_opening: 'Net Opening Normative Loan' or 'Opening Normative Loan'\n"
+                "   - normative_loan_additional: 'Additional normative loan' (0.0 if none)\n"
+                "   - normative_loan_repayment: 'Allowable depreciation' or 'Repayment'\n"
+                "   - normative_loan_rate: 'Rate of Interest (%)' — just the number, e.g. 8.90\n\n"
+                "Return JSON with all fields. Use 0.0 for any field not found. Return ONLY valid JSON."
+            )
+
+            pdf_bytes = Path(pdf_path).read_bytes()
+            parts = [
+                gtypes.Part.from_text(text=fallback_prompt),
+                gtypes.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"),
+            ]
+            raw = generate_with_parts(
+                parts, model="gemini-2.5-flash",
+                temperature=0.0, response_mime_type="application/json",
+            )
+            import re as re_mod
+            raw = raw.strip()
+            if raw.startswith("```"):
+                raw = re_mod.sub(r"^```[a-z]*\n?", "", raw)
+                raw = re_mod.sub(r"\n?```$", "", raw)
+            fb_data = json.loads(raw)
+
+            # IWC fields
+            fb_sec_dep = float(fb_data.get("consumer_security_deposit_balance", 0.0) or 0.0)
+            fb_spares = float(fb_data.get("maintenance_spares_wc", 0.0) or 0.0)
+            fb_om_annual = float(fb_data.get("om_expenses_annual_for_iwc", 0.0) or 0.0)
+            if fb_sec_dep > 0:
+                consumer_security_deposit_balance = fb_sec_dep
+                logger.info(f"  Fallback SUCCESS: consumer_security_deposit_balance = {fb_sec_dep}")
+            if fb_spares > 0:
+                maintenance_spares_wc = fb_spares
+                logger.info(f"  Fallback SUCCESS: maintenance_spares_wc = {fb_spares}")
+            if fb_om_annual > 0:
+                om_annual_for_iwc = fb_om_annual
+                logger.info(f"  Fallback SUCCESS: om_expenses_annual_for_iwc = {fb_om_annual}")
+
+            # Normative Loan fields
+            fb_loan_opening = float(fb_data.get("normative_loan_opening", 0.0) or 0.0)
+            fb_loan_additional = float(fb_data.get("normative_loan_additional", 0.0) or 0.0)
+            fb_loan_repayment = float(fb_data.get("normative_loan_repayment", 0.0) or 0.0)
+            fb_loan_rate = float(fb_data.get("normative_loan_rate", 0.0) or 0.0)
+            if fb_loan_opening > 0:
+                normative_loan_opening = fb_loan_opening
+                logger.info(f"  Fallback SUCCESS: normative_loan_opening = {fb_loan_opening}")
+            if fb_loan_additional > 0:
+                normative_loan_additional = fb_loan_additional
+            if fb_loan_repayment > 0:
+                normative_loan_repayment = fb_loan_repayment
+                logger.info(f"  Fallback SUCCESS: normative_loan_repayment = {fb_loan_repayment}")
+            if fb_loan_rate > 0:
+                normative_loan_rate = fb_loan_rate
+                logger.info(f"  Fallback SUCCESS: normative_loan_rate = {fb_loan_rate}%")
+        except Exception as e:
+            logger.warning(f"  Targeted fallback extraction failed: {e}")
+
     result = {
         "claimed_expenses":               claimed_expenses,
         "claimed_revenues":               claimed_revenues,
@@ -1655,6 +1781,13 @@ def extract_petition_data(state: dict) -> dict:
         "energy_sales_lakh_units":        energy_sales_lakh_units,
         "energy_purchased_lakh_units":    energy_purchased_lakh_units,
         "appc_rs_per_unit":               appc_rs_per_unit,
+        "consumer_security_deposit_balance": consumer_security_deposit_balance,
+        "maintenance_spares_wc":          maintenance_spares_wc,
+        "om_annual_for_iwc":              om_annual_for_iwc,
+        "normative_loan_opening":         normative_loan_opening,
+        "normative_loan_additional":      normative_loan_additional,
+        "normative_loan_repayment":       normative_loan_repayment,
+        "normative_loan_rate":            normative_loan_rate,
         "extraction_metadata": {
             "method": extraction_method,
             "checksum_passed": checksum_passed,

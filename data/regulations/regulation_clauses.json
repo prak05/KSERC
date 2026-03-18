@@ -97,18 +97,19 @@
     "29": {
         "clause_number": "29",
         "title": "Interest on Working Capital",
-        "topic": "working capital, interest, O&M expenses, maintenance spares, receivables",
-        "text_snippet": "Interest on Working Capital shall be computed on the normative Working Capital requirement at SBI short-term lending rate (MCLR + spread). Working Capital = (1/12 of approved O&M) + (Maintenance Spares @ 15% of approved O&M) + (Receivables equivalent to 2 months of approved revenue less 1 month's estimated billing).",
+        "topic": "working capital, interest, O&M expenses, maintenance spares, receivables, security deposits",
+        "text_snippet": "Interest on Working Capital shall be computed on the normative Working Capital requirement at SBI short-term lending rate (MCLR + spread). Working Capital = (1/12 of approved O&M) + (Maintenance Spares as per norms) + (2 months Revenue from Sale of Power) − (Security Deposits from Consumers).",
         "equations": {
-            "working_capital": "(1/12 of approved O&M) + (15% of approved O&M as maintenance spares) + (2 months approved revenue - 1 month billing)",
-            "simplified_wc": "For SDL licensees: (1/12 of approved O&M) + (15% of O&M)",
-            "interest_rate": "SBI 1-year MCLR + applicable spread (typically 8.5-10.5%)",
-            "formula": "IWC = Working Capital × SBI Short-term Rate",
-            "om_components": "Approved (Employee Cost + R&M + A&G)"
+            "working_capital": "(1/12 of approved O&M) + (Maintenance Spares as per norms) + (2 months Revenue from Sale of Power) − (Security Deposits from Consumers)",
+            "interest_rate": "SBI MCLR + 2% (typically 10.9-11.15%)",
+            "formula": "IWC = Working Capital × (MCLR + 2)%",
+            "om_components": "Approved (Employee Cost + R&M + A&G)",
+            "verified_example": "Infopark 2024-25: WC = 8.19 + 0 + 197.94 - 124.59 = 81.53, IWC = 81.53 × 10.9% = 8.89L"
         },
         "amendments": [
             "KSERC Order practice: Uses approved O&M (not claimed) for WC calculation",
-            "Infopark 2022-23: KSERC computed WC as (1/12 O&M + 15% O&M spares) × SBI rate"
+            "Infopark 2024-25: WC computed with security deposit deduction, maintenance spares = 0",
+            "If Security Deposits exceed other WC components, WC is floored at 0"
         ],
         "applies_to": "all"
     },

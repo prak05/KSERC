@@ -1,138 +1,104 @@
 import { useState } from 'react'
 
-function SummaryCard({ label, value, unit, colorClass, icon }) {
+function SummaryCard({ label, value, unit, glowColor, icon }) {
     return (
-        <div className="bg-kserc-surface/60 backdrop-blur-2xl rounded-2xl border border-white/10 p-6 shadow-xl hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <p className="text-xs font-bold text-white/50 uppercase tracking-widest">{label}</p>
-            <p className={`text-3xl font-black mt-3 ${colorClass} drop-shadow-md`}>
-                {icon && <span className="mr-2 opacity-80">{icon}</span>}
-                {typeof value === 'number' ? value.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : value}
+        <div className="glass-card" style={{
+            padding: '22px 24px', position: 'relative', overflow: 'hidden',
+        }}>
+            <div style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, background: glowColor || 'var(--accent)', borderRadius: '50%', filter: 'blur(60px)', opacity: 0.08 }} />
+            <p className="mono-wide" style={{ marginBottom: 10, position: 'relative' }}>{label}</p>
+            <p style={{
+                fontFamily: 'var(--font-mono)', fontSize: '1.6rem', fontWeight: 700, color: 'var(--text)',
+                fontVariantNumeric: 'tabular-nums', position: 'relative',
+            }}>
+                {icon && <span style={{ marginRight: 6, fontSize: '1.1rem' }}>{icon}</span>}
+                ₹{typeof value === 'number' ? value.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : value}
             </p>
-            <p className="text-xs text-white/40 mt-2 font-mono">{unit}</p>
+            <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 6 }}>{unit}</p>
         </div>
     )
 }
 
 function StatusBadge({ status }) {
-    const styles = {
-        approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]',
-        reduced: 'bg-red-500/10 text-red-400 border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]',
-        increased: 'bg-blue-500/10 text-blue-400 border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]',
+    const configs = {
+        approved: { cls: 'tag-approved', label: '✓ APPROVED' },
+        reduced: { cls: 'tag-reduced', label: '↓ REDUCED' },
+        increased: { cls: 'tag-modified', label: '↑ INCREASED' },
     }
-    const labels = {
-        approved: '✓ Approved',
-        reduced: '↓ Reduced',
-        increased: '↑ Increased',
-    }
-    return (
-        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] uppercase tracking-wider font-bold border ${styles[status] || 'bg-white/5 text-white/60 border-white/10'}`}>
-            {labels[status] || status}
-        </span>
-    )
+    const c = configs[status] || { cls: 'tag-neutral', label: status?.toUpperCase() || '-' }
+    return <span className={`neon-tag ${c.cls}`}>{c.label}</span>
 }
 
 function JustificationCard({ component, index, editMode, onValueChange, onJustificationChange }) {
     const [expanded, setExpanded] = useState(false)
-
-    const borderColor = component.status === 'reduced'
-        ? 'border-l-red-500/50'
-        : component.status === 'approved'
-            ? 'border-l-emerald-500/50'
-            : 'border-l-blue-500/50'
-
-    const bgColor = component.status === 'reduced'
-        ? 'bg-red-500/5 hover:bg-red-500/10'
-        : component.status === 'approved'
-            ? 'bg-emerald-500/5 hover:bg-emerald-500/10'
-            : 'bg-blue-500/5 hover:bg-blue-500/10'
-
-    const contentBg = component.status === 'reduced'
-        ? 'bg-red-950/20'
-        : component.status === 'approved'
-            ? 'bg-emerald-950/20'
-            : 'bg-blue-950/20'
-
     const displayApproved = component._editApproved ?? component.approved
     const displayJustification = component._editJustification ?? component.justification
 
+    const accentColor = component.status === 'reduced' ? 'var(--red)' : component.status === 'increased' ? 'var(--blue)' : 'var(--green)'
+
     return (
-        <div
-            className={`bg-kserc-surface/60 backdrop-blur-xl rounded-xl border border-white/10 border-l-4 ${borderColor} shadow-lg transition-all duration-300 animate-slide-in ${editMode ? 'ring-2 ring-kserc-blue/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : ''}`}
-            style={{ animationDelay: `${index * 80}ms` }}
-        >
-            <button
-                onClick={() => setExpanded(!expanded)}
-                className={`w-full px-6 py-5 flex items-center justify-between text-left transition-colors rounded-r-xl ${bgColor}`}
-            >
-                <div className="flex items-center gap-4">
-                    <span className="text-sm font-black text-white/20 font-mono tracking-widest">{String(index + 1).padStart(2, '0')}</span>
+        <div className="glass-card animate-slide-up" style={{ animationDelay: `${index * 50}ms`, borderLeftWidth: 2, borderLeftColor: accentColor }}>
+            <button onClick={() => setExpanded(!expanded)}
+                style={{
+                    width: '100%', padding: '16px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
+                }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <span className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '10px' }}>{String(index + 1).padStart(2, '0')}</span>
                     <div>
-                        <h4 className="font-bold text-white text-base">{component.name}</h4>
-                        <div className="flex items-center gap-3 mt-1.5 text-xs text-white/50 font-mono">
-                            <span>Claimed: <strong className="text-white/80">₹{component.claimed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
-                            <span className="text-white/30">→</span>
-                            <span>Approved: <strong className="text-white/80">
+                        <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.03em', textTransform: 'none', lineHeight: 1.3, color: 'var(--text)' }}>
+                            {component.name}
+                        </h4>
+                        <div className="mono" style={{ marginTop: 4, display: 'flex', gap: 8, alignItems: 'center', fontSize: '10px' }}>
+                            <span>Claimed: <strong style={{ color: 'var(--text)' }}>₹{component.claimed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
+                            <span style={{ color: 'var(--text-tertiary)' }}>→</span>
+                            <span>Approved: <strong style={{ color: accentColor }}>
                                 {editMode
-                                    ? <input
-                                        type="number" step="any"
-                                        value={displayApproved}
+                                    ? <input type="number" step="any" value={displayApproved}
                                         onClick={e => e.stopPropagation()}
                                         onChange={e => { e.stopPropagation(); onValueChange(component.key, parseFloat(e.target.value) || 0) }}
-                                        className="w-28 text-right bg-black/40 border border-kserc-blue/50 rounded px-2 py-1 text-kserc-blue font-mono focus:outline-none focus:ring-1 focus:ring-kserc-blue shadow-inner"
-                                    />
+                                        className="neon-input" style={{ width: 90, fontSize: '10px', padding: '3px 6px', fontFamily: 'var(--font-mono)' }} />
                                     : `₹${displayApproved.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
                                 }
                             </strong></span>
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <StatusBadge status={component.status} />
-                    <span className={`text-xl text-white/40 transition-transform duration-300 ${expanded ? 'rotate-180 text-white/80' : ''}`}>▾</span>
+                    <span style={{ color: 'var(--text-tertiary)', fontSize: '12px', transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'none' }}>▾</span>
                 </div>
             </button>
 
             {expanded && (
-                <div className={`px-6 pb-6 ${contentBg} border-t border-white/10 rounded-b-xl`}>
-                    <div className="pt-6 grid grid-cols-4 gap-4 text-center mb-6">
-                        <div className="bg-black/20 rounded-xl px-4 py-4 border border-white/5 backdrop-blur-sm">
-                            <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">MYT Norm</p>
-                            <p className="text-xl font-black text-white/90 mt-2 font-mono">₹{(component.proposed_myt || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
-                        </div>
-                        <div className="bg-black/20 rounded-xl px-4 py-4 border border-white/5 backdrop-blur-sm">
-                            <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Claimed</p>
-                            <p className="text-xl font-black text-white/90 mt-2 font-mono">₹{component.claimed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
-                        </div>
-                        <div className="bg-black/20 rounded-xl px-4 py-4 border border-white/5 backdrop-blur-sm relative overflow-hidden">
-                            <div className="absolute inset-0 bg-kserc-green/5" />
-                            <p className="relative z-10 text-[10px] uppercase tracking-widest text-white/40 font-bold">Approved</p>
-                            <p className="relative z-10 text-xl font-black text-kserc-green/90 mt-2 font-mono drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]">₹{displayApproved.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
-                        </div>
-                        <div className="bg-black/20 rounded-xl px-4 py-4 border border-white/5 backdrop-blur-sm">
-                            <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Variance</p>
-                            <p className={`text-xl font-black mt-2 font-mono ${component.variance < 0 ? 'text-kserc-red/90 drop-shadow-[0_0_8px_rgba(239,68,68,0.3)]' : component.variance > 0 ? 'text-kserc-blue/90 drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'text-white/50'}`}>
-                                {component.variance > 0 ? '+' : ''}{component.variance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </p>
-                            <p className="text-[10px] text-white/40 font-mono mt-1">
-                                ({component.variance_pct > 0 ? '+' : ''}{component.variance_pct}%)
-                            </p>
-                        </div>
+                <div style={{ padding: '0 22px 22px', borderTop: '1px solid var(--border)' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, margin: '16px 0' }}>
+                        {[
+                            { label: 'MYT Norm', val: component.proposed_myt || 0 },
+                            { label: 'Claimed', val: component.claimed },
+                            { label: 'Approved', val: displayApproved, color: 'var(--green)' },
+                            { label: 'Variance', val: component.variance, prefix: component.variance > 0 ? '+' : '', color: component.variance < 0 ? 'var(--red)' : component.variance > 0 ? 'var(--blue)' : 'var(--text-tertiary)' },
+                        ].map((m, i) => (
+                            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '12px 14px', textAlign: 'center' }}>
+                                <p className="mono-wide" style={{ fontSize: '8px', marginBottom: 6 }}>{m.label}</p>
+                                <p style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: m.color || 'var(--text)', fontSize: '0.95rem', fontVariantNumeric: 'tabular-nums' }}>
+                                    ₹{(m.prefix || '')}{m.val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </p>
+                                {m.label === 'Variance' && (
+                                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 2, fontSize: '9px' }}>
+                                        ({component.variance_pct > 0 ? '+' : ''}{component.variance_pct}%)
+                                    </p>
+                                )}
+                            </div>
+                        ))}
                     </div>
-
-                    <div className="bg-black/30 rounded-xl p-5 border border-white/5 backdrop-blur-sm">
-                        <h5 className="text-[11px] font-black uppercase tracking-widest text-white/70 mb-3 flex items-center gap-2">
-                            <span>📝</span> Commission's Observation &amp; Justification
-                        </h5>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '16px 18px' }}>
+                        <p className="mono-wide" style={{ fontSize: '8px', marginBottom: 8 }}>⚖️ Commission's Observation</p>
                         {editMode ? (
-                            <textarea
-                                value={displayJustification}
-                                onChange={e => onJustificationChange(component.key, e.target.value)}
-                                rows={5}
-                                className="w-full text-sm text-white/90 leading-relaxed border border-kserc-blue/30 rounded-lg p-4 bg-black/40 focus:outline-none focus:border-kserc-blue focus:ring-1 focus:ring-kserc-blue resize-y shadow-inner"
-                            />
+                            <textarea value={displayJustification} onChange={e => onJustificationChange(component.key, e.target.value)}
+                                rows={4} className="neon-input" style={{ width: '100%', resize: 'vertical', fontFamily: 'var(--font-body)', fontSize: '0.8rem', lineHeight: 1.6 }} />
                         ) : (
-                            <p className="text-sm text-white/80 leading-relaxed font-light">{displayJustification}</p>
+                            <p style={{ fontSize: '0.8rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)' }}>{displayJustification}</p>
                         )}
                     </div>
                 </div>
@@ -149,285 +115,214 @@ export default function ResultsDashboard({ data, onNewAnalysis }) {
     const [saveStatus, setSaveStatus] = useState(null)
     const [auditLog, setAuditLog] = useState([])
 
-    const handleDownload = () => {
-        window.open(`/api/download/${data.analysis_id}`, '_blank')
-    }
+    const handleDownload = () => window.open(`/api/download/${data.analysis_id}`, '_blank')
 
     const handleValueChange = (key, value) => {
-        setComponents(comps => comps.map(c =>
-            c.key === key ? { ...c, _editApproved: value } : c
-        ))
+        setComponents(comps => comps.map(c => c.key === key ? { ...c, _editApproved: value } : c))
     }
 
     const handleJustificationChange = (key, text) => {
-        setComponents(comps => comps.map(c =>
-            c.key === key ? { ...c, _editJustification: text } : c
-        ))
+        setComponents(comps => comps.map(c => c.key === key ? { ...c, _editJustification: text } : c))
     }
 
     const handleSaveEdits = async () => {
-        setSaving(true)
-        setSaveStatus(null)
-        const changed = components.filter(c =>
-            c._editApproved !== undefined || c._editJustification !== undefined
-        )
-        if (changed.length === 0) {
-            setSaving(false)
-            setSaveStatus('No changes to save.')
-            return
-        }
+        setSaving(true); setSaveStatus(null)
+        const changed = components.filter(c => c._editApproved !== undefined || c._editJustification !== undefined)
+        if (changed.length === 0) { setSaving(false); setSaveStatus('No changes.'); return }
         const newLog = []
         for (const comp of changed) {
             const newAmt = comp._editApproved ?? comp.approved
             const newJ = comp._editJustification ?? comp.justification
             try {
                 await fetch('/api/override', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        analysis_id: data.analysis_id,
-                        component_key: comp.key,
-                        new_approved_amount: newAmt,
-                        justification: newJ,
-                        user_id: 'human_auditor',
-                    }),
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ analysis_id: data.analysis_id, component_key: comp.key, new_approved_amount: newAmt, justification: newJ, user_id: 'human_auditor' }),
                 })
                 newLog.push({ name: comp.name, oldAmt: comp.approved, newAmt, changed: comp._editApproved !== undefined })
-            } catch {
-                setSaveStatus('Error saving ' + comp.name)
-            }
+            } catch { setSaveStatus('Error saving ' + comp.name) }
         }
         setAuditLog(prev => [...newLog, ...prev])
-        setSaveStatus(`${changed.length} component(s) saved. Downloading updated PDF…`)
-        setSaving(false)
-        setEditMode(false)
+        setSaveStatus(`${changed.length} component(s) saved. Downloading PDF…`)
+        setSaving(false); setEditMode(false)
         setTimeout(() => window.open(`/api/download/${data.analysis_id}`, '_blank'), 800)
     }
 
     return (
-        <section className="space-y-8 animate-fade-in-up">
+        <section className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
 
-            {/* ── Header ── */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-white/10">
+            {/* Header */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, borderBottom: '1px solid var(--border)', paddingBottom: 20 }}>
                 <div>
-                    <h2 className="text-3xl font-bold text-white tracking-tight drop-shadow-md">Truing Up Analysis Report</h2>
-                    <p className="text-sm font-mono text-white/50 mt-2 uppercase tracking-wide flex items-center gap-3">
-                        <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80">{data.licensee_name}</span>
-                        <span>•</span>
-                        <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80">FY {data.financial_year}</span>
-                        <span>•</span>
-                        <span>{new Date(data.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                    </p>
+                    <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', letterSpacing: '-0.05em', marginBottom: 10 }}>Audit Report</h2>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        <span className="neon-tag tag-neutral">{data.licensee_name}</span>
+                        <span className="neon-tag tag-neutral">FY {data.financial_year}</span>
+                        <span className="neon-tag tag-neutral">{new Date(data.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
                 </div>
-                <div className="flex gap-3 flex-wrap">
-                    <button onClick={onNewAnalysis}
-                        className="px-5 py-2.5 rounded-xl border border-white/10 bg-black/20 backdrop-blur-md text-sm font-bold text-white/70 hover:text-white hover:bg-white/10 transition-all shadow-lg hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                        ← New Analysis
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <button onClick={onNewAnalysis} className="ghost-btn">← New Analysis</button>
+                    <button onClick={() => { setEditMode(e => !e); setSaveStatus(null) }}
+                        className={`ghost-btn ${editMode ? 'ghost-btn-accent' : ''}`}
+                        style={editMode ? { color: 'var(--accent)', borderColor: 'var(--border-accent)' } : {}}>
+                        {editMode ? '🖊️ Editing ON' : '🖊️ Edit'}
                     </button>
-                    <button
-                        onClick={() => { setEditMode(e => !e); setSaveStatus(null) }}
-                        className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all border backdrop-blur-md shadow-lg ${editMode
-                            ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500/30'
-                            : 'bg-black/20 border-white/10 text-white/70 hover:text-white hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]'
-                            }`}>
-                        {editMode ? '✏️ Editing Mode ON' : '✏️ Edit Values'}
-                    </button>
-                    <button onClick={handleDownload}
-                        className="px-5 py-2.5 rounded-xl bg-kserc-blue/20 border border-kserc-blue/50 backdrop-blur-md text-white text-sm font-bold shadow-lg hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:bg-kserc-blue transition-all hover:-translate-y-0.5">
-                        ⬇️ Download PDF Order
+                    <button onClick={handleDownload} className="laser-btn" style={{ fontSize: '0.7rem', padding: '10px 20px' }}>
+                        📥 Download PDF
                     </button>
                 </div>
             </div>
 
-            {/* Edit mode banner */}
+            {/* Edit banner */}
             {editMode && (
-                <div className="bg-amber-500/10 border border-amber-500/30 backdrop-blur-md rounded-xl px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
-                    <p className="text-amber-300 text-sm font-medium flex items-center gap-2">
-                        <span className="text-amber-400 animate-pulse">✏️</span> Edit Mode active — click approved amounts or justification text to edit. Click "Save &amp; Re-generate" when done.
-                    </p>
-                    <button onClick={handleSaveEdits} disabled={saving}
-                        className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-white rounded-lg text-sm font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] whitespace-nowrap hover:-translate-y-0.5">
-                        {saving ? '⏳ Saving…' : '✔ Save & Re-generate PDF'}
+                <div className="glass-card" style={{ borderColor: 'var(--border-accent)', padding: '14px 22px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                    <p className="mono" style={{ color: 'var(--accent)' }}>🖊️ EDIT MODE — Modify values & justifications</p>
+                    <button onClick={handleSaveEdits} disabled={saving} className="laser-btn" style={{ fontSize: '0.65rem', padding: '8px 18px', opacity: saving ? 0.5 : 1 }}>
+                        {saving ? '⏳ Saving…' : '💾 Save & Re-generate'}
                     </button>
                 </div>
             )}
-
             {saveStatus && (
-                <div className="bg-emerald-500/10 border border-emerald-500/30 backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.1)] rounded-xl px-6 py-4 text-emerald-300 text-sm font-medium flex items-center gap-2">
-                    <span>✨</span> {saveStatus}
+                <div className="glass-card" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '12px 18px' }}>
+                    <p className="mono" style={{ color: 'var(--green)' }}>🟢 {saveStatus}</p>
                 </div>
             )}
 
-            {/* ── Summary Cards ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <SummaryCard
-                    label="Total Claimed Expenditure"
-                    value={data.total_claimed_expenditure}
-                    unit="Rs. Lakhs"
-                    colorClass="text-kserc-navy"
-                />
-                <SummaryCard
-                    label="Total Approved Expenditure"
-                    value={data.total_approved_expenditure}
-                    unit="Rs. Lakhs"
-                    colorClass="text-kserc-green"
-                    icon="✓"
-                />
-                <SummaryCard
-                    label="Total Revenue"
-                    value={data.total_approved_revenue}
-                    unit="Rs. Lakhs"
-                    colorClass="text-kserc-blue"
-                />
-                <SummaryCard
-                    label={isSurplus ? 'Revenue Surplus' : 'Revenue Gap'}
-                    value={Math.abs(data.final_revenue_gap_surplus)}
-                    unit="Rs. Lakhs"
-                    colorClass={isSurplus ? 'text-kserc-green drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'text-kserc-red drop-shadow-[0_0_10px_rgba(239,68,68,0.3)]'}
-                    icon={isSurplus ? '📈' : '📉'}
-                />
+            {/* Summary Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
+                <SummaryCard label="Total Claimed" value={data.total_claimed_expenditure} unit="Rs. Lakhs" />
+                <SummaryCard label="Total Approved" value={data.total_approved_expenditure} unit="Rs. Lakhs" icon="✓" glowColor="var(--green)" />
+                <SummaryCard label="Total Revenue" value={data.total_approved_revenue} unit="Rs. Lakhs" glowColor="var(--blue)" />
+                <SummaryCard label={isSurplus ? 'Revenue Surplus' : 'Revenue Gap'} value={Math.abs(data.final_revenue_gap_surplus)} unit="Rs. Lakhs" icon={isSurplus ? '🟩' : '🟥'} glowColor={isSurplus ? 'var(--green)' : 'var(--red)'} />
             </div>
 
-            {/* ── Distribution Loss Alert ── */}
+            {/* Distribution Loss */}
             {data.claimed_distribution_loss_pct > 0 && (
-                <div className={`flex items-center gap-4 px-6 py-4 rounded-xl border backdrop-blur-md shadow-lg ${data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5)
-                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.1)]'
-                    : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
-                    }`}>
-                    <span className="text-2xl drop-shadow-md">{data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5) ? '⚠️' : '✅'}</span>
-                    <span className="text-sm font-bold tracking-wide">
-                        Distribution Loss: <strong className="font-mono text-base">{data.claimed_distribution_loss_pct}%</strong>
+                <div className="glass-card" style={{
+                    borderColor: data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5) ? 'rgba(255,136,68,0.3)' : 'rgba(0,255,136,0.3)',
+                    padding: '14px 22px', display: 'flex', alignItems: 'center', gap: 12,
+                }}>
+                    <span style={{ fontSize: '1.2rem' }}>{data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5) ? '⚠️' : '✅'}</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
+                        Distribution Loss: <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontVariantNumeric: 'tabular-nums' }}>{data.claimed_distribution_loss_pct}%</span>
                         {data.target_distribution_loss_pct > 0 && (
-                            <span className="text-white/50 ml-2 font-mono text-xs">(Target: {data.target_distribution_loss_pct}%)</span>
+                            <span className="mono" style={{ marginLeft: 10 }}>(Target: {data.target_distribution_loss_pct}%)</span>
                         )}
                     </span>
                 </div>
             )}
 
-            {/* ── Comparison Table ── */}
-            <div className="bg-kserc-surface/60 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden relative">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                <div className="px-8 py-5 border-b border-white/10 bg-white/5 backdrop-blur-md">
-                    <h3 className="font-bold text-white tracking-wide text-lg flex items-center gap-2">
-                        <span>📊</span> Component-wise Analysis
-                    </h3>
+            {/* Comparison Table */}
+            <div className="glass-card" style={{ overflow: 'hidden' }}>
+                <div style={{ background: 'rgba(191, 255, 0, 0.05)', borderBottom: '1px solid var(--border)', padding: '14px 22px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span className="mono-wide" style={{ color: 'var(--accent)' }}>🔬 Component Analysis</span>
                 </div>
-                <div className="overflow-x-auto p-4">
-                    <table className="w-full text-sm font-mono">
+                <div style={{ overflowX: 'auto' }}>
+                    <table className="neon-table">
                         <thead>
-                            <tr className="text-white/40 text-[10px] uppercase tracking-widest border-b border-white/10">
-                                <th className="px-4 py-4 text-left font-bold">Sl.</th>
-                                <th className="px-4 py-4 text-left font-bold font-sans">Particulars</th>
-                                <th className="px-4 py-4 text-right font-bold">MYT Norm</th>
-                                <th className="px-4 py-4 text-right font-bold">Claimed</th>
-                                <th className="px-4 py-4 text-right font-bold">Approved</th>
-                                <th className="px-4 py-4 text-right font-bold">Variance</th>
-                                <th className="px-4 py-4 text-center font-bold">Status</th>
+                            <tr>
+                                <th style={{ width: 50 }}>Sl.</th>
+                                <th>Particulars</th>
+                                <th style={{ textAlign: 'right' }}>MYT Norm</th>
+                                <th style={{ textAlign: 'right' }}>Claimed</th>
+                                <th style={{ textAlign: 'right' }}>Approved</th>
+                                <th style={{ textAlign: 'right' }}>Variance</th>
+                                <th style={{ textAlign: 'center' }}>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {components?.map((c, i) => (
-                                <tr key={c.key} className={`border-b border-white/5 transition-colors hover:bg-white/5 group relative ${i % 2 === 1 ? 'bg-black/20' : ''}`}>
-                                    <td className="px-4 py-4 text-white/30">{String(i + 1).padStart(2, '0')}</td>
-                                    <td className="px-4 py-4 font-semibold font-sans text-white/90 group-hover:text-white transition-colors">{c.name}</td>
-                                    <td className="px-4 py-4 text-right text-white/40">{c.proposed_myt ? c.proposed_myt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-'}</td>
-                                    <td className="px-4 py-4 text-right text-white/60">{c.claimed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                                    <td className="px-4 py-4 text-right font-bold text-kserc-green/90 group-hover:text-emerald-400 drop-shadow-[0_0_5px_rgba(16,185,129,0.1)] transition-colors">
+                                <tr key={c.key}>
+                                    <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>{String(i + 1).padStart(2, '0')}</td>
+                                    <td style={{ fontWeight: 500 }}>{c.name}</td>
+                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                                        {c.proposed_myt ? c.proposed_myt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '—'}
+                                    </td>
+                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                                        {c.claimed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                    </td>
+                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--green)' }}>
                                         {editMode
-                                            ? <input type="number" step="any"
-                                                value={c._editApproved ?? c.approved}
+                                            ? <input type="number" step="any" value={c._editApproved ?? c.approved}
                                                 onChange={e => handleValueChange(c.key, parseFloat(e.target.value) || 0)}
-                                                className="w-28 text-right bg-black/40 border border-kserc-blue/50 rounded px-2 py-1 text-kserc-blue font-mono focus:outline-none focus:ring-1 focus:ring-kserc-blue"
-                                            />
+                                                className="neon-input" style={{ width: 90, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', padding: '4px 6px' }} />
                                             : (c._editApproved ?? c.approved).toLocaleString('en-IN', { minimumFractionDigits: 2 })
                                         }
                                     </td>
-                                    <td className={`px-4 py-4 text-right ${c.variance < 0 ? 'text-kserc-red' : c.variance > 0 ? 'text-kserc-blue' : 'text-white/20'}`}>
+                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: c.variance < 0 ? 'var(--red)' : c.variance > 0 ? 'var(--blue)' : 'var(--text-tertiary)' }}>
                                         {c.variance > 0 ? '+' : ''}{c.variance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
-                                    <td className="px-4 py-4 text-center"><StatusBadge status={c.status} /></td>
+                                    <td style={{ textAlign: 'center' }}><StatusBadge status={c.status} /></td>
                                 </tr>
                             ))}
-
-                            {/* Totals row */}
-                            <tr className="bg-white/5 font-bold border-t border-white/20 relative">
-                                <td className="px-4 py-5"></td>
-                                <td className="px-4 py-5 text-white tracking-widest uppercase font-sans text-xs">Total Expenditure</td>
-                                <td className="px-4 py-5"></td>
-                                <td className="px-4 py-5 text-right text-white/80">{data.total_claimed_expenditure?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                                <td className="px-4 py-5 text-right text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)] text-base">{data.total_approved_expenditure?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                                <td className="px-4 py-5 text-right text-red-400">
+                            <tr style={{ background: 'rgba(191,255,0,0.05)' }}>
+                                <td></td>
+                                <td className="mono-wide" style={{ color: 'var(--accent)' }}>Total Expenditure</td>
+                                <td></td>
+                                <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                                    {data.total_claimed_expenditure?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                                <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent)', fontSize: '0.9rem' }}>
+                                    {data.total_approved_expenditure?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                                <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>
                                     {(data.total_approved_expenditure - data.total_claimed_expenditure)?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                 </td>
-                                <td className="px-4 py-5"></td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            {/* ── Detailed Justifications ── */}
+            {/* Justifications */}
             <div>
-                <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                    Detailed Justifications
-                </h3>
-                <p className="text-sm text-white/50 mb-6 font-mono">
-                    {editMode
-                        ? '> EDIT MODE ACTIVE: MODIFY VALUES ABOVE OR JUSTIFICATIONS BELOW'
-                        : '> EXPAND COMPONENTS TO VIEW REGULATORY JUSTIFICATIONS'}
+                <h3 style={{ fontSize: '1.3rem', letterSpacing: '-0.04em', marginBottom: 4 }}>Justifications</h3>
+                <p className="mono" style={{ color: 'var(--text-tertiary)', marginBottom: 16 }}>
+                    {editMode ? '> EDIT MODE ACTIVE' : '> EXPAND TO VIEW OBSERVATIONS'}
                 </p>
-                <div className="space-y-3">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {components?.map((c, i) => (
-                        <JustificationCard key={c.key} component={c} index={i}
-                            editMode={editMode}
-                            onValueChange={handleValueChange}
-                            onJustificationChange={handleJustificationChange}
-                        />
+                        <JustificationCard key={c.key} component={c} index={i} editMode={editMode}
+                            onValueChange={handleValueChange} onJustificationChange={handleJustificationChange} />
                     ))}
                 </div>
             </div>
 
-            {/* ── Disallowances Summary ── */}
+            {/* Disallowances */}
             {data.disallowances?.length > 0 && (
-                <div className="bg-red-500/10 rounded-2xl border border-red-500/30 p-8 backdrop-blur-md shadow-[0_0_30px_rgba(239,68,68,0.1)] relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-red-500 to-red-600" />
-                    <h3 className="text-xl font-bold text-red-400 mb-6 tracking-wide flex items-center gap-3">
-                        <span className="text-2xl drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">⛔</span> Auditing Rules Applied &amp; Disallowances
-                    </h3>
-                    <div className="space-y-4">
+                <div className="glass-card" style={{ overflow: 'hidden', borderColor: 'rgba(255,68,68,0.3)' }}>
+                    <div style={{ background: 'var(--red-dim)', borderBottom: '1px solid rgba(255,68,68,0.2)', padding: '14px 22px' }}>
+                        <span className="mono-wide" style={{ color: 'var(--red)' }}>🚫 Disallowances</span>
+                    </div>
+                    <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
                         {data.disallowances.map((d, i) => (
-                            <div key={i} className="bg-black/30 rounded-xl p-5 border border-red-500/20 hover:border-red-500/40 transition-colors backdrop-blur-sm group">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                                    <h4 className="font-semibold text-red-300 text-lg group-hover:text-red-200 transition-colors">
-                                        {d.item.includes("Rule Triggered") || d.item.includes("Penalty") ? d.item : `${d.item} Rule Triggered`}
-                                    </h4>
-                                    <span className="text-sm font-black text-red-500 font-mono bg-red-500/10 px-3 py-1 rounded-md border border-red-500/20 drop-shadow-md">
-                                        -₹{d.amount_cut?.toLocaleString('en-IN', { minimumFractionDigits: 2 })} L
+                            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '14px 18px' }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                                    <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--red)', textTransform: 'none', lineHeight: 1.3 }}>{d.item}</h4>
+                                    <span className="neon-tag tag-reduced" style={{ fontSize: '10px' }}>
+                                        -₹{d.amount_cut?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}L
                                     </span>
                                 </div>
-                                <p className="text-sm text-white/70 leading-relaxed font-light"><strong className="text-white/90">Decision: </strong>{d.justification}</p>
+                                <p style={{ fontSize: '0.8rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)' }}>
+                                    <strong style={{ color: 'var(--text)' }}>Decision: </strong>{d.justification}
+                                </p>
                             </div>
                         ))}
                     </div>
                 </div>
             )}
 
-            {/* ── Audit Log of Manual Overrides ── */}
+            {/* Audit Log */}
             {auditLog.length > 0 && (
-                <div className="bg-amber-500/10 border border-amber-500/30 backdrop-blur-md rounded-2xl p-6 shadow-lg">
-                    <h3 className="text-sm font-black text-amber-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <span>✏️</span> Manual Override Audit Log
-                    </h3>
-                    <div className="space-y-2">
+                <div className="glass-card" style={{ borderColor: 'var(--border-accent)', padding: '18px 22px' }}>
+                    <p className="mono-wide" style={{ color: 'var(--accent)', marginBottom: 12, fontSize: '9px' }}>📋 Override Log</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {auditLog.map((entry, i) => (
-                            <div key={i} className="bg-black/40 rounded-lg px-4 py-3 border border-amber-500/20 text-sm flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                                <span className="font-bold text-white/90">{entry.name}</span>
-                                {entry.changed && (
-                                    <span className="text-amber-400 font-mono bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                                        ₹{entry.oldAmt.toFixed(2)} → ₹{entry.newAmt.toFixed(2)} L
-                                    </span>
-                                )}
-                                <span className="text-white/30 text-[10px] uppercase font-bold tracking-widest bg-white/5 px-2 py-1 rounded">Human override</span>
+                            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                                <span style={{ fontWeight: 500, fontSize: '0.8rem' }}>{entry.name}</span>
+                                {entry.changed && <span className="mono" style={{ color: 'var(--accent)' }}>₹{entry.oldAmt.toFixed(2)} → ₹{entry.newAmt.toFixed(2)}</span>}
+                                <span className="neon-tag tag-neutral" style={{ fontSize: '8px' }}>Human Override</span>
                             </div>
                         ))}
                     </div>

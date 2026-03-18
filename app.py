@@ -155,6 +155,7 @@ async def analyze_petition(
     financial_year: str = Form(...),
     inflation_rate: Optional[float] = Form(None),
     bee_energy_audit_fee: Optional[float] = Form(None),
+    iwc_interest_rate: Optional[float] = Form(None),
 ):
     """
     Upload and analyze petition PDFs (supports multiple files).
@@ -215,6 +216,7 @@ async def analyze_petition(
                 original_filenames=original_filenames,
                 inflation_rate=inflation_rate,
                 bee_energy_audit_fee=bee_energy_audit_fee,
+                iwc_interest_rate=iwc_interest_rate,
             )
             save_analysis(analysis_id, "COMPLETED", result)
             
@@ -524,6 +526,7 @@ async def _run_analysis(
     original_filenames: List[str],
     inflation_rate: Optional[float] = None,
     bee_energy_audit_fee: Optional[float] = None,
+    iwc_interest_rate: Optional[float] = None,
 ) -> dict:
     """Run the full extraction + audit + PDF generation pipeline."""
 
@@ -548,6 +551,7 @@ async def _run_analysis(
         "petition_pdf_paths": pdf_paths,  # All PDFs for multi-file extraction
         "licensee_name": licensee_name,
         "financial_year": financial_year,
+        "original_filenames": original_filenames,  # Real filenames for Annexure B detection
     }
 
     # Extract petition text from ALL PDFs for the Narrative RAG Context
@@ -583,6 +587,27 @@ async def _run_analysis(
     log("extract", f"Extraction complete — {n_exp} expense components found")
     state.update(extraction_result)
 
+    # ── Step 1.5: Deep Table Extraction (wage revision, detailed breakdowns) ──
+    log("extract", "Running deep table extraction for wage revision and detailed data…")
+    try:
+        from src.agents.deep_table_extractor import deep_extract_node
+        # Set annexure_pdf_paths so deep extractor can find all PDFs
+        if len(pdf_paths) > 1:
+            state["annexure_pdf_paths"] = pdf_paths[1:]
+        deep_result = deep_extract_node(state)
+        if deep_result:
+            state.update(deep_result)
+            wage_cur = state.get("wage_revision_current_year", 0.0)
+            wage_pri = state.get("wage_revision_prior_period", 0.0)
+            if wage_cur > 0 or wage_pri > 0:
+                log("extract", f"Wage revision found: current={wage_cur:.2f}L, prior={wage_pri:.2f}L")
+            else:
+                log("extract", "Deep extraction complete — no wage revision detected")
+        else:
+            log("extract", "Deep extraction returned no enrichments")
+    except Exception as e:
+        log("extract", f"Deep table extraction failed (non-fatal): {e}")
+
     # ── Step 2: Legacy Deterministic Audit ────────────────────────
     log("audit", "Loading MYT norms and running deterministic compliance audit…")
 
@@ -598,6 +623,9 @@ async def _run_analysis(
     if bee_energy_audit_fee is not None:
         state["bee_energy_audit_fee"] = bee_energy_audit_fee
         log("audit", f"Using user-supplied BEE energy audit fee: ₹{bee_energy_audit_fee}L")
+    if iwc_interest_rate is not None:
+        state["iwc_interest_rate"] = iwc_interest_rate
+        log("audit", f"Using user-supplied IWC interest rate: {iwc_interest_rate}%")
     audit_result = await asyncio.wait_for(
         loop.run_in_executor(None, audit_petition, state),
         timeout=180,  # 3 min
@@ -657,18 +685,18 @@ async def _run_analysis(
     )
     state.update(audit_result)
 
-    # ── Step 3: Generate PDF ───────────────────────────────────────
-    log("draft", "Generating PDF order…")
-
-    try:
-        draft_result = await asyncio.wait_for(
-            loop.run_in_executor(None, draft_order, state),
-            timeout=240,  # 4 min
-        )
-    except asyncio.TimeoutError:
-        logger.error(f"[{analysis_id}] PDF drafting TIMED OUT after 4 minutes")
-        draft_result = {"pdf_output_path": None}
-    state.update(draft_result)
+    # ── Step 3: Generate PDF (DISABLED — re-enable later) ─────────
+    # log("draft", "Generating PDF order…")
+    # try:
+    #     draft_result = await asyncio.wait_for(
+    #         loop.run_in_executor(None, draft_order, state),
+    #         timeout=240,  # 4 min
+    #     )
+    # except asyncio.TimeoutError:
+    #     logger.error(f"[{analysis_id}] PDF drafting TIMED OUT after 4 minutes")
+    #     draft_result = {"pdf_output_path": None}
+    # state.update(draft_result)
+    log("draft", "PDF drafting SKIPPED (disabled temporarily)")
 
     # ── Build response with justifications ─────────────────────────
     claimed = state.get("claimed_expenses", {})

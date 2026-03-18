@@ -1173,9 +1173,9 @@ SBI_EBLR_PLUS_2_RATES = {
     "2021-22": 9.55,   # SBI EBLR ~7.55% + 2%
     "2022-23": 10.15,  # SBI EBLR ~8.15% + 2%
     "2023-24": 11.15,  # SBI EBLR 9.15% + 2% (confirmed from KSERC order)
-    "2024-25": 11.15,  # SBI EBLR ~9.15% + 2%
-    "2025-26": 11.15,
-    "2026-27": 11.15
+    "2024-25": 10.90,  # SBI EBLR 8.90% + 2% (as on 01-04-2024, confirmed from KSERC order)
+    "2025-26": 10.90,  # default to latest known
+    "2026-27": 10.90   # default to latest known
 }
 
 # KSERC standard depreciation rate for distribution licensees
@@ -1581,22 +1581,69 @@ def _audit_interest_long_term_loans(
     fy: str,
     licensee: str = "",
     detailed_tables: Optional[Dict[str, Any]] = None,
+    state: Optional[dict] = None,
 ) -> None:
     """
-    KSERC applies 70:30 normative Debt-Equity Ratio on eligible asset additions.
+    KSERC Interest on Normative Loan — Formula-based computation.
     
-    Reasoning:
-    - If MYT norm exists, use it as a primary benchmark
-    - If no MYT norm, check precedent DB for what KSERC approved previously
-    - If precedent exists, allow claimed up to precedent + 15% escalation
-    - If nothing, approve as claimed (KSERC will verify during order)
+    Formula (from Infopark 2024-25 petition):
+      Opening Normative Loan (A) = Net Opening + Additional
+      Closing Normative Loan (B) = A - Allowable Depreciation/Repayment
+      Average Normative Loan = (A + B) / 2
+      Interest = Average Normative Loan × SBI EBLR Rate (%)
+    
+    Falls back to MYT norm cap if normative loan data unavailable.
     """
     key = "interest_long_term"
     claimed = claimed_expenses.get(key, 0.0)
     normative = _myt_norm(myt_norms, key)
     
+    # Try formula-based computation from extracted normative loan data
+    if state:
+        opening_loan = float(state.get("normative_loan_opening", 0.0) or 0.0)
+        additional_loan = float(state.get("normative_loan_additional", 0.0) or 0.0)
+        depreciation_repayment = float(state.get("normative_loan_repayment", 0.0) or 0.0)
+        loan_interest_rate = float(state.get("normative_loan_rate", 0.0) or 0.0)
+        
+        # If depreciation_repayment not extracted, use approved depreciation
+        if depreciation_repayment == 0.0:
+            depreciation_repayment = float(approved_expenses.get("depreciation", 0.0) or 0.0)
+        
+        if opening_loan > 0 and loan_interest_rate > 0:
+            # Formula computation
+            total_opening = opening_loan + additional_loan
+            closing_loan = total_opening - depreciation_repayment
+            avg_loan = (total_opening + closing_loan) / 2.0
+            computed_interest = round(avg_loan * (loan_interest_rate / 100.0), 2)
+            
+            approved = computed_interest
+            approved_expenses[key] = approved
+            
+            logger.info(
+                f"Interest LT (formula): Opening={total_opening:.2f}, "
+                f"Deprec/Repay={depreciation_repayment:.2f}, Closing={closing_loan:.2f}, "
+                f"Avg={avg_loan:.2f}, Rate={loan_interest_rate}%, Interest={computed_interest:.2f}"
+            )
+            
+            if abs(claimed - approved) > 0.01 and claimed > 0:
+                cut = round(claimed - approved, 2)
+                disallowances.append({
+                    "item": "Interest on Normative Loan",
+                    "claimed": claimed,
+                    "approved": approved,
+                    "amount_cut": cut,
+                    "justification": (
+                        f"KSERC Regulation 26: Interest computed on normative loan basis. "
+                        f"Opening Loan = Rs. {total_opening:.2f}L, Less Depreciation/Repayment = "
+                        f"Rs. {depreciation_repayment:.2f}L, Closing = Rs. {closing_loan:.2f}L. "
+                        f"Average Normative Loan = Rs. {avg_loan:.2f}L × {loan_interest_rate}% = "
+                        f"Rs. {computed_interest:.2f}L."
+                    ),
+                })
+            return
+    
+    # Fallback: MYT norm cap (original logic)
     if normative > 0.0:
-        # MYT norm available — use it as cap
         approved = min(claimed, normative) if claimed > 0 else normative
         approved_expenses[key] = approved
         if claimed > normative:
@@ -1623,7 +1670,6 @@ def _audit_interest_long_term_loans(
         if same_lic and same_lic.get("approved_amount", 0) > 0:
             past_approved = float(same_lic.get("approved_amount", 0))
             past_reasoning = str(same_lic.get("kserc_reasoning", ""))[:150]
-            # Allow up to 15% escalation from past order
             cap = round(past_approved * 1.15, 2)
             approved = min(claimed, cap) if claimed > 0 else past_approved
             approved_expenses[key] = approved
@@ -1643,7 +1689,6 @@ def _audit_interest_long_term_loans(
                 })
             logger.info(f"Interest LT: Order-learning based, past={past_approved}, cap={cap}, approved={approved}")
         elif (prec := (_get_precedent_approved(licensee, key, fy) if _precedent_lookup and licensee else None)) and prec.get("approved", 0) > 0:
-            # Allow up to 15% escalation from precedent
             cap = round(prec["approved"] * 1.15, 2)
             approved = min(claimed, cap) if claimed > 0 else prec["approved"]
             approved_expenses[key] = approved
@@ -1661,7 +1706,6 @@ def _audit_interest_long_term_loans(
                 })
             logger.info(f"Interest LT: No MYT, precedent={prec['approved']}, cap={cap}, approved={approved}")
         else:
-            # No norm, no precedent — approve as claimed
             approved_expenses[key] = claimed
             logger.info(f"Interest LT: No MYT norm, no precedent — approved as claimed: {claimed}")
 
@@ -1704,68 +1748,86 @@ def _audit_interest_working_capital(
     rm = approved_expenses.get("repair_maintenance", 0.0)
     ag = approved_expenses.get("admin_general", 0.0)
     total_om = employee + rm + ag
+    logger.info(f"IWC: Approved O&M = Employee({employee:.2f}) + R&M({rm:.2f}) + A&G({ag:.2f}) = {total_om:.2f}L")
     
-    # Receivables = 2 months of billed revenue (NOT expenditure)
-    # KSERC uses actual revenue billed to consumers for receivables
-    # CRITICAL: Use claimed_revenues from state, NOT approved_expenses (circular ref!)
-    total_revenue = 0.0
+    # Receivables = 2 months of Revenue from Sale of Power
+    # KSERC order uses ONLY revenue_from_sale (not wheeling/NTI/other)
+    # Confirmed from Infopark 2024-25 order: 1187.62/12 × 2 = 197.94
+    revenue_from_sale = 0.0
     if state:
-        # Prefer claimed_revenues (petitioner's actual billed revenue)
         claimed_revenues = state.get("claimed_revenues", {})
         if claimed_revenues:
-            total_revenue = sum(v for v in claimed_revenues.values() if isinstance(v, (int, float)))
-        # Second choice: approved_revenues if explicitly set by auditor
-        if total_revenue == 0:
-            approved_revenues = state.get("approved_revenues", {})
-            if approved_revenues:
-                total_revenue = sum(v for v in approved_revenues.values() if isinstance(v, (int, float)))
+            revenue_from_sale = float(claimed_revenues.get("revenue_from_sale", 0.0) or 0.0)
+        # Fallback: use total claimed revenues if revenue_from_sale not separately available
+        if revenue_from_sale == 0.0 and claimed_revenues:
+            revenue_from_sale = sum(v for v in claimed_revenues.values() if isinstance(v, (int, float)))
+            logger.warning(f"IWC: revenue_from_sale not found, using total revenue = {revenue_from_sale:.2f}")
     
-    # Last resort: use claimed_expenses total (excluding IWC itself to avoid circularity)
-    if total_revenue == 0:
-        total_revenue = sum(
-            v for k, v in claimed_expenses.items()
-            if k != key and isinstance(v, (int, float))
-        )
-        logger.warning(f"IWC: No revenue data available, using claimed expenses (excl IWC) = {total_revenue:.2f}")
+    if revenue_from_sale == 0.0:
+        logger.warning(f"IWC: No revenue data available for receivables calculation")
     
-    # KSERC IWC Formula (Regulation 29):
-    # WC = (1/12 × O&M) + (15% × O&M for spares) + (Receivables component)
-    # Receivables = 2 months of billed revenue / 12 = revenue / 6
-    # Interest rate = SBI EBLR + 2% (NOT SBI term deposit rate)
-    # Source: KSERC OP 52/2024 - SBI 1-year EBLR 9.15% + 2% = 11.15%
-    sbi_eblr_rate = SBI_EBLR_PLUS_2_RATES.get(fy, 11.15) / 100.0
+    # ══════════════════════════════════════════════════════════════════════
+    # KSERC IWC Formula (Regulation 29) — Verified from Infopark 2024-25 petition
+    # ══════════════════════════════════════════════════════════════════════
+    # WC = (1-month Approved O&M) + (Maintenance Spares) + (2-month Revenue) − Security Deposits
+    # IWC = WC × (MCLR + 2)%
+    #
+    # Components:
+    #   1. O&M one month = Approved O&M / 12 (from IWC table if available, else sum of components)
+    #   2. Maintenance Spares = as per norms (0 for Infopark, may be non-zero for others)
+    #   3. Receivables = 2 months Revenue from Sale of Power
+    #   4. Less: Security Deposits from Consumers
+    #   5. Interest Rate = SBI EBLR + 2%
+    # ══════════════════════════════════════════════════════════════════════
+    # Allow user override via state (from UI input)
+    user_rate = float(state.get("iwc_interest_rate", 0.0) or 0.0) if state else 0.0
+    if user_rate > 0:
+        sbi_mclr_plus_2 = user_rate / 100.0
+        logger.info(f"IWC: Using user-specified interest rate: {user_rate}%")
+    else:
+        sbi_mclr_plus_2 = SBI_EBLR_PLUS_2_RATES.get(fy, 10.90) / 100.0
     
+    # Step 1: O&M one month
     om_monthly = total_om / 12.0
-    maintenance_spares = total_om * 0.15
-    two_month_receivables = total_revenue / 6.0  # 2 months of revenue
-    receivables_monthly = two_month_receivables / 12.0
     
-    working_capital = om_monthly + maintenance_spares + receivables_monthly
-    computed_iwc = round(working_capital * sbi_eblr_rate, 2)
+    # Step 2: Maintenance Spares (from extraction; 0 for Infopark, may be non-zero for others)
+    maintenance_spares = 0.0
+    if state:
+        maintenance_spares = float(state.get("maintenance_spares_wc", 0.0) or 0.0)
+    
+    # Step 3: Receivables = 2 months of Revenue from Sale of Power
+    # Formula: annual revenue / 12 × 2 = annual revenue / 6
+    receivables_2mo = revenue_from_sale / 6.0  # 2 months = annual / 6
+    
+    # Step 4: Less — Security Deposits from Consumers
+    security_deposits = 0.0
+    if state:
+        security_deposits = float(state.get("consumer_security_deposit_balance", 0.0) or 0.0)
+    
+    # Working Capital = (O&M/12) + Spares + (2-month Revenue) − Security Deposits
+    working_capital = om_monthly + maintenance_spares + receivables_2mo - security_deposits
+    # If security deposits exceed WC, floor at 0
+    working_capital = max(working_capital, 0.0)
+    
+    computed_iwc = round(working_capital * sbi_mclr_plus_2, 2)
     
     logger.info(
-        f"IWC components: O&M/12={om_monthly:.2f}, Spares(15% O&M)={maintenance_spares:.2f}, "
-        f"Receivables/12={receivables_monthly:.2f}, WC={working_capital:.2f}, "
-        f"SBI_EBLR+2%={sbi_eblr_rate*100:.2f}%, Computed IWC={computed_iwc:.2f}"
+        f"IWC components: O&M/12={om_monthly:.2f}, Spares={maintenance_spares:.2f}, "
+        f"Receivables(2mo)={receivables_2mo:.2f}, SecDeposits={security_deposits:.2f}, "
+        f"WC={working_capital:.2f}, MCLR+2%={sbi_mclr_plus_2*100:.2f}%, IWC={computed_iwc:.2f}"
     )
     
-    # Sanity check: IWC should be a small fraction of total revenue (typically < 2%)
-    if total_revenue > 0 and computed_iwc > total_revenue * 0.05:
+    # Sanity check: IWC should be a small fraction of total revenue (typically < 5%)
+    if revenue_from_sale > 0 and computed_iwc > revenue_from_sale * 0.05:
         logger.warning(
-            f"IWC sanity check FAILED: computed {computed_iwc:.2f} > 5% of revenue {total_revenue:.2f}. "
+            f"IWC sanity check FAILED: computed {computed_iwc:.2f} > 5% of revenue {revenue_from_sale:.2f}. "
             f"Falling back to claimed value {claimed:.2f}"
         )
         computed_iwc = claimed
     
     # KSERC approves the formula-computed value, even if higher than claimed
     # (verified from Infopark 2022-23 order: claimed 2.70, KSERC approved 3.72)
-    if myt_norm > 0.0:
-        # Cross-check with MYT norm — use whichever is closer to computed
-        approved = computed_iwc if computed_iwc > 0 else myt_norm
-    elif computed_iwc > 0:
-        approved = computed_iwc
-    else:
-        approved = claimed
+    approved = computed_iwc if computed_iwc > 0 else (myt_norm if myt_norm > 0 else claimed)
     
     approved_expenses[key] = approved
     
@@ -1777,10 +1839,10 @@ def _audit_interest_working_capital(
             "approved": approved,
             "amount_cut": cut,
             "justification": (
-                f"KSERC Regulation 29: Working Capital = (O&M/12) + (15% spares) + (receivables/12). "
-                f"O&M/12 = Rs. {om_monthly:.2f}L, Spares(15%) = Rs. {maintenance_spares:.2f}L, "
-                f"Receivables/12 = Rs. {receivables_monthly:.2f}L. "
-                f"WC = Rs. {working_capital:.2f}L × SBI EBLR+2% ({sbi_eblr_rate*100:.2f}%) = Rs. {computed_iwc:.2f}L. "
+                f"KSERC Regulation 29: WC = (O&M/12) + Spares + (2-month Revenue) − Security Deposits. "
+                f"O&M/12 = Rs. {om_monthly:.2f}L, Spares = Rs. {maintenance_spares:.2f}L, "
+                f"Receivables(2mo) = Rs. {receivables_2mo:.2f}L, Security Deposits = Rs. {security_deposits:.2f}L. "
+                f"WC = Rs. {working_capital:.2f}L × MCLR+2% ({sbi_mclr_plus_2*100:.2f}%) = Rs. {computed_iwc:.2f}L. "
                 f"{'KSERC approves computed value above the claim.' if approved > claimed else f'Approved: Rs. {approved:.2f}L.'}"
             ),
         })
@@ -2156,6 +2218,72 @@ def audit_petition(state: dict) -> dict:
         _audit_section3_duty(claimed_expenses, approved_expenses, disallowances)
         _audit_power_purchase(state, approved_expenses, disallowances, myt_norms)
 
+        # ── Enforce MYT norm caps on ALL norm-capped components ──────
+        # The AI may have approved amounts exceeding MYT norms. KSERC's
+        # deterministic methodology ALWAYS caps at the MYT baseline for
+        # O&M, depreciation, interest, RoNFA, and other_debits.
+        # This is the authoritative ceiling — AI cannot override it.
+        # For employee_cost, wage revision (if any) is added to the cap.
+        wage_revision_current = float(state.get("wage_revision_current_year", 0.0) or 0.0)
+        wage_revision_prior = float(state.get("wage_revision_prior_period", 0.0) or 0.0)
+        
+        norm_capped_keys = [
+            "employee_cost", "repair_maintenance", "admin_general",
+            "depreciation", "interest_long_term", "interest_consumer_deposits",
+            "interest_working_capital", "return_on_nfa", "other_debits",
+        ]
+        for key in norm_capped_keys:
+            norm = _myt_norm(myt_norms, key)
+            if norm > 0.0 and key in approved_expenses:
+                # For employee_cost, add wage revision to the effective cap
+                effective_cap = norm
+                if key == "employee_cost" and wage_revision_current > 0.0:
+                    effective_cap = round(norm + wage_revision_current, 2)
+                    logger.info(
+                        f"  Employee Cost effective cap: MYT {norm:.2f} + "
+                        f"Wage Revision {wage_revision_current:.2f} = {effective_cap:.2f}"
+                    )
+                
+                ai_val = approved_expenses[key]
+                claimed = claimed_expenses.get(key, 0.0)
+                if ai_val > effective_cap:
+                    display = COMPONENT_DISPLAY.get(key, key)
+                    approved_expenses[key] = effective_cap
+                    logger.info(
+                        f"  AI OVERRIDE ENFORCED: {display} — AI approved {ai_val:.2f} "
+                        f"> effective cap {effective_cap:.2f}. Forced to cap."
+                    )
+                    # Update disallowance to reflect the MYT-enforced amount
+                    cut = round(claimed - effective_cap, 2)
+                    # Remove stale AI disallowance for this component
+                    disallowances[:] = [
+                        d for d in disallowances
+                        if display.lower() not in d.get("item", "").lower()
+                    ]
+                    if cut > 0.01:
+                        cap_source = f"MYT norm Rs. {norm:,.2f}"
+                        if key == "employee_cost" and wage_revision_current > 0.0:
+                            cap_source += f" + Wage Revision Rs. {wage_revision_current:,.2f}"
+                        disallowances.append({
+                            "item": display,
+                            "claimed": claimed,
+                            "approved": effective_cap,
+                            "amount_cut": cut,
+                            "justification": (
+                                f"The claimed {display} of Rs. {claimed:,.2f} Lakhs exceeds the "
+                                f"effective ceiling of Rs. {effective_cap:,.2f} Lakhs ({cap_source}). "
+                                f"The excess of Rs. {cut:,.2f} Lakhs is disallowed as per KSERC Tariff Regulations."
+                            ),
+                        })
+                
+                # Prior period wage revision — separate line item
+                if key == "employee_cost" and wage_revision_prior > 0.0:
+                    approved_expenses["prior_period_employee_cost"] = round(wage_revision_prior, 2)
+                    logger.info(
+                        f"  Prior period wage revision: Rs.{wage_revision_prior:.2f}L "
+                        f"added as separate line item"
+                    )
+
         # BEE Energy Audit fee — petition-specific actual expense, extracted by Gemini/regex
         # MUST come from the petition itself — not from MYT norms (which are regulatory baselines).
         # If the petition doesn't mention it, fee is 0 (no adjustment).
@@ -2376,7 +2504,7 @@ def audit_petition(state: dict) -> dict:
 
         _audit_interest_long_term_loans(
             claimed_expenses, approved_expenses, myt_norms, disallowances,
-            fy, licensee=licensee, detailed_tables=detailed_tables,
+            fy, licensee=licensee, detailed_tables=detailed_tables, state=state,
         )
         _audit_interest_consumer_deposits(claimed_expenses, approved_expenses, myt_norms, disallowances, fy, licensee=licensee)
         _audit_interest_working_capital(
