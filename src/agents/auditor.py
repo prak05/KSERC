@@ -776,6 +776,16 @@ def _analyze_capital_structure(state: dict) -> Dict[str, Any]:
                 result["has_equity"] = equity > 0 or result["kserc_approved_ronfa"] > 0
                 result["eligible_nfa"] = max(nfa - grants, 0)
                 result["source"] = f"precedent_db ({best_fy})"
+
+                # Pass through KSERC NFA chain data for RoNFA calculation
+                kserc_nfa = cap.get("kserc_nfa_net_of_grants", 0.0)
+                if kserc_nfa > 0:
+                    result["kserc_nfa_net_of_grants"] = kserc_nfa
+                    result["kserc_normative_loan"] = cap.get("kserc_normative_loan", 0.0)
+                    result["kserc_net_nfa_for_ronfa"] = cap.get("kserc_net_nfa_for_ronfa", 0.0)
+                    result["kserc_ronfa_rate"] = cap.get("kserc_ronfa_rate", 5.5)
+                    logger.info(f"  KSERC NFA chain: nfa={kserc_nfa:.2f}, loan={result['kserc_normative_loan']:.2f}")
+
                 logger.info(f"Capital structure from precedent DB ({best_fy}): "
                             f"GFA={gfa}, Grants={grants}, NFA={nfa}, Loans={loans}, "
                             f"Equity={equity}, GrantRatio={result['grant_ratio']}%, "
@@ -1192,7 +1202,17 @@ KSERC_RONFA_RATE_EQUITY_NOT_IDENTIFIABLE = 0.03
 
 # ══════════════════════════════════════════════════════════════════════
 # Rule 5: Depreciation — KSERC Regulation 27
+#         NOW DELEGATED TO depreciation_engine.py
 # ══════════════════════════════════════════════════════════════════════
+
+try:
+    from src.agents.depreciation_engine import compute_depreciation as _dep_engine_compute
+    _dep_engine_available = True
+    logger.info("Depreciation engine loaded successfully")
+except ImportError as e:
+    _dep_engine_available = False
+    logger.warning(f"Depreciation engine not available: {e}")
+
 
 def _audit_depreciation_reg27(
     state: dict,
@@ -1205,124 +1225,64 @@ def _audit_depreciation_reg27(
     fy: str = "",
 ) -> None:
     """
-    KSERC Regulation 27 — Depreciation Calculation:
-    
-    Method: Straight-Line Method (SLM) at 5.28% of KSERC-approved GFA.
-    - 10% salvage value, max 90% cumulative depreciation
-    - Assets funded by grants/subsidies/consumer contribution: EXCLUDED
-    - Assets created from accumulated surplus: EXCLUDED (CSEZA precedent)
-    
-    Calculation:
-    1. Eligible GFA = Total GFA - grant-funded assets - surplus-funded assets
-    2. Annual depreciation = Eligible GFA × 5.28%
-    3. Cap at claimed amount (KSERC never approves MORE than claimed for depreciation)
-    4. Cross-check against precedent approved depreciation
+    KSERC Regulation 27 — Depreciation Calculation.
+
+    Delegates to the new depreciation_engine.py which implements
+    the full 10-step KSERC depreciation specification:
+      1. Multi-PDF data search
+      2. Funding source identification (CC, grants, surplus, subsidies)
+      3. Two-level exclusion (pre/post cutoff)
+      4. Annexure 1 rate matching
+      5. Final calculation
+      6. AI reasoning for ambiguous cases
+      7. Firestore persistence
+      8. Cross-verification (8 checks)
+      9. Clarification queue
+     10. Structured output
     """
     key = "depreciation"
     claimed = claimed_expenses.get(key, 0.0)
     display = COMPONENT_DISPLAY.get(key, key)
-    
+
     if claimed == 0.0:
         approved_expenses[key] = 0.0
         return
-    
-    # Get capital structure data
-    gfa = cap_analysis.get("gfa", 0.0)
-    grants = cap_analysis.get("grants", 0.0)
-    source = cap_analysis.get("source", "none")
-    
-    # Get precedent depreciation for cross-check
-    prec = _get_precedent_approved(licensee, key, fy) if _precedent_lookup and licensee else None
-    prec_dep = prec["approved"] if prec and prec.get("approved", 0) > 0 else 0.0
-    
-    # Get surplus-funded assets (CSEZA/KDHP pattern)
-    surplus_funded_assets = cap_analysis.get("surplus_funded_assets", 0.0)
-    
-    if gfa > 0:
-        # KSERC method: Depreciation on eligible assets only
-        eligible_gfa = max(gfa - grants - surplus_funded_assets, 0.0)
-        computed_dep = round(eligible_gfa * KSERC_DEPRECIATION_RATE, 2)
-        
-        # Get MYT norm for cross-check
-        myt_dep = _myt_norm(myt_norms, key)
-        
-        # Use precedent to validate (if available and different approach used by KSERC)
-        if prec_dep > 0 and abs(computed_dep - prec_dep) / max(prec_dep, 1) > 0.30:
-            # Large divergence from precedent — KSERC may use a different base
-            # Allow up to 10% increase from precedent
-            effective_dep = min(claimed, round(prec_dep * 1.10, 2))
-            cap_source = f"precedent-adjusted (KSERC approved Rs. {prec_dep:.2f}L in FY {prec['fy']})"
-            logger.info(f"Dep: Computed {computed_dep} diverges from precedent {prec_dep}, using precedent-based cap {effective_dep}")
-        elif myt_dep > 0 and computed_dep > myt_dep * 1.5:
-            # Computed depreciation is way above MYT norm — GFA data may be unreliable
-            # Use MYT norm with 10% tolerance as cap
-            effective_dep = round(myt_dep * 1.10, 2)
-            cap_source = f"MYT norm-based (MYT dep={myt_dep:.2f}L, computed {computed_dep:.2f}L too high)"
-            logger.info(f"Dep: Computed {computed_dep} >> MYT norm {myt_dep}, capping at {effective_dep}")
-        else:
-            effective_dep = computed_dep
-            cap_source = f"Reg 27 (GFA {gfa:.2f}L - grants {grants:.2f}L - surplus {surplus_funded_assets:.2f}L = {eligible_gfa:.2f}L × 5.28%)"
-        
-        # KSERC never approves MORE than claimed for depreciation
-        approved = min(claimed, effective_dep)
-        approved_expenses[key] = approved
-        
-        if claimed > approved + 0.01:
-            cut = round(claimed - approved, 2)
-            disallowances.append({
-                "item": display,
-                "claimed": claimed,
-                "approved": approved,
-                "amount_cut": cut,
-                "justification": (
-                    f"As per KSERC Tariff Regulation 27, depreciation is computed using "
-                    f"Straight Line Method at 5.28% on eligible fixed assets. "
-                    f"{cap_source}. "
-                    f"Depreciation of Rs. {cut:.2f}L disallowed on assets not eligible "
-                    f"for depreciation recovery. Approved: Rs. {approved:.2f}L."
-                ),
-            })
-            logger.info(f"Dep Reg27: Claimed {claimed}, Approved {approved} ({cap_source}), Cut {cut}")
-        else:
-            logger.info(f"Dep Reg27: Claimed {claimed} within limit {effective_dep} — approved as claimed")
-    
-    elif prec_dep > 0:
-        # No capital structure but have precedent — use precedent with escalation
-        effective_dep = round(prec_dep * 1.10, 2)  # Allow 10% increase
-        approved = min(claimed, effective_dep)
-        approved_expenses[key] = approved
-        
-        if claimed > approved + 0.01:
-            cut = round(claimed - approved, 2)
-            disallowances.append({
-                "item": display,
-                "claimed": claimed,
-                "approved": approved,
-                "amount_cut": cut,
-                "justification": (
-                    f"Based on KSERC precedent from FY {prec['fy']} (approved Rs. {prec_dep:.2f}L). "
-                    f"Claimed depreciation exceeds precedent-based ceiling. Approved: Rs. {approved:.2f}L."
-                ),
-            })
-        logger.info(f"Dep: No capital structure, precedent-based cap {effective_dep}, approved={approved}")
-    
-    else:
-        # Fallback to MYT norm cap
-        norm = _myt_norm(myt_norms, key)
-        if norm > 0 and claimed > norm:
-            approved_expenses[key] = norm
-            cut = round(claimed - norm, 2)
-            disallowances.append({
-                "item": display,
-                "claimed": claimed,
-                "approved": norm,
-                "amount_cut": cut,
-                "justification": f"Capped at MYT approved norm of Rs. {norm:.2f}L.",
-            })
-            logger.info(f"Dep: MYT norm cap {norm}, claimed {claimed}")
-        else:
-            approved_expenses[key] = claimed
-            logger.info(f"Dep: No cap available, approved as claimed: {claimed}")
+
+    if not _dep_engine_available:
+        # Fallback: approve as claimed if engine not available
+        approved_expenses[key] = claimed
+        logger.warning("Depreciation engine unavailable — approving as claimed")
+        return
+
+    # Delegate to the full depreciation engine
+    result = _dep_engine_compute(
+        state=state,
+        licensee=licensee,
+        fy=fy,
+    )
+
+    # Apply the engine result
+    approved_expenses[key] = result.approved
+
+    # Copy disallowances from the engine
+    for d in result.disallowances:
+        disallowances.append(d)
+
+    # Log flags
+    for flag in result.flags:
+        logger.info(f"Depreciation flag: {flag}")
+
+    # Log clarification items
+    for item in result.clarification_items:
+        logger.info(f"Depreciation clarification needed: {item}")
+
+    logger.info(
+        f"Depreciation Reg27: Claimed {claimed:.2f}L → "
+        f"Approved {result.approved:.2f}L "
+        f"(engine: {len(result.workings.get('level2_details', []))} deductions)"
+    )
+
+
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -1370,9 +1330,65 @@ def _audit_return_on_nfa_reg28(
     prec = _get_precedent_approved(licensee, key, fy) if _precedent_lookup and licensee else None
     prec_ronfa = prec["approved"] if prec and prec.get("approved", 0) > 0 else 0.0
     
-    if nfa > 0 and source != "none":
+    # ─── Method A: KSERC-chained NFA calculation ───
+    # When we have the prior KSERC order's NFA (net of grants) and approved dep,
+    # chain forward: Opening NFA = prior NFA - prior approved dep
+    # Then: RoNFA = (Opening NFA - normative loan if applicable) × rate
+    prior_kserc_nfa = cap_analysis.get("kserc_nfa_net_of_grants", 0.0)
+    if prior_kserc_nfa > 0 and prec_ronfa > 0:
+        # Chain forward: current opening NFA = prior NFA - prior approved dep
+        prior_approved_dep = cap_analysis.get("kserc_approved_depreciation", 0.0)
+        opening_nfa = round(prior_kserc_nfa - prior_approved_dep, 2)
+        
+        # Determine RoNFA rate
+        ronfa_rate = cap_analysis.get("kserc_ronfa_rate", 5.5) / 100.0
+        
+        # Check CURRENT YEAR petition for normative loan — NOT derived from prior year.
+        # Only deduct normative loan if the current petition explicitly has one.
+        petition_cap = state.get("capital_structure", {})
+        # Look for normative loan in the petition's capital structure or RoNFA section
+        petition_normative_loan = petition_cap.get("normative_loan_nfa", 0.0)
+        if petition_normative_loan == 0:
+            # Also check: if petition claims "NFA considered for normative loan"
+            petition_normative_loan = petition_cap.get("nfa_for_normative_loan", 0.0)
+        
+        normative_loan_deduction = 0.0
+        if petition_normative_loan > 0:
+            normative_loan_deduction = petition_normative_loan
+            logger.info(f"RoNFA: Normative loan deduction from current petition: {normative_loan_deduction:.2f}L")
+        else:
+            logger.info(f"RoNFA: No normative loan in current petition — no deduction applied")
+        
+        net_nfa_for_ronfa = round(max(opening_nfa - normative_loan_deduction, 0.0), 2)
+        computed_ronfa = round(net_nfa_for_ronfa * ronfa_rate, 2)
+        
+        approved = min(claimed, computed_ronfa)
+        approved_expenses[key] = approved
+        
+        cap_source = (
+            f"KSERC-chained NFA: prior NFA {prior_kserc_nfa:.2f}L − dep {prior_approved_dep:.2f}L "
+            f"= opening {opening_nfa:.2f}L − loan {normative_loan_deduction:.2f}L "
+            f"= {net_nfa_for_ronfa:.2f}L × {ronfa_rate*100:.1f}%"
+        )
+        
+        if abs(claimed - approved) > 0.01:
+            cut = round(claimed - approved, 2)
+            disallowances.append({
+                "item": display,
+                "claimed": claimed,
+                "approved": approved,
+                "amount_cut": cut,
+                "justification": (
+                    f"As per KSERC Regulation 28, RoNFA computed using KSERC-approved NFA chain. "
+                    f"{cap_source}. "
+                    f"Approved: Rs. {approved:.2f}L."
+                ),
+            })
+        logger.info(f"RoNFA KSERC-chain: {cap_source} → approved={approved:.2f}L (claimed={claimed:.2f}L)")
+    
+    elif nfa > 0 and source != "none":
+        # ─── Method B: Capital structure-based calculation ───
         # Determine RoNFA rate based on equity identifiability
-        # CSEZA uses 3%, Infopark/Technopark/KDHP use 5.5%
         licensee_lower = licensee.lower() if licensee else ""
         if "cseza" in licensee_lower or "cochin special" in licensee_lower:
             ronfa_rate = KSERC_RONFA_RATE_EQUITY_NOT_IDENTIFIABLE  # 3%
@@ -1390,7 +1406,6 @@ def _audit_return_on_nfa_reg28(
         
         # Validate against precedent
         if prec_ronfa > 0 and abs(computed_ronfa - prec_ronfa) / max(prec_ronfa, 1) > 0.30:
-            # Significant divergence — use precedent-adjusted amount
             effective_ronfa = min(claimed, round(prec_ronfa * 1.10, 2))
             cap_source = f"precedent-adjusted (KSERC approved Rs. {prec_ronfa:.2f}L in FY {prec['fy']})"
             logger.info(f"RoNFA: Computed {computed_ronfa} diverges from precedent {prec_ronfa}, using {effective_ronfa}")
@@ -1399,9 +1414,8 @@ def _audit_return_on_nfa_reg28(
             cap_source = f"Reg 28 ({rate_reason} on eligible NFA Rs. {eligible_nfa_for_return:.2f}L)"
         
         approved = min(claimed, effective_ronfa)
-        # But KSERC sometimes approves MORE than claimed (see Infopark 2022-23: claimed 38.70, approved 41.30)
         if kserc_ronfa > claimed and prec_ronfa > claimed:
-            approved = effective_ronfa  # Allow KSERC calculation to exceed claim
+            approved = effective_ronfa
         
         approved_expenses[key] = approved
         
@@ -1425,7 +1439,7 @@ def _audit_return_on_nfa_reg28(
             logger.info(f"RoNFA Reg28: Approved as claimed: {claimed}")
     
     elif prec_ronfa > 0:
-        # No capital structure but precedent exists
+        # ─── Method C: Precedent-based fallback ───
         effective = min(claimed, round(prec_ronfa * 1.10, 2))
         approved_expenses[key] = effective
         if claimed > effective + 0.01:
@@ -2610,6 +2624,18 @@ def audit_petition(state: dict) -> dict:
     logger.info(f"Total approved revenue     : Rs. {total_approved_rev} Lakhs")
     logger.info(f"{gap_label}             : Rs. {gap_surplus} Lakhs")
     logger.info(f"Disallowances ({len(disallowances)}): {[d['item'] for d in disallowances]}")
+
+    return {
+        "approved_expenses":          approved_expenses,
+        "approved_revenues":          approved_revenues,
+        "disallowance_log":           disallowances,
+        "total_claimed_expenditure":  total_claimed_exp,
+        "total_approved_expenditure": total_approved_exp,
+        "total_claimed_revenue":      total_claimed_rev,
+        "total_approved_revenue":     total_approved_rev,
+        "final_revenue_gap_surplus":  gap_surplus,
+        "imputed_interest_on_surplus": 0.0,
+    }
 
     return {
         "approved_expenses":          approved_expenses,

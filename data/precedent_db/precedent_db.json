@@ -125,6 +125,37 @@
         "source_file": "Technopark True-Up 2022-23 (OP 84 2023).pdf",
         "pages_processed": 32
       }
+    },
+    "2023-24": {
+      "approved_expenses": {
+        "power_purchase_cost": 5508.0,
+        "employee_cost": 30.68,
+        "repair_maintenance": 416.71,
+        "admin_general": 49.84,
+        "depreciation": 34.66,
+        "interest_long_term": 3.82,
+        "interest_consumer_deposits": 123.65,
+        "interest_working_capital": 0.0,
+        "carrying_cost": 0.0,
+        "return_on_nfa": 34.83,
+        "other_debits": 0.0,
+        "section3_1_duty": 0.0
+      },
+      "depreciation_details": {
+        "pre_cutoff_grant_dep": 32.32,
+        "government_grants_gfa": 612.06,
+        "grant_dep_rate": 5.28
+      },
+      "capital_structure": {
+        "gross_fixed_assets": 7251.11,
+        "accumulated_depreciation": 2065.39,
+        "net_fixed_assets": 5185.72,
+        "consumer_contribution": 0.0,
+        "grants_subsidies": 612.06,
+        "normative_loan_70pct": 0.0,
+        "normative_equity_30pct": 0.0,
+        "weighted_avg_interest_rate_pct": 0.0
+      }
     }
   },
   "Infopark": {
