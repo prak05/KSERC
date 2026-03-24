@@ -233,7 +233,7 @@ export default function App() {
 
     const pollForCompletion = async (analysisId) => {
         let attempts = 0
-        const maxAttempts = 120  // 10 minutes max (5s intervals)
+        const maxAttempts = 240  // 20 minutes max (5s intervals)
         while (attempts < maxAttempts) {
             await new Promise(r => setTimeout(r, 5000))  // 5 second intervals
             attempts++
@@ -282,7 +282,7 @@ export default function App() {
         }
 
         if (attempts >= maxAttempts) {
-            throw new Error('Analysis timed out after 10 minutes')
+            throw new Error('Analysis timed out after 20 minutes')
         }
     }
 
