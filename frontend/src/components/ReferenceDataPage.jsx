@@ -135,6 +135,9 @@ function PDFUploadSection({ orderType, label, description }) {
                     <input type="text" placeholder="Order No." value={orderNumber} onChange={e => setOrderNumber(e.target.value)}
                         className="neon-input" style={{ fontSize: '11px' }} />
                     {orderType === 'past_order' && (
+                        <NeonSelect value={licensee} onChange={setLicensee} options={LICENSEES} placeholder="Licensee" />
+                    )}
+                    {orderType === 'past_order' && (
                         <NeonSelect value={financialYear} onChange={setFinancialYear} options={FINANCIAL_YEARS} placeholder="Year" />
                     )}
                 </div>

@@ -277,14 +277,18 @@ def _generate_document_with_gemini(state: dict) -> str:
     licensee = state.get("licensee_name", "Licensee")
     fy = state.get("financial_year", "2024-25")
 
-    # Compute previous financial year (e.g. "2024-25" -> "2023-24")
+    # Compute previous financial years (e.g. "2024-25" -> "2023-24", "2022-23")
     try:
         start_year = int(fy.split("-")[0])
         prev_start = start_year - 1
         prev_end = start_year % 100  # e.g. 2024 -> 24
         prev_fy = f"{prev_start}-{prev_end:02d}"
+        fy_minus_2_start = start_year - 2
+        fy_minus_2_end = (start_year - 1) % 100
+        fy_minus_2 = f"{fy_minus_2_start}-{fy_minus_2_end:02d}"
     except Exception:
         prev_fy = fy  # fallback
+        fy_minus_2 = fy
 
     exp_keys = [
         "power_purchase_cost", "employee_cost", "repair_maintenance", "admin_general",
@@ -331,6 +335,20 @@ def _generate_document_with_gemini(state: dict) -> str:
         full_licensee_myt = {}
         myt_order_ref = ""
         myt_control_period = ""
+
+    # ── Load historical trued-up data from Firestore ────────────────────────
+    historical_data = {}
+    try:
+        from src.tools.db import get_all_precedents
+        all_precedents = get_all_precedents(licensee)
+        for hist_fy in [prev_fy, fy_minus_2]:
+            if hist_fy in all_precedents:
+                historical_data[hist_fy] = all_precedents[hist_fy]
+                logger.info(f"Loaded historical trued-up data for {licensee} FY {hist_fy}")
+            else:
+                logger.info(f"No historical trued-up data for {licensee} FY {hist_fy}")
+    except Exception as e:
+        logger.warning(f"Failed to load historical data: {e}")
 
     # ── 4-column data block: MYT ARR | Claimed | Approved | Variance ──────────
     # This is the AUTHORITATIVE source for all table values and justification numbers.
@@ -533,6 +551,79 @@ def _generate_document_with_gemini(state: dict) -> str:
         prev_target_loss = float(prev_myt_norms.get("target_distribution_loss_pct", 0.0) or 0.0)
         if prev_target_loss > 0:
             data_block += f"  Target Distribution Loss: {prev_target_loss:.2f}%\n"
+
+    # ── Historical trued-up data for comparison tables ──────────────────────
+    if historical_data:
+        data_block += f"\n=== HISTORICAL TRUED UP DATA (for comparison tables) ===\n"
+        data_block += f"Dynamic year columns: {fy_minus_2} | {prev_fy} | {fy}\n"
+        data_block += f"IMPORTANT: Use these exact values for 'Trued Up' columns in multi-year tables.\n"
+        data_block += f"If a year has no data, show '---' in that cell.\n\n"
+        for hist_fy, hist_data in sorted(historical_data.items()):
+            data_block += f"--- FY {hist_fy} TRUED UP VALUES ---\n"
+            # Approved expenses
+            hist_exp = hist_data.get("approved_expenses", {})
+            if hist_exp:
+                data_block += f"  Approved Expenses:\n"
+                for k in exp_keys:
+                    v = float(hist_exp.get(k, 0.0) or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+                total_hist_exp = sum(float(hist_exp.get(k, 0.0) or 0.0) for k in exp_keys)
+                data_block += f"    TOTAL: {total_hist_exp:.2f}\n"
+            # Approved revenues
+            hist_rev = hist_data.get("approved_revenues", {})
+            if hist_rev:
+                data_block += f"  Approved Revenues:\n"
+                for k in rev_keys:
+                    v = float(hist_rev.get(k, 0.0) or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # Claimed expenses
+            hist_claimed = hist_data.get("claimed_expenses", {})
+            if hist_claimed:
+                data_block += f"  Claimed Expenses (Truing Up petition):\n"
+                for k in exp_keys:
+                    v = float(hist_claimed.get(k, 0.0) or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # A&G line items (approved)
+            ag_items = hist_data.get("ag_line_items", {})
+            if ag_items:
+                data_block += f"  A&G Line Items (Trued Up):\n"
+                for k, v in ag_items.items():
+                    v = float(v or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # A&G claimed line items
+            ag_claimed = hist_data.get("ag_claimed_line_items", {})
+            if ag_claimed:
+                data_block += f"  A&G Line Items (Truing Up petition):\n"
+                for k, v in ag_claimed.items():
+                    v = float(v or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # R&M line items (approved)
+            rm_items = hist_data.get("rm_line_items", {})
+            if rm_items:
+                data_block += f"  R&M Line Items (Trued Up):\n"
+                for k, v in rm_items.items():
+                    v = float(v or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # R&M claimed line items
+            rm_claimed = hist_data.get("rm_claimed_line_items", {})
+            if rm_claimed:
+                data_block += f"  R&M Line Items (Truing Up petition):\n"
+                for k, v in rm_claimed.items():
+                    v = float(v or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # Revenue gap/surplus
+            gap = hist_data.get("revenue_gap_surplus", 0.0)
+            if gap != 0:
+                data_block += f"  Revenue {'Surplus' if gap >= 0 else 'Gap'}: {abs(float(gap)):.2f}\n"
+            data_block += "\n"
+        data_block += "=== END HISTORICAL DATA ===\n"
 
     data_block += "\n=== END OF AUTHORITATIVE DATA ===\n"
 
@@ -841,11 +932,11 @@ Do NOT include 'Trued Up by Commission' in this table — that comes later in th
 
 Para 5: TABLE 2 — Comparison of Income and Expenditure for the previous years.
 Caption: "Table 2\\nComparison of Income and Expenditure for the previous years  (Rs. lakh)"
-This is a multi-year comparison table. Show columns for each available FY (e.g., 2021-22, 2022-23, 2023-24).
-For each FY, show TWO sub-columns: "Truing Up petition" | "Trued Up"
-For the current FY {fy}, show only "Truing Up petition" column (since it's not yet trued up in this table).
+This is a multi-year comparison table. Show columns for: {prev_fy} and {fy}.
+For {prev_fy}, show TWO sub-columns: "Truing Up" | "Trued Up" — use the HISTORICAL TRUED UP DATA block for exact values.
+For the current FY {fy}, show only "Truing Up" column (since it's not yet trued up).
+If historical data for a year is not in the data_block, show '---' in the Trued Up column.
 Rows: same as Table 1 (Power purchase cost, Employee Expenses, etc. through Revenue (Gap)/Surplus).
-Use data from the petition PDF and previous KSERC orders for historical values.
 Para 6: Brief overview of the Commission's approach to examining each cost head.
 
 SECTION 2 - HEARING ON THE PETITION:
@@ -950,8 +1041,8 @@ Para 5: Commission's decision — whether savings are credited or excess loss is
 Para 6: Final approved/disallowed amount on account of distribution loss.
 TABLE 4 - Comparison of Distribution loss and energy requirement.
 Caption: "Table 4\nComparison of Distribution loss and energy requirement"
-Multi-year comparison table. Show columns for each available FY (2021-22, 2022-23, 2023-24).
-For each past FY, show TWO sub-columns: "For Truing up" | "Trued Up"
+Multi-year comparison table. Show columns for: {prev_fy} and {fy}.
+For {prev_fy}, show TWO sub-columns: "For Truing up" | "Trued Up" — use HISTORICAL DATA block for exact values.
 For the current FY {fy}, show only "For Truing up" column.
 Rows (ALL of these in exact order):
   Energy purchased (In lakh Units)
@@ -1021,7 +1112,8 @@ Caption: "Table 8\nComparison of O&M expenses for {prev_fy} and {fy} (Rs. lakh)"
 Column groups: 
   Particulars | {prev_fy} (Truing Up petition | Trued Up) | {fy} (Norms | Truing Up petition)
 Rows: Employee Expenses, A&G Expenses, R&M Expenses, Total O&M Expenses.
-Extract values from petition PDF and data_block.
+For {prev_fy} 'Trued Up' column: use approved expenses from HISTORICAL DATA block.
+Extract current FY values from petition PDF and data_block.
 
 6b. EMPLOYEE COST (MINIMUM 8 paragraphs):
 Para 1: State the claimed amount vs ARR approved amount. State the details of the claim made by the licensee.
@@ -1036,7 +1128,7 @@ Rows — extract ALL from petition PDF:
   Other Allowances, Medical Reimbursement, Overtime Payment, Bonus/Ex-Gratia Payments,
   Staff welfare expenses, Provident Fund Contribution, Salary of Manager & Executive,
   Share of Directors/Mgmt Staff Salaries, Gross Employee Expenses.
-For the {prev_fy} 'Trued Up' column and {fy} 'ARR Approved' column, note "Approved based on actual escalation of X% to the base year" text in the column header if applicable.
+For the {prev_fy} 'Trued Up' column and {fy} 'ARR Approved' column: use approved values from HISTORICAL DATA block / data_block. Note "Approved based on actual escalation of X% to the base year" text in the column header if applicable.
 
 Para 3: Staff count and category-wise split.
 
@@ -1055,7 +1147,7 @@ Para 6: Commission's examination — cite Tariff Regulations 2021, Annexure-7 no
 
 TABLE 11 - O&M Expenses as per the Tariff Regulations, 2021.
 Caption: "Table 11\nO&M Expenses as per the Tariff Regulations, 2021 (Rs. lakh)"
-Columns: Particulars | Base year 2021-22 | 2022-23 | 2023-24 | 2024-25 | 2025-26 | 2026-27
+Columns: Particulars | Base year {fy_minus_2} | {prev_fy} | {fy} | next 3 years of control period
 Rows: Employee Cost, R&M Expenses, A&G Expenses, Total.
 Header: first column = "Base year", remaining = "Control period"
 Use the MYT norm values from data_block or petition PDF.
@@ -1077,7 +1169,10 @@ Para 1: State the claimed A&G vs the norm. Provide a comparison of A&G expenses 
 TABLE 13 - Comparison of A&G expenses multi-year.
 Caption: "Table 13\nComparison of A&G expenses (Rs.lakh)"
 Column groups:
-  Particulars | 2021-22 (Truing Up | Trued Up) | {prev_fy} (Truing Up | Trued Up) | {fy} (Truing Up)
+  Particulars | {prev_fy} (Truing Up | Trued Up) | {fy} (Truing Up)
+For {prev_fy} 'Truing Up' column: use 'A&G Line Items (Truing Up petition)' from HISTORICAL DATA.
+For {prev_fy} 'Trued Up' column: use 'A&G Line Items (Trued Up)' from HISTORICAL DATA.
+For {fy} 'Truing Up': extract from the current petition PDF.
 Rows — extract ALL from petition PDF:
   Rent Rates & Taxes, Insurance, Telephone & Postage etc., Legal charges, Audit Fees,
   Travelling expenses, Conveyance and vehicle hire charges, Electricity charges,
@@ -1095,7 +1190,9 @@ Para 1: State the ARR approved R&M vs the petition claim. Overview of R&M compar
 TABLE 14 - Comparison of R&M expenses multi-year.
 Caption: "Table 14\nComparison of R&M expenses (Rs. lakh)"
 Column groups:
-  Particulars | 2021-22 (Truing Up | Trued Up) | {prev_fy} (Truing Up | Trued Up) | {fy} (Truing Up)
+  Particulars | {prev_fy} (Truing Up | Trued Up) | {fy} (Truing Up)
+For {prev_fy} columns: use 'R&M Line Items' from HISTORICAL DATA block.
+For {fy} 'Truing Up': extract from the current petition PDF.
 Rows — extract ALL from petition PDF:
   Plant & Machinery, Buildings, Lines & Cable Networks, Vehicles,
   LT Lines/Upkeeps etc., Gross R&M Expenses.
@@ -1309,7 +1406,8 @@ Para 1: State claimed other debits amount and components.
 TABLE 25 - Details of other debits multi-year.
 Caption: "Table 25\nDetails of other debits (Rs. lakh)"
 Column groups:
-  Particulars | 2021-22 (Truing Up Petition | Trued Up) | {prev_fy} (Truing Up Petition | Trued Up) | {fy} (Truing Up Petition)
+  Particulars | {prev_fy} (Truing Up Petition | Trued Up) | {fy} (Truing Up Petition)
+For {prev_fy} 'Trued Up' column: use HISTORICAL DATA block. If not available, show '---'.
 Rows: Section 3 Duty, Inspection Charges, Provision for doubtful Debt, Total.
 
 Para 2: Commission's analysis — Section 3(1) Duty consistently disallowed as revenue expenditure, provision for doubtful debts disallowed as not declared bad debt.
@@ -1348,6 +1446,7 @@ Para 3-4: Commission's decision on RoNFA.
 
 SECTION 11 - REVENUE FROM SALE OF POWER, NON-TARIFF INCOME, AND ARR SUMMARY will be in the NEXT part.
 END Part C here after Interest/Finance Charges and Return on NFA sections.
+Do NOT include signature block or "Order of the Commission" text in Part C. That goes in Part D only.
 
 TARGET: Part C must produce approximately 10 PRINTED A4 PAGES of HTML content.
 Write all numbers from the Petition PDF — not from reference order.

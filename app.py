@@ -1007,20 +1007,145 @@ async def extract_reference_order(
 
     # Run Gemini extraction
     loop = asyncio.get_event_loop()
-    from src.agents.myt_norm_extractor import extract_from_uploaded_pdf
-    extraction = await loop.run_in_executor(None, extract_from_uploaded_pdf, str(file_path))
 
-    return JSONResponse({
-        "status": "extracted",
-        "order_id": order_id,
-        "order_type": order_type,
-        "document_type": extraction.get("document_type", order_type),
-        "order_number": extraction.get("order_number", order_number),
-        "control_period": extraction.get("control_period", ""),
-        "extracted_rows": extraction.get("extracted_rows", []),
-        "licensees": extraction.get("licensees", {}),
-        "error": extraction.get("error"),
-    })
+    if order_type == "past_order":
+        # Use trued-up order extraction (structured schema for historical data)
+        from scripts.extract_trued_up_order import extract_one, EXTRACTION_SCHEMA
+        extraction_data = await loop.run_in_executor(
+            None, extract_one, licensee or "Unknown", str(file_path)
+        )
+
+        # Convert structured dict → flat extracted_rows for frontend review table
+        extracted_rows = []
+        row_idx = 0
+        # Approved expenses
+        for key, val in extraction_data.get("approved_expenses", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"Approved: {key.replace('_', ' ').title()}",
+                "field_key": f"approved_expenses.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # Claimed expenses
+        for key, val in extraction_data.get("claimed_expenses", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"Claimed: {key.replace('_', ' ').title()}",
+                "field_key": f"claimed_expenses.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # Approved revenues
+        for key, val in extraction_data.get("approved_revenues", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"Revenue: {key.replace('_', ' ').title()}",
+                "field_key": f"approved_revenues.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # A&G line items
+        for key, val in extraction_data.get("ag_line_items", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"A&G Approved: {key.replace('_', ' ').title()}",
+                "field_key": f"ag_line_items.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # A&G claimed line items
+        for key, val in extraction_data.get("ag_claimed_line_items", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"A&G Claimed: {key.replace('_', ' ').title()}",
+                "field_key": f"ag_claimed_line_items.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # R&M line items
+        for key, val in extraction_data.get("rm_line_items", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"R&M Approved: {key.replace('_', ' ').title()}",
+                "field_key": f"rm_line_items.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # R&M claimed line items
+        for key, val in extraction_data.get("rm_claimed_line_items", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"R&M Claimed: {key.replace('_', ' ').title()}",
+                "field_key": f"rm_claimed_line_items.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # Employee line items (approved)
+        for key, val in extraction_data.get("employee_line_items", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"Employee Approved: {key.replace('_', ' ').title()}",
+                "field_key": f"employee_line_items.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # Employee line items (claimed)
+        for key, val in extraction_data.get("employee_claimed_line_items", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"Employee Claimed: {key.replace('_', ' ').title()}",
+                "field_key": f"employee_claimed_line_items.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # Energy sales by category
+        for key, val in extraction_data.get("energy_sales_by_category", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"Energy Sales: {key.replace('_', ' ').title()}",
+                "field_key": f"energy_sales_by_category.{key}",
+                "value": float(val or 0), "unit": "Lakh Units", "page": None,
+            })
+        # Depreciation asset-wise
+        for key, val in extraction_data.get("depreciation_asset_wise", {}).items():
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": f"Depreciation: {key.replace('_', ' ').title()}",
+                "field_key": f"depreciation_asset_wise.{key}",
+                "value": float(val or 0), "unit": "Rs Lakhs", "page": None,
+            })
+        # Summary values
+        for key in ["total_approved_expenditure", "total_approved_revenue", "revenue_gap_surplus",
+                    "distribution_loss_pct", "energy_input_lakh_units", "energy_sales_lakh_units"]:
+            val = extraction_data.get(key, 0)
+            unit = "%" if "pct" in key else ("Lakh Units" if "units" in key else "Rs Lakhs")
+            extracted_rows.append({
+                "licensee": licensee, "year": financial_year,
+                "field": key.replace('_', ' ').title(),
+                "field_key": key,
+                "value": float(val or 0), "unit": unit, "page": None,
+            })
+
+        return JSONResponse({
+            "status": "extracted",
+            "order_id": order_id,
+            "order_type": order_type,
+            "document_type": "past_order",
+            "order_number": order_number,
+            "control_period": "",
+            "extracted_rows": extracted_rows,
+            "licensees": {},
+            "_raw_extraction": extraction_data,  # keep raw data for confirm step
+            "error": None,
+        })
+    else:
+        # MYT / interim orders — use existing extractor
+        from src.agents.myt_norm_extractor import extract_from_uploaded_pdf
+        extraction = await loop.run_in_executor(None, extract_from_uploaded_pdf, str(file_path))
+
+        return JSONResponse({
+            "status": "extracted",
+            "order_id": order_id,
+            "order_type": order_type,
+            "document_type": extraction.get("document_type", order_type),
+            "order_number": extraction.get("order_number", order_number),
+            "control_period": extraction.get("control_period", ""),
+            "extracted_rows": extraction.get("extracted_rows", []),
+            "licensees": extraction.get("licensees", {}),
+            "error": extraction.get("error"),
+        })
 
 
 # ── Confirm & Write Extracted Norms to JSON ────────────────────────────
@@ -1060,9 +1185,44 @@ async def confirm_reference_norms(req: ConfirmNormsRequest):
             "message": f"Norms written to myt_baselines.json — {result['updated_entries']} values updated.",
             "updated_entries": result["updated_entries"],
         }
-    else:
-        # Past accepted order — metadata saved on upload; just confirm
-        return {"status": "saved", "message": "Past order reference saved."}
+    elif req.order_type == "past_order":
+        # Past trued-up order — save confirmed data to precedent_db
+        from src.tools.db import save_precedent
+
+        # Reconstruct structured dict from flat confirmed_rows
+        precedent_data = {}
+        for row in req.confirmed_rows:
+            r = dict(row) if hasattr(row, '__iter__') else row
+            field_key = r.get("field_key", "")
+            value = float(r.get("value", 0) or 0)
+            licensee = r.get("licensee", "")
+            year = r.get("year", "")
+
+            if "." in field_key:
+                # Nested field like "approved_expenses.power_purchase_cost"
+                parent, child = field_key.split(".", 1)
+                if parent not in precedent_data:
+                    precedent_data[parent] = {}
+                precedent_data[parent][child] = value
+            else:
+                # Top-level field
+                precedent_data[field_key] = value
+
+        # Derive licensee and year from first row
+        first_row = dict(req.confirmed_rows[0]) if req.confirmed_rows else {}
+        p_licensee = first_row.get("licensee", "")
+        p_year = first_row.get("year", "")
+
+        if p_licensee and p_year:
+            save_precedent(p_licensee, p_year, precedent_data)
+            logger.info(f"Saved past order data to precedent_db: {p_licensee} FY {p_year}")
+            return {
+                "status": "saved",
+                "message": f"Trued-up data for {p_licensee} FY {p_year} saved to precedent database. "
+                           f"{len(req.confirmed_rows)} values stored.",
+            }
+        else:
+            return {"status": "saved", "message": "Past order saved (no licensee/year for precedent DB)."}
 
 
 # ── List Reference Orders ──────────────────────────────────────────────
@@ -1248,7 +1408,7 @@ async def _continue_pipeline_after_rm(
         interest_total = state.get("interest_finance_result", {}).get("total_approved_interest_expense", 0.0)
         log("interest", f"Interest engine complete: Rs.{interest_total:.2f}L")
 
-        ag_adj = state.get("ag_adjustment_for_bank_charges", 0.0)
+        ag_adj = float(state.get("ag_adjustment_for_bank_charges", 0) or 0)
         if ag_adj > 0:
             current_ag = float(state.get("approved_expenses", {}).get("admin_general", 0.0))
             state["approved_expenses"]["admin_general"] = round(current_ag - ag_adj, 2)
@@ -1365,10 +1525,10 @@ async def _run_analysis(
     try:
         extraction_result = await asyncio.wait_for(
             loop.run_in_executor(None, extract_petition_data, state),
-            timeout=240,  # 4 min
+            timeout=600,  # 10 min — KDHP has 4 PDFs
         )
     except asyncio.TimeoutError:
-        log("extract", "ERROR: Extraction timed out after 4 minutes")
+        log("extract", "ERROR: Extraction timed out after 10 minutes")
         raise RuntimeError("Petition extraction timed out. The PDF may be too large or Gemini is overloaded.")
     n_exp = len(extraction_result.get("claimed_expenses", {}))
     log("extract", f"Extraction complete — {n_exp} expense components found")
