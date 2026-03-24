@@ -1469,9 +1469,25 @@ def extract_petition_data(state: dict) -> dict:
                     claimed_expenses["interest_consumer_deposits"] = 0.0
                     logger.info(f"  [KDHP PostProcess] Combined interest -> interest_long_term={total_interest}")
 
-                # NOTE: ppc_net_charges_rs_lakhs override REMOVED — it was extracting a sub-total
-                # (3,418.52) instead of the actual total PPC (3,434.48). The standard Gemini
-                # extraction of power_purchase_cost from the petition ARR table is more reliable.
+                # ── Deterministic PPC cross-validation ──
+                # Gemini sometimes extracts "Net Charges" (3,418.52) instead of "Total Charges" (3,434.48).
+                # Cross-check by computing PPC = APPC × energy_purchased. If Gemini's value is
+                # significantly lower than computed, override with the computed value.
+                gemini_ppc = claimed_expenses.get("power_purchase_cost", 0.0)
+                # KDHP buys all power, so energy_purchased = energy_input
+                ep = energy_purchased_lakh_units if energy_purchased_lakh_units > 0 else energy_input_lakh_units
+                logger.info(f"  [KDHP PPC Debug] gemini_ppc={gemini_ppc}, appc={appc_rs_per_unit}, energy_purchased={energy_purchased_lakh_units}, energy_input={energy_input_lakh_units}, using_ep={ep}")
+                if appc_rs_per_unit > 0 and ep > 0:
+                    computed_ppc = round(appc_rs_per_unit * ep, 2)
+                    ppc_diff = abs(gemini_ppc - computed_ppc)
+                    ppc_diff_pct = (ppc_diff / computed_ppc * 100) if computed_ppc > 0 else 0
+                    logger.info(f"  [KDHP PPC Check] Gemini={gemini_ppc}, Computed(APPC×energy)={computed_ppc}, diff={ppc_diff:.2f} ({ppc_diff_pct:.1f}%)")
+                    # If Gemini PPC is lower by 1-100 lakhs (typical Net vs Total difference), use computed
+                    if gemini_ppc < computed_ppc and 1.0 < ppc_diff < 100.0:
+                        claimed_expenses["power_purchase_cost"] = computed_ppc
+                        logger.warning(f"  [KDHP PPC Fix] Overriding Gemini PPC {gemini_ppc} -> {computed_ppc} (APPC x energy is higher, Gemini likely used Net Charges)")
+                    elif gemini_ppc > 0 and ppc_diff_pct < 1.0:
+                        logger.info(f"  [KDHP PPC Check] Gemini PPC matches computed -- no override needed")
 
                 nti = claimed_revenues.get("non_tariff_income", 0.0)
                 other_rev = claimed_revenues.get("other_revenue", 0.0)

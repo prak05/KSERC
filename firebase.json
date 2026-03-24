@@ -1,0 +1,54 @@
+{
+  "hosting": {
+    "public": "frontend/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "kserc-engine",
+          "region": "asia-south1"
+        }
+      },
+      {
+        "source": "/analyze",
+        "run": {
+          "serviceId": "kserc-engine",
+          "region": "asia-south1"
+        }
+      },
+      {
+        "source": "/status/**",
+        "run": {
+          "serviceId": "kserc-engine",
+          "region": "asia-south1"
+        }
+      },
+      {
+        "source": "/download/**",
+        "run": {
+          "serviceId": "kserc-engine",
+          "region": "asia-south1"
+        }
+      },
+      {
+        "source": "/save-hearing",
+        "run": {
+          "serviceId": "kserc-engine",
+          "region": "asia-south1"
+        }
+      },
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "kserc-engine",
+          "region": "asia-south1"
+        }
+      }
+    ]
+  }
+}
