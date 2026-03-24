@@ -1,4 +1,4 @@
-﻿"""
+"""
 KSERC SDL Truing Up — Compliance Auditor Agent
 ==================================================
 
@@ -474,13 +474,22 @@ def _audit_power_purchase(
             approved_expenses["power_purchase_cost"] = claimed_ppc
             return
 
-        approved_loss_lakh_units = round(
-            energy_base * target_decimal / (1.0 - target_decimal), 2
-        )
-        logger.info(
-            f"PPC Step 1: approved_loss = {energy_base} × {target_loss_pct}% "
-            f"/ (1 − {target_loss_pct}%) = {approved_loss_lakh_units} LU"
-        )
+        if "input" in formula_used:
+            # Loss = Input * TargetLoss%
+            approved_loss_lakh_units = round(energy_base * target_decimal, 2)
+            logger.info(
+                f"PPC Step 1: approved_loss = {energy_base} × {target_loss_pct}% "
+                f"= {approved_loss_lakh_units} LU"
+            )
+        else:
+            # Loss = Sales * TargetLoss% / (1 - TargetLoss%)
+            approved_loss_lakh_units = round(
+                energy_base * target_decimal / (1.0 - target_decimal), 2
+            )
+            logger.info(
+                f"PPC Step 1: approved_loss = {energy_base} × {target_loss_pct}% "
+                f"/ (1 − {target_loss_pct}%) = {approved_loss_lakh_units} LU"
+            )
 
         # ── Step 2: Compare Actual vs Approved Loss ──
         loss_difference = round(approved_loss_lakh_units - actual_loss_lakh_units, 4)

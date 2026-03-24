@@ -3,13 +3,14 @@ import sys
 import os
 sys.path.insert(0, r'c:\Users\adwai\OneDrive\Desktop\K-Project\kserc-trueup-engine')
 
-os.environ["GOOGLE_API_KEY"] =
-os.environ["GEMINI_MODEL"] = "gemini-2.5-flash"
+from dotenv import load_dotenv
+load_dotenv()
+os.environ.setdefault("GEMINI_MODEL", "gemini-2.5-flash")
 
 from src.agents.extractor import extract_petition_data
 from src.agents.auditor import audit_petition
 import logging
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 
 pdf_dir = r'C:\Users\adwai\OneDrive\Desktop\K-Project\Documents\Petition for the approval of Truing up of accounts for the FYs 2024-25. - KDHPCL'
 pdf_files = sorted([os.path.join(pdf_dir, f) for f in os.listdir(pdf_dir) if f.endswith('.pdf')])
@@ -66,6 +67,9 @@ print(f"  Claimed PPC:  Rs. {claimed.get('power_purchase_cost', 0)} L")
 print(f"  Approved PPC: Rs. {ppc_approved} L")
 print(f"  Expected:     Rs. 3415.64 L")
 print(f"  Match: {abs(ppc_approved - 3415.64) < 1.0}")
+import pprint
+print("\n--- PPC REG 73 DETAILS ---")
+pprint.pprint(state.get("ppc_reg73_details", {}))
 
 # Disallowances
 disallowances = state.get("disallowances", [])

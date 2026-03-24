@@ -1470,24 +1470,58 @@ def extract_petition_data(state: dict) -> dict:
                     logger.info(f"  [KDHP PostProcess] Combined interest -> interest_long_term={total_interest}")
 
                 # ── Deterministic PPC cross-validation ──
-                # Gemini sometimes extracts "Net Charges" (3,418.52) instead of "Total Charges" (3,434.48).
-                # Cross-check by computing PPC = APPC × energy_purchased. If Gemini's value is
-                # significantly lower than computed, override with the computed value.
+                # Gemini sometimes extracts "Net Charges" (after line loss adjustment)
+                # instead of "Total Charges" (the real total PPC before adjustment).
+                # Cross-check using APPC × energy_input, and if lower, do a focused
+                # re-extraction to get the exact "Total Charges" value.
                 gemini_ppc = claimed_expenses.get("power_purchase_cost", 0.0)
-                # KDHP buys all power, so energy_purchased = energy_input
                 ep = energy_purchased_lakh_units if energy_purchased_lakh_units > 0 else energy_input_lakh_units
-                logger.info(f"  [KDHP PPC Debug] gemini_ppc={gemini_ppc}, appc={appc_rs_per_unit}, energy_purchased={energy_purchased_lakh_units}, energy_input={energy_input_lakh_units}, using_ep={ep}")
+                logger.info(f"  [KDHP PPC Debug] gemini_ppc={gemini_ppc}, appc={appc_rs_per_unit}, ep={ep}")
+
                 if appc_rs_per_unit > 0 and ep > 0:
                     computed_ppc = round(appc_rs_per_unit * ep, 2)
-                    ppc_diff = abs(gemini_ppc - computed_ppc)
-                    ppc_diff_pct = (ppc_diff / computed_ppc * 100) if computed_ppc > 0 else 0
-                    logger.info(f"  [KDHP PPC Check] Gemini={gemini_ppc}, Computed(APPC×energy)={computed_ppc}, diff={ppc_diff:.2f} ({ppc_diff_pct:.1f}%)")
-                    # If Gemini PPC is lower by 1-100 lakhs (typical Net vs Total difference), use computed
-                    if gemini_ppc < computed_ppc and 1.0 < ppc_diff < 100.0:
-                        claimed_expenses["power_purchase_cost"] = computed_ppc
-                        logger.warning(f"  [KDHP PPC Fix] Overriding Gemini PPC {gemini_ppc} -> {computed_ppc} (APPC x energy is higher, Gemini likely used Net Charges)")
-                    elif gemini_ppc > 0 and ppc_diff_pct < 1.0:
-                        logger.info(f"  [KDHP PPC Check] Gemini PPC matches computed -- no override needed")
+                    # If Gemini PPC is lower than computed by 1-100L, it likely used Net Charges
+                    if gemini_ppc < computed_ppc and 1.0 < abs(gemini_ppc - computed_ppc) < 100.0:
+                        logger.warning(f"  [KDHP PPC] Gemini={gemini_ppc} < Computed={computed_ppc}. Attempting focused re-extraction...")
+                        try:
+                            # Focused re-extraction: ask Gemini specifically for Total Charges
+                            from src.gemini_client import generate_with_parts as _gwp
+                            import fitz as _fitz
+                            from google.genai import types as _types
+                            _doc = _fitz.open(pdf_path)
+                            _parts = []
+                            for _pg in range(min(len(_doc), 18)):
+                                _pix = _doc[_pg].get_pixmap(dpi=150)
+                                _parts.append(_types.Part.from_bytes(data=_pix.tobytes("png"), mime_type="image/png"))
+                            _doc.close()
+                            _parts.append(_types.Part.from_text(text=(
+                                "Find the Power Purchase Cost sub-table in this petition. "
+                                "It has rows: Normal Demand Charge, Excess Demand Charge, Total Demand Charges, "
+                                "Energy Charge, Total Charges-Rs/Lakhs, Less: Adjustment, Net Charges-Rs/Lakhs. "
+                                "Return ONLY the numeric value of 'Total Charges-Rs/Lakhs' or 'Total Power Purchase Cost' "
+                                "from the 2024-25 Audited/Actual column. Return just the number, nothing else."
+                            )))
+                            _val_text = _gwp(_parts, response_mime_type="text/plain")
+                            _val_text = _val_text.strip().replace(",", "").replace("Rs.", "").replace("Lakhs", "").replace("lakh", "").strip()
+                            # Extract number from response
+                            import re as _re
+                            _nums = _re.findall(r'[\d]+\.[\d]+', _val_text)
+                            if _nums:
+                                _total_charges = float(_nums[0])
+                                if 3000 < _total_charges < 5000:  # Sanity check
+                                    claimed_expenses["power_purchase_cost"] = _total_charges
+                                    logger.info(f"  [KDHP PPC Fix] Deep extraction: Total Charges = {_total_charges} (overriding {gemini_ppc})")
+                                else:
+                                    claimed_expenses["power_purchase_cost"] = computed_ppc
+                                    logger.info(f"  [KDHP PPC Fix] Deep extraction gave {_total_charges} (out of range), using computed={computed_ppc}")
+                            else:
+                                claimed_expenses["power_purchase_cost"] = computed_ppc
+                                logger.info(f"  [KDHP PPC Fix] Deep extraction failed to parse '{_val_text}', using computed={computed_ppc}")
+                        except Exception as _e:
+                            claimed_expenses["power_purchase_cost"] = computed_ppc
+                            logger.warning(f"  [KDHP PPC Fix] Deep extraction error: {_e}, using computed={computed_ppc}")
+                    elif gemini_ppc > 0 and abs(gemini_ppc - computed_ppc) <= 1.0:
+                        logger.info(f"  [KDHP PPC Check] Gemini={gemini_ppc} matches computed={computed_ppc} -- no override needed")
 
                 nti = claimed_revenues.get("non_tariff_income", 0.0)
                 other_rev = claimed_revenues.get("other_revenue", 0.0)
