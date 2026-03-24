@@ -1,0 +1,27 @@
+# Docker build exclusions
+.git
+.gitignore
+.env
+.env.*
+*.md
+*.log
+__pycache__
+*.pyc
+.pytest_cache
+.vscode
+.idea
+.gemini
+node_modules
+frontend/node_modules
+*.db
+uploads/*
+output_orders/*.pdf
+output_orders/*.html
+output_orders/*.md
+kserc_sa*.json
+*_sa*.json
+service_account.json
+vertex_sa.json
+tests/
+.benchmarks/
+tmp_pdf_pages/

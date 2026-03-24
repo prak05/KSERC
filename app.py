@@ -89,10 +89,14 @@ app = FastAPI(
     redoc_url=None,
 )
 
-# CORS — allow React dev server
+# CORS — allow React dev server + production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "*",  # Cloud Run URLs 
+    ],
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
@@ -1802,15 +1806,55 @@ def _generate_approval_justification(
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# Frontend Static File Serving (Production — Cloud Run)
+# ═══════════════════════════════════════════════════════════════════════
+
+FRONTEND_DIR = BASE_DIR / "frontend" / "dist"
+
+if FRONTEND_DIR.exists():
+    from starlette.staticfiles import StaticFiles
+    from starlette.responses import HTMLResponse
+
+    # Serve static assets (JS, CSS, images)
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIR / "assets")), name="static-assets")
+
+    # Serve other static files (favicon, etc.) - but NOT as catch-all
+    @app.get("/vite.svg")
+    @app.get("/favicon.ico")
+    async def serve_static_root(request: Request):
+        file_path = FRONTEND_DIR / request.url.path.lstrip("/")
+        if file_path.exists():
+            return FileResponse(str(file_path))
+        raise HTTPException(status_code=404)
+
+    # SPA catch-all: serve index.html for any non-API route
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # Don't catch API routes
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404)
+        # Serve index.html for all frontend routes (SPA routing)
+        index = FRONTEND_DIR / "index.html"
+        if index.exists():
+            return HTMLResponse(content=index.read_text(encoding="utf-8"))
+        raise HTTPException(status_code=404, detail="Frontend not built")
+
+    logger.info(f"Serving frontend from {FRONTEND_DIR}")
+else:
+    logger.info("Frontend dist/ not found — API-only mode (use Vite dev server)")
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # Entry Point
 # ═══════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     import uvicorn
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True,
+        port=port,
+        reload=os.environ.get("ENVIRONMENT") != "production",
         log_level="info",
     )
