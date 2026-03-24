@@ -847,12 +847,16 @@ Para 6: Brief overview of the Commission's approach to examining each cost head.
 
 SECTION 2 - HEARING ON THE PETITION:
 CRITICAL INSTRUCTIONS FOR THIS SECTION:
-- Do NOT number the paragraphs in this section. Leave blank space before each paragraph where numbers would go.
-- Use ONLY the court hearing data provided in the COURT HEARING data block.
-- Do NOT invent or auto-generate hearing submissions. Use ONLY what the user provided.
-- If no court hearing data is provided, write a PLACEHOLDER section with "[Hearing details to be inserted]".
-- Write unnumbered paragraphs for the hearing date/place, licensee submissions, KSEB comments, and Commission observations.
-- Each sub-point should use letters (a), (b), (c), etc.
+- This section must contain ONLY the text provided by the user in the COURT HEARING data block.
+- Do NOT add any dates, paragraph numbers, auto-generated content, or commentary.
+- Structure it as follows:
+  1. Write the section heading "Hearing on the Petition"
+  2. Under sub-heading "Licensee Submissions": paste the licensee_submissions text EXACTLY as provided, using (a), (b), (c) for each point.
+  3. Under sub-heading "Respondent's (KSEB) Position": paste the respondent_position text EXACTLY as provided, using (a), (b), (c) for each point.
+  4. Under sub-heading "Commission's Observations": paste the commission_observations text EXACTLY as provided, using (a), (b), (c) for each point.
+- If a sub-section has no data, leave it blank.
+- If NO court hearing data is provided at all, write "[Hearing details to be inserted]" as placeholder.
+- Do NOT rephrase, summarize, or expand the user's text. Copy it VERBATIM.
 
 SECTION 3 - ENERGY SALES AND CONSUMER MIX (MINIMUM 5 paragraphs, continue sequential numbering from Section 1):
 Para: Explain consumer categories in {licensee}'s supply area — HT, LT, domestic, commercial, industrial, public lighting, etc.
@@ -1421,6 +1425,51 @@ Caption: "Table 30\\nNon-Tariff Income approved for {fy} (Rs lakh)"
 Columns: Particulars | {fy} (Truing Up Petition | Trued Up)
 Rows — same as Table 29. Use data_block values for Trued Up column.
 
+GLOBAL ADAPTIVE INSTRUCTION:
+This order must ADAPT to whatever the petition PDF contains. Different licensees may have different consumer categories, revenue sources, and claims.
+ALL values in petition tables must come from the Petition PDF. ALL values in commission tables must come from data_block.
+Table numbering must be sequential from Part C.
+
+TARGET: Part D must produce approximately 5 PRINTED A4 PAGES of HTML content.
+Write all numbers from the Petition PDF — not from reference order.
+Do NOT write the signature block. Stop after Non-Tariff Income section."""
+
+    # Replace the tail_c placeholder in the prompt
+    prompt_d = prompt_d.replace("{tail_c}", tail_c)
+
+    logger.info("=== PART D: Revenue + Non-Tariff Income ===")
+    t0 = time.time()
+    parts_d = _build_pdf_parts()
+    parts_d.append(types.Part.from_text(text=prompt_d))
+    part_d_html = _call_with_retry(parts_d, "Part D")
+    logger.info(f"Part D: {len(part_d_html)} chars in {time.time()-t0:.1f}s")
+
+    tail_d = str(part_d_html)[-2500:] if len(part_d_html) > 2500 else part_d_html
+
+    # ==========================================================================
+    # PART E: ARR Summary + Orders + Signature
+    # ==========================================================================
+    prompt_e = f"""You are an expert legal drafter for KSERC.
+
+TASK: Generate PART E (FINAL PART) of a Truing-Up Order for M/s {licensee} for FY {fy}.
+Parts A-D (Header/Intro/Hearing/Energy Sales/Distribution Loss/Power Purchase/O&M/Depreciation/Interest/Revenue/Non-Tariff) are already written. Continue from where Part D ends.
+
+INPUTS:
+- PDF 1 = Reference Order OP 82/2023 - FORMAT TEMPLATE
+- PDF 2 = Petition by M/s {licensee} for FY {fy} - DATA SOURCE
+- PDF 3+ = Annexures with detailed tables
+- Audited Data:
+{data_block}
+
+{HTML_RULES}
+
+CONTEXT - last 2500 chars of Part D:
+---
+{{tail_d}}
+---
+
+Use real sequential paragraph numbers continuing from where the previous Part ended. Tables should be numbered sequentially. Sub-points use (a), (b), (c), etc.
+
 SECTION - WHEELING CHARGES (INCLUDE ONLY IF THE PETITION CLAIMS WHEELING CHARGES):
 Para 1: Details of open access consumers and wheeling arrangements.
 Para 2: Total wheeling income and Commission's approval.
@@ -1433,8 +1482,8 @@ Para 3: Commission's decision — amount approved for FY {fy}.
 SECTION - REVENUE SURPLUS/GAP FOR {fy} (FINAL ARR SUMMARY):
 Para 1: Based on the above, state the approved expenditure and revenue for the year {fy} after truing up.
 
-TABLE 31 - Trued up Income and Expenditure for the Year {fy} (MOST IMPORTANT TABLE).
-Caption: "Table 31\\nTrued up Income and Expenditure for the Year {fy} (Rs. lakh)"
+TABLE - Trued up Income and Expenditure for the Year {fy} (MOST IMPORTANT TABLE).
+Caption: "Table\\nTrued up Income and Expenditure for the Year {fy} (Rs. lakh)"
 Columns: Particulars | {fy} (ARR&ERC | Truing Up | Trued Up)
 Rows:
   Power purchase cost
@@ -1470,34 +1519,32 @@ Final para: "The petition is disposed of. Ordered accordingly."
 SECTION - SIGNATURE BLOCK:
 <table class="sig-table">
   <tr><td>Sd/-</td><td>Sd/-</td><td>Sd/-</td></tr>
-  <tr><td><b>Sri. T.K Jose</b></td><td><b>Adv. A. J. Wilson</b></td><td><b>Sri. B. Pradeep</b></td></tr>
+  <tr><td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td></tr>
   <tr><td><b>Chairman</b></td><td><b>Member</b></td><td><b>Member</b></td></tr>
 </table>
 <div class="secretary-block">
   <p><b>Approved for issue</b></p>
   <p>Sd/-</p>
-  <p><b>C.R.Satheesh Chandran</b></p>
+  <p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></p>
   <p><b>Secretary</b></p>
 </div>
 
 GLOBAL ADAPTIVE INSTRUCTION:
-This order must ADAPT to whatever the petition PDF contains. Different licensees may have different consumer categories, revenue sources, and claims.
-ALL values in petition tables must come from the Petition PDF. ALL values in commission tables must come from data_block.
-Table numbering must be sequential from Part C.
+This order must ADAPT to whatever the petition PDF contains.
+ALL values in petition tables must come from the Petition PDF. ALL commission values must come from data_block.
+Table numbering must be sequential from Part D.
 
-TARGET: Part D must produce approximately 8 PRINTED A4 PAGES of HTML content.
-Write all numbers from the Petition PDF — not from reference order.
+TARGET: Part E must produce approximately 4 PRINTED A4 PAGES of HTML content.
 This is the FINAL part — include the complete signature block at the very end."""
 
-    # Replace the tail_c placeholder in the prompt
-    prompt_d = prompt_d.replace("{tail_c}", tail_c)
+    prompt_e = prompt_e.replace("{tail_d}", tail_d)
 
-    logger.info("=== PART D: Revenue + Non-Tariff Income + ARR Summary + Orders + Signature ===")
+    logger.info("=== PART E: ARR Summary + Orders + Signature ===")
     t0 = time.time()
-    parts_d = _build_pdf_parts()
-    parts_d.append(types.Part.from_text(text=prompt_d))
-    part_d_html = _call_with_retry(parts_d, "Part D")
-    logger.info(f"Part D: {len(part_d_html)} chars in {time.time()-t0:.1f}s")
+    parts_e = _build_pdf_parts()
+    parts_e.append(types.Part.from_text(text=prompt_e))
+    part_e_html = _call_with_retry(parts_e, "Part E")
+    logger.info(f"Part E: {len(part_e_html)} chars in {time.time()-t0:.1f}s")
 
     # Clean intermediate parts: strip </body></html>, <html><head>..., and signature blocks
     def _strip_intermediate(html_part):
@@ -1520,10 +1567,11 @@ This is the FINAL part — include the complete signature block at the very end.
     clean_a = _strip_intermediate(part_a_html or "")
     clean_b = _strip_intermediate(_strip_header(part_b_html or ""))
     clean_c = _strip_intermediate(_strip_header(part_c_html or ""))
-    clean_d = _strip_header(part_d_html or "")  # Part D keeps its closing + signature
+    clean_d = _strip_intermediate(_strip_header(part_d_html or ""))
+    clean_e = _strip_header(part_e_html or "")  # Part E keeps its closing + signature
 
-    combined_html = clean_a + "\n\n" + clean_b + "\n\n" + clean_c + "\n\n" + clean_d
-    logger.info(f"Combined: {len(combined_html)} chars ({len(part_a_html)} + {len(part_b_html)} + {len(part_c_html)} + {len(part_d_html)})")
+    combined_html = clean_a + "\n\n" + clean_b + "\n\n" + clean_c + "\n\n" + clean_d + "\n\n" + clean_e
+    logger.info(f"Combined: {len(combined_html)} chars ({len(part_a_html)} + {len(part_b_html)} + {len(part_c_html)} + {len(part_d_html)} + {len(part_e_html)})")
     return combined_html
 
 
