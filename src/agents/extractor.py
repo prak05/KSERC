@@ -1,4 +1,4 @@
-﻿"""
+"""
 KSERC SDL Truing Up — Gemini Vision Extraction Agent
 =====================================================
 
@@ -1469,14 +1469,9 @@ def extract_petition_data(state: dict) -> dict:
                     claimed_expenses["interest_consumer_deposits"] = 0.0
                     logger.info(f"  [KDHP PostProcess] Combined interest -> interest_long_term={total_interest}")
 
-                # ── Override power_purchase_cost with Net Charges from PPC sub-table ──
-                ppc_net = float(data.get("ppc_net_charges_rs_lakhs", 0.0) or 0.0)
-                if ppc_net > 0:
-                    old_ppc = claimed_expenses.get("power_purchase_cost", 0.0)
-                    claimed_expenses["power_purchase_cost"] = round(ppc_net, 2)
-                    logger.info(f"  [KDHP PostProcess] power_purchase_cost overridden: {old_ppc} → {ppc_net} (from PPC sub-table Net Charges)")
-                else:
-                    logger.warning("  [KDHP PostProcess] ppc_net_charges_rs_lakhs not found — power_purchase_cost may be wrong")
+                # NOTE: ppc_net_charges_rs_lakhs override REMOVED — it was extracting a sub-total
+                # (3,418.52) instead of the actual total PPC (3,434.48). The standard Gemini
+                # extraction of power_purchase_cost from the petition ARR table is more reliable.
 
                 nti = claimed_revenues.get("non_tariff_income", 0.0)
                 other_rev = claimed_revenues.get("other_revenue", 0.0)
