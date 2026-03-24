@@ -98,11 +98,27 @@ def get_analysis(analysis_id: str) -> Optional[dict]:
     data = doc.to_dict()
     result_json = data.get("result_json")
     progress_log = data.get("progress_log")
+    # Parse progress_log — ArrayUnion stores entries as JSON strings in a list
+    progress = []
+    if isinstance(progress_log, list):
+        for entry in progress_log:
+            if isinstance(entry, str):
+                try:
+                    progress.append(json.loads(entry))
+                except (json.JSONDecodeError, TypeError):
+                    progress.append({"msg": entry})
+            elif isinstance(entry, dict):
+                progress.append(entry)
+    elif isinstance(progress_log, str):
+        try:
+            progress = json.loads(progress_log)
+        except (json.JSONDecodeError, TypeError):
+            progress = []
 
     return {
         "status": data.get("status", "UNKNOWN"),
         "result": json.loads(result_json) if result_json else None,
-        "progress": json.loads(progress_log) if isinstance(progress_log, str) else (progress_log or []),
+        "progress": progress,
     }
 
 

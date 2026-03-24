@@ -117,8 +117,14 @@ def upload_reference_documents(
     Returns:
         Dict mapping filename -> file URI
     """
-    from src.gemini_client import get_client
-    client = get_client()
+    from src.gemini_client import get_api_key_client, get_client
+    
+    # Files API (upload/list) only works with API key client, NOT Vertex AI
+    client = get_api_key_client()
+    if client is None:
+        # Fallback to default client — will fail on Vertex AI for file ops
+        logger.warning("No API key client available — file uploads may fail on Vertex AI")
+        client = get_client()
     
     cache = _load_upload_cache()
     uploaded = cache.get("files", {})
