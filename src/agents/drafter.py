@@ -132,17 +132,20 @@ KSERC_CSS = """
     table.data-table {
         border-collapse: collapse;
         width: 100%;
+        table-layout: fixed;
         margin-top: 10px;
         margin-bottom: 18px;
-        font-size: 11.5pt;
+        font-size: 10pt;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     table.data-table th,
     table.data-table td {
         border: 1px solid #000;
-        padding: 4px 7px;
-        font-size: 11.5pt;
+        padding: 3px 5px;
+        font-size: 10pt;
         vertical-align: middle;
-        line-height: 1.35;
+        line-height: 1.3;
     }
     table.data-table th {
         font-weight: bold;
@@ -849,13 +852,12 @@ SECTION 2 - HEARING ON THE PETITION:
 CRITICAL INSTRUCTIONS FOR THIS SECTION:
 - This section must contain ONLY the text provided by the user in the COURT HEARING data block.
 - Do NOT add any dates, paragraph numbers, auto-generated content, or commentary.
-- Structure it as follows:
+- ALWAYS write ALL of the following sub-headings, even if no data is provided for them:
   1. Write the section heading "Hearing on the Petition"
-  2. Under sub-heading "Licensee Submissions": paste the licensee_submissions text EXACTLY as provided, using (a), (b), (c) for each point.
-  3. Under sub-heading "Respondent's (KSEB) Position": paste the respondent_position text EXACTLY as provided, using (a), (b), (c) for each point.
-  4. Under sub-heading "Commission's Observations": paste the commission_observations text EXACTLY as provided, using (a), (b), (c) for each point.
-- If a sub-section has no data, leave it blank.
-- If NO court hearing data is provided at all, write "[Hearing details to be inserted]" as placeholder.
+  2. Sub-heading "Licensee Submissions": paste the licensee_submissions text EXACTLY as provided, using (a), (b), (c) for each point. If no data, leave blank space under the heading.
+  3. Sub-heading "Respondent's (KSEB) Position": paste the respondent_position text EXACTLY as provided, using (a), (b), (c) for each point. If no data, leave blank space under the heading.
+  4. Sub-heading "Commission's Observations": paste the commission_observations text EXACTLY as provided, using (a), (b), (c) for each point. If no data, leave blank space under the heading.
+- ALL THREE sub-headings must ALWAYS appear in the output regardless of whether data is provided.
 - Do NOT rephrase, summarize, or expand the user's text. Copy it VERBATIM.
 
 SECTION 3 - ENERGY SALES AND CONSUMER MIX (MINIMUM 5 paragraphs, continue sequential numbering from Section 1):
@@ -910,7 +912,7 @@ CONTEXT - last 2500 chars of Part A:
 {tail_a}
 ---
 
-Use [__]. as the paragraph number placeholder at the start of each numbered paragraph. The Commission assigns final numbers later. Sub-points use (a), (b), (c), etc.
+Use real sequential paragraph numbers continuing from where Part A ended. Tables should be numbered sequentially. Sub-points use (a), (b), (c), etc.
 
 
 MANDATORY 4-STEP JUSTIFICATION STRUCTURE (for EVERY cost head and revenue item):
