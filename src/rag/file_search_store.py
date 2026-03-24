@@ -421,24 +421,35 @@ QUESTION: {question}""",
     target_categories = categories or ["regulations", "myt_orders", "past_orders", "other_licensee_orders"]
     file_uris = ensure_files_uploaded(categories=target_categories)
     
-    if not file_uris:
-        logger.warning("No reference documents available for query")
-        return "No reference documents available. Please upload documents first."
-    
     # Build content parts: file references + question
     parts = []
     
-    # Add file references
-    cache_data = _load_upload_cache()
-    for filename, uri in file_uris.items():
-        file_info = cache_data.get("files", {}).get(filename, {})
-        file_cat = file_info.get("category", "")
-        
-        if file_cat in target_categories:
-            parts.append(types.Part.from_uri(file_uri=uri, mime_type="application/pdf"))
+    if file_uris:
+        # Add file references from Files API
+        cache_data = _load_upload_cache()
+        for filename, uri in file_uris.items():
+            file_info = cache_data.get("files", {}).get(filename, {})
+            file_cat = file_info.get("category", "")
+            if file_cat in target_categories:
+                parts.append(types.Part.from_uri(file_uri=uri, mime_type="application/pdf"))
+    
+    # Fallback: load PDFs directly from disk as inline bytes
+    if not parts and DOCUMENTS_DIR.exists():
+        logger.info("Files API unavailable — loading regulatory PDFs as inline bytes from disk")
+        for cat in target_categories:
+            for filename in REFERENCE_DOCS.get(cat, []):
+                filepath = DOCUMENTS_DIR / filename
+                if filepath.exists() and filepath.stat().st_size < 20_000_000:  # <20MB
+                    try:
+                        pdf_bytes = filepath.read_bytes()
+                        parts.append(types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"))
+                        logger.info(f"  Loaded inline: {filename} ({len(pdf_bytes)//1024} KB)")
+                    except Exception as e:
+                        logger.warning(f"  Failed to load {filename}: {e}")
     
     if not parts:
-        return "No matching documents found for the specified categories."
+        logger.warning("No reference documents available for query")
+        return "No reference documents available. Please upload documents first."
     
     # Add the question
     parts.append(types.Part.from_text(text=f"""You are a KSERC (Kerala State Electricity Regulatory Commission) legal expert.
