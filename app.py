@@ -885,8 +885,10 @@ async def rm_continue(req: RMContinueRequest, background_tasks: BackgroundTasks)
                 user_id="human_auditor",
             )
         except Exception as e:
-            logger.error(f"Pipeline resume failed: {e}")
-            save_analysis(req.analysis_id, "FAILED", {"error": str(e)})
+            import traceback
+            tb = traceback.format_exc()
+            logger.error(f"Pipeline resume failed: {e}\n{tb}", exc_info=True)
+            save_analysis(req.analysis_id, "FAILED", {"error": str(e), "traceback": tb})
 
     background_tasks.add_task(resume_task)
 
@@ -1544,8 +1546,8 @@ async def _run_analysis(
         deep_result = deep_extract_node(state)
         if deep_result:
             state.update(deep_result)
-            wage_cur = state.get("wage_revision_current_year", 0.0)
-            wage_pri = state.get("wage_revision_prior_period", 0.0)
+            wage_cur = float(state.get("wage_revision_current_year", 0.0) or 0.0)
+            wage_pri = float(state.get("wage_revision_prior_period", 0.0) or 0.0)
             if wage_cur > 0 or wage_pri > 0:
                 log("extract", f"Wage revision found: current={wage_cur:.2f}L, prior={wage_pri:.2f}L")
             else:
@@ -1701,7 +1703,7 @@ async def _run_analysis(
         # Apply AG adjustment if bank charges were reclassified
         ag_adj = float(state.get("ag_adjustment_for_bank_charges", 0) or 0)
         if ag_adj > 0:
-            current_ag = float(state.get("approved_expenses", {}).get("admin_general", 0.0))
+            current_ag = float(state.get("approved_expenses", {}).get("admin_general", 0.0) or 0.0)
             state["approved_expenses"]["admin_general"] = round(current_ag - ag_adj, 2)
             log("interest", f"A&G reduced by Rs.{ag_adj:.2f}L for reclassified bank charges")
 
@@ -1827,8 +1829,8 @@ def _build_component_analysis(
 
     components = []
     for key, display_name in display_names.items():
-        claimed_val = claimed.get(key, 0.0)
-        approved_val = approved.get(key, 0.0)
+        claimed_val = float(claimed.get(key, 0.0) or 0.0)
+        approved_val = float(approved.get(key, 0.0) or 0.0)
         variance = round(approved_val - claimed_val, 2)
         variance_pct = round((variance / claimed_val * 100), 2) if claimed_val != 0 else 0.0
 

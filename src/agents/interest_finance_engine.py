@@ -214,7 +214,7 @@ def calculate_component_a(
     # This component uses the claimed value directly from extraction
     # KSERC typically accepts actual loan interest as claimed when
     # supported by audited loan schedule
-    claimed = float(extracted_data.get("interest_long_term", 0.0))
+    claimed = float(extracted_data.get("interest_long_term", 0.0) or 0.0)
 
     return {
         "component": "A",
@@ -651,12 +651,12 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
 
     # Check if O&M and depreciation are approved yet
     om_components = ["employee_cost", "repair_maintenance", "admin_general"]
-    approved_om = sum(float(approved.get(k, 0.0)) for k in om_components)
-    claimed_om = sum(float(claimed.get(k, 0.0)) for k in om_components)
+    approved_om = sum(float(approved.get(k, 0.0) or 0.0) for k in om_components)
+    claimed_om = sum(float(claimed.get(k, 0.0) or 0.0) for k in om_components)
     om_is_approved = approved_om > 0.0
 
-    approved_dep = float(approved.get("depreciation", 0.0))
-    claimed_dep = float(claimed.get("depreciation", 0.0))
+    approved_dep = float(approved.get("depreciation", 0.0) or 0.0)
+    claimed_dep = float(claimed.get("depreciation", 0.0) or 0.0)
     dep_is_approved = approved_dep > 0.0
 
     # Use approved if available, claimed as fallback
@@ -693,7 +693,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     logger.info(f"Component A: {components['A']['interest_rs_lakhs']}")
 
     # Component B: Normative loan interest
-    qualifying_additions = float(claimed.get("capital_additions", 0.0))
+    qualifying_additions = float(claimed.get("capital_additions", 0.0) or 0.0)
 
     # Fallback: use petition-extracted normative loan data if Firestore has none
     norm_loan_opening = prior_data.get("normative_loan_closing_balance", 0.0)
@@ -787,7 +787,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
 
     # Component G: Notional surplus interest (INCOME, not expense)
     surplus_additions_this_year = 0.0  # From Firestore / extraction
-    licensee_claimed_surplus_income = float(claimed.get("interest_income_surplus", 0.0))
+    licensee_claimed_surplus_income = float(claimed.get("interest_income_surplus", 0.0) or 0.0)
     components["G"] = calculate_component_g(
         prior_data=prior_data,
         retail_td_rate=retail_td_rate,
@@ -797,7 +797,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     logger.info(f"Component G: notional={components['G'].get('notional_amount', 0.0)}")
 
     # ── Step 4: Cross-verification ───────────────────────────────────
-    claimed_interest_total = float(claimed.get("interest_finance", 0.0))
+    claimed_interest_total = float(claimed.get("interest_finance", 0.0) or 0.0)
     reclassified = components["E"].get("reclassified_from_ag", 0.0)
 
     cross_checks = run_cross_verification(
@@ -842,11 +842,11 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     # but the interest engine calculates them independently from prior-year
     # data, normative loan schedules, and formula-based computations.
     # These values MUST override the auditor's defaults.
-    comp_a_val = result.get("component_a", {}).get("interest_rs_lakhs", 0.0)
-    comp_b_val = result.get("component_b", {}).get("interest_rs_lakhs", 0.0)
-    comp_c_val = result.get("component_c", {}).get("interest_rs_lakhs", 0.0)
-    comp_d_val = result.get("component_d", {}).get("interest_rs_lakhs", 0.0)
-    comp_f_val = result.get("component_f", {}).get("carrying_cost_rs_lakhs", 0.0)
+    comp_a_val = float(result.get("component_a", {}).get("interest_rs_lakhs", 0.0) or 0.0)
+    comp_b_val = float(result.get("component_b", {}).get("interest_rs_lakhs", 0.0) or 0.0)
+    comp_c_val = float(result.get("component_c", {}).get("interest_rs_lakhs", 0.0) or 0.0)
+    comp_d_val = float(result.get("component_d", {}).get("interest_rs_lakhs", 0.0) or 0.0)
+    comp_f_val = float(result.get("component_f", {}).get("carrying_cost_rs_lakhs", 0.0) or 0.0)
 
     # Interest on Long-Term Loans = max(Component A, Component B)
     # Component A = actual claimed interest; Component B = normative loan interest

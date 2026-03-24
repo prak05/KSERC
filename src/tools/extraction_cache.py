@@ -1,8 +1,18 @@
 """
-Extraction Cache — Cache Gemini Vision extraction results in Firestore.
+Extraction Cache — Persistent Firestore cache for reference document extraction.
 
-Caches are keyed by SHA-256 hash of the uploaded PDF file contents.
-This avoids re-processing the same PDFs through Gemini Vision on repeat runs.
+Replaces the local .extraction_cache/ directory (which is lost on every Cloud Run
+deployment) with Firestore-backed persistence.
+
+Strategy: ALWAYS store data as a JSON string in Firestore to avoid nested entity
+limits. Firestore has a 20-level nesting limit and can't handle arrays-of-objects
+well, but our extraction data is deeply nested. Storing as a JSON string bypasses
+this limitation entirely.
+
+Cache collections:
+  - deep_extract_cache/{hash}     — Petition deep table extraction results
+  - order_extract_cache/{hash}    — Past order KSERC decision extraction
+  - order_learnings_cache/all     — Combined all-order learnings
 """
 
 import hashlib
@@ -14,11 +24,38 @@ from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+# Also keep local fallback for non-production environments
+LOCAL_CACHE_DIR = Path(__file__).resolve().parent.parent.parent / ".extraction_cache"
 
-def compute_pdf_hash(pdf_paths: List[str]) -> str:
-    """Compute a combined SHA-256 hash of all uploaded PDF files."""
+
+def _get_firestore():
+    """Get Firestore client."""
+    env = os.environ.get("ENVIRONMENT", "local")
+    if env != "production":
+        return None
+    try:
+        from src.tools.db import get_firestore_client
+        return get_firestore_client()
+    except Exception:
+        try:
+            import firebase_admin
+            from firebase_admin import firestore
+            try:
+                firebase_admin.get_app()
+            except ValueError:
+                firebase_admin.initialize_app()
+            return firestore.client()
+        except Exception as e:
+            logger.error(f"[Cache] Cannot init Firestore: {e}")
+            return None
+
+
+def compute_pdf_hash(pdf_paths) -> str:
+    """Compute SHA-256 hash of one or more PDF files."""
+    if isinstance(pdf_paths, str):
+        pdf_paths = [pdf_paths]
     h = hashlib.sha256()
-    for pdf_path in sorted(pdf_paths):  # Sort for deterministic hash
+    for pdf_path in sorted(pdf_paths):
         try:
             with open(pdf_path, "rb") as f:
                 while chunk := f.read(8192):
@@ -26,116 +63,140 @@ def compute_pdf_hash(pdf_paths: List[str]) -> str:
         except Exception as e:
             logger.error(f"Failed to hash {pdf_path}: {e}")
             return ""
-    return h.hexdigest()
+    return h.hexdigest()[:16]
 
 
-def _get_firestore():
-    """Get Firestore client (reuses existing initialization from db.py)."""
-    try:
-        from src.tools.db import get_firestore_client
-        return get_firestore_client()
-    except Exception:
-        # Fallback: initialize directly
-        import firebase_admin
-        from firebase_admin import firestore
+# ════════════════════════════════════════════════════════════════════════
+# Generic get/save with Firestore + local fallback
+# ════════════════════════════════════════════════════════════════════════
+
+def _get_cached(collection: str, key: str) -> Optional[Dict]:
+    """Try Firestore first, then local file fallback."""
+    # Try Firestore
+    db = _get_firestore()
+    if db:
         try:
-            firebase_admin.get_app()
-        except ValueError:
-            firebase_admin.initialize_app()
-        return firestore.client()
-
-
-def get_cached_extraction(pdf_hash: str) -> Optional[Dict]:
-    """
-    Check if extraction results exist in Firestore cache.
-    Returns the cached extraction result dict, or None if not cached.
-    """
-    if not pdf_hash:
-        return None
+            doc = db.collection(collection).document(key).get()
+            if doc.exists:
+                raw = doc.to_dict()
+                # We always store as JSON string now
+                json_str = raw.get("data")
+                if json_str:
+                    data = json.loads(json_str)
+                    logger.info(f"[Cache] HIT (Firestore) {collection}/{key}")
+                    return data
+                else:
+                    # Legacy format: try to use dict directly
+                    raw.pop("_cached_at", None)
+                    raw.pop("_format", None)
+                    if raw:
+                        logger.info(f"[Cache] HIT (Firestore legacy) {collection}/{key}")
+                        return raw
+        except Exception as e:
+            logger.warning(f"[Cache] Firestore read failed: {e}")
     
-    env = os.environ.get("ENVIRONMENT", "local")
-    if env != "production":
-        logger.info(f"[Cache] Skipping cache lookup (env={env})")
-        return None
-    
-    try:
-        db = _get_firestore()
-        doc = db.collection("extraction_cache").document(pdf_hash).get()
-        if doc.exists:
-            data = doc.to_dict()
-            logger.info(f"[Cache] HIT — extraction cache for hash {pdf_hash[:12]}… "
-                       f"({len(data.get('claimed_expenses', {}))} expense components)")
+    # Fallback: local file
+    local_file = LOCAL_CACHE_DIR / f"{key}.json"
+    if local_file.exists():
+        try:
+            data = json.loads(local_file.read_text(encoding="utf-8"))
+            logger.info(f"[Cache] HIT (local) {local_file.name}")
+            # Migrate to Firestore if available
+            if db:
+                _save_to_firestore(db, collection, key, data)
             return data
-        else:
-            logger.info(f"[Cache] MISS — no extraction cache for hash {pdf_hash[:12]}…")
-            return None
-    except Exception as e:
-        logger.error(f"[Cache] Failed to read extraction cache: {e}")
-        return None
+        except Exception as e:
+            logger.warning(f"[Cache] Local read failed: {e}")
+    
+    logger.info(f"[Cache] MISS {collection}/{key}")
+    return None
 
 
-def save_extraction_cache(pdf_hash: str, result: Dict):
-    """Save extraction result to Firestore cache."""
-    if not pdf_hash:
-        return
+def _save_cached(collection: str, key: str, data: Dict):
+    """Save to both Firestore and local file."""
+    # Save to Firestore
+    db = _get_firestore()
+    if db:
+        _save_to_firestore(db, collection, key, data)
     
-    env = os.environ.get("ENVIRONMENT", "local")
-    if env != "production":
-        return
-    
+    # Also save locally as backup
     try:
-        db = _get_firestore()
-        # Store with metadata
-        cache_doc = dict(result)  # shallow copy
-        cache_doc["_cached_at"] = __import__("datetime").datetime.now().isoformat()
-        cache_doc["_hash"] = pdf_hash
+        LOCAL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        local_file = LOCAL_CACHE_DIR / f"{key}.json"
+        local_file.write_text(
+            json.dumps(data, indent=2, default=str), encoding="utf-8"
+        )
+        logger.info(f"[Cache] SAVED (local) {local_file.name}")
+    except Exception as e:
+        logger.warning(f"[Cache] Local save failed: {e}")
+
+
+def _save_to_firestore(db, collection: str, key: str, data: Dict):
+    """
+    Save to Firestore as a JSON string.
+    
+    We ALWAYS serialize the data as a JSON string to avoid Firestore's
+    nested entity limits (arrays-of-objects, 20-level nesting, etc.).
+    """
+    import datetime
+    try:
+        serialized = json.dumps(data, default=str)
         
-        db.collection("extraction_cache").document(pdf_hash).set(cache_doc)
-        logger.info(f"[Cache] SAVED extraction cache for hash {pdf_hash[:12]}…")
-    except Exception as e:
-        logger.error(f"[Cache] Failed to save extraction cache: {e}")
-
-
-def get_cached_deep_extraction(pdf_hash: str) -> Optional[Dict]:
-    """Check if deep extraction results exist in cache."""
-    if not pdf_hash:
-        return None
-    
-    env = os.environ.get("ENVIRONMENT", "local")
-    if env != "production":
-        return None
-    
-    try:
-        db = _get_firestore()
-        doc = db.collection("deep_extract_cache").document(pdf_hash).get()
-        if doc.exists:
-            data = doc.to_dict()
-            logger.info(f"[Cache] HIT — deep extraction cache for hash {pdf_hash[:12]}…")
-            return data
-        else:
-            logger.info(f"[Cache] MISS — no deep extraction cache for hash {pdf_hash[:12]}…")
-            return None
-    except Exception as e:
-        logger.error(f"[Cache] Failed to read deep extraction cache: {e}")
-        return None
-
-
-def save_deep_extraction_cache(pdf_hash: str, result: Dict):
-    """Save deep extraction result to Firestore cache."""
-    if not pdf_hash:
-        return
-    
-    env = os.environ.get("ENVIRONMENT", "local")
-    if env != "production":
-        return
-    
-    try:
-        db = _get_firestore()
-        cache_doc = dict(result)
-        cache_doc["_cached_at"] = __import__("datetime").datetime.now().isoformat()
-        cache_doc["_hash"] = pdf_hash
+        # Firestore doc limit is ~1MB
+        if len(serialized) > 950_000:
+            logger.warning(
+                f"[Cache] Doc too large for Firestore ({len(serialized)} bytes), "
+                f"skipping Firestore save for {collection}/{key}"
+            )
+            return
         
-        db.collection("deep_extract_cache").document(pdf_hash).set(cache_doc)
-        logger.info(f"[Cache] SAVED deep extraction cache for hash {pdf_hash[:12]}…")
+        cache_doc = {
+            "_cached_at": datetime.datetime.now().isoformat(),
+            "_format": "json_string",
+            "data": serialized,
+        }
+        
+        db.collection(collection).document(key).set(cache_doc)
+        logger.info(f"[Cache] SAVED (Firestore) {collection}/{key} ({len(serialized)} bytes)")
     except Exception as e:
-        logger.error(f"[Cache] Failed to save deep extraction cache: {e}")
+        logger.error(f"[Cache] Firestore save failed: {e}")
+
+
+# ════════════════════════════════════════════════════════════════════════
+# Public API — Deep Petition Table Extraction Cache
+# ════════════════════════════════════════════════════════════════════════
+
+def get_cached_deep_extraction(pdf_hash: str, licensee: str, fy: str) -> Optional[Dict]:
+    key = f"deep_{pdf_hash}_{licensee}_{fy}".replace(" ", "_")
+    return _get_cached("deep_extract_cache", key)
+
+
+def save_deep_extraction_cache(pdf_hash: str, licensee: str, fy: str, result: Dict):
+    key = f"deep_{pdf_hash}_{licensee}_{fy}".replace(" ", "_")
+    _save_cached("deep_extract_cache", key, result)
+
+
+# ════════════════════════════════════════════════════════════════════════
+# Public API — Past Order KSERC Decision Cache
+# ════════════════════════════════════════════════════════════════════════
+
+def get_cached_order_extraction(pdf_hash: str, licensee: str, fy: str) -> Optional[Dict]:
+    key = f"order_deep_{pdf_hash}_{licensee}_{fy}".replace(" ", "_")
+    return _get_cached("order_extract_cache", key)
+
+
+def save_order_extraction_cache(pdf_hash: str, licensee: str, fy: str, result: Dict):
+    key = f"order_deep_{pdf_hash}_{licensee}_{fy}".replace(" ", "_")
+    _save_cached("order_extract_cache", key, result)
+
+
+# ════════════════════════════════════════════════════════════════════════
+# Public API — Combined All-Order Learnings Cache
+# ════════════════════════════════════════════════════════════════════════
+
+def get_cached_all_order_learnings() -> Optional[Dict]:
+    return _get_cached("order_learnings_cache", "all")
+
+
+def save_all_order_learnings(data: Dict):
+    _save_cached("order_learnings_cache", "all", data)

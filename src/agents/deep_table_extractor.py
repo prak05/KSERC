@@ -1,4 +1,4 @@
-﻿"""
+"""
 KSERC SDL Truing Up — Deep Table Extractor
 ============================================
 
@@ -195,26 +195,15 @@ def extract_all_tables(
         logger.warning("google-genai not installed; deep table extraction skipped.")
         return _empty_result()
 
-    # ── Check cache first ──────────────────────────────────────────────
-    import hashlib
-    cache_dir = Path(__file__).resolve().parent.parent.parent / ".extraction_cache"
-    
-    # Hash all PDFs together for multi-file cache key
-    hasher = hashlib.sha256()
-    for p in all_pdf_paths:
-        hasher.update(Path(p).read_bytes())
-    pdf_hash = hasher.hexdigest()[:16]
-    
-    cache_key = f"deep_{pdf_hash}_{licensee_name}_{financial_year}".replace(" ", "_")
-    cache_file = cache_dir / f"{cache_key}.json"
+    # ── Check cache first (Firestore-backed, persists across deployments) ──
+    from src.tools.extraction_cache import (
+        compute_pdf_hash, get_cached_deep_extraction, save_deep_extraction_cache
+    )
+    pdf_hash = compute_pdf_hash(all_pdf_paths)
 
-    if cache_file.exists():
-        try:
-            cached = json.loads(cache_file.read_text(encoding="utf-8"))
-            logger.info(f"[DEEP CACHE HIT] Using cached deep table extraction from {cache_file.name}")
-            return cached
-        except Exception as e:
-            logger.warning(f"[DEEP CACHE] Failed to read cache: {e}, re-extracting...")
+    cached = get_cached_deep_extraction(pdf_hash, licensee_name, financial_year)
+    if cached:
+        return cached
 
     # ── Single PDF upload call (replaces page rendering + batching) ────
     prompt = (
@@ -244,6 +233,9 @@ def extract_all_tables(
             system_instruction=system_instruction,
         )
 
+        if not raw:
+            logger.warning("[Deep Extract] Gemini returned empty response")
+            return {}
         raw = raw.strip()
         if raw.startswith("```"):
             raw = re.sub(r"^```[a-z]*\n?", "", raw)
@@ -322,16 +314,9 @@ def extract_all_tables(
         f"  Loan entries: {len(data.get('loan_details', []))}"
     )
 
-    # ── Save to cache ──────────────────────────────────────────────────
+    # ── Save to cache (Firestore-backed) ──────────────────────────────
     if all_tables:
-        try:
-            cache_dir.mkdir(parents=True, exist_ok=True)
-            cache_file.write_text(
-                json.dumps(result, indent=2, default=str), encoding="utf-8"
-            )
-            logger.info(f"[DEEP CACHE SAVE] Saved to {cache_file.name}")
-        except Exception as e:
-            logger.warning(f"[DEEP CACHE] Failed to save: {e}")
+        save_deep_extraction_cache(pdf_hash, licensee_name, financial_year, result)
 
     return result
 
@@ -620,20 +605,15 @@ def extract_order_tables(
         logger.warning("google-genai not installed; order table extraction skipped.")
         return {}
 
-    # ── Check cache ─────────────────────────────────────────────────────
-    import hashlib
-    cache_dir = Path(__file__).resolve().parent.parent.parent / ".extraction_cache"
-    pdf_hash = hashlib.sha256(Path(pdf_path).read_bytes()).hexdigest()[:16]
-    cache_key = f"order_deep_{pdf_hash}_{licensee_name}_{financial_year}".replace(" ", "_")
-    cache_file = cache_dir / f"{cache_key}.json"
+    # ── Check cache (Firestore-backed, persists across deployments) ──────
+    from src.tools.extraction_cache import (
+        compute_pdf_hash as _hash, get_cached_order_extraction, save_order_extraction_cache
+    )
+    pdf_hash = _hash(pdf_path)
 
-    if cache_file.exists():
-        try:
-            cached = json.loads(cache_file.read_text(encoding="utf-8"))
-            logger.info(f"[ORDER CACHE HIT] {licensee_name} FY {financial_year}")
-            return cached
-        except Exception:
-            pass
+    cached = get_cached_order_extraction(pdf_hash, licensee_name, financial_year)
+    if cached:
+        return cached
 
     # ── Single PDF upload call (replaces rendering + batching) ──────────
     prompt = (
@@ -663,6 +643,9 @@ def extract_order_tables(
             system_instruction=system_instruction,
         )
 
+        if not raw:
+            logger.warning(f"[Order Extract] Gemini returned empty response for {licensee_name}")
+            return {}
         raw = raw.strip()
         if raw.startswith("```"):
             raw = re.sub(r"^```[a-z]*\n?", "", raw)
@@ -694,15 +677,8 @@ def extract_order_tables(
         },
     }
 
-    # ── Save to cache ──────────────────────────────────────────────────
-    try:
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file.write_text(
-            json.dumps(result, indent=2, default=str), encoding="utf-8"
-        )
-        logger.info(f"[ORDER CACHE SAVE] {cache_file.name}")
-    except Exception as e:
-        logger.warning(f"[ORDER CACHE] Failed to save: {e}")
+    # ── Save to cache (Firestore-backed) ──────────────────────────────
+    save_order_extraction_cache(pdf_hash, licensee_name, financial_year, result)
 
     return result
 
@@ -738,18 +714,14 @@ def learn_from_past_orders() -> Dict[str, Any]:
         logger.warning("precedent_extractor not available; cannot learn from past orders.")
         return {"order_learnings": {}, "cross_licensee_patterns": {}}
 
-    # ── Check if we have a combined cache ──────────────────────────────
-    cache_dir = Path(__file__).resolve().parent.parent.parent / ".extraction_cache"
-    combined_cache = cache_dir / "all_order_learnings.json"
+    # ── Check combined cache (Firestore-backed) ───────────────────────
+    from src.tools.extraction_cache import get_cached_all_order_learnings, save_all_order_learnings
 
-    if combined_cache.exists():
-        try:
-            cached = json.loads(combined_cache.read_text(encoding="utf-8"))
-            count = len(cached.get("order_learnings", {}))
-            logger.info(f"[ORDER LEARNING CACHE HIT] {count} past orders loaded")
-            return cached
-        except Exception:
-            pass
+    cached = get_cached_all_order_learnings()
+    if cached:
+        count = len(cached.get("order_learnings", {}))
+        logger.info(f"[ORDER LEARNING CACHE HIT] {count} past orders loaded from Firestore")
+        return cached
 
     # ── Process orders in PARALLEL (3 at a time) ─────────────────────────
     import os
@@ -813,15 +785,9 @@ def learn_from_past_orders() -> Dict[str, Any]:
         "cross_licensee_patterns": cross_patterns,
     }
 
-    # ── Save combined cache ────────────────────────────────────────────
-    try:
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        combined_cache.write_text(
-            json.dumps(combined, indent=2, default=str), encoding="utf-8"
-        )
-        logger.info(f"[ORDER LEARNING SAVE] Saved {len(order_learnings)} order learnings")
-    except Exception as e:
-        logger.warning(f"[ORDER LEARNING] Failed to save: {e}")
+    # ── Save combined cache (Firestore-backed) ───────────────────────
+    save_all_order_learnings(combined)
+    logger.info(f"[ORDER LEARNING SAVE] Saved {len(order_learnings)} order learnings")
 
     return combined
 
@@ -1177,6 +1143,9 @@ def deep_extract_node(state: dict) -> dict:
                 temperature=0.0,
                 response_mime_type="application/json",
             )
+            if not raw_wage:
+                logger.warning("[Wage Revision] Gemini returned empty response")
+                raise ValueError("Empty Gemini response")
             wage_data = json.loads(raw_wage.strip())
             
             # Only apply if petition explicitly mentions wage revision
@@ -1250,6 +1219,9 @@ def deep_extract_node(state: dict) -> dict:
                 temperature=0.0,
                 response_mime_type="application/json",
             )
+            if not raw_rm:
+                logger.warning("[R&M Items] Gemini returned empty response")
+                raise ValueError("Empty Gemini response")
             rm_items = json.loads(raw_rm.strip())
             if isinstance(rm_items, list) and len(rm_items) > 0:
                 enrichments["rm_line_items"] = rm_items
