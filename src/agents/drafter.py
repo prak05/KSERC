@@ -390,13 +390,13 @@ def _generate_document_with_gemini(state: dict) -> str:
     data_block += "Gemini: You MUST use these exact values for the Trued Up column in Table 31.\n"
     data_block += "Do NOT calculate or derive these values yourself. Copy them exactly.\n\n"
     data_block += f"EXPENDITURE ROWS (Trued Up = Approved):\n"
-    for comp in exp_components:
-        key = comp["key"]
-        a = float(approved_expenses.get(key, claimed_expenses.get(key, 0.0)) or 0.0)
-        c = float(claimed_expenses.get(key, 0.0) or 0.0)
-        m = float(myt_exp.get(key, 0.0) or 0.0)
+    for key in exp_keys:
+        a = float(approved_exp.get(key, claimed_exp.get(key, 0.0)) or 0.0)
+        c = float(claimed_exp.get(key, 0.0) or 0.0)
+        m = float(myt_norms.get(key, 0.0) or 0.0)
+        label = key.replace("_", " ").title()
         if c > 0 or a > 0:
-            data_block += f"  {comp['label']}: ARR&ERC={m:.2f}  Claimed={c:.2f}  TruedUp={a:.2f}\n"
+            data_block += f"  {label}: ARR&ERC={m:.2f}  Claimed={c:.2f}  TruedUp={a:.2f}\n"
     data_block += f"  TOTAL EXPENDITURE: ARR&ERC=---  Claimed={total_claimed_exp:.2f}  TruedUp={total_approved_exp:.2f}\n\n"
     
     data_block += f"REVENUE ROWS (Trued Up = Approved):\n"
