@@ -73,6 +73,13 @@ from src.tools.audit_trail import log_decision, get_audit_trail
 # Initialize SQLite database
 init_db()
 
+# Sync reference documents from GCS (Cloud Run only — skips on local dev)
+try:
+    from src.gcs_sync import sync_documents_from_gcs
+    sync_documents_from_gcs()
+except Exception as e:
+    logger.warning(f"GCS document sync skipped: {e}")
+
 # Simple in-memory rate limiter
 _rate_limit_store: Dict[str, list] = {}
 

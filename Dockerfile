@@ -47,6 +47,8 @@ RUN mkdir -p uploads output_orders data
 ENV PORT=8080
 ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
+ENV DOCUMENTS_DIR=/app/Documents
+ENV GCS_BUCKET=kserc-regulatory-docs-v2
 
 # Expose Cloud Run port
 EXPOSE 8080
