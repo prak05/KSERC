@@ -1434,7 +1434,13 @@ Table numbering must be sequential from Part C.
 
 TARGET: Part D must produce approximately 5 PRINTED A4 PAGES of HTML content.
 Write all numbers from the Petition PDF — not from reference order.
-Do NOT write the signature block. Stop after Non-Tariff Income section."""
+
+CRITICAL STOP INSTRUCTION:
+- Do NOT write "Orders of the Commission" section. That will be in Part E.
+- Do NOT write any signature block. That will be in Part E.
+- Do NOT write the ARR Summary table. That will be in Part E.
+- STOP IMMEDIATELY after the Non-Tariff Income approval paragraph and table.
+- The LAST thing in Part D must be the Non-Tariff Income approved table and its approval paragraph."""
 
     # Replace the tail_c placeholder in the prompt
     prompt_d = prompt_d.replace("{tail_c}", tail_c)
@@ -1486,7 +1492,7 @@ Para 1: Based on the above, state the approved expenditure and revenue for the y
 
 TABLE - Trued up Income and Expenditure for the Year {fy} (MOST IMPORTANT TABLE).
 Caption: "Table\\nTrued up Income and Expenditure for the Year {fy} (Rs. lakh)"
-Columns: Particulars | {fy} (ARR&ERC | Truing Up | Trued Up)
+Columns: Particulars | ARR&ERC Approved | Truing Up (Claimed) | Trued Up (Approved)
 Rows:
   Power purchase cost
   Employee Expenses
@@ -1495,17 +1501,19 @@ Rows:
   Depreciation
   Interest and Finance charges
   Other debits
+  Other Expenses
   Return on Net Fixed Assets
   Total Expenditure/ARR (total-row, bold)
   Revenue from Sale of Power
-  Other income
+  Non-Tariff Income
   Total Income/ERC (total-row, bold)
-  Revenue (Gap)/Surplus (total-row, bold) — ALWAYS show as POSITIVE number, NEVER use a minus sign.
-The ARR&ERC column = ARR approved values from data_block.
-The Truing Up column = claimed values from data_block.
-The Trued Up column = Commission's approved values from data_block.
-CRITICAL: The Revenue (Gap)/Surplus row must ALWAYS show a POSITIVE number. Do NOT put a minus (-) sign.
-If it is a gap, the row label already says '(Gap)'. Write the amount as a positive number.
+  Revenue (Gap)/Surplus (total-row, bold)
+CRITICAL TABLE DATA INSTRUCTIONS:
+- ARR&ERC Approved column = use the 'arr_erc_approved' values from data_block (these are the MYT/ARR order amounts).
+- Truing Up (Claimed) column = use the 'claimed_expenses' values from data_block. These are the amounts the licensee claimed in the petition. Do NOT leave as 0.00.
+- Trued Up (Approved) column = use the 'approved_expenses' values from data_block. These are what the Commission approved.
+- ALL THREE columns must have non-zero values for each row.
+- Revenue (Gap)/Surplus: show as POSITIVE number ALWAYS. The row label '(Gap)' indicates deficit.
 
 SECTION - ORDERS OF THE COMMISSION:
 Para: "The Commission after considering the petition filed by M/s. {licensee} for Truing up of accounts for the year {fy}, and details provided by the licensee, the Commission approves the following."

@@ -117,12 +117,12 @@ EXPENDITURE SIDE:
   1. Cost of Power Purchase / Purchase of Power / Power purchase cost => power_purchase_cost
      KDHP-SPECIFIC: KDHP petitions have a detailed "Power Purchase Cost" sub-table with rows:
        - "Normal Demand Charge", "Excess Demand Charge", "Total Demand Charges", "Energy Charge"
-       - "Total Charges-Rs/Lakhs"
-       - "Less: Adjustment for excess line loss" (may be blank/dash = 0)
-       - "Net Charges-Rs/Lakhs" ← USE THIS ROW (bold row, final net amount after adjustment)
+       - "Total Charges-Rs/Lakhs" ← USE THIS ROW (the total power purchase cost INCLUDING all charges)
+       - "Less: Adjustment for excess line loss" (used separately by the auditor)
+       - "Net Charges-Rs/Lakhs" (DO NOT use this — it excludes adjustments needed for loss penalty calc)
        - "Rate per unit-Rs/kWh purchased"
-     Always use "Net Charges-Rs/Lakhs" from the FY25 Audited column as power_purchase_cost.
-     If no adjustment, Net Charges = Total Charges (both will have the same value).
+     Always use "Total Charges-Rs/Lakhs" or "Total Power Purchase Cost" from the FY25 Audited column as power_purchase_cost.
+     This is the GROSS total before any line loss adjustments.
   2. Employee Cost / Employee Expenses => employee_cost
   3. Repairs & Maintenance / R&M Expenses => repair_maintenance
   4. Administration & General / A&G Expenses (use ONLY the gross A&G subtotal, NOT including Electricity Duty) => admin_general
