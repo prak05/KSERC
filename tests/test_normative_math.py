@@ -267,26 +267,32 @@ class TestDepreciationAdjustment:
 # ═══════════════════════════════════════════════════════════════════════
 
 class TestInterestOnNormativeLoan:
-    """Tests for calculate_interest_on_normative_loan."""
-    
+    """Tests for calculate_interest_on_normative_loan (updated to full spec)."""
+
     def test_standard_loan_calculation(self):
-        """Standard 70% loan ratio with 8% interest."""
+        """Basic normative loan interest with opening, additions, repayment."""
         result = calculate_interest_on_normative_loan(
-            approved_capex=1000.0,
-            equity_ratio=0.30,
-            interest_rate=0.08
+            opening_balance=700.0,
+            qualifying_additions=0.0,
+            surplus_funded_additions=0.0,
+            repayment_depreciation=100.0,
+            eblr_rate=0.08,
         )
-        assert result["normative_loan_rs_lakhs"] == 700.0
-        assert result["interest_rs_lakhs"] == 56.0
-        
-    def test_custom_equity_ratio(self):
+        # Closing = 700 - 100 = 600, Average = (700+600)/2 = 650
+        # Interest = 650 × 0.08 = 52.0
+        assert result["closing_balance"] == 600.0
+        assert result["interest_rs_lakhs"] == 52.0
+
+    def test_exhausted_loan(self):
         result = calculate_interest_on_normative_loan(
-            approved_capex=1000.0,
-            equity_ratio=0.50,
-            interest_rate=0.10
+            opening_balance=50.0,
+            qualifying_additions=0.0,
+            surplus_funded_additions=0.0,
+            repayment_depreciation=100.0,
+            eblr_rate=0.10,
         )
-        assert result["normative_loan_rs_lakhs"] == 500.0
-        assert result["interest_rs_lakhs"] == 50.0
+        assert result["is_exhausted"] is True
+        assert result["interest_rs_lakhs"] == 0.0
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -336,28 +342,28 @@ class TestDepreciation90pctCap:
 # ═══════════════════════════════════════════════════════════════════════
 
 class TestWorkingCapitalInterest:
-    """Tests for calculate_working_capital_interest."""
-    
+    """Tests for calculate_working_capital_interest (updated to full spec)."""
+
     def test_standard_working_capital(self):
         result = calculate_working_capital_interest(
-            om_expenses_annual=120.0,         # 1 month = 10.0
-            receivables_annual=1200.0,        # 2 months = 200.0
-            security_deposits_held=10.0,      # deduct 10.0
-            historical_gfa=1000.0,            # 1% = 10.0
-            interest_rate=0.09
+            approved_om_annual=120.0,              # 1 month = 10.0
+            approved_revenue_from_sale=1200.0,     # 2 months = (1200/12)*2 = 200.0
+            cash_security_deposit=10.0,
+            maintenance_spares=10.0,               # explicit spares
+            eblr_rate=0.07,                        # rate = 0.07 + 0.02 = 0.09
         )
-        # Total WG = 10.0 + 200.0 + 10.0 - 10.0 = 210.0
-        # Interest = 210.0 * 0.09 = 18.9
-        assert result["working_capital_rs_lakhs"] == 210.0
-        assert result["interest_on_working_capital_rs_lakhs"] == 18.9
+        # Net WC = 10 + 200 + 10 - 10 = 210.0
+        # Interest = 210.0 × 0.09 = 18.9
+        assert result["net_working_capital"] == 210.0
+        assert result["interest_rs_lakhs"] == 18.9
 
     def test_negative_working_capital(self):
-        """Security deposits exceed the normative working capital, making it zero."""
+        """Security deposits exceed WC → interest = 0."""
         result = calculate_working_capital_interest(
-            om_expenses_annual=120.0,         # 10.0
-            receivables_annual=1200.0,        # 200.0
-            security_deposits_held=300.0,     # Deduct 300.0 -> Negative WG
-            interest_rate=0.09
+            approved_om_annual=120.0,              # 10.0
+            approved_revenue_from_sale=1200.0,     # 200.0
+            cash_security_deposit=300.0,
+            eblr_rate=0.07,
         )
-        assert result["working_capital_rs_lakhs"] == 0.0
-        assert result["interest_on_working_capital_rs_lakhs"] == 0.0
+        assert result["net_working_capital"] == 0.0
+        assert result["interest_rs_lakhs"] == 0.0

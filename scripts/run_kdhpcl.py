@@ -38,7 +38,7 @@ print("\nPolling (every 15s, up to 30 min)...")
 for i in range(120):
     time.sleep(15)
     try:
-        s = requests.get(f"{BASE}/api/status/{aid}", timeout=120).json()
+        s = requests.get(f"{BASE}/api/status/{aid}", timeout=300).json()
     except Exception as e:
         print(f"[{(i+1)*15:4d}s] timeout/error: {e}")
         continue

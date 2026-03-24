@@ -1,4 +1,4 @@
-"""
+﻿"""
 KSERC SDL Truing Up — Compliance Auditor Agent
 ==================================================
 
@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any, Dict, List, Optional
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -862,6 +863,7 @@ def _audit_norm_capped_component(
     detailed_tables: Optional[Dict[str, Any]] = None,
     wage_revision: float = 0.0,
     wage_revision_prior_period: float = 0.0,
+    state: Optional[Dict[str, Any]] = None,
 ) -> None:
     """
     Cap component using the best available benchmark:
@@ -1142,6 +1144,66 @@ def _audit_norm_capped_component(
             approved_expenses[key] = claimed
             logger.info(f"{display}: No MYT norm, no order learning, no precedent cut — approved as claimed: {claimed}")
 
+    # ── R&M line-item extraction (non-breaking, for UI one-time selection) ──
+    # When R&M claimed exceeds the norm, extract individual line items from
+    # the petition text so the UI can show them for human classification.
+    # This does NOT affect the approved amount — that's handled by the UI.
+    if (
+        key == "repair_maintenance"
+        and state is not None
+        and not state.get("rm_line_items")
+        and claimed > (norm if norm > 0 else 0)
+        and norm > 0
+    ):
+        try:
+            from src.gemini_client import generate
+            import json as _json
+            petition_text = state.get("petition_text", "")
+            text_snippet = petition_text[:8000] if petition_text else ""
+            if text_snippet:
+                _RM_PROMPT = (
+                    f"You are analysing a KSERC truing-up petition for {licensee} FY {fy}.\n\n"
+                    f"The licensee claimed Rs. {claimed:.2f} Lakhs for Repairs & Maintenance "
+                    f"against a normative allowance of Rs. {norm:.2f} Lakhs.\n\n"
+                    "Below is the extracted text from the petition. Extract EVERY individual R&M "
+                    "expenditure line item you can find.\n"
+                    "Look for tables or paragraphs listing R&M items such as:\n"
+                    "  - Transformer repairs/replacements\n"
+                    "  - Cable repairs/laying\n"
+                    "  - Substation maintenance\n"
+                    "  - Testing and inspection\n"
+                    "  - Annual maintenance contracts (AMC)\n"
+                    "  - Electrical equipment servicing\n"
+                    "  - Any other R&M items with individual amounts\n\n"
+                    "Return ONLY a JSON array of objects. Each object must have:\n"
+                    '  "description": string (the R&M item description),\n'
+                    '  "amount": number (amount in Rs. Lakhs)\n\n'
+                    "If no individual line items can be found, return an empty array [].\n"
+                    "Do NOT include the total R&M amount as a line item.\n"
+                    "Return ONLY the JSON array, no other text.\n\n"
+                    "--- PETITION TEXT ---\n"
+                    f"{text_snippet}\n"
+                    "--- END ---"
+                )
+                raw_rm = generate(
+                    prompt=_RM_PROMPT,
+                    model=GEMINI_MODEL,
+                    temperature=0.0,
+                    response_mime_type="application/json",
+                    max_output_tokens=2048,
+                )
+                rm_items = _json.loads(raw_rm)
+                if isinstance(rm_items, list) and len(rm_items) > 0:
+                    state["rm_line_items"] = rm_items
+                    logger.info(
+                        f"R&M: Extracted {len(rm_items)} line items for UI "
+                        f"(total: {sum(i.get('amount', 0) for i in rm_items):.2f}L)"
+                    )
+                else:
+                    logger.info("R&M: No individual line items found in petition")
+        except Exception as e:
+            logger.warning(f"R&M line item extraction failed ({e}) — UI will not show items")
+
 
 # ══════════════════════════════════════════════════════════════════════
 # Rule 4: Carrying Cost & Other pass-through items
@@ -1329,6 +1391,78 @@ def _audit_return_on_nfa_reg28(
     # Get precedent for cross-check
     prec = _get_precedent_approved(licensee, key, fy) if _precedent_lookup and licensee else None
     prec_ronfa = prec["approved"] if prec and prec.get("approved", 0) > 0 else 0.0
+    
+    # ─── Method P: Petition-based RoNFA computation (HIGHEST PRIORITY) ───
+    # When the petition provides its own RoNFA computation table with GFA,
+    # accumulated depreciation, consumer contribution, normative loan NFA, etc.
+    # We verify the arithmetic and use the petition-computed value.
+    ronfa_balance_nfa = float(state.get("ronfa_balance_nfa", 0.0) or 0.0)
+    ronfa_eligible_return = float(state.get("ronfa_eligible_return", 0.0) or 0.0)
+    ronfa_gfa = float(state.get("ronfa_gross_fixed_assets", 0.0) or 0.0)
+    ronfa_acc_dep = float(state.get("ronfa_accumulated_depreciation", 0.0) or 0.0)
+    ronfa_consumer_contrib = float(state.get("ronfa_consumer_contribution", 0.0) or 0.0)
+    ronfa_nfa_loan = float(state.get("ronfa_nfa_for_normative_loan", 0.0) or 0.0)
+    ronfa_prior_additions = float(state.get("ronfa_prior_year_additions", 0.0) or 0.0)
+    ronfa_rate_pct = float(state.get("ronfa_rate_pct", 0.0) or 0.0)
+    
+    if ronfa_balance_nfa > 0 and ronfa_eligible_return > 0:
+        # Verify the arithmetic: GFA - AccDep - ConsContrib - NFALoan - PriorAdditions = BalanceNFA
+        if ronfa_gfa > 0:
+            computed_balance = round(ronfa_gfa - ronfa_acc_dep - ronfa_consumer_contrib - ronfa_nfa_loan - ronfa_prior_additions, 2)
+            arithmetic_ok = abs(computed_balance - ronfa_balance_nfa) <= 1.0  # Allow Rs 1L tolerance
+            if not arithmetic_ok:
+                logger.warning(
+                    f"RoNFA Method P: Arithmetic mismatch! "
+                    f"GFA({ronfa_gfa}) - AccDep({ronfa_acc_dep}) - CC({ronfa_consumer_contrib}) "
+                    f"- Loan({ronfa_nfa_loan}) - Prior({ronfa_prior_additions}) "
+                    f"= {computed_balance} vs petition {ronfa_balance_nfa}"
+                )
+        
+        # Use the petition's computed rate, or default to 5.5%
+        rate = ronfa_rate_pct / 100.0 if ronfa_rate_pct > 0 else 0.055
+        verified_return = round(ronfa_balance_nfa * rate, 2)
+        
+        # Allow tolerance for rounding
+        if abs(verified_return - ronfa_eligible_return) <= 0.5:
+            approved = ronfa_eligible_return
+        else:
+            # Use our computed value if petition calculation seems off
+            approved = verified_return
+            logger.info(f"RoNFA Method P: Recomputed {verified_return} vs petition {ronfa_eligible_return}, using {approved}")
+        
+        # Cap at claimed if claimed is lower (licensee can't get more than what they ask)
+        approved = min(claimed, approved) if claimed < approved else approved
+        approved_expenses[key] = approved
+        
+        cap_source = (
+            f"Petition RoNFA computation: GFA {ronfa_gfa:.2f}L − AccDep {ronfa_acc_dep:.2f}L "
+            f"− CC {ronfa_consumer_contrib:.2f}L − Loan {ronfa_nfa_loan:.2f}L "
+            f"− Prior {ronfa_prior_additions:.2f}L = NFA {ronfa_balance_nfa:.2f}L × {rate*100:.1f}%"
+        )
+        
+        if abs(claimed - approved) > 0.01:
+            cut = round(claimed - approved, 2)
+            disallowances.append({
+                "item": display,
+                "claimed": claimed,
+                "approved": approved,
+                "amount_cut": cut,
+                "justification": (
+                    f"As per KSERC Regulation 28, RoNFA verified from petition computation. "
+                    f"{cap_source}. Approved: Rs. {approved:.2f}L."
+                ),
+            })
+        
+        # Store for next year's chaining
+        state["approved_ronfa_gfa"] = ronfa_gfa
+        state["approved_ronfa_acc_dep"] = ronfa_acc_dep
+        state["approved_ronfa_balance_nfa"] = ronfa_balance_nfa
+        state["approved_ronfa_rate"] = rate
+        state["approved_ronfa_consumer_contribution"] = ronfa_consumer_contrib
+        state["approved_ronfa_nfa_for_loan"] = ronfa_nfa_loan
+        
+        logger.info(f"RoNFA Method P: {cap_source} → approved={approved:.2f}L (claimed={claimed:.2f}L)")
+        return  # Done — skip other methods
     
     # ─── Method A: KSERC-chained NFA calculation ───
     # When we have the prior KSERC order's NFA (net of grants) and approved dep,
@@ -2257,6 +2391,82 @@ def audit_petition(state: dict) -> dict:
                         f"  Employee Cost effective cap: MYT {norm:.2f} + "
                         f"Wage Revision {wage_revision_current:.2f} = {effective_cap:.2f}"
                     )
+
+                # For R&M: check if user pre-selected one-time items (from pipeline pause)
+                # If rm_one_time_override is set, use it directly instead of running classifier
+                rm_override = state.get("rm_one_time_override", 0.0) if state else 0.0
+                rm_claimed = claimed_expenses.get(key, 0.0)
+                if key == "repair_maintenance" and rm_override > 0:
+                    effective_cap = rm_override
+                    logger.info(
+                        f"  R&M: Using user-selected one-time override: Rs.{rm_override:.2f}L "
+                        f"(norm={norm:.2f} + one-time items)"
+                    )
+                elif key == "repair_maintenance" and rm_claimed > effective_cap:
+                    try:
+                        rm_items = state.get("rm_line_items", [])
+                        if not rm_items:
+                            from src.gemini_client import generate
+                            import json as _json
+                            petition_text = state.get("petition_text", "")
+                            text_snippet = petition_text[:8000] if petition_text else ""
+                            if text_snippet:
+                                _RM_PROMPT = (
+                                    f"You are analysing a KSERC truing-up petition for {licensee} FY {fy}.\n\n"
+                                    f"The licensee claimed Rs. {rm_claimed:.2f} Lakhs for Repairs & Maintenance.\n\n"
+                                    "Below is the extracted text from the petition. Extract EVERY individual R&M "
+                                    "expenditure line item you can find.\n"
+                                    "Look for tables or paragraphs listing R&M items such as:\n"
+                                    "  - Transformer repairs/replacements\n"
+                                    "  - Cable repairs/laying\n"
+                                    "  - Substation maintenance\n"
+                                    "  - Testing and inspection\n"
+                                    "  - Annual maintenance contracts (AMC)\n"
+                                    "  - Electrical equipment servicing\n"
+                                    "  - Any other R&M items with individual amounts\n\n"
+                                    "Return ONLY a JSON array of objects. Each object must have:\n"
+                                    '  "description": string (the R&M item description),\n'
+                                    '  "amount": number (amount in Rs. Lakhs)\n\n'
+                                    "If no individual line items can be found, return an empty array [].\n"
+                                    "Do NOT include the total R&M amount as a line item.\n"
+                                    "Return ONLY the JSON array, no other text.\n\n"
+                                    "--- PETITION TEXT ---\n"
+                                    f"{text_snippet}\n"
+                                    "--- END ---"
+                                )
+                                raw_rm = generate(
+                                    prompt=_RM_PROMPT,
+                                    model=GEMINI_MODEL,
+                                    temperature=0.0,
+                                    response_mime_type="application/json",
+                                    max_output_tokens=2048,
+                                )
+                                rm_items = _json.loads(raw_rm)
+                                if isinstance(rm_items, list) and len(rm_items) > 0:
+                                    state["rm_line_items"] = rm_items
+                                    logger.info(
+                                        f"  R&M: Gemini extracted {len(rm_items)} line items "
+                                        f"(total: {sum(i.get('amount', 0) for i in rm_items):.2f}L)"
+                                    )
+                        if rm_items:
+                            from src.tools.rm_classifier import process_rm_petition
+                            rm_result = process_rm_petition(
+                                licensee_name=licensee,
+                                financial_year=fy,
+                                norm_rm=norm,
+                                items=rm_items,
+                            )
+                            rm_total = rm_result.get("total_approved_rm", norm)
+                            state["rm_classification_result"] = rm_result
+                            effective_cap = rm_total
+                            summary = rm_result.get("financial_summary", {})
+                            logger.info(
+                                f"  R&M Classifier: norm={norm:.2f}L + "
+                                f"one_time_allowed={summary.get('one_time_allowed', 0):.2f}L = "
+                                f"total_approved={rm_total:.2f}L"
+                            )
+                    except Exception as e:
+                        logger.warning(f"  R&M classifier failed ({e}) — using norm cap only")
                 
                 ai_val = approved_expenses[key]
                 claimed = claimed_expenses.get(key, 0.0)
@@ -2499,6 +2709,40 @@ def audit_petition(state: dict) -> dict:
                 f"prior period Rs.{wage_revision_prior:.2f}L"
             )
 
+        def _build_rm_justification(claimed_rm, norm_rm, total_approved_rm, summary):
+            """Build R&M justification text, omitting zero-value items."""
+            one_time = summary.get('one_time_allowed', 0)
+            capitalised = summary.get('to_be_capitalised', 0)
+            disallowed = summary.get('disallowed_routine', 0)
+
+            parts = [
+                f"The claimed R&M of Rs. {claimed_rm:,.2f} Lakhs was analysed "
+                f"item-by-item using KSERC Regulation 80(3). "
+                f"The Commission approves Rs. {norm_rm:,.2f} Lakhs as the "
+                f"normative O&M component."
+            ]
+
+            if one_time > 0:
+                parts.append(
+                    f"Additionally, Rs. {one_time:,.2f} Lakhs is approved for "
+                    f"genuine one-time expenses under Regulation 80(3)."
+                )
+
+            if capitalised > 0:
+                parts.append(
+                    f"Rs. {capitalised:,.2f} Lakhs are directed to be capitalised "
+                    f"and added to the Gross Fixed Assets."
+                )
+
+            if disallowed > 0:
+                parts.append(
+                    f"Rs. {disallowed:,.2f} Lakhs are disallowed as routine expenses "
+                    f"already covered within the normative allowance."
+                )
+
+            parts.append(f"Total approved: Rs. {total_approved_rm:,.2f} Lakhs.")
+            return " ".join(parts)
+
         # ── R&M Classifier (Regulation 80(3) one-time items) ──────────────
         # If the extractor found individual R&M line items, run the AI
         # classifier to distinguish CAPITAL / ONE_TIME_RM / ROUTINE_RM.
@@ -2507,6 +2751,75 @@ def audit_petition(state: dict) -> dict:
         rm_classifier_used = False
         rm_line_items = state.get("rm_line_items", [])
         norm_rm = _myt_norm(myt_norms, "repair_maintenance")
+        claimed_rm_for_check = claimed_expenses.get("repair_maintenance", 0.0)
+
+        logger.info(
+            f"R&M DEBUG: rm_line_items={len(rm_line_items)}, norm_rm={norm_rm}, "
+            f"claimed_rm={claimed_rm_for_check}, will_extract={not rm_line_items and norm_rm > 0 and claimed_rm_for_check > norm_rm}"
+        )
+
+        # ── Auto-extract R&M line items if claimed > norm but no items exist ──
+        # The extractor only captures the total R&M amount. When the total exceeds
+        # the MYT norm, we use Gemini to extract individual R&M line items from
+        # the uploaded PDF so the classifier can identify genuine one-time expenses
+        # that KSERC allows above the norm (Regulation 80(3)).
+        if not rm_line_items and norm_rm > 0.0 and claimed_rm_for_check > norm_rm:
+            logger.info(
+                f"R&M: claimed ({claimed_rm_for_check:.2f}L) > norm ({norm_rm:.2f}L) — "
+                f"attempting Gemini extraction of R&M line items"
+            )
+            try:
+                from src.gemini_client import generate
+                import json as _json
+
+                # Get petition text for Gemini to analyse
+                petition_text = state.get("petition_text", "")
+                # Truncate to ~8000 chars to stay within token limits
+                text_snippet = petition_text[:8000] if petition_text else ""
+
+                _RM_EXTRACT_PROMPT = (
+                    f"You are analysing a KSERC truing-up petition for {licensee} FY {fy}.\n\n"
+                    f"The licensee claimed Rs. {claimed_rm_for_check:.2f} Lakhs for Repairs & Maintenance.\n\n"
+                    "Below is the extracted text from the petition. Extract EVERY individual R&M "
+                    "expenditure line item you can find.\n"
+                    "Look for tables or paragraphs listing R&M items such as:\n"
+                    "  - Transformer repairs/replacements\n"
+                    "  - Cable repairs/laying\n"
+                    "  - Substation maintenance\n"
+                    "  - Testing and inspection\n"
+                    "  - Annual maintenance contracts (AMC)\n"
+                    "  - Electrical equipment servicing\n"
+                    "  - Any other R&M items with individual amounts\n\n"
+                    "Return ONLY a JSON array of objects. Each object must have:\n"
+                    '  "description": string (the R&M item description),\n'
+                    '  "amount": number (amount in Rs. Lakhs)\n\n'
+                    "If no individual line items can be found, return an empty array [].\n"
+                    "Do NOT include the total R&M amount as a line item.\n"
+                    "Return ONLY the JSON array, no other text.\n\n"
+                    "--- PETITION TEXT ---\n"
+                    f"{text_snippet}\n"
+                    "--- END ---"
+                )
+
+                raw = generate(
+                    prompt=_RM_EXTRACT_PROMPT,
+                    model=GEMINI_MODEL,
+                    temperature=0.0,
+                    response_mime_type="application/json",
+                    max_output_tokens=2048,
+                )
+                extracted_items = _json.loads(raw)
+                if isinstance(extracted_items, list) and len(extracted_items) > 0:
+                    rm_line_items = extracted_items
+                    state["rm_line_items"] = rm_line_items
+                    logger.info(
+                        f"R&M: Gemini extracted {len(rm_line_items)} line items "
+                        f"(total: {sum(i.get('amount', 0) for i in rm_line_items):.2f}L)"
+                    )
+                else:
+                    logger.info("R&M: Gemini found no individual line items in petition")
+            except Exception as e:
+                logger.warning(f"R&M line item extraction failed ({e}) — using norm cap only")
 
         if rm_line_items and norm_rm > 0.0:
             try:
@@ -2539,17 +2852,8 @@ def audit_petition(state: dict) -> dict:
                         "claimed": claimed_rm,
                         "approved": total_approved_rm,
                         "amount_cut": cut,
-                        "justification": (
-                            f"The claimed R&M of Rs. {claimed_rm:,.2f} Lakhs was analysed "
-                            f"item-by-item using KSERC Regulation 80(3). "
-                            f"The Commission approves Rs. {norm_rm:,.2f} Lakhs as the "
-                            f"normative O&M component, plus Rs. "
-                            f"{summary.get('one_time_allowed',0):,.2f} Lakhs for genuine "
-                            f"one-time expenses. "
-                            f"Rs. {summary.get('to_be_capitalised',0):,.2f} Lakhs are directed "
-                            f"to be capitalised, and Rs. {summary.get('disallowed_routine',0):,.2f} "
-                            f"Lakhs are disallowed as routine expenses already within the norm. "
-                            f"Total approved: Rs. {total_approved_rm:,.2f} Lakhs."
+                        "justification": _build_rm_justification(
+                            claimed_rm, norm_rm, total_approved_rm, summary
                         ),
                     })
             except Exception as e:
@@ -2565,6 +2869,7 @@ def audit_petition(state: dict) -> dict:
                 detailed_tables=detailed_tables,
                 wage_revision=wage_revision_current if key == "employee_cost" else 0.0,
                 wage_revision_prior_period=wage_revision_prior if key == "employee_cost" else 0.0,
+                state=state,
             )
 
 

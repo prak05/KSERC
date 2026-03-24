@@ -1,4 +1,4 @@
-"""
+﻿"""
 KSERC SDL Truing Up — Deep Table Extractor
 ============================================
 
@@ -29,6 +29,7 @@ import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -237,7 +238,7 @@ def extract_all_tables(
         raw = generate_with_pdf(
             pdf_path=all_pdf_paths if len(all_pdf_paths) > 1 else all_pdf_paths[0],
             prompt=prompt,
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=system_instruction,
@@ -248,11 +249,47 @@ def extract_all_tables(
             raw = re.sub(r"^```[a-z]*\n?", "", raw)
             raw = re.sub(r"\n?```$", "", raw)
 
-        data = json.loads(raw)
+        data = None
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError as e:
+            logger.warning(f"[Deep Extract] Initial JSON parse failed: {e}")
+            # Recovery 1: Fix common issues (trailing commas, unescaped chars)
+            fixed = raw
+            fixed = re.sub(r',\s*}', '}', fixed)  # trailing comma before }
+            fixed = re.sub(r',\s*]', ']', fixed)  # trailing comma before ]
+            try:
+                data = json.loads(fixed)
+                logger.info("[Deep Extract] JSON recovered after trailing-comma fix")
+            except json.JSONDecodeError:
+                pass
+            
+            # Recovery 2: Truncate at last valid closing brace
+            if data is None:
+                # Find the last complete object
+                brace_count = 0
+                last_valid = -1
+                for i, ch in enumerate(raw):
+                    if ch == '{': brace_count += 1
+                    elif ch == '}': 
+                        brace_count -= 1
+                        if brace_count == 0:
+                            last_valid = i
+                            break
+                if last_valid > 0:
+                    truncated = raw[:last_valid + 1]
+                    truncated = re.sub(r',\s*}', '}', truncated)
+                    truncated = re.sub(r',\s*]', ']', truncated)
+                    try:
+                        data = json.loads(truncated)
+                        logger.info(f"[Deep Extract] JSON recovered by truncating at pos {last_valid}")
+                    except json.JSONDecodeError:
+                        pass
+            
+            if data is None:
+                logger.error(f"[Deep Extract] JSON recovery failed. Raw length: {len(raw)}, first 200: {raw[:200]}")
+                return _empty_result()
 
-    except json.JSONDecodeError as e:
-        logger.error(f"[Deep Extract] JSON parse error: {e}")
-        return _empty_result()
     except Exception as e:
         logger.error(f"[Deep Extract] PDF extraction failed: {e}")
         return _empty_result()
@@ -620,7 +657,7 @@ def extract_order_tables(
         raw = generate_with_pdf(
             pdf_path=pdf_path,
             prompt=prompt,
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=system_instruction,
@@ -1104,12 +1141,129 @@ def deep_extract_node(state: dict) -> dict:
                     except (ValueError, TypeError):
                         pass
 
+    # Source 3: Dedicated Gemini call for wage revision (FALLBACK)
+    # Runs when Sources 1-2 fail (deep extraction returned 0 employee tables)
+    if wage_revision_current == 0.0 and wage_revision_prior == 0.0:
+        logger.info("[Wage Revision] Sources 1-2 found nothing, trying focused Gemini extraction...")
+        try:
+            from src.gemini_client import generate_with_pdf as _gen_pdf
+            wage_prompt = (
+                f"Check if this petition for FY {fy} explicitly claims WAGE REVISION or PAY REVISION.\n\n"
+                f"IMPORTANT DISTINCTION:\n"
+                f"- WAGE/PAY REVISION means a formal government-mandated pay scale revision (like 11th BPC, "
+                f"CDA pay revision) that increases employee costs across the board.\n"
+                f"- This is NOT the same as general employee cost increases due to medical expenses, "
+                f"bonus, leave encashment, increments, or hiring more staff.\n\n"
+                f"Return JSON in this EXACT format:\n"
+                f'{{"mentions_wage_revision": false, '
+                f'"wage_revision_current_year_amount": 0.0, '
+                f'"wage_revision_prior_period_amount": 0.0, '
+                f'"total_wage_revision_claimed": 0.0}}\n\n'
+                f"- mentions_wage_revision: Set to true ONLY if the petition explicitly uses the words "
+                f"'wage revision', 'pay revision', 'salary revision', or 'pay commission' "
+                f"and claims a specific amount for it. Set to false if only general employee cost "
+                f"increases are mentioned.\n"
+                f"- wage_revision_current_year_amount: Amount claimed for CURRENT year wage revision. "
+                f"Set to 0.0 if not explicitly claimed.\n"
+                f"- wage_revision_prior_period_amount: Amount from PREVIOUS year(s) that was denied "
+                f"by KSERC and is now re-claimed. Set to 0.0 if not explicitly claimed.\n"
+                f"- total_wage_revision_claimed: Total. Set to 0.0 if no wage revision claimed.\n\n"
+                f"Return ONLY valid JSON. No markdown. No explanation."
+            )
+            raw_wage = _gen_pdf(
+                pdf_path=pdf_path,
+                prompt=wage_prompt,
+                model=GEMINI_MODEL,
+                temperature=0.0,
+                response_mime_type="application/json",
+            )
+            wage_data = json.loads(raw_wage.strip())
+            
+            # Only apply if petition explicitly mentions wage revision
+            mentions_wr = wage_data.get("mentions_wage_revision", False)
+            if not mentions_wr:
+                logger.info("[Wage Revision] Petition does NOT mention wage/pay revision — skipping")
+            else:
+                wr_prior = float(wage_data.get("wage_revision_prior_period_amount", 0) or 0)
+                wr_current = float(wage_data.get("wage_revision_current_year_amount", 0) or 0)
+                wr_total = float(wage_data.get("total_wage_revision_claimed", 0) or 0)
+                
+                if wr_prior > 0:
+                    wage_revision_prior = wr_prior
+                    logger.info(f"[Wage Revision] Focused extraction: prior period = Rs.{wr_prior:.2f}L")
+                if wr_current > 0:
+                    wage_revision_current = wr_current
+                    logger.info(f"[Wage Revision] Focused extraction: current year = Rs.{wr_current:.2f}L")
+                if wr_total > 0:
+                    logger.info(f"[Wage Revision] Total claimed: Rs.{wr_total:.2f}L")
+        except Exception as e:
+            logger.warning(f"[Wage Revision] Focused extraction failed: {e}")
+
     if wage_revision_current > 0.0:
         enrichments["wage_revision_current_year"] = wage_revision_current
         logger.info(f"Wage revision (current year): Rs.{wage_revision_current:.2f}L → state")
     if wage_revision_prior > 0.0:
         enrichments["wage_revision_prior_period"] = wage_revision_prior
         logger.info(f"Wage revision (prior period): Rs.{wage_revision_prior:.2f}L → state")
+
+    # ── Phase 4: Focused R&M line item extraction from PDF ──────────────
+    # Extract individual R&M expenditure items for one-time classification.
+    # Like wage revision (Source 3), this uses a focused Gemini PDF call
+    # rather than relying on the massive deep extraction prompt.
+    # The auditor uses these items to classify one-time vs routine expenses
+    # per KSERC Regulation 80(3).
+    existing_rm_items = state.get("rm_line_items", [])
+    if not existing_rm_items:
+        logger.info("[R&M Items] No R&M line items in state, trying focused Gemini extraction...")
+        try:
+            from src.gemini_client import generate_with_pdf as _gen_pdf_rm
+            rm_prompt = (
+                f"Extract ALL individual Repairs & Maintenance (R&M) expenditure line items "
+                f"from this petition for {licensee} FY {fy}.\n\n"
+                f"Look for tables or paragraphs listing R&M items such as:\n"
+                f"  - Transformer repairs/replacements\n"
+                f"  - Cable repairs/laying\n"
+                f"  - Substation maintenance\n"
+                f"  - Testing and inspection\n"
+                f"  - Annual maintenance contracts (AMC)\n"
+                f"  - Electrical equipment servicing\n"
+                f"  - Building repairs\n"
+                f"  - Road/civil works\n"
+                f"  - Any other R&M items with individual amounts\n\n"
+                f"For each item, also classify it as:\n"
+                f"  - CAPITAL_EXPENDITURE: Creates/replaces a long-life physical component\n"
+                f"  - ONE_TIME_RM: Genuine one-time non-recurring repair/restoration\n"
+                f"  - ROUTINE_RM: Recurring maintenance already in annual O&M norm\n\n"
+                f"Return a JSON array of objects. Each object must have:\n"
+                f'  "description": string (the R&M item description),\n'
+                f'  "amount": number (amount in Rs. Lakhs),\n'
+                f'  "classification": "CAPITAL_EXPENDITURE" | "ONE_TIME_RM" | "ROUTINE_RM",\n'
+                f'  "reason": string (one-line reason for classification)\n\n'
+                f"If no individual line items can be found, return an empty array [].\n"
+                f"Do NOT include the total R&M amount as a line item.\n"
+                f"Return ONLY the JSON array, no other text."
+            )
+            raw_rm = _gen_pdf_rm(
+                pdf_path=pdf_path,
+                prompt=rm_prompt,
+                model=GEMINI_MODEL,
+                temperature=0.0,
+                response_mime_type="application/json",
+            )
+            rm_items = json.loads(raw_rm.strip())
+            if isinstance(rm_items, list) and len(rm_items) > 0:
+                enrichments["rm_line_items"] = rm_items
+                total_rm = sum(i.get("amount", 0) for i in rm_items)
+                logger.info(
+                    f"[R&M Items] Focused extraction: {len(rm_items)} items, "
+                    f"total Rs.{total_rm:.2f}L"
+                )
+                for item in rm_items:
+                    logger.info(f"  - {item.get('description', '?')}: Rs.{item.get('amount', 0):.2f}L")
+            else:
+                logger.info("[R&M Items] Focused extraction: no individual line items found")
+        except Exception as e:
+            logger.warning(f"[R&M Items] Focused extraction failed: {e}")
 
     return {
         "detailed_tables": result,

@@ -19,7 +19,8 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from src.gemini_client import generate_with_pdf, get_client
+from src.gemini_client import generate_with_pdf, get_client, get_api_key_client
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -254,9 +255,21 @@ def _generate_document_with_gemini(state: dict) -> str:
     """
     from google.genai import types
 
-    client = get_client()
+    # Prefer API key client (avoids Vertex AI rate limits)
+    # Falls back to Vertex AI client if no API key
+    client = get_api_key_client() or get_client()
+    logger.info(f"Drafter using client: {'API key' if get_api_key_client() else 'Vertex AI'}")
     licensee = state.get("licensee_name", "Licensee")
     fy = state.get("financial_year", "2024-25")
+
+    # Compute previous financial year (e.g. "2024-25" -> "2023-24")
+    try:
+        start_year = int(fy.split("-")[0])
+        prev_start = start_year - 1
+        prev_end = start_year % 100  # e.g. 2024 -> 24
+        prev_fy = f"{prev_start}-{prev_end:02d}"
+    except Exception:
+        prev_fy = fy  # fallback
 
     exp_keys = [
         "power_purchase_cost", "employee_cost", "repair_maintenance", "admin_general",
@@ -271,6 +284,38 @@ def _generate_document_with_gemini(state: dict) -> str:
     claimed_rev = state.get("claimed_revenues", {})
     myt_norms   = state.get("myt_baseline_norms", {})
     detailed_tb = state.get("detailed_tables", {}) or {}
+
+    # Fallback: load MYT norms from JSON/DB if not in state
+    myt_loader_instance = None
+    if not myt_norms:
+        try:
+            from src.knowledge.myt_loader import MYTLoader
+            myt_loader_instance = MYTLoader()
+            myt_norms = myt_loader_instance.load_myt_baselines(licensee, fy)
+            if myt_norms:
+                logger.info(f"Loaded MYT norms from fallback: {len(myt_norms)} fields for {licensee} FY {fy}")
+            else:
+                logger.warning(f"No MYT norms found for {licensee} FY {fy} — ARR columns will show 0.00")
+        except Exception as e:
+            logger.warning(f"MYT fallback loading failed: {e}")
+
+    # Load previous year MYT norms (for comparison tables like Table 2, 8)
+    prev_myt_norms = {}
+    try:
+        if not myt_loader_instance:
+            from src.knowledge.myt_loader import MYTLoader
+            myt_loader_instance = MYTLoader()
+        prev_myt_norms = myt_loader_instance.load_myt_baselines(licensee, prev_fy)
+        if prev_myt_norms:
+            logger.info(f"Loaded previous year MYT norms: {len(prev_myt_norms)} fields for {licensee} FY {prev_fy}")
+        # Also load full licensee data for control period context
+        full_licensee_myt = myt_loader_instance.load_full_licensee_data(licensee)
+        myt_order_ref = full_licensee_myt.get("myt_order", "")
+        myt_control_period = full_licensee_myt.get("control_period", "")
+    except Exception:
+        full_licensee_myt = {}
+        myt_order_ref = ""
+        myt_control_period = ""
 
     # ── 4-column data block: MYT ARR | Claimed | Approved | Variance ──────────
     # This is the AUTHORITATIVE source for all table values and justification numbers.
@@ -318,12 +363,48 @@ def _generate_document_with_gemini(state: dict) -> str:
     data_block += f"  TOTAL APPROVED REVENUE: {rev_total:.2f}\n\n"
 
     # ── Summary ───────────────────────────────────────────────────────────────
-    data_block += f"Total Claimed Expenditure   : {state.get('total_claimed_expenditure', total_c):.2f}\n"
-    data_block += f"Total Approved Expenditure  : {state.get('total_approved_expenditure', total_a):.2f}\n"
+    total_claimed_exp = float(state.get('total_claimed_expenditure', total_c) or total_c)
+    total_approved_exp = float(state.get('total_approved_expenditure', total_a) or total_a)
+    total_claimed_rev = float(state.get('total_claimed_revenue', rev_total) or rev_total)
+    data_block += f"Total Claimed Expenditure   : {total_claimed_exp:.2f}\n"
+    data_block += f"Total Approved Expenditure  : {total_approved_exp:.2f}\n"
     data_block += f"Total Approved Revenue      : {rev_total:.2f}\n"
     revenue_gap = state.get('final_revenue_gap_surplus', rev_total - total_a)
-    gap_label   = "Surplus" if revenue_gap >= 0 else "Gap (deficit)"
-    data_block += f"Revenue {gap_label}            : {abs(revenue_gap):.2f} (positive = surplus, negative = gap)\n"
+    gap_label   = "Surplus" if revenue_gap >= 0 else "Gap"
+    data_block += f"Revenue {gap_label}            : {abs(revenue_gap):.2f} lakh\n"
+
+    # ── TABLE 31 EXACT VALUES (Gemini MUST use these exact numbers) ─────────
+    data_block += "\n=== TABLE 31 - TRUED UP INCOME & EXPENDITURE (USE THESE EXACT VALUES) ===\n"
+    data_block += "Gemini: You MUST use these exact values for the Trued Up column in Table 31.\n"
+    data_block += "Do NOT calculate or derive these values yourself. Copy them exactly.\n\n"
+    data_block += f"EXPENDITURE ROWS (Trued Up = Approved):\n"
+    for comp in exp_components:
+        key = comp["key"]
+        a = float(approved_expenses.get(key, claimed_expenses.get(key, 0.0)) or 0.0)
+        c = float(claimed_expenses.get(key, 0.0) or 0.0)
+        m = float(myt_exp.get(key, 0.0) or 0.0)
+        if c > 0 or a > 0:
+            data_block += f"  {comp['label']}: ARR&ERC={m:.2f}  Claimed={c:.2f}  TruedUp={a:.2f}\n"
+    data_block += f"  TOTAL EXPENDITURE: ARR&ERC=---  Claimed={total_claimed_exp:.2f}  TruedUp={total_approved_exp:.2f}\n\n"
+    
+    data_block += f"REVENUE ROWS (Trued Up = Approved):\n"
+    for k in rev_keys:
+        c = float(claimed_rev.get(k, 0.0) or 0.0)
+        a = float(approved_rev.get(k, c) or c)
+        if c > 0 or a > 0:
+            name = k.replace("_", " ").title()
+            data_block += f"  {name}: Claimed={c:.2f}  TruedUp={a:.2f}\n"
+    data_block += f"  TOTAL REVENUE: Claimed={total_claimed_rev:.2f}  TruedUp={rev_total:.2f}\n\n"
+    
+    # Calculate claimed gap too
+    claimed_gap = total_claimed_rev - total_claimed_exp
+    claimed_gap_label = "Surplus" if claimed_gap >= 0 else "Gap"
+    approved_gap_label = "Surplus" if revenue_gap >= 0 else "Gap"
+    data_block += f"  Revenue ({claimed_gap_label}) for Claimed column: {abs(claimed_gap):.2f} lakh\n"
+    data_block += f"  Revenue ({approved_gap_label}) for TruedUp column: {abs(revenue_gap):.2f} lakh\n"
+    data_block += f"  IMPORTANT: Do NOT use negative signs. Write the value as a POSITIVE number.\n"
+    data_block += f"  Use the row label 'Revenue (Gap)/Surplus' and show the value as a positive number.\n"
+    data_block += "=== END TABLE 31 VALUES ===\n"
 
     # ── Disallowances with full justification text ────────────────────────────
     disallowances = state.get("disallowance_log", [])
@@ -333,7 +414,7 @@ def _generate_document_with_gemini(state: dict) -> str:
             claimed_d  = d.get('claimed', 0.0)
             approved_d = d.get('approved', 0.0)
             variance_d = approved_d - claimed_d
-            data_block += f"\n  ITEM: {d['item']}\n"
+            data_block += f"\n  ITEM: {d.get('item', d.get('component', 'Unknown'))}\n"
             data_block += f"    Claimed    : Rs. {claimed_d:.2f} Lakhs\n"
             data_block += f"    Approved   : Rs. {approved_d:.2f} Lakhs\n"
             data_block += f"    Variance   : Rs. {variance_d:.2f} Lakhs ({'disallowed' if variance_d < 0 else 'additional approved'})\n"
@@ -395,6 +476,31 @@ def _generate_document_with_gemini(state: dict) -> str:
         for label, val in special_items.items():
             data_block += f"  {label}: Rs. {val:.2f} Lakhs\n"
 
+    # ── MYT Order Reference & Previous Year ARR Norms ─────────────────────────
+    if myt_order_ref or myt_control_period:
+        data_block += f"\n=== MYT ORDER REFERENCE ===\n"
+        if myt_order_ref:
+            data_block += f"  MYT Order: {myt_order_ref}\n"
+        if myt_control_period:
+            data_block += f"  Control Period: {myt_control_period}\n"
+
+    if prev_myt_norms:
+        data_block += f"\n=== PREVIOUS YEAR MYT ARR NORMS (FY {prev_fy}) — for comparison tables ===\n"
+        for k in exp_keys:
+            m = float(prev_myt_norms.get(k, 0.0) or 0.0)
+            if m > 0:
+                name = k.replace("_", " ").title()
+                data_block += f"  {name}: {m:.2f}\n"
+        # Also include previous year revenue norms
+        for k in rev_keys:
+            m = float(prev_myt_norms.get(k, 0.0) or 0.0)
+            if m > 0:
+                name = k.replace("_", " ").title()
+                data_block += f"  {name}: {m:.2f}\n"
+        prev_target_loss = float(prev_myt_norms.get("target_distribution_loss_pct", 0.0) or 0.0)
+        if prev_target_loss > 0:
+            data_block += f"  Target Distribution Loss: {prev_target_loss:.2f}%\n"
+
     data_block += "\n=== END OF AUTHORITATIVE DATA ===\n"
 
     petition_path = state.get("petition_pdf_path", "")
@@ -442,6 +548,62 @@ You have been given AUTHORITATIVE FINANCIAL DATA above (the data_block). Follow 
 - Sub-items: <p style="margin-left:32px;"><b>a)</b> Text...</p>
 
 STYLE: No background-color on any table cell. Bold centered header row. 1px solid black borders.
+
+=== CRITICAL TABLE RULE ===
+For each cost head (Employee Cost, R&M, A&G, Depreciation, Interest, etc.), you MUST generate TWO separate tables:
+
+  TABLE A — LICENSEE PETITION TABLE (what the licensee claimed):
+    Shows ALL line items extracted from the Petition PDF.
+    Columns: Sl.No | Particulars | Approved in ARR Order | Claimed in Truing Up Petition
+    This table reproduces the licensee's own petition breakdown.
+
+  TABLE B — COMMISSION TRUED-UP TABLE (what the Commission approved):
+    Shows the same items but with the Commission's approved values.
+    Columns: Sl.No | Particulars | Approved in ARR Order | Claimed in Truing Up Petition | Trued Up by Commission
+    The 'Trued Up by Commission' column uses values from the AUTHORITATIVE DATA above.
+    ALWAYS include a Total row that matches the data_block totals exactly.
+
+Place Table A BEFORE the Commission's analysis paragraphs (to show what was claimed).
+Place Table B AFTER the Commission's decision paragraph (to show what was approved).
+
+=== GLOBAL ADAPTIVE RULE ===
+This order must FULLY ADAPT to whatever the specific licensee's petition contains.
+Different licensees (KDHP, Technopark, Infopark, etc.) have different:
+- Consumer categories (HT/LT types vary by licensee)
+- Asset groups and GFA composition
+- Employee categories and staff structure
+- R&M and A&G line items
+- Revenue sources and non-tariff income items
+YOU MUST extract the EXACT categories, line items, and structures from the Petition PDF.
+Do NOT hardcode any category names — always derive from the actual petition data.
+If the petition claims items not covered in the prompt template → CREATE sections for them.
+If the petition does NOT claim certain items → SKIP those sections entirely.
+Table numbering must always be sequential with no gaps.
+
+=== CRITICAL: ANTI-HALLUCINATION RULES ===
+NEVER fabricate or invent sub-component values. Follow these rules strictly:
+
+1. SUB-COMPONENT BREAKDOWNS (e.g., employee cost by category, A&G by line item, 
+   non-tariff income by source, consumer-category-wise revenue) MUST be extracted 
+   from the Petition PDF (PDF 2) or Annexure PDFs (PDF 3+).
+   Read the actual tables in these documents and reproduce the EXACT values shown there.
+
+2. If the Petition PDF does NOT contain a specific breakdown table, do NOT invent one.
+   Instead, show only the total claimed amount from the AUTHORITATIVE DATA above.
+
+3. NEVER use the same repeated value (like 10.00) for all sub-items in a table.
+   Each value must come from the actual petition data.
+
+4. For previous year columns (e.g., "2023-24 Trued Up"), if this data is not available,
+   write "---" (not available) rather than making up numbers.
+
+5. The ONLY numbers you can trust are:
+   - 'TrUp Approved' column from the AUTHORITATIVE DATA (Commission-approved totals)
+   - 'For TrUp Claimed' column from the AUTHORITATIVE DATA (total claimed amounts)
+   - Sub-component details read DIRECTLY from the Petition PDF tables
+   
+6. If you cannot read a value from the Petition PDF, use the total from AUTHORITATIVE DATA
+   and note "As claimed by the licensee" without breaking it into sub-items.
 """
 
 
@@ -451,34 +613,70 @@ STYLE: No background-color on any table cell. Bold centered header row. 1px soli
         max_output_tokens=65536,
     )
 
-    def _upload_pdfs():
-        logger.info("Uploading reference PDF...")
-        ref = client.files.upload(
-            file=str(REFERENCE_ORDER_PDF),
-            config=types.UploadFileConfig(mime_type="application/pdf"),
-        )
-        pet = None
-        if petition_path and Path(petition_path).exists():
-            logger.info("Uploading petition PDF...")
-            pet = client.files.upload(
-                file=petition_path,
-                config=types.UploadFileConfig(mime_type="application/pdf"),
-            )
-        return ref, pet
+    # Pre-load PDF bytes once (inline bytes for Vertex AI — no Files API needed)
+    logger.info("Loading reference PDF into memory...")
+    ref_pdf_bytes = Path(REFERENCE_ORDER_PDF).read_bytes()
+    logger.info(f"  Reference PDF: {len(ref_pdf_bytes):,} bytes")
 
-    def _delete_pdfs(ref, pet):
-        try:
-            client.files.delete(name=ref.name)
-            if pet:
-                client.files.delete(name=pet.name)
-        except Exception:
-            pass
+    pet_pdf_bytes = None
+    annexure_pdf_bytes_list = []  # Additional PDFs (annexures with detailed tables)
+    
+    # Try to load all uploaded PDFs (petition + annexures)
+    upload_pdf_paths = state.get("upload_pdf_paths", [])
+    if upload_pdf_paths and len(upload_pdf_paths) > 0:
+        for i, pdf_path in enumerate(upload_pdf_paths):
+            p = Path(pdf_path)
+            if p.exists():
+                pdf_data = p.read_bytes()
+                if i == 0:
+                    pet_pdf_bytes = pdf_data
+                    logger.info(f"  Petition PDF: {len(pdf_data):,} bytes — {p.name}")
+                else:
+                    annexure_pdf_bytes_list.append(pdf_data)
+                    logger.info(f"  Annexure PDF {i}: {len(pdf_data):,} bytes — {p.name}")
+        if annexure_pdf_bytes_list:
+            logger.info(f"  Total: 1 petition + {len(annexure_pdf_bytes_list)} annexure PDFs loaded")
+    
+    # Fallback: try single petition path
+    if not pet_pdf_bytes and petition_path and Path(petition_path).exists():
+        logger.info("Loading petition PDF into memory...")
+        pet_pdf_bytes = Path(petition_path).read_bytes()
+        logger.info(f"  Petition PDF: {len(pet_pdf_bytes):,} bytes")
+    
+    if not pet_pdf_bytes:
+        # Fallback: try to find petition PDF in uploads folder
+        upload_dir = Path("uploads")
+        if upload_dir.exists():
+            analysis_id = state.get("analysis_id", "")
+            if analysis_id:
+                matches = sorted(upload_dir.glob(f"{analysis_id}*"))
+                if matches:
+                    pet_pdf_bytes = matches[0].read_bytes()
+                    logger.info(f"  Found petition PDF via fallback: {matches[0].name} ({len(pet_pdf_bytes):,} bytes)")
+                    # Load remaining as annexures
+                    for m in matches[1:]:
+                        annexure_pdf_bytes_list.append(m.read_bytes())
+                        logger.info(f"  Found annexure PDF via fallback: {m.name}")
+        
+        if not pet_pdf_bytes:
+            logger.warning("⚠️ PETITION PDF NOT FOUND — Gemini will NOT have access to actual petition data!")
+            logger.warning(f"  petition_path was: '{petition_path}'")
 
-    def _call_with_retry(parts_list, label="API call", max_retries=3):
+    def _build_pdf_parts():
+        """Build inline byte parts for reference PDF + all petition/annexure PDFs."""
+        parts = [types.Part.from_bytes(data=ref_pdf_bytes, mime_type="application/pdf")]
+        if pet_pdf_bytes:
+            parts.append(types.Part.from_bytes(data=pet_pdf_bytes, mime_type="application/pdf"))
+        # Include all annexure PDFs — these contain detailed tables
+        for ann_bytes in annexure_pdf_bytes_list:
+            parts.append(types.Part.from_bytes(data=ann_bytes, mime_type="application/pdf"))
+        return parts
+
+    def _call_with_retry(parts_list, label="API call", max_retries=3) -> str:
         for attempt in range(1, max_retries + 1):
             try:
                 response = client.models.generate_content(
-                    model="gemini-2.5-pro",
+                    model=GEMINI_MODEL,
                     contents=parts_list,
                     config=config,
                 )
@@ -489,6 +687,7 @@ STYLE: No background-color on any table cell. Bold centered header row. 1px soli
                     raise
                 import time as _time
                 _time.sleep(5 * attempt)
+        return ""  # unreachable (raise above), but satisfies type checker
 
     # ==========================================================================
     # READ THE REFERENCE ORDER TEXT to give Gemini exact section structure
@@ -502,7 +701,7 @@ STYLE: No background-color on any table cell. Bold centered header row. 1px soli
             pages_text.append(pg.get_text())
         ref_doc.close()
         # First 5 pages as structure reference
-        ref_text_summary = "\n".join(pages_text[:5])[:3000]
+        ref_text_summary = str("\n".join(pages_text[:5]))[:3000]
     except Exception:
         pass
 
@@ -517,6 +716,9 @@ INPUTS:
 - PDF 1 = Reference Order OP 82/2023 (Infopark FY 2022-23 True-Up) - FORMAT TEMPLATE.
   Match its EXACT structure, paragraph style, depth, tone, regulation citations.
 - PDF 2 = Petition by M/s {licensee} for FY {fy} - DATA SOURCE. Extract all numbers from here.
+- PDF 3+ = Annexures/additional documents (if provided). These contain DETAILED TABLES
+  like category-wise revenue breakdown, consumer category details, employee cost split,
+  A&G sub-items, depreciation schedules, etc. ALWAYS check these for detailed data.
 - Audited Data:
 {data_block}
 
@@ -570,8 +772,35 @@ SECTION 1 - INTRODUCTION (paras 1-6, MINIMUM 6 paragraphs):
 Para 1: M/s {licensee} background — full license area description, consumer categories, network extent, date of license grant and license number.
 Para 2: Filing history — when this petition was filed citing date, what previous Commission orders govern FY {fy} tariff, the MYT order reference.
 Para 3: Legal basis — cite KSERC Tariff Regulations 2021 Regulation 3, 67, 68 on truing up process and what the Commission is required to do.
-Para 4: TABLE 1 — Comparison of ARR and Revenue for FY {fy}. Full table with: Power Purchase, Employee Cost, R&M, A&G, Depreciation, Interest & Finance, Other Debits, Total Expenditure, Revenue from Sale, Non-Tariff Income, Total Revenue, Revenue Gap. Show Projected/Claimed and Approved columns.
-Para 5: TABLE 2 — Year-on-year truing up comparison (at minimum show FY 2021-22, 2022-23, 2023-24, 2024-25 with Revenue Gap).
+Para 4: TABLE 1 — Comparison of ARR&ERC for FY {fy}.
+Caption: "Table 1\nComparison of ARR&ERC {fy}  (Rs. Lakh)"
+Columns: Particulars | ARR&ERC Projected | ARR&ERC Approved | Truing Up petition
+Rows (ALL of these in this exact order):
+  Power purchase cost
+  Employee Expenses
+  Administration & General Expenses
+  Repair & Maintenance Expenses
+  Depreciation
+  Interest on Working Capital and finance charges
+  Other debits
+  Return on Net Fixed Assets
+  Total Expenditure/ARR (total-row, bold)
+  Revenue from Sale of Power
+  Other income
+  Total Income/ERC (total-row, bold)
+  Revenue (Gap)/Surplus (total-row, bold)
+The 'ARR&ERC Projected' column = MYT ARR values from data_block.
+The 'ARR&ERC Approved' column = the Commission's ARR-approved values (use MYT values if same).
+The 'Truing Up petition' column = the licensee's claimed values from data_block.
+Do NOT include 'Trued Up by Commission' in this table — that comes later in the final ARR summary table.
+
+Para 5: TABLE 2 — Comparison of Income and Expenditure for the previous years.
+Caption: "Table 2\nComparison of Income and Expenditure for the previous years  (Rs. lakh)"
+This is a multi-year comparison table. Show columns for each available FY (e.g., 2021-22, 2022-23, 2023-24).
+For each FY, show TWO sub-columns: "Truing Up petition" | "Trued Up"
+For the current FY {fy}, show only "Truing Up petition" column (since it's not yet trued up in this table).
+Rows: same as Table 1 (Power purchase cost, Employee Expenses, etc. through Revenue (Gap)/Surplus).
+Use data from the petition PDF and previous KSERC orders for historical values.
 Para 6: Brief overview of the Commission's approach to examining each cost head.
 
 SECTION 2 - HEARING ON THE PETITION (paras 7-15, MINIMUM 9 paragraphs):
@@ -596,7 +825,16 @@ Para: Comparison of FY {fy} actual sales vs. approved in MYT order — units, in
 Para: Category-wise analysis — which categories grew, which declined and why.
 Para: Per-unit revenue realization analysis.
 Para: Commission's finding and approval of energy sales figures.
-TABLE 3 — Consumer Mix and Energy Sales: Columns: Sl.No | Category | Consumers (No.) Claimed | Energy Sales (MU) Claimed | Energy Sales (MU) Approved
+TABLE 3 — Energy Sales and No. of Consumers.
+Caption: "Table 3\nEnergy Sales and No. of Consumers for {prev_fy} and {fy}"
+This table compares the PREVIOUS year (Trued Up) with the CURRENT year (Truing Up petition) side by side.
+Column groups:
+  Particulars | Trued Up {prev_fy} (No. of Consumers | Sales (lakh units)) | Truing Up {fy} (No. of Consumers | Sales (lakh units))
+Rows — list ALL consumer categories from the petition PDF, such as:
+  HT I A Industrial, HT I B Industrial, HT II General, HT III Agriculture, HT IV Commercial,
+  LT I Domestic, LT IV Industries, LT V Agriculture, LT VI Non-Domestic, LT VII Commercial,
+  Street Lighting, LT TOD Tariff, Total.
+Extract the exact category names and numbers from the Petition PDF.
 
 TARGET: Part A must produce approximately 12 PRINTED A4 PAGES of HTML content.
 Do NOT write the signature block. Stop after Energy Sales section.
@@ -604,16 +842,12 @@ Do NOT compress — write every paragraph in full detail with 4-6 sentences mini
 
     logger.info("=== PART A: Header + Intro + Hearing + Energy Sales ===")
     t0 = time.time()
-    ref_a, pet_a = _upload_pdfs()
-    parts_a = [types.Part.from_uri(file_uri=ref_a.uri, mime_type="application/pdf")]
-    if pet_a:
-        parts_a.append(types.Part.from_uri(file_uri=pet_a.uri, mime_type="application/pdf"))
+    parts_a = _build_pdf_parts()
     parts_a.append(types.Part.from_text(text=prompt_a))
     part_a_html = _call_with_retry(parts_a, "Part A")
     logger.info(f"Part A: {len(part_a_html)} chars in {time.time()-t0:.1f}s")
-    _delete_pdfs(ref_a, pet_a)
 
-    tail_a = part_a_html[-2500:] if len(part_a_html) > 2500 else part_a_html
+    tail_a = str(part_a_html)[-2500:] if len(part_a_html) > 2500 else part_a_html
 
     # ==========================================================================
     # PART B: Distribution Loss + Power Purchase + O&M (Employee, R&M, A&G)
@@ -626,6 +860,7 @@ Part A (Header/Intro/Hearing/Energy Sales) is already written. Continue from whe
 INPUTS:
 - PDF 1 = Reference Order OP 82/2023 - FORMAT TEMPLATE
 - PDF 2 = Petition by M/s {licensee} for FY {fy} - DATA SOURCE
+- PDF 3+ = Annexures with detailed tables (consumer categories, revenue split, cost breakdowns)
 - Audited Data:
 {data_block}
 
@@ -672,64 +907,185 @@ Para 4: Detailed arithmetic calculation of savings or excess loss:
   - Rs saved/lost = MUs x average power purchase cost per unit
 Para 5: Commission's decision — whether savings are credited or excess loss is penalized, any mitigating factors considered.
 Para 6: Final approved/disallowed amount on account of distribution loss.
-TABLE 4 - Distribution Loss: Rows: Input Energy (MU), Output Energy (MU), Distribution Loss (MU), Distribution Loss (%), Target Distribution Loss (%), Savings/(Excess Loss) (MU), Rate (Rs/kWh), Savings/(Penalty) (Rs. Lakhs).
+TABLE 4 - Comparison of Distribution loss and energy requirement.
+Caption: "Table 4\nComparison of Distribution loss and energy requirement"
+Multi-year comparison table. Show columns for each available FY (2021-22, 2022-23, 2023-24).
+For each past FY, show TWO sub-columns: "For Truing up" | "Trued Up"
+For the current FY {fy}, show only "For Truing up" column.
+Rows (ALL of these in exact order):
+  Energy purchased (In lakh Units)
+  KSEB Energy Feedback (In lakh Units)
+  Gross energy in the system (In lakh Units)
+  Energy Sales (In lakh Units) (bold)
+  Distribution loss (In lakh Units)
+  Distribution loss %
+Extract ALL values from the Petition PDF.
+
+TABLE 5 - Approved Energy input & Distribution Loss for the year {fy}.
+Caption: "Table 5\nApproved Energy input & Distribution Loss for the year {fy}"
+Columns: Particulars | Approved in ARR | As per Truing up petition | Trued up
+Rows:
+  Energy Sales (lakh units) (1)
+  KSEB Ltd Energy Feedback (lakh units) (2)
+  Total Energy Output (lakh Units) (1+2)
+  Distribution Loss (%)
+  Distribution Loss (lakh Units)
+  Gross energy in to the system (lakh units) (bold)
+  KSEB Ltd Energy Feedback (lakh units)
+  Energy purchase from KSEB Ltd (lakh units) (bold)
 
 SECTION 5 - POWER PURCHASE COST (MINIMUM 5 paragraphs):
 Para 1: Sources of power for {licensee} — KSEB grid supply, any captive/renewable sources, voltage of supply, nature of open access if any.
 Para 2: Total units purchased in FY {fy} and total cost. Compare actual per-unit purchase cost vs approved in the ARR order.
-Para 3: Analysis of any deviation — whether increased purchase was due to consumer growth or load management issues.
-Para 4: Regulation citation for power purchase cost approval methodology.
+Para 3: Analysis of any deviation — whether increased purchase was due to consumer growth or load management issues. Mention if licensee included excess demand charges and Commission's view on it.
+Para 4: Regulation citation for power purchase cost approval methodology. If actual distribution loss is higher than approved, the quantum of power purchased corresponding to the excess distribution loss shall be disallowed at the average cost of power purchase.
 Para 5: Commission's decision — approved units and cost, any disallowance.
-TABLE 5 - Power Purchase Cost: Columns: Particulars | Claimed | Approved. Rows: Units Purchased (MU), Rate (Rs/kWh), Total Cost (Rs. Lakhs).
 
-SECTION 6 - O&M EXPENSES (MINIMUM 20 paragraphs across 4 sub-sections — THIS IS THE LARGEST SECTION):
+TABLE 6 - Details of the cost of power purchase claimed (LICENSEE PETITION TABLE).
+Caption: "Table 6\nDetails of the cost of power purchase claimed for {fy}"
+Columns: Particulars | {fy}
+Rows:
+  Total Consumption in lakh units
+  Less: Feed Back to KSEB in lakh units
+  Billed Units (bold)
+  Demand Charges (Rs. lakh)
+  Excess Demand Charges (Rs. lakh)
+  Energy Cost (Rs. lakh)
+  Total Power purchase cost (Rs. lakh) (bold)
+  Average power purchase Cost (Rs. /kWh)
+Extract ALL values from the Petition PDF.
 
-6a. O&M OVERVIEW (2 paragraphs):
-Para: Introduce the three components of O&M — Employee Cost, R&M, A&G — and provide the summary overview.
-TABLE 6 - O&M Summary: Employee Cost | R&M | A&G | Total — show Claimed and Approved.
+TABLE 7 - Details of approved power purchase cost (COMMISSION TABLE).
+Caption: "Table 7\nDetails of approved power purchase cost for {fy}"
+This is a NUMBERED COMPUTATION table showing Commission's step-by-step calculation.
+Columns: Sl.No | Particulars | Amount (Rs. lakh)
+Rows:
+  1. Actual distribution loss (In lakh units)
+  2. Approved distribution loss (In lakh units)
+  3. Excess distribution loss (lakh units) (1-2)
+  4. Average Power Purchase Cost (Rs. per unit)
+  5. Excess power purchase cost to be disallowed (Rs. lakh) (4) * (3)
+  6. Actual power purchase cost (Rs. lakh)
+  7. Approved power purchase cost (Rs. lakh) (6-5) (bold)
 
-6b. EMPLOYEE COST (MINIMUM 6 paragraphs):
-Para 1: Total establishment — number of permanent employees by grade/category, contract staff, deputationists.
-Para 2: Basic pay, DA, HRA, CCA, special allowances — total salary bill, comparison with previous year.
-Para 3: PF/EPF contribution percentage, amount contributed.
-Para 4: Gratuity, leave encashment, ex-gratia, bonus — statutory and non-statutory payments.
-Para 5: Medical reimbursement, uniform allowance, other perquisites.
-Para 6: Commission's analysis — what norm-based ceiling applies (cite Tariff Regulation), what is approved, what is disallowed and why.
-TABLE 7 - Employee Expenses: Detailed rows for Basic Pay, DA, HRA, Other Allowances, PF, Gratuity, Leave Encashment, Medical, Bonus, Ex-Gratia, Others, Total.
+SECTION 6 - O&M EXPENSES (MINIMUM 25 paragraphs across sub-sections — THIS IS THE LARGEST SECTION):
 
-6c. REPAIR & MAINTENANCE EXPENSES (MINIMUM 5 paragraphs):
-Para 1: Scope of maintenance — distribution lines length maintained, transformer count, substation equipment, metering infrastructure, civil structures.
-Para 2: Specific major maintenance activities carried out in FY {fy}.
-Para 3: Year-on-year trend — compare with FY 2022-23 and FY 2023-24 actuals.
-Para 4: Reasonableness check — per-km or per-consumer benchmark comparison.
-Para 5: Commission's analysis and approved amount.
-TABLE 8 - R&M Expenses: Rows: Lines & Cables, Transformers, Meters, Substation Equipment, Buildings & Civil, Vehicles, Other, Total.
+6a. O&M OVERVIEW (3-4 paragraphs):
+Para: O&M expenses are controllable expenses and include expenses of Employee cost, Repair & Maintenance Expenses and Administrative & General Expenses.
+Para: Cite Regulation 80(2) of the Tariff Regulations, 2021 — the distribution licensees shall be allowed to recover O&M expenses as per the norms specified in Annexure 7 of the Regulations.
+Para: State the approved O&M norm amount vs the claimed amount. Note if the claimed O&M is higher than the norm.
 
-6d. ADMINISTRATION & GENERAL EXPENSES (MINIMUM 6 paragraphs):
-Para 1: Overview of A&G categories.
-Para 2: Insurance premium — assets insured, premium rate, reasonableness vs. similar utilities.
-Para 3: Audit fees (statutory auditor, internal auditor, tax auditor) — amounts and reasonableness.
-Para 4: Legal expenses, consultancy fees, filing fees, BEE energy audit fee.
-Para 5: Communication (telephone, internet, postage), printing & stationery, books/periodicals.
-Para 6: Conveyance, vehicle running, miscellaneous — Commission's line-by-line decision.
-TABLE 9 - A&G Expenses: One row per item — Insurance, Audit Fees, Legal Expenses, BEE Fee, Telephone/Postage, Printing, Conveyance, Miscellaneous, Total.
+TABLE 8 - Comparison of O&M expenses multi-year.
+Caption: "Table 8\nComparison of O&M expenses for {prev_fy} and {fy} (Rs. lakh)"
+Column groups: 
+  Particulars | {prev_fy} (Truing Up petition | Trued Up) | {fy} (Norms | Truing Up petition)
+Rows: Employee Expenses, A&G Expenses, R&M Expenses, Total O&M Expenses.
+Extract values from petition PDF and data_block.
 
-TARGET: Part B must produce approximately 12 PRINTED A4 PAGES of HTML content.
-Do NOT include signature block. Stop after A&G expenses.
+6b. EMPLOYEE COST (MINIMUM 8 paragraphs):
+Para 1: State the claimed amount vs ARR approved amount. State the details of the claim made by the licensee.
+Para 2: Total establishment — number of permanent employees by grade/category, contract staff.
+
+TABLE 9 - Comparison of Employee Cost multi-year detail.
+Caption: "Table 9\nComparison of Employee Cost for the year {prev_fy} and {fy} (Rs.lakh)"
+Column groups:
+  Particulars | {prev_fy} (Truing Up | Trued Up) | {fy} (ARR Approved | Truing Up)
+Rows — extract ALL from petition PDF:
+  Basic Salary, Dearness Allowance (DA), Leave Travel Allowance, Earned Leave Encashment, 
+  Other Allowances, Medical Reimbursement, Overtime Payment, Bonus/Ex-Gratia Payments,
+  Staff welfare expenses, Provident Fund Contribution, Salary of Manager & Executive,
+  Share of Directors/Mgmt Staff Salaries, Gross Employee Expenses.
+For the {prev_fy} 'Trued Up' column and {fy} 'ARR Approved' column, note "Approved based on actual escalation of X% to the base year" text in the column header if applicable.
+
+Para 3: Staff count and category-wise split.
+
+TABLE 10 - Category-wise split of the employee cost.
+Caption: "Table 10\nCategory-wise split of the employee cost for {prev_fy} and {fy}"
+Column groups:
+  Particulars | Actual {prev_fy} (No | Rs.Lakh) | Actual {fy} (No | Rs.Lakh)
+Rows — extract from petition PDF:
+  Technical Officers, Switching Station Operations, Technical Staff, Other Workers,
+  Non-Technical Staff, Share of Management Staff Expenses,
+  Other Allowances Medical & Welfare expense, Total.
+
+Para 4: Employee cost increase analysis — state the increase amount and percentage over previous year.
+Para 5: Reasons for increase submitted by licensee — bullet list of items like wage revision arrears, yearly increments, overtime increase, etc.
+Para 6: Commission's examination — cite Tariff Regulations 2021, Annexure-7 norms.
+
+TABLE 11 - O&M Expenses as per the Tariff Regulations, 2021.
+Caption: "Table 11\nO&M Expenses as per the Tariff Regulations, 2021 (Rs. lakh)"
+Columns: Particulars | Base year 2021-22 | 2022-23 | 2023-24 | 2024-25 | 2025-26 | 2026-27
+Rows: Employee Cost, R&M Expenses, A&G Expenses, Total.
+Header: first column = "Base year", remaining = "Control period"
+Use the MYT norm values from data_block or petition PDF.
+
+Para 7: Explain Annexure-7 paragraph 1 methodology — escalation rate adopted, base year, inflation factor. State the average escalation rate approved by Commission. State how the actual inflation rate differs from the projected escalation rate.
+Para 8: Quote the relevant Note to Annexure-7 about actual inflation being used at truing up stage.
+
+TABLE 12 - Revised O&M expenses approved considering Actual Inflation.
+Caption: "Table 12\nRevised O&M expenses of {licensee} approved for the year {fy} considering Actual Inflation (Rs. lakh)"
+Columns: Particulars | {prev_fy} Approved | Control Period {fy} (Actual Inflation | O&M Approved)
+Rows: Employee Cost, R&M Expenses, A&G Expenses, Total.
+Use the actual inflation rate from data_block.
+
+Para 9: Commission's decision on Employee Cost — state the approved amount based on actual inflation rate, state the approved amount vs claimed.
+
+6c. ADMINISTRATION & GENERAL EXPENSES (MINIMUM 5 paragraphs):
+Para 1: State the claimed A&G vs the norm. Provide a comparison of A&G expenses over the years.
+
+TABLE 13 - Comparison of A&G expenses multi-year.
+Caption: "Table 13\nComparison of A&G expenses (Rs.lakh)"
+Column groups:
+  Particulars | 2021-22 (Truing Up | Trued Up) | {prev_fy} (Truing Up | Trued Up) | {fy} (Truing Up)
+Rows — extract ALL from petition PDF:
+  Rent Rates & Taxes, Insurance, Telephone & Postage etc., Legal charges, Audit Fees,
+  Travelling expenses, Conveyance and vehicle hire charges, Electricity charges,
+  Printing & Stationery, Miscellaneous Expenses, License Fee and other related fee,
+  Security arrangements, Gross A&G Expenses.
+For 'Trued Up' columns, note "Approved based on actual escalation of X% to the base year" text if applicable.
+
+Para 2-3: Line-by-line analysis of A&G items — insurance, audit fees, legal charges, BEE fee, etc.
+Para 4: Commission's position on legal expenses — consistent stand that legal proceedings cannot be charged unless court order exists.
+Para 5: Commission's decision on A&G — state approved amount, what was allowed/disallowed.
+
+6d. REPAIR & MAINTENANCE EXPENSES (MINIMUM 5 paragraphs):
+Para 1: State the ARR approved R&M vs the petition claim. Overview of R&M comparison over years.
+
+TABLE 14 - Comparison of R&M expenses multi-year.
+Caption: "Table 14\nComparison of R&M expenses (Rs. lakh)"
+Column groups:
+  Particulars | 2021-22 (Truing Up | Trued Up) | {prev_fy} (Truing Up | Trued Up) | {fy} (Truing Up)
+Rows — extract ALL from petition PDF:
+  Plant & Machinery, Buildings, Lines & Cable Networks, Vehicles,
+  LT Lines/Upkeeps etc., Gross R&M Expenses.
+For 'Trued Up' columns, note "Actual of {{year}} Approved based on actual escalation" text if applicable.
+
+Para 2: Major R&M items — lines & cable networks, upkeeps, cutting charges, transformer maintenance, etc.
+Para 3: Licensee's statement on type of expenses — routine maintenance, no one-time capital expenses.
+Para 4: Commission's finding — whether R&M items are routine or one-time.
+Para 5: Commission's decision — approved R&M based on actual inflation rate.
+
+6e. SUMMARY OF O&M EXPENSES APPROVED:
+Para: Summary of all approved O&M.
+
+TABLE 15 - O&M expenses approved for {fy}.
+Caption: "Table 15\nO&M expenses approved for {fy} (Rs. lakh)"
+Columns: Particulars | ARR&ERC | Truing Up | Trued Up
+Rows: Employee Expenses, Administration & General Expenses, Repair & Maintenance Expenses, Total O&M Expenses.
+Use exact values from data_block for the 'Trued Up' column.
+
+TARGET: Part B must produce approximately 15 PRINTED A4 PAGES of HTML content.
+Do NOT include signature block. Stop after O&M expenses summary.
 Write EVERY paragraph in full with 4-6 sentences per paragraph — do NOT compress."""
 
     logger.info("=== PART B: Distribution Loss + Power Purchase + O&M ===")
     t0 = time.time()
-    ref_b, pet_b = _upload_pdfs()
-    parts_b = [types.Part.from_uri(file_uri=ref_b.uri, mime_type="application/pdf")]
-    if pet_b:
-        parts_b.append(types.Part.from_uri(file_uri=pet_b.uri, mime_type="application/pdf"))
+    parts_b = _build_pdf_parts()
     parts_b.append(types.Part.from_text(text=prompt_b))
     part_b_html = _call_with_retry(parts_b, "Part B")
     logger.info(f"Part B: {len(part_b_html)} chars in {time.time()-t0:.1f}s")
-    _delete_pdfs(ref_b, pet_b)
 
-    tail_b = part_b_html[-2500:] if len(part_b_html) > 2500 else part_b_html
+    tail_b = str(part_b_html)[-2500:] if len(part_b_html) > 2500 else part_b_html
 
     # ==========================================================================
     # PART C: Depreciation + Interest + Revenue + ARR Summary + Orders + Signature
@@ -742,6 +1098,7 @@ Parts A and B are already written. This is the final continuation. End with the 
 INPUTS:
 - PDF 1 = Reference Order OP 82/2023 - FORMAT TEMPLATE
 - PDF 2 = Petition by M/s {licensee} for FY {fy} - DATA SOURCE
+- PDF 3+ = Annexures with detailed tables (consumer categories, revenue split, cost breakdowns)
 - Audited Data:
 {data_block}
 
@@ -777,91 +1134,305 @@ CRITICAL:
 - Never just say "Commission approves Rs.X" without the reasoning in Step 3.
 
 
-SECTION 7 - DEPRECIATION (MINIMUM 4 paragraphs):
-Para 1: Gross Fixed Assets composition — explain each asset category (land, buildings, lines & cables, plant & machinery, meters, vehicles, furniture & fixtures) and their opening values for FY {fy}.
-Para 2: Methodology — straight-line depreciation per KSERC Tariff Regulations 2021 Schedule of Rates, cite the regulation.
-Para 3: Asset-wise comparison of claimed vs approved depreciation — explain reasons for any variance.
-Para 4: Commission's final approved depreciation amount.
-TABLE 10 - Depreciation: Columns: Sl.No | Asset Category | Rate (%) | Opening GFA (Rs.Lakh) | Depreciation Claimed | Depreciation Approved.
+SECTION 7 - DEPRECIATION (MINIMUM 5 paragraphs):
+Para 1: State the claimed depreciation amount. Cite straight-line method as per Tariff Regulations, 2021.
+Para 2: Quote Regulation 27 "Depreciation" in full as a blockquote — all sub-clauses (1) through (vi).
+Para 3: For assets over 13 years, explain the depreciation has been allowed at lower rates. Explain the asset groups.
 
-SECTION 8 - INTEREST AND FINANCE CHARGES (MINIMUM 6 paragraphs):
-Para 1: Normative loan — 70% of GFA as per Tariff Regulations. Opening normative loan for FY {fy}, additions during year (capex × 70%), repayments (1/10 of normative loan or actual), closing balance, average loan for year.
-Para 2: Quote Regulation on normative loan and interest computation in <blockquote>.
-Para 3: Interest on long-term loans — SBI base rate used, interest amount computed.
-TABLE 11 - Interest on LT Loans computation.
-Para 4: Working capital interest — detailed component-wise computation per regulation: O&M store (1 month), receivables (2 months), maintenance spares (15% of R&M), less consumer security deposits. Total working capital × SBI rate.
-TABLE 12 - Working Capital Computation: each component shown.
-Para 5: Interest on Consumer Security Deposits — deposit balance, rate applied, amount.
-Para 6: Bank charges and other finance charges — whether approved or disallowed.
-Para 7: Total approved interest and finance charges.
+TABLE 16 - Depreciation claimed for the year {fy} (LICENSEE PETITION TABLE).
+Caption: "Table 16\nDepreciation claimed for the year {fy} (Rs. lakh)"
+Columns: Asset Group | GFA as at 01.04.XX | Asset Addition | Rate of depreciation | Depreciation
+TWO sections:
+  "Asset over 13 years": Transformers, Distribution lines, Meters, IT Equipment, Others, Sub-total
+  "Asset below 13 years": Transformers, Distribution lines, Meters, IT Equipment, Others, Sub-total
+Then: Grand Total, As per audited accounts, Excess depreciation.
+Extract ALL values from the Petition PDF.
 
-SECTION 9 - CARRYING COST ON PAST REVENUE GAPS (MINIMUM 3 paragraphs):
-Para 1: State the cumulative revenue gap approved through FY 2022-23. Cite the previous order.
-Para 2: Carrying cost calculation — gap × SBI MCLR rate × appropriate months.
-Para 3: Commission's decision — amount approved for FY {fy}.
+Para 4: Asset addition details — mention if new additions are approved and to be met from accumulated regulatory surplus. State that assets funded by consumer contribution shall not be eligible for depreciation.
 
-SECTION 10 - RETURN ON NET FIXED ASSETS (MINIMUM 3 paragraphs):
-Para 1: Opening NFA = Opening GFA minus accumulated depreciation as of 31 March of previous year. State the actual opening NFA for FY {fy}.
-Para 2: Cite Regulation 28 — RoNFA = 5.50% of opening NFA. Show calculation.
-Para 3: Claimed vs approved RoNFA, Commission's decision.
+TABLE 17 - Depreciation approved for the year {fy} (COMMISSION TABLE).
+Caption: "Table 17\nDepreciation approved for the year {fy} (Rs. lakh)"
+Columns: Asset Group | Rate of depreciation | GFA | Depreciation
+TWO sections same as Table 16:
+  "Asset over 13 years": items with Sub-total
+  "Asset below 13 years": items with Sub-total
+Then: Total, Asset Addition {fy}, (Less) Consumer contribution (with rate), Net Assets and depreciation, Grand Total.
+Use approved values from data_block.
 
-SECTION 11 - REVENUE FROM SALE OF POWER (MINIMUM 4 paragraphs):
-Para 1: Category-wise energy sales and revenue — actual tariff revenue collected during FY {fy}.
-Para 2: Average realization per kWh — compare with approved tariff rates in tariff order.
-Para 3: Check whether revenue claimed matches energy sales × approved tariff.
-Para 4: Commission's approved revenue from sale of power.
-TABLE 13 - Revenue from Sale: Columns: Category | Units Sold (MU) Claimed | Revenue (Rs.Lakh) Claimed | Avg Tariff (Rs/kWh) Claimed | Revenue (Rs.Lakh) Approved.
+Para 5: Commission's decision — state the approved depreciation amount after deducting consumer contribution depreciation.
 
-SECTION 12 - WHEELING CHARGES (MINIMUM 2 paragraphs):
-Para 1: Details of open access consumers and Smart City wheeling arrangements, units wheeled, wheeling charge rate.
+SECTION 8 - INTEREST AND FINANCE CHARGES (MINIMUM 10 paragraphs):
+Para 1: Overview — state ARR approved interest & finance charges vs claimed amount. List all components claimed.
+
+TABLE 18 - Interest & Finance charges for {fy} (PETITION OVERVIEW).
+Caption: "Table 18\nInterest & Finance charges for {fy} (Rs. lakh)"
+Columns: Particulars | Truing Up
+Rows:
+  Interest on Security Deposits from Customers
+  Bank Charges - On the Bank Guarantee to KSEB Ltd as per direction of Hon. Supreme Court of India
+  Other Bank Charges including on the Letter of Credit to secure cost of mostly power purchase from KSEB Ltd
+  As per petition (subtotal, bold)
+  Interest on Normative Loan
+  Interest on Working capital
+  Total Regulatory Adjustments (subtotal)
+  Total (bold)
+Extract all values from Petition PDF.
+
+Para 2: Heading "a) Interest on normative loan"
+Para 3: State the licensee's claimed interest on normative loan and details.
+
+TABLE 19 - Interest on Normative Loan Claimed {fy} (PETITION).
+Caption: "Table 19\nInterest on Normative Loan Claimed {fy} (Rs. lakh)"
+Columns: Particulars | Truing Up Petition
+Rows:
+  Net Normative loan – Opening (01.04.YYYY)
+  Increase/Decrease due to ACE/de-capitalization during the year
+  Less - Repayment of Normative Loan during the year
+  Net Normative loan – Closing (31.03.YYYY)
+  Average Normative Loan during the year
+  Average Base Rate of SBI during the year (%)
+  Interest on the normative loan for the year
+Extract from Petition PDF.
+
+Para 4: Commission's examination of normative loan — cite Regulation 29(2), explain opening normative loan, repayment, closing balance. State SBI EBLR rate used.
+
+TABLE 20 - Normative loan approved for {fy} (COMMISSION).
+Caption: "Table 20\nNormative loan approved for {fy}"
+Columns: No | Particulars | (Rs. lakh)
+Rows:
+  1) Normative loan at the beginning of the year
+  2) Less: Allowable Depreciation/ Repayment for the year
+  3) Closing Normative loan for the year
+  4) Average Loan for the year (1+3)/2
+  5) Rate of Interest (%)  *EBLR of SBI as on 01-04-YYYY
+  6) Interest on Normative loan for the year
+
+Para 5: Commission's decision on normative loan interest.
+Para 6: Heading "b) Interest on Working Capital"
+Para 7: State the licensee's claimed working capital interest.
+
+TABLE 21 - Working capital proposed by the licensee for {fy} (PETITION).
+Caption: "Table 21\nWorking capital proposed by the licensee for {fy} (Rs. lakh)"
+Columns: Particulars | Approved ARR/ERC | Truing up Petition
+Rows:
+  O & M Expenses- One month
+  Receivables- 2 months
+  Less: security Deposit from consumers
+  Total working Capital
+  Interest rate (%)  *SBI 1-year EBLR + 2%
+  Interest on working capital
+
+Para 8: Quote Regulation 32 on working capital computation in blockquote — sub-clauses (v)(I-III) and proviso about security deposits. State the Commission's calculation.
+
+TABLE 22 - Interest on Working capital approved for {fy} (COMMISSION).
+Caption: "Table 22\nInterest on Working capital approved for {fy} (Rs. lakh)"
+Columns: Particulars | (Rs. lakh)
+Rows:
+  Approved O & M Expenses for One month (approved_om/12)
+  Receivables-2 months Revenue from sale of power (revenue × 2 / 12)
+  Less: Security Deposit from Consumers
+  Total Working Capital
+  Interest Rate (%)  *SBI 1-year EBLR + 2%
+  Interest on Working Capital
+
+Para 9: Heading "c) Interest on the security deposit". Explain the licensee's claim, rate increase, Commission's examination. State the approved amount.
+
+Para 10: Heading "d) Bank Charges on Bank Guarantee/L.C to KSEB Ltd". State the claimed bank charges.
+
+TABLE 23 - Bank Charges Claimed for the year {fy}.
+Caption: "Table 23\nBank Charges Claimed or the year {fy}"
+Columns: Particulars | Rs. lakh
+Rows:
+  Bank Charges on LC to secure cost of monthly power purchase from KSEB Ltd
+  Bank Guarantee to KSEB Ltd
+  Total
+Extract from Petition PDF.
+
+Para 11: Commission's analysis of bank charges — approve LC charges, disallow bank guarantee charges citing Supreme Court/APTEL directions.
+Para 12: Heading "Summary of the interest and finance charges"
+
+TABLE 24 - Interest & Finance charges approved for the year {fy} (SUMMARY).
+Caption: "Table 24\nInterest & Finance charges approved for the year {fy} (Rs.lakh)"
+Columns: Particulars | ARR Approved | Truing Up Petition | Trued Up
+Rows:
+  Interest on Normative Loan
+  Interest on Working Capital
+  Interest on Security deposits
+  Bank Charges on LC to secure cost of monthly power purchases from KSEB Ltd
+  Bank Charges on Bank Guarantee to KSEB
+  Total
+
+SECTION 9 - OTHER DEBITS (MINIMUM 3 paragraphs):
+Para 1: State claimed other debits amount and components.
+
+TABLE 25 - Details of other debits multi-year.
+Caption: "Table 25\nDetails of other debits (Rs. lakh)"
+Column groups:
+  Particulars | 2021-22 (Truing Up Petition | Trued Up) | {prev_fy} (Truing Up Petition | Trued Up) | {fy} (Truing Up Petition)
+Rows: Section 3 Duty, Inspection Charges, Provision for doubtful Debt, Total.
+
+Para 2: Commission's analysis — Section 3(1) Duty consistently disallowed as revenue expenditure, provision for doubtful debts disallowed as not declared bad debt.
+Para 3: Commission's decision — approve only inspection charges, disallow Section 3 duty and provision for doubtful debts.
+
+SECTION 10 - RETURN ON NET FIXED ASSETS (MINIMUM 4 paragraphs):
+Para 1: State the licensee's claimed RoNFA. Cite Regulation 28 on RoNFA at 5.50%.
+
+TABLE 26 - Computation of RONFA claimed for {fy} (PETITION).
+Caption: "Table 26\nComputation of RONFA claimed for {fy} (Rs.lakh)"
+Columns: Particulars | Approved ARR-ERC | Truing up Claim
+Rows:
+  Gross fixed assets as at 1st April YYYY
+  Less: Accumulated depreciation
+  Less: Consumer contribution
+  Less: GFA for which interest is allowed
+  Balance value of Net fixed assets at the beginning of the year
+  Rate of Return
+  Eligible Return
+
+Para 2: Commission's examination — explain how NFA is correctly computed for RoNFA, interest on normative loan basis.
+
+TABLE 27 - Computation of RoNFA for the year {fy} (COMMISSION).
+Caption: "Table 27\nComputation of RoNFA for the year {fy}"
+Columns: Particulars | Rs. Lakh
+Rows:
+  Gross fixed assets as at 1st April YYYY
+  Less: Accumulated depreciation (XX.XX lakh + Rs.XX.XX lakh)
+  Less: Consumer contribution
+  Less: NFA for which interest is allowed
+  Balance value of Net fixed assets at the beginning of the year
+  Rate of Return (5.50%)
+  Eligible Return
+
+Para 3-4: Commission's decision on RoNFA.
+
+SECTION 11 - REVENUE FROM SALE OF POWER, NON-TARIFF INCOME, AND ARR SUMMARY will be in the NEXT part.
+END Part C here after Interest/Finance Charges and Return on NFA sections.
+
+TARGET: Part C must produce approximately 10 PRINTED A4 PAGES of HTML content.
+Write all numbers from the Petition PDF — not from reference order.
+Write every paragraph in full with minimum 4-6 sentences per paragraph — do NOT compress."""
+
+    logger.info("=== PART C: Depreciation + Interest + Return on NFA ===")
+    t0 = time.time()
+    parts_c = _build_pdf_parts()
+    parts_c.append(types.Part.from_text(text=prompt_c))
+    part_c_html = _call_with_retry(parts_c, "Part C")
+    logger.info(f"Part C: {len(part_c_html)} chars in {time.time()-t0:.1f}s")
+
+    # ==========================================================================
+    # PART D: Revenue + Non-Tariff Income + ARR Summary + Orders + Signature
+    # ==========================================================================
+    tail_c = str(part_c_html)[-2500:] if len(part_c_html) > 2500 else part_c_html
+
+    prompt_d = f"""You are an expert legal drafter for KSERC.
+
+TASK: Generate PART D (FINAL PART) of a Truing-Up Order for M/s {licensee} for FY {fy}.
+Parts A, B and C are already written. This is the final continuation covering Revenue, Non-Tariff Income, ARR Summary, Orders, and Signature.
+
+INPUTS:
+- PDF 1 = Reference Order OP 82/2023 - FORMAT TEMPLATE
+- PDF 2 = Petition by M/s {licensee} for FY {fy} - DATA SOURCE
+- PDF 3+ = Annexures with detailed tables (consumer categories, revenue split, cost breakdowns)
+- Audited Data:
+{data_block}
+
+{HTML_RULES}
+
+CONTEXT - last 2500 chars of Part C:
+---
+{{tail_c}}
+---
+
+Continue paragraph numbering sequentially from where Part C ended.
+
+SECTION 11 - REVENUE FROM SALE OF POWER (MINIMUM 3 paragraphs):
+Para 1: State the total revenue from sale of power and total units sold. Note increase/decrease compared to previous year.
+
+TABLE 28 - Revenue from sale of power multi-year.
+Caption: "Table 28\\nRevenue from sale of power for {prev_fy} and {fy}"
+Column groups per FY:
+  {prev_fy}: No. of Consumers | Sales in lakh units | Total Revenue | Average Realization
+  {fy}: No. of Consumers | Sales in lakh units | Total Revenue | Average Realization
+Rows — ALL consumer categories from petition PDF:
+  HT I A Industrial, HT I B (IT Industrial), HT II General, HT III Agriculture,
+  HT IV Commercial, LT I Domestic, LT IV Industries, LT V Agriculture,
+  LT VI Non-Domestic, LT VII Commercial, LT VIII Public Lighting, LT TOD Tariff, Total.
+
+Para 2: Analysis of sales — majority category, growth areas, reasons for increase.
+Para 3: Commission's decision — approve the revenue from sale of power.
+
+SECTION 12 - NON-TARIFF INCOME (MINIMUM 3 paragraphs):
+Para 1: State the claimed non-tariff income amount. Comparison with previous year.
+
+TABLE 29 - Details of Non-Tariff income claimed multi-year.
+Caption: "Table 29\\nDetails of Non-Tariff income claimed"
+Column groups:
+  Particulars | {prev_fy} (Truing Up Petition | Trued Up) | {fy} (Truing Up Petition)
+Rows — extract from Petition PDF:
+  Interest on Deposit with KSEB
+  Provision for Interest on Deposit with KSEB
+  Miscellaneous recoveries
+  Interest on accumulated Surplus
+  Other Operational Income
+  Less: Writeback of excess provision for doubt full debts
+  Less: Reversal of provision for interest on security deposit from KSEB Ltd being already claimed in regulatory accounts
+  Total
+
+Para 2: Commission's analysis of each non-tariff income item.
+Para 3: Commission's approved non-tariff income.
+
+TABLE 30 - Non-Tariff Income approved for {fy} (COMMISSION).
+Caption: "Table 30\\nNon-Tariff Income approved for {fy} (Rs lakh)"
+Columns: Particulars | {fy} (Truing Up Petition | Trued Up)
+Rows — same as Table 29. Use data_block values for Trued Up column.
+
+SECTION - WHEELING CHARGES (INCLUDE ONLY IF THE PETITION CLAIMS WHEELING CHARGES):
+Para 1: Details of open access consumers and wheeling arrangements.
 Para 2: Total wheeling income and Commission's approval.
 
-SECTION 13 - NON-TARIFF INCOME (MINIMUM 3 paragraphs):
-Para 1: Delayed payment surcharge — how computed, amount.
-Para 2: Meter rent, miscellaneous receipts, interest on deposits.
-Para 3: Commission's approved non-tariff income.
-TABLE 14 - Non-Tariff Income: Particulars | Claimed | Approved (one row per item).
+SECTION - CARRYING COST ON PAST REVENUE GAPS (INCLUDE ONLY IF APPLICABLE):
+Para 1: State the cumulative revenue gap approved through previous years.
+Para 2: Carrying cost calculation — gap x SBI MCLR rate x appropriate months.
+Para 3: Commission's decision — amount approved for FY {fy}.
 
-SECTION 14 - APPROVED ARR AND REVENUE GAP (MINIMUM 4 paragraphs + COMPREHENSIVE TABLE):
-Para 1: Summarize all approved expense items.
-Para 2: Summarize all approved revenue items.
-Para 3: Revenue gap/surplus calculation and comparison with petition claim.
-Para 4: How the gap will be carried forward and treated in the next tariff revision.
-TABLE 15 - COMPLETE ARR & Revenue Summary (MOST IMPORTANT TABLE — must be comprehensive):
-Columns: Sl.No | Particulars | Claimed by Licensee | Approved by Commission
-Rows (ALL of these):
-  EXPENDITURE:
-  1. Power Purchase Cost
-  2. Employee Cost
-  3. Repair & Maintenance
-  4. Administration & General Expenses
-  5. Depreciation
-  6. Interest on Long Term Loans
-  7. Interest on Working Capital
-  8. Interest on Consumer Security Deposits
-  9. Bank & Finance Charges
-  10. Carrying Cost on Revenue Gap
-  11. Return on Net Fixed Assets
-  12. Other Debits
-  13. Taxes & Duties
-  A. TOTAL APPROVED EXPENDITURE (total-row)
-  REVENUE:
-  14. Revenue from Sale of Power
-  15. Wheeling Charges
-  16. Non-Tariff Income
-  17. Other Income
-  B. TOTAL REVENUE (total-row)
-  C. REVENUE GAP (A-B) (total-row, bold)
-  D. Cumulative Revenue Gap from previous years
-  E. TOTAL CUMULATIVE REVENUE GAP (total-row, bold)
+SECTION - REVENUE SURPLUS/GAP FOR {fy} (FINAL ARR SUMMARY):
+Para 1: Based on the above, state the approved expenditure and revenue for the year {fy} after truing up.
 
-SECTION 15 - ORDERS OF THE COMMISSION (MINIMUM 4 paragraphs):
-Para 1: Operative order 1 — approve total expenditure of Rs. X lakhs for FY {fy}.
-Para 2: Operative order 2 — approve total revenue of Rs. Y lakhs for FY {fy}.
-Para 3: Operative order 3 — revenue gap/surplus of Rs. Z lakhs to be carried forward and treated in next tariff revision.
-Para 4: Direction to licensee — submit audited accounts, update asset register, submit compliance report by specified date.
+TABLE 31 - Trued up Income and Expenditure for the Year {fy} (MOST IMPORTANT TABLE).
+Caption: "Table 31\\nTrued up Income and Expenditure for the Year {fy} (Rs. lakh)"
+Columns: Particulars | {fy} (ARR&ERC | Truing Up | Trued Up)
+Rows:
+  Power purchase cost
+  Employee Expenses
+  Administration & General Expenses
+  Repair & Maintenance Expenses
+  Depreciation
+  Interest and Finance charges
+  Other debits
+  Return on Net Fixed Assets
+  Total Expenditure/ARR (total-row, bold)
+  Revenue from Sale of Power
+  Other income
+  Total Income/ERC (total-row, bold)
+  Revenue (Gap)/Surplus (total-row, bold) — ALWAYS show as POSITIVE number, NEVER use a minus sign.
+The ARR&ERC column = ARR approved values from data_block.
+The Truing Up column = claimed values from data_block.
+The Trued Up column = Commission's approved values from data_block.
+CRITICAL: The Revenue (Gap)/Surplus row must ALWAYS show a POSITIVE number. Do NOT put a minus (-) sign.
+If it is a gap, the row label already says '(Gap)'. Write the amount as a positive number.
 
-SECTION 16 - SIGNATURE BLOCK:
+SECTION - ORDERS OF THE COMMISSION:
+Para: "The Commission after considering the petition filed by M/s. {licensee} for Truing up of accounts for the year {fy}, and details provided by the licensee, the Commission approves the following."
+Then list specific orders as lettered items:
+  a) Total revenue is Rs.XXXX.XX lakh.
+  b) Total expenditure is Rs.XXXX.XX lakh.
+  c) The revenue surplus/gap for the year is Rs.XXX.XX lakh.
+  d) The cumulative revenue surplus/gap till {fy} will be Rs.XXXX.XX lakh. 
+     The licensee shall keep the surplus arrived at after the truing up process in a separate fund and utilize it 
+     as per orders of the Commission.
+Final para: "The petition is disposed of. Ordered accordingly."
+
+SECTION - SIGNATURE BLOCK:
 <table class="sig-table">
   <tr><td>Sd/-</td><td>Sd/-</td><td>Sd/-</td></tr>
   <tr><td><b>Sri. T.K Jose</b></td><td><b>Adv. A. J. Wilson</b></td><td><b>Sri. B. Pradeep</b></td></tr>
@@ -874,24 +1445,50 @@ SECTION 16 - SIGNATURE BLOCK:
   <p><b>Secretary</b></p>
 </div>
 
-TARGET: Part C must produce approximately 10 PRINTED A4 PAGES of HTML content.
+GLOBAL ADAPTIVE INSTRUCTION:
+This order must ADAPT to whatever the petition PDF contains. Different licensees may have different consumer categories, revenue sources, and claims.
+ALL values in petition tables must come from the Petition PDF. ALL values in commission tables must come from data_block.
+Table numbering must be sequential from Part C.
+
+TARGET: Part D must produce approximately 8 PRINTED A4 PAGES of HTML content.
 Write all numbers from the Petition PDF — not from reference order.
-Write every paragraph in full with minimum 4-6 sentences per paragraph — do NOT compress.
 This is the FINAL part — include the complete signature block at the very end."""
 
-    logger.info("=== PART C: Depreciation + Interest + Revenue + ARR Summary + Orders + Signature ===")
-    t0 = time.time()
-    ref_c, pet_c = _upload_pdfs()
-    parts_c = [types.Part.from_uri(file_uri=ref_c.uri, mime_type="application/pdf")]
-    if pet_c:
-        parts_c.append(types.Part.from_uri(file_uri=pet_c.uri, mime_type="application/pdf"))
-    parts_c.append(types.Part.from_text(text=prompt_c))
-    part_c_html = _call_with_retry(parts_c, "Part C")
-    logger.info(f"Part C: {len(part_c_html)} chars in {time.time()-t0:.1f}s")
-    _delete_pdfs(ref_c, pet_c)
+    # Replace the tail_c placeholder in the prompt
+    prompt_d = prompt_d.replace("{tail_c}", tail_c)
 
-    combined_html = part_a_html + "\n\n" + part_b_html + "\n\n" + part_c_html
-    logger.info(f"Combined: {len(combined_html)} chars ({len(part_a_html)} + {len(part_b_html)} + {len(part_c_html)})")
+    logger.info("=== PART D: Revenue + Non-Tariff Income + ARR Summary + Orders + Signature ===")
+    t0 = time.time()
+    parts_d = _build_pdf_parts()
+    parts_d.append(types.Part.from_text(text=prompt_d))
+    part_d_html = _call_with_retry(parts_d, "Part D")
+    logger.info(f"Part D: {len(part_d_html)} chars in {time.time()-t0:.1f}s")
+
+    # Clean intermediate parts: strip </body></html>, <html><head>..., and signature blocks
+    def _strip_intermediate(html_part):
+        """Remove closing tags, duplicate headers, and signature blocks from intermediate parts."""
+        h = html_part or ""
+        # Remove </body></html> closings
+        h = re.sub(r'</body>\s*</html>\s*$', '', h, flags=re.IGNORECASE)
+        # Remove signature blocks (Sd/-, Chairman, Secretary)
+        h = re.sub(r'<table\s+class="sig-table">[\s\S]*?</table>', '', h, flags=re.IGNORECASE)
+        h = re.sub(r'<div\s+class="secretary-block">[\s\S]*?</div>', '', h, flags=re.IGNORECASE)
+        return h.rstrip()
+
+    def _strip_header(html_part):
+        """Remove <html><head>...</head><body> from non-first parts."""
+        h = html_part or ""
+        h = re.sub(r'^.*?<body[^>]*>', '', h, count=1, flags=re.IGNORECASE | re.DOTALL)
+        return h
+
+    # Part A keeps its header, intermediate parts strip headers + closings
+    clean_a = _strip_intermediate(part_a_html or "")
+    clean_b = _strip_intermediate(_strip_header(part_b_html or ""))
+    clean_c = _strip_intermediate(_strip_header(part_c_html or ""))
+    clean_d = _strip_header(part_d_html or "")  # Part D keeps its closing + signature
+
+    combined_html = clean_a + "\n\n" + clean_b + "\n\n" + clean_c + "\n\n" + clean_d
+    logger.info(f"Combined: {len(combined_html)} chars ({len(part_a_html)} + {len(part_b_html)} + {len(part_c_html)} + {len(part_d_html)})")
     return combined_html
 
 
@@ -912,7 +1509,7 @@ def _postprocess_html(raw_html: str) -> str:
         # Only strip if preamble looks like commentary (not empty)
         if preamble and not preamble.startswith('<'):
             logger.info(f"Stripping preamble ({len(preamble)} chars)")
-            html = html[first_tag.start():]
+            html = html[int(first_tag.start()):]
 
     # 3. Remove any <html>, <head>, <body> wrappers (we add our own)
     html = re.sub(r'</?html[^>]*>', '', html, flags=re.IGNORECASE)
@@ -1012,47 +1609,40 @@ def draft_order(state: dict) -> dict:
     """
     LangGraph node function.
 
-    Generates the final KSERC-format Truing-Up Order PDF from the
-    audited state data, using Gemini 2.5 Pro with reference PDF template.
-    Gemini outputs clean HTML which is rendered to PDF via xhtml2pdf.
+    Generates the final KSERC-format Truing-Up Order PDF using Gemini 2.5 Flash
+    to produce rich HTML with detailed petition tables, then renders to PDF
+    via Playwright headless Chromium.
     """
     licensee = state["licensee_name"]
     fy = state["financial_year"]
 
-    logger.info(f"Drafting order for {licensee} FY {fy} using HTML-based approach")
+    logger.info(f"Drafting order for {licensee} FY {fy} using Gemini drafter")
 
-    # 1. Generate HTML document via Gemini with reference PDF
+    # 1. Generate comprehensive HTML via Gemini (reads petition PDF for detail tables)
     raw_html = _generate_document_with_gemini(state)
-    logger.info("Received HTML from Gemini. Length: %d chars", len(raw_html))
-
-    # 2. Post-process / clean up the HTML
     body_html = _postprocess_html(raw_html)
-    logger.info("Post-processed HTML. Length: %d chars", len(body_html))
 
-    # 3. Wrap in full HTML document with CSS
+    # 2. Wrap in full HTML document with KSERC CSS
     full_html = f"""<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <style>
-        {KSERC_CSS}
-    </style>
+<meta charset="utf-8">
+<style>
+{KSERC_CSS}
+</style>
 </head>
 <body>
-    {body_html}
+{body_html}
 </body>
 </html>"""
 
-    # Always save the raw Gemini output and the final HTML for reference/debugging
+    logger.info("Generated HTML via Gemini. Length: %d chars", len(full_html))
+
+    # Save rendered HTML for reference/debugging
     output_dir = Path(__file__).resolve().parents[2] / "output_orders"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     safe_name = licensee.replace(" ", "_").replace("/", "-")
-    
-    md_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}.md"
-    with open(md_path, "w", encoding="utf-8") as f:
-        f.write(raw_html)
-    logger.info(f"Raw Gemini output saved at: {md_path}")
 
     html_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}.html"
     with open(html_path, "w", encoding="utf-8") as f:
@@ -1099,6 +1689,7 @@ def draft_order(state: dict) -> dict:
             browser.close()
         logger.info(f"Successfully generated PDF at: {final_pdf_path}")
         state["output_pdf_path"] = str(final_pdf_path)
+        state["output_html_path"] = str(html_path)
     except Exception as e:
         logger.error(f"PDF generation failed: {e}", exc_info=True)
         raise  # Propagate so pipeline marks FAILED — no silent swallow

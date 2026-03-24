@@ -1,8 +1,10 @@
-"""
-Centralized Google Gemini client using the google-genai SDK.
+﻿"""
+Centralized Google Gemini client using the google-genai SDK via Vertex AI.
+
+Uses Vertex AI authentication (service account) for higher rate limits
+and to leverage GCP billing credits ($300 free trial).
 
 All agents should import from here instead of directly using vertexai.
-Uses API key authentication (from .env) — no service account needed for Gemini.
 """
 
 import os
@@ -10,20 +12,21 @@ import logging
 from typing import Optional
 
 from dotenv import load_dotenv
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("kserc.gemini_client")
 
 # Load environment variables
-load_dotenv()
+load_dotenv(override=True)
 
 _client = None
 
 def get_client():
     """
-    Get or create a singleton google.genai.Client.
+    Get or create a singleton google.genai.Client using Vertex AI.
     
-    Uses GOOGLE_API_KEY from .env for authentication.
-    This replaces the old vertexai.init() + GenerativeModel pattern.
+    Uses GOOGLE_APPLICATION_CREDENTIALS (service account JSON) for auth.
+    Falls back to API key if Vertex AI setup fails.
     """
     global _client
     if _client is not None:
@@ -36,16 +39,60 @@ def get_client():
             "google-genai is not installed. Run: pip install google-genai"
         )
     
+    project_id = os.getenv("GCP_PROJECT_ID", "kserc-trueup-v2")
+    location = "asia-south1"  # Closest region to India
+    
+    # Use Vertex AI as primary (supports response_schema with Pydantic models)
+    try:
+        _client = genai.Client(
+            vertexai=True,
+            project=project_id,
+            location=location,
+        )
+        logger.info(f"Gemini client initialized via Vertex AI (project={project_id}, location={location})")
+        return _client
+    except Exception as e:
+        logger.warning(f"Vertex AI init failed: {e}, falling back to API key")
+    
+    # Fallback to API key
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
         raise ValueError(
-            "GOOGLE_API_KEY not found in environment. "
-            "Set it in .env or as an environment variable."
+            "Neither Vertex AI nor GOOGLE_API_KEY available. "
+            "Set GOOGLE_APPLICATION_CREDENTIALS or GOOGLE_API_KEY in .env."
         )
     
     _client = genai.Client(api_key=api_key)
-    logger.info("Gemini client initialized with API key")
+    logger.info("Gemini client initialized with API key (fallback)")
     return _client
+
+
+_api_key_client = None
+
+def get_api_key_client():
+    """
+    Get a separate API-key-based client for heavy operations like deep extraction.
+    
+    Uses the GOOGLE_API_KEY from .env. This client has higher rate limits
+    compared to Vertex AI and is used for deep table extraction.
+    Returns None if no API key is available (caller should fall back to get_client).
+    """
+    global _api_key_client
+    if _api_key_client is not None:
+        return _api_key_client
+    
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        return None
+    
+    try:
+        from google import genai
+        _api_key_client = genai.Client(api_key=api_key)
+        logger.info("API key client initialized for deep extraction")
+        return _api_key_client
+    except Exception as e:
+        logger.warning(f"API key client init failed: {e}")
+        return None
 
 
 def get_config(
@@ -72,7 +119,7 @@ def get_config(
 
 def generate(
     prompt: str,
-    model: str = "gemini-2.5-pro",
+    model: str = GEMINI_MODEL,
     temperature: float = 0.0,
     response_mime_type: str = "application/json",
     response_schema: Optional[type] = None,
@@ -114,7 +161,7 @@ def generate(
 
 def generate_with_parts(
     parts: list,
-    model: str = "gemini-2.5-pro",
+    model: str = GEMINI_MODEL,
     temperature: float = 0.0,
     response_mime_type: str = "application/json",
     response_schema: Optional[type] = None,
@@ -152,11 +199,12 @@ def generate_with_parts(
 def generate_with_pdf(
     pdf_path,  # str or List[str] — single path or multiple paths
     prompt: str,
-    model: str = "gemini-2.5-pro",
+    model: str = GEMINI_MODEL,
     temperature: float = 0.0,
     response_mime_type: str = "application/json",
     system_instruction: Optional[str] = None,
     response_schema = None,
+    client = None,  # Optional: pass a specific client (e.g. API key client)
 ) -> str:
     """
     Generate content by uploading PDF file(s) to Gemini.
@@ -166,42 +214,35 @@ def generate_with_pdf(
     in a single Gemini call — enabling cross-referencing between files
     (e.g., main petition + annexures + audit reports).
     
-    Uses Gemini Files API: client.files.upload() for each PDF,
-    then passes all file references + prompt in one generate_content call.
+    For Vertex AI: uses inline bytes (Part.from_bytes) instead of Files API.
+    For API key fallback: uses Files API upload.
     """
     import time
-    client = get_client()
+    from pathlib import Path
+    if client is None:
+        client = get_client()
     from google.genai import types
 
     # Normalize to list
     pdf_paths = pdf_path if isinstance(pdf_path, list) else [pdf_path]
 
-    # Upload all PDF files to Gemini Files API
-    uploaded_files = []
+    # Build parts with inline bytes (works for both Vertex AI and API key)
+    parts = []
     upload_start = time.time()
     
     for path in pdf_paths:
-        logger.info(f"Uploading PDF to Gemini Files API: {path}")
-        uploaded = client.files.upload(
-            file=path,
-            config=types.UploadFileConfig(
-                mime_type="application/pdf",
-            ),
-        )
-        uploaded_files.append(uploaded)
-        logger.info(f"  Uploaded: {uploaded.name}")
-    
-    upload_time = time.time() - upload_start
-    logger.info(f"{len(uploaded_files)} PDF(s) uploaded in {upload_time:.1f}s")
-
-    # Build parts: all file references first, then the prompt
-    parts = []
-    for uf in uploaded_files:
-        parts.append(types.Part.from_uri(
-            file_uri=uf.uri,
+        logger.info(f"Loading PDF: {path}")
+        pdf_bytes = Path(path).read_bytes()
+        parts.append(types.Part.from_bytes(
+            data=pdf_bytes,
             mime_type="application/pdf",
         ))
+        logger.info(f"  Loaded: {len(pdf_bytes):,} bytes")
+    
     parts.append(types.Part.from_text(text=prompt))
+    
+    upload_time = time.time() - upload_start
+    logger.info(f"{len(pdf_paths)} PDF(s) loaded in {upload_time:.1f}s")
 
     config_kwargs = {
         "temperature": temperature,
@@ -223,19 +264,12 @@ def generate_with_pdf(
     gen_time = time.time() - gen_start
     logger.info(f"PDF generation completed in {gen_time:.1f}s")
 
-    # Clean up uploaded files (best effort)
-    for uf in uploaded_files:
-        try:
-            client.files.delete(name=uf.name)
-        except Exception:
-            pass  # Non-critical — files auto-expire after 48h
-
     return response.text
 
 
 def generate_grounded(
     prompt: str,
-    model: str = "gemini-2.5-pro",
+    model: str = GEMINI_MODEL,
     temperature: float = 0.3,
     system_instruction: Optional[str] = None,
 ) -> str:
@@ -271,6 +305,6 @@ def generate_grounded(
 
 
 # Project configuration for Document AI
-GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID", "kserc-489315")
+GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID", "kserc-trueup-v2")
 DOCUMENT_AI_PROCESSOR_ID = os.getenv("DOCUMENT_AI_PROCESSOR_ID", "")
 DOCUMENT_AI_LOCATION = os.getenv("DOCUMENT_AI_LOCATION", "us")

@@ -156,6 +156,12 @@ async def analyze_petition(
     inflation_rate: Optional[float] = Form(None),
     bee_energy_audit_fee: Optional[float] = Form(None),
     iwc_interest_rate: Optional[float] = Form(None),
+    sbi_eblr_rate: Optional[float] = Form(None),
+    sbi_retail_td_rate: Optional[float] = Form(None),
+    supply_code_sd_rate: Optional[float] = Form(None),
+    norm_loan_opening: Optional[float] = Form(None),
+    sd_balance: Optional[float] = Form(None),
+    cumulative_gap: Optional[float] = Form(None),
 ):
     """
     Upload and analyze petition PDFs (supports multiple files).
@@ -217,7 +223,73 @@ async def analyze_petition(
                 inflation_rate=inflation_rate,
                 bee_energy_audit_fee=bee_energy_audit_fee,
                 iwc_interest_rate=iwc_interest_rate,
+                sbi_eblr_rate=sbi_eblr_rate,
+                sbi_retail_td_rate=sbi_retail_td_rate,
+                supply_code_sd_rate=supply_code_sd_rate,
+                norm_loan_opening=norm_loan_opening,
+                sd_balance=sd_balance,
+                cumulative_gap=cumulative_gap,
             )
+
+            # Check if pipeline is pausing for R&M review
+            if result.get("__pending_rm_review__"):
+                # Save partial state for resume
+                rm_review_data = {
+                    "rm_line_items": result["rm_line_items"],
+                    "rm_norm": result["rm_norm"],
+                    "claimed_rm": result["claimed_rm"],
+                    "licensee_name": result["licensee_name"],
+                    "financial_year": result["financial_year"],
+                }
+                # Store the full partial state for pipeline resume
+                import pickle, base64
+                partial_state = result["__partial_state__"]
+                # Store pipeline params needed for resume
+                partial_state["__pipeline_params__"] = {
+                    "analysis_id": analysis_id,
+                    "original_filenames": original_filenames,
+                    "inflation_rate": inflation_rate,
+                    "bee_energy_audit_fee": bee_energy_audit_fee,
+                    "iwc_interest_rate": iwc_interest_rate,
+                    "sbi_eblr_rate": sbi_eblr_rate,
+                    "sbi_retail_td_rate": sbi_retail_td_rate,
+                    "supply_code_sd_rate": supply_code_sd_rate,
+                }
+                # Serialize state to JSON-safe format
+                state_json = {}
+                for k, v in partial_state.items():
+                    try:
+                        json.dumps(v)  # Test if JSON-serializable
+                        state_json[k] = v
+                    except (TypeError, ValueError):
+                        state_json[k] = str(v)
+                
+                rm_review_data["__partial_state__"] = state_json
+                save_analysis(analysis_id, "PENDING_RM_REVIEW", rm_review_data)
+                logger.info(f"[{analysis_id}] Pipeline paused for R&M review")
+                return
+
+            # Ensure critical fields are preserved for the drafter
+            # The pipeline may drop these during state management
+            if "petition_pdf_path" not in result or not result.get("petition_pdf_path"):
+                result["petition_pdf_path"] = upload_paths[0] if upload_paths else ""
+            if "petition_input_path" not in result:
+                result["petition_input_path"] = upload_paths[0] if upload_paths else ""
+            # Save all upload paths so drafter can find annexures too
+            result["upload_pdf_paths"] = upload_paths
+            
+            # Inject MYT baseline norms if missing — drafter needs these for ARR columns
+            if not result.get("myt_baseline_norms"):
+                try:
+                    from src.knowledge.myt_loader import MYTLoader
+                    myt_loader = MYTLoader()
+                    myt_norms = myt_loader.load_myt_baselines(licensee, financial_year)
+                    if myt_norms:
+                        result["myt_baseline_norms"] = myt_norms
+                        logger.info(f"[{analysis_id}] Injected MYT norms: {len(myt_norms)} fields")
+                except Exception as e:
+                    logger.warning(f"[{analysis_id}] MYT norms injection failed: {e}")
+            
             save_analysis(analysis_id, "COMPLETED", result)
             
             # Log initial analysis in audit trail
@@ -247,6 +319,14 @@ async def get_analysis_status(analysis_id: str):
     data = get_analysis(analysis_id)
     if not data:
         raise HTTPException(404, "Analysis not found")
+    
+    # For PENDING_RM_REVIEW, strip the huge __partial_state__ from response
+    # (it stays in DB for resume, but frontend only needs rm_line_items etc.)
+    if data.get("status") == "PENDING_RM_REVIEW" and data.get("result"):
+        result_copy = dict(data["result"])
+        result_copy.pop("__partial_state__", None)
+        data = dict(data)
+        data["result"] = result_copy
         
     return JSONResponse(data)
 
@@ -358,6 +438,209 @@ async def override_component(req: OverrideRequest):
     return {"status": "success", "message": "Override applied and logged."}
 
 
+# ── Generate Order (Jinja2 Builder) ─────────────────────────────────
+
+class GenerateOrderRequest(BaseModel):
+    analysis_id: str
+    order_json: Optional[dict] = None  # If provided, use this (edited JSON from frontend)
+
+@app.post("/api/generate-order")
+async def generate_order(
+    req: GenerateOrderRequest,
+):
+    """
+    Generate a KSERC order from analysis results using Gemini drafter.
+    Returns { pdf_url, html, analysis_id, order_json }
+    """
+    db_row = get_analysis(req.analysis_id)
+    if not db_row or not db_row.get("result"):
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
+    # Unwrap: get_analysis returns {"status", "result": {actual data}, "progress"}
+    state = db_row["result"]
+
+    # Full Gemini-based PDF generation
+    from src.agents.drafter import draft_order
+    from builder.json_builder import build_order_json
+    import asyncio
+
+    loop = asyncio.get_event_loop()
+    draft_state = dict(state)
+    draft_state["disallowance_log"] = state.get("disallowances", [])
+
+    # Ensure drafter has the petition PDF path — check multiple sources
+    if not draft_state.get("petition_pdf_path"):
+        # Try upload_pdf_paths first (saved by our fix)
+        upload_paths = state.get("upload_pdf_paths", [])
+        if upload_paths:
+            draft_state["petition_pdf_path"] = upload_paths[0]
+        else:
+            # Fallback: find the PDF in the uploads folder by analysis_id
+            upload_dir = Path("uploads")
+            if upload_dir.exists():
+                matches = list(upload_dir.glob(f"{req.analysis_id}*"))
+                if matches:
+                    draft_state["petition_pdf_path"] = str(matches[0])
+                    logger.info(f"Found petition PDF in uploads: {matches[0]}")
+
+    logger.info(f"Drafter petition_pdf_path: {draft_state.get('petition_pdf_path', 'NONE')}")
+
+    # Build order_json for the response (needed by frontend)
+    order_json = build_order_json(state)
+
+    try:
+        draft_result = await loop.run_in_executor(None, draft_order, draft_state)
+
+        # Update analysis with PDF path
+        state["output_pdf_path"] = draft_result.get("output_pdf_path")
+        state["pdf_available"] = True
+        save_analysis(req.analysis_id, "COMPLETED", state)
+
+        # Read back the generated HTML to show in frontend preview
+        gemini_html = None
+        html_path = draft_result.get("output_html_path")
+        if html_path and Path(html_path).exists():
+            gemini_html = Path(html_path).read_text(encoding="utf-8")
+
+        return {
+            "pdf_url": f"/api/download/{req.analysis_id}",
+            "analysis_id": req.analysis_id,
+            "order_json": order_json,
+            "html": gemini_html,
+        }
+    except Exception as e:
+        logger.error(f"Gemini PDF generation failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Finalize PDF from Edited HTML
+# ═══════════════════════════════════════════════════════════════════════
+
+class FinalizePdfRequest(BaseModel):
+    analysis_id: str
+    html: str
+
+@app.post("/api/finalize-pdf")
+async def finalize_pdf(req: FinalizePdfRequest):
+    """
+    Takes edited HTML from the frontend preview and renders it to PDF.
+    This supports the inline editing workflow where users edit text/tables
+    directly in the HTML preview and then finalize to a PDF.
+    """
+    import asyncio
+    from playwright.sync_api import sync_playwright
+
+    if not req.html:
+        raise HTTPException(status_code=400, detail="No HTML provided")
+
+    # Get the analysis state to determine file names
+    analysis = get_analysis(req.analysis_id)
+    if not analysis or not analysis.get("result"):
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    state = analysis["result"]
+
+    licensee = state.get("licensee_name", "Unknown")
+    fy = state.get("financial_year", "2024-25")
+    safe_name = licensee.replace(" ", "_").replace("/", "-")
+
+    output_dir = Path("output_orders")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save edited HTML
+    html_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}_edited.html"
+    html_path.write_text(req.html, encoding="utf-8")
+
+    # Render PDF with Playwright
+    pdf_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}.pdf"
+
+    # Check if file is locked
+    final_pdf_path = pdf_path
+    if pdf_path.exists():
+        try:
+            with open(pdf_path, "a"):
+                pass
+        except PermissionError:
+            import datetime
+            ts = datetime.datetime.now().strftime("%H%M%S")
+            final_pdf_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}_{ts}.pdf"
+
+    html_uri = f"file:///{html_path.resolve().as_posix()}"
+
+    def render_pdf():
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(html_uri, wait_until="networkidle")
+            page.pdf(
+                path=str(final_pdf_path),
+                format="A4",
+                margin={"top": "2.5cm", "bottom": "2.5cm", "left": "3.0cm", "right": "3.0cm"},
+                print_background=True,
+                display_header_footer=True,
+                header_template='<span style="font-size: 8px;"></span>',
+                footer_template='<div style="font-size: 10px; width: 100%; text-align: center;"><span class="pageNumber"></span></div>'
+            )
+            browser.close()
+
+    loop = asyncio.get_event_loop()
+    try:
+        await loop.run_in_executor(None, render_pdf)
+    except Exception as e:
+        logger.error(f"PDF finalization failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"PDF rendering failed: {str(e)}")
+
+    # Update analysis state with new PDF path
+    state["output_pdf_path"] = str(final_pdf_path)
+    state["pdf_available"] = True
+    save_analysis(req.analysis_id, "COMPLETED", state)
+
+    logger.info(f"Finalized PDF at: {final_pdf_path}")
+    return {
+        "pdf_url": f"/api/download/{req.analysis_id}",
+        "analysis_id": req.analysis_id,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Court Hearing Data
+# ═══════════════════════════════════════════════════════════════════════
+
+class HearingDataRequest(BaseModel):
+    analysis_id: str
+    hearing_date: str = ""
+    licensee_submissions: List[str] = []
+    respondent_position: str = ""
+    commission_observations: str = ""
+
+@app.post("/api/hearing-data")
+async def save_hearing_data(req: HearingDataRequest):
+    """Save court hearing details into the analysis result for order generation."""
+    data = get_analysis(req.analysis_id)
+    if not data or data["status"] != "COMPLETED":
+        raise HTTPException(404, "Analysis not found or not completed")
+
+    result = data["result"]
+
+    # Store court hearing data in the result — json_builder reads state.get("court_hearing")
+    result["court_hearing"] = {
+        "hearing_date": req.hearing_date,
+        "licensee_submissions": [s for s in req.licensee_submissions if s.strip()],
+        "respondent_position": req.respondent_position,
+        "commission_observations": req.commission_observations,
+    }
+
+    save_analysis(req.analysis_id, "COMPLETED", result)
+
+    logger.info(f"[{req.analysis_id}] Court hearing data saved: date={req.hearing_date}, "
+                f"{len(req.licensee_submissions)} submissions")
+
+    return {
+        "status": "success",
+        "message": "Hearing details saved. They will appear in the next order generation.",
+    }
+
+
 # ═══════════════════════════════════════════════════════════════════════
 # Reference Data Routes
 # ═══════════════════════════════════════════════════════════════════════
@@ -372,6 +655,215 @@ REFERENCE_ORDERS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ── Economic Indicators ────────────────────────────────────────────────
+
+class RMOneTimeItem(BaseModel):
+    description: str
+    amount: float
+    manual: Optional[bool] = True
+
+class RMOneTimeRequest(BaseModel):
+    analysis_id: str
+    selected_indices: List[int] = []  # indices of items marked as one-time
+    manual_items: Optional[List[RMOneTimeItem]] = None  # manually added items from UI
+
+@app.post("/api/rm-onetime")
+async def apply_rm_onetime(req: RMOneTimeRequest):
+    """Apply user's one-time R&M selections and recalculate approved amount."""
+    data = get_analysis(req.analysis_id)
+    if not data or data["status"] != "COMPLETED":
+        raise HTTPException(404, "Analysis not found or not completed")
+
+    result = data["result"]
+    rm_norm = result.get("rm_norm", 0.0)
+
+    # Use manual items from frontend (they include all selected items)
+    if req.manual_items:
+        selected_items = [{"description": it.description, "amount": it.amount} for it in req.manual_items]
+    else:
+        rm_items = result.get("rm_line_items", [])
+        selected_items = []
+        for idx in req.selected_indices:
+            if 0 <= idx < len(rm_items):
+                selected_items.append(rm_items[idx])
+
+    if not selected_items:
+        raise HTTPException(400, "No R&M items selected")
+
+    # Calculate one-time total from selected items
+    one_time_total = sum(float(it.get("amount", 0.0)) for it in selected_items)
+
+
+    # New approved R&M = norm + one-time items
+    new_approved_rm = round(rm_norm + one_time_total, 2)
+    claimed_rm = 0.0
+
+    # Update components
+    for comp in result.get("components", []):
+        if comp["key"] == "repair_maintenance":
+            claimed_rm = comp["claimed"]
+            # Cap at claimed (can't approve more than claimed)
+            new_approved_rm = min(new_approved_rm, claimed_rm)
+            old_approved = comp["approved"]
+            comp["approved"] = new_approved_rm
+            comp["variance"] = round(new_approved_rm - claimed_rm, 2)
+            comp["variance_pct"] = round((comp["variance"] / claimed_rm * 100), 2) if claimed_rm != 0 else 0.0
+            if abs(comp["variance"]) < 0.01:
+                comp["status"] = "approved"
+                comp["status_label"] = "Approved as Claimed"
+            elif comp["variance"] < 0:
+                comp["status"] = "reduced"
+                comp["status_label"] = "Reduced"
+            else:
+                comp["status"] = "increased"
+                comp["status_label"] = "Increased"
+
+            # Build justification with one-time items
+            items_desc = "; ".join(
+                f"{it['description']} (Rs. {it['amount']:.2f}L)" for it in selected_items
+            )
+            comp["justification"] = (
+                f"The MYT normative R&M is Rs. {rm_norm:,.2f} Lakhs. "
+                f"The following {len(selected_items)} item(s) were classified as "
+                f"one-time expenditure under Regulation 80(3): {items_desc}. "
+                f"Total one-time: Rs. {one_time_total:,.2f} Lakhs. "
+                f"Approved R&M = Rs. {rm_norm:,.2f} (norm) + Rs. {one_time_total:,.2f} "
+                f"(one-time) = Rs. {new_approved_rm:,.2f} Lakhs."
+            )
+            break
+
+    # Update approved_expenses
+    approved_expenses = result.get("approved_expenses", {})
+    if "repair_maintenance" in approved_expenses:
+        approved_expenses["repair_maintenance"] = new_approved_rm
+        total_exp = sum(v for k, v in approved_expenses.items() if k != "section3_1_duty")
+        result["total_approved_expenditure"] = total_exp
+        result["final_revenue_gap_surplus"] = result.get("total_approved_revenue", 0.0) - total_exp
+
+    # Update disallowances
+    cut = round(claimed_rm - new_approved_rm, 2)
+    result["disallowances"] = [
+        d for d in result.get("disallowances", [])
+        if "repair" not in d.get("item", "").lower() and "maintenance" not in d.get("item", "").lower()
+    ]
+    if cut > 0.01:
+        items_desc = "; ".join(
+            f"{it['description']} (Rs. {it['amount']:.2f}L)" for it in selected_items
+        )
+        result["disallowances"].append({
+            "item": "Repairs & Maintenance (One-Time Classified)",
+            "claimed": claimed_rm,
+            "approved": new_approved_rm,
+            "amount_cut": cut,
+            "justification": (
+                f"Approved R&M = MYT norm Rs. {rm_norm:,.2f}L + one-time expenditure "
+                f"Rs. {one_time_total:,.2f}L ({len(selected_items)} items). "
+                f"One-time items: {items_desc}. "
+                f"Remaining excess of Rs. {cut:,.2f}L is disallowed."
+            ),
+        })
+
+    # Store selected items in the result for future reference
+    result["rm_line_items"] = selected_items
+    for item in result["rm_line_items"]:
+        item["is_one_time"] = True
+
+    # Save updated result
+    save_analysis(req.analysis_id, "COMPLETED", result)
+
+    return JSONResponse({
+        "status": "success",
+        "new_approved_rm": new_approved_rm,
+        "one_time_total": one_time_total,
+        "selected_count": len(selected_items),
+        "total_approved_expenditure": result.get("total_approved_expenditure"),
+        "final_revenue_gap_surplus": result.get("final_revenue_gap_surplus"),
+    })
+
+
+class RMContinueRequest(BaseModel):
+    analysis_id: str
+    selected_items: List[Dict[str, Any]]  # Items user selected as one-time
+
+
+@app.post("/api/rm-continue")
+async def rm_continue(req: RMContinueRequest, background_tasks: BackgroundTasks):
+    """
+    Resume pipeline after R&M review pause.
+    
+    User has selected which R&M items are one-time expenditures.
+    Pipeline continues: audit → AI audit → interest → results.
+    """
+    data = get_analysis(req.analysis_id)
+    if not data:
+        raise HTTPException(404, "Analysis not found")
+    if data["status"] != "PENDING_RM_REVIEW":
+        raise HTTPException(400, f"Analysis is not pending R&M review (status: {data['status']})")
+
+    result = data["result"]
+    partial_state = result.get("__partial_state__", {})
+    if not partial_state:
+        raise HTTPException(400, "No partial state found for resume")
+
+    # Mark pipeline as running again
+    save_analysis(req.analysis_id, "RUNNING", result)
+
+    # Apply user's R&M selections to state
+    selected_items = req.selected_items
+    for item in selected_items:
+        item["is_one_time"] = True
+    partial_state["rm_selected_items"] = selected_items
+    
+    # Calculate one-time total from selected items
+    one_time_total = sum(float(item.get("amount", 0)) for item in selected_items)
+    rm_norm = float(result.get("rm_norm", 0.0))
+    
+    # Pre-set the R&M approved amount so the auditor uses it
+    # approved_rm = norm + sum of selected one-time items
+    partial_state["rm_one_time_override"] = round(rm_norm + one_time_total, 2)
+    partial_state["rm_one_time_items"] = selected_items
+
+    logger.info(
+        f"[{req.analysis_id}] R&M review complete: "
+        f"{len(selected_items)} items selected, one-time total={one_time_total:.2f}L, "
+        f"approved R&M={rm_norm + one_time_total:.2f}L"
+    )
+
+    # Resume pipeline in background
+    async def resume_task():
+        try:
+            params = partial_state.pop("__pipeline_params__", {})
+            final_result = await _continue_pipeline_after_rm(
+                analysis_id=req.analysis_id,
+                state=partial_state,
+                params=params,
+            )
+            save_analysis(req.analysis_id, "COMPLETED", final_result)
+            
+            from src.tools.audit_trail import log_decision
+            log_decision(
+                analysis_id=req.analysis_id,
+                decision_type="rm_review_completed",
+                details=(
+                    f"R&M one-time review completed. {len(selected_items)} items selected "
+                    f"as one-time expenditure (Rs. {one_time_total:.2f}L). "
+                    f"Total approved R&M: Rs. {rm_norm + one_time_total:.2f}L."
+                ),
+                user_id="human_auditor",
+            )
+        except Exception as e:
+            logger.error(f"Pipeline resume failed: {e}")
+            save_analysis(req.analysis_id, "FAILED", {"error": str(e)})
+
+    background_tasks.add_task(resume_task)
+
+    return JSONResponse({
+        "status": "success",
+        "message": "Pipeline resuming with R&M selections",
+        "selected_count": len(selected_items),
+        "one_time_total": one_time_total,
+        "approved_rm": round(rm_norm + one_time_total, 2),
+    })
+
 
 @app.get("/api/reference/economic-indicators")
 async def list_economic_indicators():
@@ -392,6 +884,51 @@ async def save_economic_indicators(req: EconomicIndicatorsRequest):
     """Create or update economic indicators for a financial year."""
     upsert_economic_indicators(req.financial_year, req.dict())
     return {"status": "saved", "financial_year": req.financial_year}
+
+
+# ── Year-Scoped SBI Rates (for Interest & Finance Engine) ─────────────
+
+@app.get("/api/reference/rates/{financial_year}")
+async def get_rates_for_year(financial_year: str):
+    """Get SBI EBLR and retail TD rates for a specific financial year."""
+    indicators = get_economic_indicators(financial_year)
+    if not indicators:
+        return {
+            "financial_year": financial_year,
+            "sbi_eblr_april1": None,
+            "sbi_retail_td_april1": None,
+            "supply_code_sd_rate": None,
+            "found": False,
+        }
+    return {
+        "financial_year": financial_year,
+        "sbi_eblr_april1": indicators.get("sbi_eblr_april1"),
+        "sbi_retail_td_april1": indicators.get("sbi_retail_td_april1"),
+        "supply_code_sd_rate": indicators.get("supply_code_sd_rate"),
+        "found": True,
+    }
+
+
+class RatesRequest(BaseModel):
+    sbi_eblr_april1: float
+    sbi_retail_td_april1: float
+    supply_code_sd_rate: Optional[float] = 0.0675
+
+
+@app.post("/api/reference/rates/{financial_year}")
+async def save_rates_for_year(financial_year: str, req: RatesRequest):
+    """Save SBI rates for a specific financial year (April 1 value)."""
+    upsert_economic_indicators(financial_year, {
+        "financial_year": financial_year,
+        "sbi_eblr_april1": req.sbi_eblr_april1,
+        "sbi_retail_td_april1": req.sbi_retail_td_april1,
+        "supply_code_sd_rate": req.supply_code_sd_rate,
+    })
+    return {
+        "status": "saved",
+        "financial_year": financial_year,
+        "message": f"SBI rates saved for FY {financial_year}",
+    }
 
 
 # ── Reference PDF Upload → Gemini Extract ─────────────────────────────
@@ -518,6 +1055,216 @@ async def get_myt_baselines():
 # Analysis Engine
 # ═══════════════════════════════════════════════════════════════════════
 
+async def _continue_pipeline_after_rm(
+    analysis_id: str,
+    state: dict,
+    params: dict,
+) -> dict:
+    """
+    Continue pipeline from Step 2 (audit) after R&M review pause.
+    
+    This runs: audit → AI audit → final compliance → interest → results.
+    The state already has rm_one_time_override set by /api/rm-continue.
+    """
+    from src.agents.extractor import extract_petition_data
+    from src.agents.auditor import audit_petition
+    from src.agents.drafter import draft_order
+    from src.tools.normative_math import calculate_revenue_gap_surplus
+    from src.tools.db import update_progress
+
+    licensee_name = state.get("licensee_name", "")
+    financial_year = state.get("financial_year", "")
+    original_filenames = params.get("original_filenames", [])
+    inflation_rate = params.get("inflation_rate")
+    bee_energy_audit_fee = params.get("bee_energy_audit_fee")
+    iwc_interest_rate = params.get("iwc_interest_rate")
+    sbi_eblr_rate = params.get("sbi_eblr_rate")
+    sbi_retail_td_rate = params.get("sbi_retail_td_rate")
+    supply_code_sd_rate = params.get("supply_code_sd_rate")
+
+    def log(stage: str, msg: str):
+        update_progress(analysis_id, stage, msg)
+        logger.info(f"[{analysis_id}] [{stage}] {msg}")
+
+    # ── Step 2: Deterministic Audit ────────────────────────────────
+    log("audit", "Running deterministic compliance audit (with R&M selections)…")
+
+    if inflation_rate is not None:
+        state["inflation_rate_override"] = inflation_rate
+    if bee_energy_audit_fee is not None:
+        state["bee_energy_audit_fee"] = bee_energy_audit_fee
+    if iwc_interest_rate is not None:
+        state["iwc_interest_rate"] = iwc_interest_rate
+
+    loop = asyncio.get_event_loop()
+    audit_result = await asyncio.wait_for(
+        loop.run_in_executor(None, audit_petition, state),
+        timeout=180,
+    )
+    state.update(audit_result)
+    log("audit", "Deterministic audit complete")
+
+    # ── Step 2.5: Deep AI Analysis ─────────────────────────────────
+    n_comps = len(state.get("claimed_expenses", {}))
+    log("ai_audit", f"Starting parallel AI audit for {n_comps} components…")
+    try:
+        from src.workflows.truing_up_graph import run_agentic_audit
+
+        extracted_formatted = {
+            "expenses": state.get("claimed_expenses", {}),
+            "petition_text": state.get("petition_text", "")
+        }
+        baselines_formatted = {"expenses": state.get("myt_baseline_norms", {})}
+        deterministic_math = state.get("approved_expenses", {})
+
+        ai_raw = await asyncio.wait_for(
+            loop.run_in_executor(None, run_agentic_audit, extracted_formatted, baselines_formatted, deterministic_math, analysis_id),
+            timeout=480,
+        )
+
+        approved_exp = {}
+        for comp, details in ai_raw.get("expenses", {}).items():
+            approved_exp[comp] = {
+                "amount": details.get("approved", 0.0),
+                "justification": details.get("justification", "No justification provided by AI.")
+            }
+
+        ai_insights = {
+            "approved_expenses": approved_exp,
+            "justifications": {},
+            "grants_discovered": {"found": False, "total_lakhs": 0.0, "details": ""},
+            "interim_relief": {"found": False, "amount_lakhs": 0.0, "details": ""}
+        }
+        state["ai_insights"] = ai_insights
+        log("ai_audit", f"AI audit complete — {len(approved_exp)} component decisions made")
+    except asyncio.TimeoutError:
+        log("ai_audit", "AI audit timed out — using deterministic results only")
+        state["ai_insights"] = {}
+    except Exception as e:
+        log("ai_audit", f"AI audit failed: {e}")
+        state["ai_insights"] = {}
+
+    # ── Final compliance check ─────────────────────────────────────
+    log("audit", "Running final compliance check…")
+    audit_result = await asyncio.wait_for(
+        loop.run_in_executor(None, audit_petition, state),
+        timeout=180,
+    )
+    state.update(audit_result)
+
+    # ── Enforce R&M override after all audit passes ────────────────
+    rm_override = state.get("rm_one_time_override", 0.0)
+    if rm_override > 0 and "approved_expenses" in state:
+        rm_claimed = state.get("claimed_expenses", {}).get("repair_maintenance", 0.0)
+        # Cap to claimed amount (can't approve more than claimed)
+        approved_rm = min(rm_override, rm_claimed)
+        old_rm = state["approved_expenses"].get("repair_maintenance", 0.0)
+        state["approved_expenses"]["repair_maintenance"] = round(approved_rm, 2)
+        log("audit", f"R&M override enforced: Rs.{old_rm:.2f}L → Rs.{approved_rm:.2f}L (override={rm_override:.2f}L)")
+        
+        # Recalculate total approved expenditure
+        total = sum(state["approved_expenses"].get(k, 0.0) for k in state["approved_expenses"])
+        state["total_approved_expenditure"] = round(total, 2)
+        
+        # Update disallowance log for R&M to reflect user's selections
+        rm_norm = float(state.get("myt_baseline_norms", {}).get("repair_maintenance", 0.0) or 0.0)
+        one_time_total = round(approved_rm - rm_norm, 2)
+        one_time_items = state.get("rm_one_time_items", [])
+        items_desc = ", ".join(
+            f"{it.get('description', 'Item')} (Rs. {it.get('amount', 0):.2f}L)" 
+            for it in one_time_items
+        ) if one_time_items else "user-selected items"
+        
+        disallowances = state.get("disallowance_log", [])
+        # Replace existing R&M disallowance entry
+        new_disallowances = [d for d in disallowances if d.get("component") != "Repairs & Maintenance"]
+        if rm_claimed > approved_rm:
+            new_disallowances.append({
+                "component": "Repairs & Maintenance",
+                "claimed": rm_claimed,
+                "approved": approved_rm,
+                "disallowed": round(rm_claimed - approved_rm, 2),
+                "reason": (
+                    f"The claimed R&M of Rs. {rm_claimed:.2f} Lakhs was reviewed. "
+                    f"The Commission approves Rs. {rm_norm:.2f} Lakhs as the normative O&M component, "
+                    f"plus Rs. {one_time_total:.2f} Lakhs for one-time expenditures "
+                    f"({items_desc}). "
+                    f"Total approved: Rs. {approved_rm:.2f} Lakhs. "
+                    f"Disallowance of Rs. {rm_claimed - approved_rm:.2f} Lakhs under Regulation 80."
+                ),
+            })
+        state["disallowance_log"] = new_disallowances
+
+    # ── Step 2.75: Interest & Finance Charges ──────────────────────
+    log("interest", "Running Interest & Finance Charges Engine…")
+    try:
+        from src.agents.interest_finance_engine import process_interest_finance
+        state["sbi_eblr_rate"] = sbi_eblr_rate or 0.0915
+        state["sbi_retail_td_rate"] = sbi_retail_td_rate or 0.068
+        sd_rate = supply_code_sd_rate or 0.0675
+        if sd_rate > 1:
+            sd_rate = sd_rate / 100.0
+        state["supply_code_sd_rate"] = sd_rate
+
+        interest_updates = await asyncio.wait_for(
+            loop.run_in_executor(None, process_interest_finance, state),
+            timeout=120,
+        )
+        state.update(interest_updates)
+        interest_total = state.get("interest_finance_result", {}).get("total_approved_interest_expense", 0.0)
+        log("interest", f"Interest engine complete: Rs.{interest_total:.2f}L")
+
+        ag_adj = state.get("ag_adjustment_for_bank_charges", 0.0)
+        if ag_adj > 0:
+            current_ag = float(state.get("approved_expenses", {}).get("admin_general", 0.0))
+            state["approved_expenses"]["admin_general"] = round(current_ag - ag_adj, 2)
+    except Exception as e:
+        log("interest", f"Interest engine failed (non-fatal): {e}")
+        state["interest_finance_result"] = {}
+
+    log("draft", "PDF drafting SKIPPED (disabled temporarily)")
+
+    # ── Build response ─────────────────────────────────────────────
+    claimed = state.get("claimed_expenses", {})
+    approved = state.get("approved_expenses", {})
+    disallowances = state.get("disallowance_log", [])
+    myt_baselines = state.get("myt_baseline_norms", {})
+    components = _build_component_analysis(
+        claimed, approved, disallowances, financial_year, myt_baselines
+    )
+
+    response = {
+        "analysis_id": analysis_id,
+        "licensee_name": licensee_name,
+        "financial_year": financial_year,
+        "original_filename": ", ".join(original_filenames),
+        "timestamp": datetime.now().isoformat(),
+        "total_claimed_expenditure": state.get("total_claimed_expenditure", 0),
+        "total_approved_expenditure": state.get("total_approved_expenditure", 0),
+        "total_claimed_revenue": state.get("total_claimed_revenue", 0),
+        "total_approved_revenue": state.get("total_approved_revenue", 0),
+        "final_revenue_gap_surplus": state.get("final_revenue_gap_surplus", 0),
+        "imputed_interest": state.get("imputed_interest_on_surplus", 0),
+        "components": components,
+        "disallowances": disallowances,
+        "claimed_revenues": state.get("claimed_revenues", {}),
+        "claimed_distribution_loss_pct": state.get("claimed_distribution_loss_pct", 0),
+        "target_distribution_loss_pct": state.get("target_distribution_loss_pct", 0),
+        "output_pdf_path": state.get("output_pdf_path", ""),
+        "pdf_available": bool(state.get("output_pdf_path")),
+        "ai_insights": state.get("ai_insights", {}),
+        "interest_finance": state.get("interest_finance_result", {}),
+        "extraction_metadata": state.get("extraction_metadata", {}),
+        "rm_line_items": state.get("rm_line_items", []),
+        "rm_norm": float(state.get("myt_baseline_norms", {}).get("repair_maintenance", 0.0) or 0.0),
+        "rm_one_time_override": state.get("rm_one_time_override", 0.0),
+        "rm_one_time_items": state.get("rm_one_time_items", []),
+        "approved_expenses": state.get("approved_expenses", {}),
+    }
+
+    return response
+
+
 async def _run_analysis(
     analysis_id: str,
     pdf_paths: List[str],
@@ -527,6 +1274,12 @@ async def _run_analysis(
     inflation_rate: Optional[float] = None,
     bee_energy_audit_fee: Optional[float] = None,
     iwc_interest_rate: Optional[float] = None,
+    sbi_eblr_rate: Optional[float] = None,
+    sbi_retail_td_rate: Optional[float] = None,
+    supply_code_sd_rate: Optional[float] = None,
+    norm_loan_opening: Optional[float] = None,
+    sd_balance: Optional[float] = None,
+    cumulative_gap: Optional[float] = None,
 ) -> dict:
     """Run the full extraction + audit + PDF generation pipeline."""
 
@@ -608,13 +1361,45 @@ async def _run_analysis(
     except Exception as e:
         log("extract", f"Deep table extraction failed (non-fatal): {e}")
 
-    # ── Step 2: Legacy Deterministic Audit ────────────────────────
-    log("audit", "Loading MYT norms and running deterministic compliance audit…")
-
+    # ── R&M Review Pause Check ─────────────────────────────────────
+    # If R&M items were extracted and claimed R&M exceeds MYT norm,
+    # pause the pipeline so the user can select which items are one-time.
+    # Interest calculations depend on the approved R&M total, so this
+    # MUST be resolved before the audit phase runs.
     from src.knowledge.myt_loader import MYTLoader
     loader = MYTLoader()
     state["myt_baseline_norms"] = loader.load_myt_baselines(licensee_name, financial_year)
     state["accumulated_surplus"] = 0.0
+
+    rm_items = state.get("rm_line_items", [])
+    myt_norms = state.get("myt_baseline_norms", {})
+    rm_norm = float(myt_norms.get("repair_maintenance", 0.0) or 0.0)
+    claimed_rm = float(state.get("claimed_expenses", {}).get("repair_maintenance", 0.0) or 0.0)
+
+    if rm_items and rm_norm > 0.0 and claimed_rm > rm_norm:
+        # Only pause if AI found at least one ONE_TIME_RM item worth reviewing
+        one_time_items = [it for it in rm_items if it.get("classification") == "ONE_TIME_RM"]
+        if one_time_items:
+            log("rm_review", f"R&M claimed ({claimed_rm:.2f}L) > norm ({rm_norm:.2f}L) — "
+                f"{len(one_time_items)}/{len(rm_items)} items classified as one-time. Pausing for user review.")
+            # Return special signal to bg_task to pause as PENDING_RM_REVIEW
+            return {
+                "__pending_rm_review__": True,
+                "__partial_state__": state,
+                "rm_line_items": rm_items,
+                "rm_norm": rm_norm,
+                "claimed_rm": claimed_rm,
+                "licensee_name": licensee_name,
+                "financial_year": financial_year,
+            }
+        else:
+            log("extract", f"R&M items extracted ({len(rm_items)}) but all classified as Routine — no review needed, capping at norm")
+    else:
+        if rm_items:
+            log("extract", f"R&M items extracted ({len(rm_items)}) but claimed ({claimed_rm:.2f}L) <= norm ({rm_norm:.2f}L) — no review needed")
+
+    # ── Step 2: Legacy Deterministic Audit ────────────────────────
+    log("audit", "Running deterministic compliance audit…")
 
     from src.agents.auditor import audit_petition
     if inflation_rate is not None:
@@ -685,6 +1470,55 @@ async def _run_analysis(
     )
     state.update(audit_result)
 
+    # ── Step 2.75: Interest & Finance Charges Engine ───────────────
+    log("interest", "Running Interest & Finance Charges Engine (7 components)…")
+    try:
+        from src.agents.interest_finance_engine import process_interest_finance
+        # Set rates from user input (or defaults)
+        state["sbi_eblr_rate"] = sbi_eblr_rate or 0.0915  # Default 9.15%
+        state["sbi_retail_td_rate"] = sbi_retail_td_rate or 0.068  # Default 6.8%
+        # Convert supply code rate from percentage (e.g. 6.75) to decimal (0.0675) if needed
+        sd_rate = supply_code_sd_rate or 0.0675
+        if sd_rate > 1:  # User entered percentage, convert to decimal
+            sd_rate = sd_rate / 100.0
+        state["supply_code_sd_rate"] = sd_rate  # Default 6.75%
+
+        # Inject user-provided balance overrides
+        if norm_loan_opening is not None and norm_loan_opening > 0:
+            state["norm_loan_opening_override"] = norm_loan_opening
+            log("interest", f"Using user-supplied normative loan opening: Rs.{norm_loan_opening:.2f}L")
+        if sd_balance is not None and sd_balance > 0:
+            state["sd_balance_override"] = sd_balance
+            log("interest", f"Using user-supplied security deposit balance: Rs.{sd_balance:.2f}L")
+        if cumulative_gap is not None and cumulative_gap != 0:
+            state["cumulative_gap_override"] = cumulative_gap
+            log("interest", f"Using user-supplied cumulative revenue gap: Rs.{cumulative_gap:.2f}L")
+
+        interest_updates = await asyncio.wait_for(
+            loop.run_in_executor(None, process_interest_finance, state),
+            timeout=120,  # 2 min
+        )
+        state.update(interest_updates)
+        interest_total = state.get("interest_finance_result", {}).get("total_approved_interest_expense", 0.0)
+        is_provisional = state.get("interest_is_provisional", False)
+        log("interest", f"Interest engine complete: Rs.{interest_total:.2f}L"
+            f"{' (PROVISIONAL)' if is_provisional else ''}")
+
+        # Apply AG adjustment if bank charges were reclassified
+        ag_adj = state.get("ag_adjustment_for_bank_charges", 0.0)
+        if ag_adj > 0:
+            current_ag = float(state.get("approved_expenses", {}).get("admin_general", 0.0))
+            state["approved_expenses"]["admin_general"] = round(current_ag - ag_adj, 2)
+            log("interest", f"A&G reduced by Rs.{ag_adj:.2f}L for reclassified bank charges")
+
+    except asyncio.TimeoutError:
+        log("interest", "Interest engine timed out — using zero")
+        state["interest_finance_result"] = {}
+    except Exception as e:
+        log("interest", f"Interest engine failed (non-fatal): {e}")
+        logger.error(f"[{analysis_id}] Interest Engine FAILED: {e}", exc_info=True)
+        state["interest_finance_result"] = {}
+
     # ── Step 3: Generate PDF (DISABLED — re-enable later) ─────────
     # log("draft", "Generating PDF order…")
     # try:
@@ -744,8 +1578,18 @@ async def _run_analysis(
         # AI Deep Analysis Insights
         "ai_insights": state.get("ai_insights", {}),
 
+        # Interest & Finance Charges breakdown
+        "interest_finance": state.get("interest_finance_result", {}),
+
         # Extraction confidence metadata
         "extraction_metadata": state.get("extraction_metadata", {}),
+
+        # R&M one-time expenditure data for UI
+        "rm_line_items": state.get("rm_line_items", []),
+        "rm_norm": float(state.get("myt_baseline_norms", {}).get("repair_maintenance", 0.0) or 0.0),
+
+        # Keep approved_expenses for recalculation
+        "approved_expenses": state.get("approved_expenses", {}),
     }
 
     # Avoid modifying the in-memory store, it's now saved to sqlite before responding
@@ -778,6 +1622,7 @@ def _build_component_analysis(
         "other_debits":               "Other Debits",
         "section3_1_duty":            "Section 3(1) Electricity Duty",
         "other_expenses":             "Other Expenses",
+        "prior_period_employee_cost": "Prior Period Employee Cost (Wage Revision)",
     }
 
     # Build a disallowance lookup

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import CourtHearingEditor from './CourtHearingEditor'
 
 function SummaryCard({ label, value, unit, glowColor, icon }) {
     return (
@@ -107,7 +108,7 @@ function JustificationCard({ component, index, editMode, onValueChange, onJustif
     )
 }
 
-export default function ResultsDashboard({ data, onNewAnalysis }) {
+export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) {
     const isSurplus = data.final_revenue_gap_surplus >= 0
     const [editMode, setEditMode] = useState(false)
     const [components, setComponents] = useState(data.components || [])
@@ -167,6 +168,11 @@ export default function ResultsDashboard({ data, onNewAnalysis }) {
                         style={editMode ? { color: 'var(--accent)', borderColor: 'var(--border-accent)' } : {}}>
                         {editMode ? '🖊️ Editing ON' : '🖊️ Edit'}
                     </button>
+                    {onDraftOrder && (
+                        <button onClick={onDraftOrder} className="ghost-btn" style={{ borderColor: 'rgba(0,255,136,0.3)' }}>
+                            📄 Draft Order
+                        </button>
+                    )}
                     <button onClick={handleDownload} className="laser-btn" style={{ fontSize: '0.7rem', padding: '10px 20px' }}>
                         📥 Download PDF
                     </button>
@@ -211,6 +217,12 @@ export default function ResultsDashboard({ data, onNewAnalysis }) {
                     </span>
                 </div>
             )}
+
+            {/* Court Hearing Details */}
+            <CourtHearingEditor
+                analysisId={data.analysis_id}
+                existingData={data.court_hearing}
+            />
 
             {/* Comparison Table */}
             <div className="glass-card" style={{ overflow: 'hidden' }}>
@@ -274,6 +286,54 @@ export default function ResultsDashboard({ data, onNewAnalysis }) {
                     </table>
                 </div>
             </div>
+
+            {/* Prior Period Costs — shown only if petition has prior period items */}
+            {(() => {
+                const priorItems = components?.filter(c => c.key?.startsWith('prior_period_') && c.approved > 0) || []
+                if (priorItems.length === 0) return null
+                return (
+                    <div className="glass-card animate-slide-up" style={{ overflow: 'hidden', borderColor: 'rgba(180, 130, 255, 0.3)', borderWidth: 1.5 }}>
+                        <div style={{
+                            background: 'linear-gradient(135deg, rgba(180,130,255,0.08), rgba(120,80,255,0.04))',
+                            borderBottom: '1px solid rgba(180,130,255,0.2)',
+                            padding: '16px 22px',
+                            display: 'flex', alignItems: 'center', gap: 10,
+                        }}>
+                            <span style={{ fontSize: '1.2rem' }}>📋</span>
+                            <div>
+                                <span className="mono-wide" style={{ color: '#b482ff', fontSize: '10px' }}>
+                                    PRIOR PERIOD COSTS
+                                </span>
+                                <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: 2 }}>
+                                    Costs from previous periods found in the petition (e.g., wage revision arrears)
+                                </p>
+                            </div>
+                        </div>
+                        <div style={{ padding: '16px 22px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+                                {priorItems.map((item, i) => (
+                                    <div key={i} style={{
+                                        background: 'rgba(180,130,255,0.04)',
+                                        border: '1px solid rgba(180,130,255,0.15)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        padding: '16px 18px',
+                                    }}>
+                                        <p className="mono-wide" style={{ fontSize: '8px', marginBottom: 8, color: '#b482ff' }}>
+                                            {item.name}
+                                        </p>
+                                        <p style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '1.1rem', color: '#b482ff', fontVariantNumeric: 'tabular-nums' }}>
+                                            ₹{item.approved.toLocaleString('en-IN', { minimumFractionDigits: 2 })}L
+                                        </p>
+                                        <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 6, fontSize: '9px' }}>
+                                            {item.status === 'approved' ? '✓ Approved' : item.status === 'increased' ? '↑ Added by Commission' : item.status}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )
+            })()}
 
             {/* Justifications */}
             <div>

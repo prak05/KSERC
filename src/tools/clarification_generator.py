@@ -1,4 +1,4 @@
-"""
+﻿"""
 KSERC Truing-Up — Clarification Letter Generator
 ==================================================
 Module  : clarification_generator.py
@@ -22,6 +22,7 @@ import logging
 from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("kserc.clarification_generator")
 
@@ -129,7 +130,7 @@ def generate_clarification_letter(
 
         letter_text = generate(
             prompt=prompt,
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
             temperature=0.3,  # slight creativity for natural letter writing
             response_mime_type="text/plain",
             system_instruction=_SYSTEM_PROMPT,

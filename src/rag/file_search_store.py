@@ -1,4 +1,4 @@
-"""
+﻿"""
 Gemini File Search Store — replaces the old custom RAG pipeline.
 
 Uses the google-genai Files API to:
@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from dotenv import load_dotenv
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("kserc.file_search")
 load_dotenv()
@@ -259,7 +260,7 @@ _regulation_cache_name: Optional[str] = None
 def create_regulation_cache(
     categories: Optional[List[str]] = None,
     ttl: str = "3600s",
-    model: str = "gemini-2.5-pro",
+    model: str = GEMINI_MODEL,
 ) -> Optional[str]:
     """
     Create a Gemini context cache for regulation documents.
@@ -349,7 +350,7 @@ def create_regulation_cache(
 def query_regulations(
     question: str,
     categories: Optional[List[str]] = None,
-    model: str = "gemini-2.5-pro",
+    model: str = GEMINI_MODEL,
     use_cache: bool = True,
 ) -> str:
     """

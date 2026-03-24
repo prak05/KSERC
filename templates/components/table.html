@@ -1,0 +1,95 @@
+{# Reusable data table component — supports 2-col, 3-col (MYT), and custom schemas #}
+<div class="table-wrapper">
+    {% if table.caption %}
+    <p class="table-caption">Table {{ table.number }}: {{ table.caption }}</p>
+    {% endif %}
+    {% if table.unit %}
+    <p class="table-unit">{{ table.unit }}</p>
+    {% endif %}
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% for col in table.columns %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table.rows %}
+            <tr class="{% if row.is_total is defined and row.is_total %}total-row{% endif %}{% if row.is_header is defined and row.is_header %} header-row{% endif %}{% if row.is_gap is defined and row.is_gap %} gap-row{% endif %}">
+                {# Sl. No. column #}
+                {% if "Sl. No." in table.columns or "Sl.No." in table.columns %}
+                <td>{{ row.sl if row.sl is defined and row.sl != "" else "" }}</td>
+                {% endif %}
+
+                {# Particulars column #}
+                {% if "Particulars" in table.columns or "particular" in table.columns %}
+                <td>{{ row.particular if row.particular is defined else "" }}</td>
+                {% endif %}
+
+                {# MYT Approved column (3-column format) #}
+                {% if row.myt_approved is defined %}
+                <td class="num">
+                    {% if row.myt_approved is number %}
+                    {{ "%.2f"|format(row.myt_approved) }}
+                    {% elif row.myt_approved == "" %}
+                    {% else %}
+                    {{ row.myt_approved }}
+                    {% endif %}
+                </td>
+                {% endif %}
+
+                {# Claimed column #}
+                {% if row.claimed is defined %}
+                <td class="num">
+                    {% if row.claimed is number %}
+                    {{ "%.2f"|format(row.claimed) }}
+                    {% elif row.claimed == "" %}
+                    {% else %}
+                    {{ row.claimed }}
+                    {% endif %}
+                </td>
+                {% endif %}
+
+                {# Approved column #}
+                {% if row.approved is defined %}
+                <td class="num">
+                    {% if row.approved is number %}
+                    {{ "%.2f"|format(row.approved) }}
+                    {% elif row.approved == "" %}
+                    {% else %}
+                    {{ row.approved }}
+                    {% endif %}
+                </td>
+                {% endif %}
+
+                {# For simple 2-column tables (Particulars + Amount) #}
+                {% if row.amount is defined and row.claimed is not defined %}
+                <td class="num">
+                    {% if row.amount is number %}
+                    {{ "%.2f"|format(row.amount) }}
+                    {% else %}
+                    {{ row.amount }}
+                    {% endif %}
+                </td>
+                {% endif %}
+
+                {# Generic value columns (for custom schemas like distribution loss) #}
+                {% if row.cells is defined %}
+                {% for val in row.cells %}
+                <td class="num">
+                    {% if val is number %}
+                    {{ "%.2f"|format(val) }}
+                    {% elif val == "" %}
+                    {% else %}
+                    {{ val }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

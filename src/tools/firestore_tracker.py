@@ -316,3 +316,249 @@ def _decrement_fy(fy: str) -> Optional[str]:
     except Exception:
         logger.warning(f"Could not decrement FY: {fy!r}")
         return None
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Interest & Finance — Prior Year Data Loader
+# ─────────────────────────────────────────────────────────────────────────────
+
+INTEREST_COLLECTION = "kserc_interest_finance"
+
+
+def load_interest_prior_data(
+    licensee: str,
+    fy: str,
+) -> Dict[str, Any]:
+    """
+    Load the 10 prior-year values needed by the interest finance engine.
+
+    Looks in BOTH the main kserc_truing_up collection AND the dedicated
+    kserc_interest_finance collection. The interest collection takes priority.
+
+    Returns dict with 10 keys (missing values default to 0/empty, with warnings).
+    Always returns a dict, never None — callers don't need to check for None.
+
+    Values returned:
+        1. normative_loan_closing_balance     (float)
+        2. cumulative_position_amount         (float, absolute value)
+        3. cumulative_position_type           (str, "GAP" or "SURPLUS")
+        4. security_deposit_closing_balance   (float)
+        5. approved_depreciation              (float)
+        6. surplus_funded_additions_list       (list of dicts)
+        7. litigation_bg_status               (dict: active, court_ref)
+        8. sbi_eblr_april1                    (float)
+        9. sbi_retail_td_april1               (float)
+       10. approved_revenue_previous_year     (float)
+    """
+    defaults = {
+        "normative_loan_closing_balance": 0.0,
+        "cumulative_position_amount": 0.0,
+        "cumulative_position_type": "GAP",
+        "security_deposit_closing_balance": 0.0,
+        "approved_depreciation": 0.0,
+        "surplus_funded_additions_list": [],
+        "litigation_bg_status": {"active": False, "court_reference": ""},
+        "sbi_eblr_april1": 0.0,
+        "sbi_retail_td_april1": 0.0,
+        "approved_revenue_previous_year": 0.0,
+    }
+
+    missing_fields = []
+
+    # Load from both collections
+    db = _get_firestore()
+    if db is None:
+        logger.warning("Firestore unavailable — using all defaults for interest prior data")
+        return {**defaults, "missing_fields": list(defaults.keys()), "source": "defaults"}
+
+    prior_fy = _decrement_fy(fy)
+    if not prior_fy:
+        return {**defaults, "missing_fields": list(defaults.keys()), "source": "defaults"}
+
+    result = dict(defaults)
+
+    try:
+        # Try interest-specific collection first
+        interest_doc_id = _doc_id(licensee, prior_fy)
+        interest_doc = db.collection(INTEREST_COLLECTION).document(interest_doc_id).get()
+        interest_data = interest_doc.to_dict() if interest_doc.exists else {}
+
+        # Also load from main collection
+        main_doc = db.collection(COLLECTION).document(interest_doc_id).get()
+        main_data = main_doc.to_dict() if main_doc.exists else {}
+
+        # Map fields — interest collection overrides main collection where available
+        # 1. Normative loan closing
+        val = interest_data.get("normative_loan_closing") or main_data.get("closing_normative_loan")
+        if val is not None:
+            result["normative_loan_closing_balance"] = float(val)
+        else:
+            missing_fields.append("normative_loan_closing_balance")
+
+        # 2 & 3. Cumulative position
+        cum_amount = interest_data.get("cumulative_position_amount") or abs(main_data.get("cumulative_gap_surplus", 0.0))
+        cum_type = interest_data.get("cumulative_position_type")
+        if cum_type is None:
+            # Infer from main collection: positive = surplus, negative = gap
+            raw = main_data.get("cumulative_gap_surplus", 0.0)
+            cum_type = "SURPLUS" if raw > 0 else "GAP"
+            cum_amount = abs(raw)
+        result["cumulative_position_amount"] = float(cum_amount)
+        result["cumulative_position_type"] = cum_type
+
+        # 4. Security deposit closing
+        val = interest_data.get("security_deposit_closing") or main_data.get("consumer_contribution")
+        if val is not None:
+            result["security_deposit_closing_balance"] = float(val)
+        else:
+            missing_fields.append("security_deposit_closing_balance")
+
+        # 5. Approved depreciation
+        val = interest_data.get("approved_depreciation")
+        if val is None:
+            expenses_snap = main_data.get("approved_expenses_snapshot", {})
+            val = expenses_snap.get("depreciation")
+        if val is not None:
+            result["approved_depreciation"] = float(val)
+        else:
+            missing_fields.append("approved_depreciation")
+
+        # 6. Surplus-funded additions list
+        val = interest_data.get("surplus_funded_additions_list")
+        if isinstance(val, list):
+            result["surplus_funded_additions_list"] = val
+        # Otherwise keep empty list default
+
+        # 7. Litigation BG status
+        val = interest_data.get("litigation_bg_status")
+        if isinstance(val, dict):
+            result["litigation_bg_status"] = val
+
+        # 8 & 9. Rates
+        for rate_key in ("sbi_eblr_april1", "sbi_retail_td_april1"):
+            val = interest_data.get(rate_key)
+            if val is not None:
+                result[rate_key] = float(val)
+            else:
+                missing_fields.append(rate_key)
+
+        # 10. Approved revenue previous year
+        val = interest_data.get("approved_revenue_previous_year")
+        if val is None:
+            rev_snap = main_data.get("approved_revenues_snapshot", {})
+            val = sum(rev_snap.values()) if rev_snap else None
+        if val is not None:
+            result["approved_revenue_previous_year"] = float(val)
+        else:
+            missing_fields.append("approved_revenue_previous_year")
+
+        result["missing_fields"] = missing_fields
+        result["source"] = "firestore"
+
+        if missing_fields:
+            logger.warning(
+                f"Interest prior data for {licensee} FY {prior_fy}: "
+                f"missing fields: {missing_fields}"
+            )
+        else:
+            logger.info(
+                f"Interest prior data loaded for {licensee} FY {prior_fy}: all 10 values present"
+            )
+
+        return result
+
+    except Exception as exc:
+        logger.error(f"Failed to load interest prior data: {exc}")
+        return {**defaults, "missing_fields": list(defaults.keys()), "source": "error"}
+
+
+def save_interest_finance_data(
+    licensee: str,
+    fy: str,
+    interest_result: Dict[str, Any],
+    rates: Dict[str, float],
+) -> bool:
+    """
+    Save interest & finance calculation results to Firestore.
+
+    Saves to dedicated kserc_interest_finance collection with full schema
+    per spec Part 8 for cross-year reference by next year's engine.
+
+    Parameters
+    ----------
+    licensee : str
+    fy : str
+    interest_result : dict
+        Full output from interest_finance_engine.process_interest_finance()
+    rates : dict
+        Keys: eblr, retail_td, supply_code_sd
+
+    Returns True if saved, False otherwise.
+    """
+    db = _get_firestore()
+    if db is None:
+        logger.info("Firestore unavailable — interest finance data not saved.")
+        return False
+
+    try:
+        # Extract key closing values for next year
+        comp_b = interest_result.get("component_b", {})
+        comp_d = interest_result.get("component_d", {})
+        comp_e = interest_result.get("component_e", {})
+        comp_g = interest_result.get("component_g", {})
+
+        payload = {
+            "licensee": licensee,
+            "financial_year": fy,
+            "audit_timestamp": datetime.now(timezone.utc).isoformat(),
+
+            # Key closing balances for next year
+            "normative_loan_closing": comp_b.get("closing_balance", 0.0),
+            "security_deposit_closing": comp_d.get("opening_balance", 0.0),
+            "approved_depreciation": comp_b.get("repayment_depreciation", 0.0),
+
+            # Cumulative position
+            "cumulative_position_amount": interest_result.get("cumulative_position_amount", 0.0),
+            "cumulative_position_type": interest_result.get("cumulative_position_type", "GAP"),
+
+            # Surplus-funded additions (list for multi-year tracking)
+            "surplus_funded_additions_list": interest_result.get("surplus_funded_additions_list", []),
+
+            # Litigation BG status
+            "litigation_bg_status": comp_e.get("litigation_bg_status", {"active": False, "court_reference": ""}),
+
+            # Rates used (for reference and auto-fill next year)
+            "sbi_eblr_april1": rates.get("eblr", 0.0),
+            "sbi_retail_td_april1": rates.get("retail_td", 0.0),
+
+            # Revenue (for next year WC receivables)
+            "approved_revenue_previous_year": interest_result.get("approved_revenue_total", 0.0),
+
+            # Bank charges breakdown (for audit trail)
+            "bank_charges_breakdown": comp_e.get("items", []),
+
+            # Component totals snapshot
+            "component_totals": {
+                "A_actual_loan_interest": interest_result.get("component_a", {}).get("interest_rs_lakhs", 0.0),
+                "B_normative_loan_interest": comp_b.get("interest_rs_lakhs", 0.0),
+                "C_working_capital_interest": interest_result.get("component_c", {}).get("interest_rs_lakhs", 0.0),
+                "D_security_deposit_interest": comp_d.get("interest_rs_lakhs", 0.0),
+                "E_bank_charges": comp_e.get("total_approved", 0.0),
+                "F_carrying_cost": interest_result.get("component_f", {}).get("carrying_cost_rs_lakhs", 0.0),
+                "G_notional_surplus_interest": comp_g.get("notional_amount", 0.0),
+            },
+            "total_approved_interest_expense": interest_result.get("total_approved_interest_expense", 0.0),
+            "is_provisional": interest_result.get("is_provisional", False),
+        }
+
+        doc_id = _doc_id(licensee, fy)
+        db.collection(INTEREST_COLLECTION).document(doc_id).set(payload)
+        logger.info(
+            f"Firestore: saved interest finance data for {licensee} FY {fy} "
+            f"(doc: {INTEREST_COLLECTION}/{doc_id})"
+        )
+        return True
+
+    except Exception as exc:
+        logger.error(f"Firestore interest save failed for {licensee}/{fy}: {exc}")
+        return False

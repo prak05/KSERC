@@ -1,0 +1,29 @@
+======================================================================
+Infopark FY 2024-25 — Pipeline Results
+======================================================================
+
+Total Claimed Expenditure:  Rs. 1342.09 L
+Total Approved Expenditure: Rs. 1319.89 L
+Total Claimed Revenue:      Rs. 1262.32 L
+Total Approved Revenue:     Rs. 1262.32 L
+Revenue Gap/Surplus:        Rs. -57.57 L
+
+COMPONENT SUMMARY:
+Component                                   MYT    Claimed   Approved Status
+------------------------------------------------------------------------------------------
+  Power Purchase Cost                    541.95    1023.94     1040.8  increased
+  Employee Cost                           25.04      29.86      27.99  reduced
+  Repairs & Maintenance                   26.41       58.3      26.41  reduced
+  Administration & General Expenses        5.11      10.06       5.11  reduced
+  Depreciation                            47.21      47.21      47.21  approved
+  Interest on Long-Term Loans             45.23      56.33      57.91  increased
+  Interest on Consumer Security Deposi     4.71       9.13       8.41  reduced
+  Interest on Working Capital              0.39       8.89       8.73  reduced
+  Carrying Cost on Revenue Gaps           53.93      62.26      62.26  approved
+  Return on Net Fixed Assets (RoNFA)       38.7      36.11      36.11  approved
+  Other Debits                              0.0        0.0        0.0  approved
+  Section 3(1) Electricity Duty             0.0        0.0        0.0  approved
+  Other Expenses                            0.0        0.0        0.0  approved
+
+DISALLOWANCES:
+----------------------------------------------------------------------

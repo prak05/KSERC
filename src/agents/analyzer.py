@@ -1,4 +1,4 @@
-"""
+﻿"""
 Deep AI Analyzer Agent — The AI KSERC Commission
 ===================================================
 Uses Gemini with Google Search Grounding to act as the KSERC Commission.
@@ -22,6 +22,7 @@ import os
 import re
 from pathlib import Path
 from typing import Any, Dict, List
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("kserc.analyzer")
 
@@ -260,7 +261,7 @@ def analyze_petition_deep(
     try:
         raw = generate(
             full_prompt,
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
             temperature=0.1,
             response_mime_type="application/json",
             system_instruction=(

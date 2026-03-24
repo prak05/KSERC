@@ -1,0 +1,236 @@
+{
+  "meta": {
+    "licensee_name": "Unknown",
+    "financial_year": "Unknown",
+    "analysis_id": "",
+    "timestamp": "2026-03-23T11:31:20.359911",
+    "original_filenames": ""
+  },
+  "cover": {
+    "licensee_name": "",
+    "licensee_full_name": "",
+    "financial_year": "",
+    "order_type": "Truing Up",
+    "petition_details": "Truing Up of Accounts of  for FY "
+  },
+  "introduction": {
+    "paragraphs": [
+      {
+        "seq": 1,
+        "text": " is a deemed distribution licensee under Section 14 of the Electricity Act, 2003, operating in the area notified by the Government of Kerala. The licensee filed a petition for Truing Up of accounts for the financial year  before the Kerala State Electricity Regulatory Commission."
+      },
+      {
+        "seq": 2,
+        "text": "The licensee has claimed a total expenditure of Rs. 0.00 Lakhs and total revenue of Rs. 0.00 Lakhs for FY . The petition was filed along with the audited annual accounts, ARR schedules, and supporting annexures as required under the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021."
+      }
+    ],
+    "tables": []
+  },
+  "hearing": {
+    "paragraphs": []
+  },
+  "sections": [
+    {
+      "id": "energy_sales",
+      "title": "Energy Sales and Revenue",
+      "paragraphs": [
+        {
+          "seq": 3,
+          "text": "The Commission has examined the energy sales data submitted by  for FY . The licensee has reported category-wise energy sales and the corresponding revenue realized."
+        }
+      ],
+      "tables": [],
+      "decision": null
+    },
+    {
+      "id": "distribution_loss",
+      "title": "Distribution Loss",
+      "paragraphs": [
+        {
+          "seq": 4,
+          "text": "The licensee has reported an actual distribution loss of 0% for FY . The target distribution loss approved in the MYT Order is 0%."
+        },
+        {
+          "seq": 5,
+          "text": "The actual distribution loss of 0% is within the target of 0% approved in the MYT Order. No penalty for excess distribution loss is applicable."
+        }
+      ],
+      "tables": [],
+      "decision": "The actual distribution loss of 0% is within the target of 0% approved in the MYT Order. No penalty for excess distribution loss is applicable."
+    },
+    {
+      "id": "revenue_from_sale",
+      "title": "Revenue from Sale of Power",
+      "paragraphs": [
+        {
+          "seq": 6,
+          "text": "The licensee has reported revenue from sale of power of Rs. 0.00 Lakhs for FY . The Commission has examined the category-wise energy sales and the corresponding tariff revenue."
+        },
+        {
+          "seq": 7,
+          "text": "The Commission approves the revenue from sale of power at Rs. 0.00 Lakhs for FY  as reported by the licensee.",
+          "is_decision": true
+        }
+      ],
+      "tables": [],
+      "decision": "The Commission approves the revenue from sale of power at Rs. 0.00 Lakhs for FY  as reported by the licensee."
+    },
+    {
+      "id": "wheeling_charges",
+      "title": "Wheeling Charges",
+      "paragraphs": [
+        {
+          "seq": 8,
+          "text": "The licensee has not reported any wheeling charge income for FY ."
+        }
+      ],
+      "tables": [],
+      "decision": null
+    },
+    {
+      "id": "non_tariff_income",
+      "title": "Non-Tariff Income",
+      "paragraphs": [
+        {
+          "seq": 9,
+          "text": "The licensee has not reported any non-tariff income for FY ."
+        }
+      ],
+      "tables": [],
+      "decision": null
+    },
+    {
+      "id": "arr_gap",
+      "title": "Approved ARR and Revenue Gap",
+      "paragraphs": [
+        {
+          "seq": 10,
+          "text": "After examination of all expense heads and revenue items, the Commission approves a total expenditure of Rs. 0.00 Lakhs and total revenue of Rs. 0.00 Lakhs for  for FY ."
+        },
+        {
+          "seq": 11,
+          "text": "The Commission determines a revenue surplus of Rs. 0.00 Lakhs for FY . This surplus shall be carried forward and adjusted in the next tariff revision.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Approved ARR and Revenue Summary",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Sl. No.",
+            "Particulars",
+            "Claimed by Licensee",
+            "Approved by Commission"
+          ],
+          "rows": [
+            {
+              "sl": "",
+              "particular": "EXPENDITURE",
+              "claimed": "",
+              "approved": "",
+              "is_header": true
+            },
+            {
+              "sl": "",
+              "particular": "A. TOTAL APPROVED EXPENDITURE",
+              "claimed": 0,
+              "approved": 0,
+              "is_total": true
+            },
+            {
+              "sl": "",
+              "particular": "REVENUE",
+              "claimed": "",
+              "approved": "",
+              "is_header": true
+            },
+            {
+              "sl": 1,
+              "particular": "Revenue from Sale of Power",
+              "claimed": 0,
+              "approved": 0
+            },
+            {
+              "sl": "",
+              "particular": "B. TOTAL REVENUE",
+              "claimed": 0,
+              "approved": 0,
+              "is_total": true
+            },
+            {
+              "sl": "",
+              "particular": "C. REVENUE GAP / (SURPLUS) (A - B)",
+              "claimed": "",
+              "approved": 0,
+              "is_total": true,
+              "is_gap": true
+            }
+          ],
+          "number": 1
+        }
+      ],
+      "decision": "The Commission determines a revenue surplus of Rs. 0.00 Lakhs for FY . This surplus shall be carried forward and adjusted in the next tariff revision."
+    }
+  ],
+  "orders": {
+    "paragraphs": [
+      {
+        "seq": 12,
+        "text": "The Commission hereby approves a total expenditure of Rs. 0.00 Lakhs for  for FY ."
+      },
+      {
+        "seq": 13,
+        "text": "The Commission approves a total revenue of Rs. 0.00 Lakhs for  for FY ."
+      },
+      {
+        "seq": 14,
+        "text": "The revenue surplus of Rs. 0.00 Lakhs shall be carried forward and adjusted in the next tariff revision."
+      },
+      {
+        "seq": 15,
+        "text": "The licensee is directed to submit the audited accounts, update the asset register, and file a compliance report within 30 days of this order."
+      }
+    ]
+  },
+  "values": {
+    "fy": "",
+    "licensee_name": "",
+    "analysis_id": "",
+    "total_claimed_expenditure": 0,
+    "total_approved_expenditure": 0,
+    "total_claimed_revenue": 0,
+    "total_approved_revenue": 0,
+    "revenue_gap": 0,
+    "actual_loss_pct": 0,
+    "target_loss_pct": 0,
+    "revenue_from_sale_claimed": 0,
+    "revenue_from_sale_approved": 0,
+    "wheeling_charges_claimed": 0,
+    "wheeling_charges_approved": 0,
+    "non_tariff_income_claimed": 0,
+    "non_tariff_income_approved": 0,
+    "other_revenue_claimed": 0,
+    "other_revenue_approved": 0
+  },
+  "signature": {
+    "members": [
+      {
+        "name": "Sri. T.K Jose",
+        "designation": "Chairman"
+      },
+      {
+        "name": "Adv. A. J. Wilson",
+        "designation": "Member"
+      },
+      {
+        "name": "Sri. B. Pradeep",
+        "designation": "Member"
+      }
+    ],
+    "secretary": {
+      "name": "C.R.Satheesh Chandran",
+      "designation": "Secretary"
+    }
+  }
+}

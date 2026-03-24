@@ -1,4 +1,4 @@
-"""
+﻿"""
 Precedent Extractor — reads past KSERC truing-up orders and extracts
 structured data (claimed vs approved amounts, disallowances, reasoning)
 into a precedent database JSON.
@@ -12,6 +12,7 @@ import logging
 import fitz  # PyMuPDF
 from pathlib import Path
 from dotenv import load_dotenv
+from src.config import GEMINI_MODEL
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s")
@@ -225,7 +226,7 @@ def extract_from_order(order_info: dict) -> dict:
         parts.append(Part.from_data(data=png_bytes, mime_type="image/png"))
 
     model = GenerativeModel(
-        "gemini-2.5-pro",
+        GEMINI_MODEL,
         system_instruction=(
             "You are an expert KSERC financial data analyst. "
             "Extract exact numbers from the truing-up order. All amounts in Rs. Lakhs. "

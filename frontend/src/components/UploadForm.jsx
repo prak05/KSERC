@@ -18,6 +18,10 @@ export default function UploadForm({ onSubmit }) {
     const [inflationPct, setInflationPct] = useState('')
     const [sbiEblrPct, setSbiEblrPct] = useState('')
     const [beeFee, setBeeFee] = useState('')
+    const [supplyCodeRate, setSupplyCodeRate] = useState('')
+    const [normLoanOpening, setNormLoanOpening] = useState('')
+    const [sdBalance, setSdBalance] = useState('')
+    const [cumulativeGap, setCumulativeGap] = useState('')
 
     const handleDrop = (e) => {
         e.preventDefault()
@@ -37,6 +41,10 @@ export default function UploadForm({ onSubmit }) {
         formData.append('inflation_pct', inflationPct)
         formData.append('sbi_eblr_pct', sbiEblrPct)
         formData.append('bee_energy_audit_fee', beeFee)
+        formData.append('supply_code_sd_rate', supplyCodeRate)
+        formData.append('norm_loan_opening', normLoanOpening)
+        formData.append('sd_balance', sdBalance)
+        formData.append('cumulative_gap', cumulativeGap)
         onSubmit(formData)
     }
 
@@ -103,6 +111,58 @@ export default function UploadForm({ onSubmit }) {
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
                     </div>
                     <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Auto-extract</p>
+                </div>
+
+                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        🔐 SD Interest Rate
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                        <input type="number" step="0.01" value={supplyCodeRate} placeholder="6.75"
+                            onChange={e => setSupplyCodeRate(e.target.value)}
+                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>%</span>
+                    </div>
+                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Default 6.75%</p>
+                </div>
+
+                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        🏦 Norm. Loan Opening
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                        <input type="number" step="0.01" value={normLoanOpening} placeholder="Auto"
+                            onChange={e => setNormLoanOpening(e.target.value)}
+                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
+                    </div>
+                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Normative loan opening balance</p>
+                </div>
+
+                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        🔒 SD Balance
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                        <input type="number" step="0.01" value={sdBalance} placeholder="Auto"
+                            onChange={e => setSdBalance(e.target.value)}
+                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
+                    </div>
+                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Consumer security deposit balance</p>
+                </div>
+
+                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        📊 Cumulative Rev. Gap
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                        <input type="number" step="0.01" value={cumulativeGap} placeholder="Auto"
+                            onChange={e => setCumulativeGap(e.target.value)}
+                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
+                    </div>
+                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>For carrying cost calculation</p>
                 </div>
             </div>
 

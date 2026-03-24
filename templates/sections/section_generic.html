@@ -1,0 +1,20 @@
+{# Generic section: title + paragraphs + tables + decision #}
+<h2 class="section-title">{{ section.title }}</h2>
+
+{% for para in section.paragraphs %}
+{% if para.is_decision is defined and para.is_decision %}
+<p class="decision-para">
+    <span class="para-num">{{ para.seq }}.</span>
+    {{ para.text }}
+</p>
+{% else %}
+<p class="numbered-para">
+    <span class="para-num">{{ para.seq }}.</span>
+    {{ para.text }}
+</p>
+{% endif %}
+{% endfor %}
+
+{% for table in section.tables %}
+{% include "components/table.html" %}
+{% endfor %}

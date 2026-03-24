@@ -30,6 +30,8 @@ chroma_db/
 data/audit_trail/
 .file_upload_cache.json
 .benchmarks/
+cache/
+results_*.json
 
 # IDE
 .vscode/

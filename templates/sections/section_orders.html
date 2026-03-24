@@ -1,0 +1,33 @@
+{# Orders of the Commission — lettered sub-items format #}
+<div class="orders-section">
+    <h2>Orders of the Commission</h2>
+
+    {# Introductory paragraph #}
+    {% if orders.intro_para %}
+    <p class="numbered-para">
+        <span class="para-num">{{ orders.intro_para.seq }}.</span>
+        {{ orders.intro_para.text }}
+    </p>
+    {% endif %}
+
+    {# Lettered sub-items #}
+    {% if orders.order_items %}
+    <div style="margin-left: 40pt;">
+        {% for item in orders.order_items %}
+        <p style="margin: 6pt 0; text-indent: -20pt; padding-left: 20pt;">
+            ({{ item.letter }})&nbsp;&nbsp;{{ item.text }}
+        </p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Fallback: numbered paragraphs if no lettered items #}
+    {% if not orders.order_items and orders.paragraphs %}
+    {% for para in orders.paragraphs %}
+    <p class="decision-para">
+        <span class="para-num">{{ para.seq }}.</span>
+        {{ para.text }}
+    </p>
+    {% endfor %}
+    {% endif %}
+</div>

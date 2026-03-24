@@ -1,4 +1,4 @@
-"""
+﻿"""
 KSERC Cross-Licensee Learning & Norm Extractor — Gemini-powered
 =================================================================
 
@@ -25,6 +25,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -210,7 +211,7 @@ CRITICAL INSTRUCTIONS:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders", "regulations", "myt_orders"],
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
         )
         parsed = _parse_json_response(result, "KSERC Methodology")
         if parsed:
@@ -455,7 +456,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["myt_orders", "past_orders", "regulations"],
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
         )
         parsed = _parse_json_response(result, "Revised ARR&ERC")
         
@@ -554,7 +555,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders"],
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
         )
         return _parse_json_response(result, "Cross-Licensee Precedents")
     except Exception as e:
@@ -623,7 +624,7 @@ Return ONLY the JSON object, no other text.
         result = query_regulations(
             prompt,
             categories=["myt_orders"],
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
         )
         return _parse_json_response(result, "MYT Order")
     except Exception as e:
@@ -707,7 +708,7 @@ Use 0 for unchanged values. Return ONLY the JSON object, no other text.
         result = query_regulations(
             prompt,
             categories=["regulations"],
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
         )
         parsed = _parse_json_response(result, "Regulations & Amendments")
         # Filter to only numeric non-zero values (amendments_summary is string, keep it in methodology)
@@ -903,7 +904,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders", "myt_orders", "regulations"],
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
         )
         parsed = _parse_json_response(result, "Justification Analysis")
         if parsed:
@@ -1083,7 +1084,7 @@ def extract_from_uploaded_pdf(pdf_path: str) -> dict:
         raw = generate_with_pdf(
             pdf_path=pdf_path,
             prompt=_MYT_EXTRACT_PROMPT,
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
         )

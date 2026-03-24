@@ -1,15 +1,16 @@
-import logging
+﻿import logging
 from typing import Dict, Any, TypedDict
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError as FuturesTimeout
 from langgraph.graph import StateGraph, START, END
 
 from src.agents.chief_auditor import auditor
 from src.gemini_client import generate
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("truing_up_graph")
 
-COMPONENT_TIMEOUT = 60   # 60s per component max
-MAX_WORKERS       = 5    # parallel Gemini calls
+COMPONENT_TIMEOUT = 180   # 3 min per component (includes retry waits)
+MAX_WORKERS       = 2    # only 2 parallel Gemini calls to avoid 429 rate limits
 
 
 def extract_narrative(petition_text: str, component: str) -> str:
@@ -30,7 +31,7 @@ PETITION (excerpt):
     # Let any exception propagate — don't suppress failures
     result = generate(
         prompt,
-        model="gemini-2.5-pro",
+        model=GEMINI_MODEL,
         temperature=0.0,
         response_mime_type="text/plain",
     )
@@ -44,11 +45,14 @@ def process_one_component(
     myt_expenses: dict,
     deterministic_math: dict,
     analysis_id: str = "",
+    max_retries: int = 3,
 ) -> tuple[str, dict]:
     """
     Process a single expense component.
-    DOES NOT catch exceptions — any failure surfaces immediately.
+    Retries up to max_retries times on 429 RESOURCE_EXHAUSTED errors.
     """
+    import time as _time
+
     def _log(msg: str):
         if analysis_id:
             try:
@@ -58,48 +62,63 @@ def process_one_component(
                 pass
         logger.info(f"[Graph|{component}] {msg}")
 
-    myt_norm      = myt_expenses.get(component, claimed_val)
-    math_approved = deterministic_math.get(component, myt_norm)
-    math_result   = {
-        "amount": math_approved,
-        "status": "Deterministic Calculation",
-        "rule_applied": f"Math Engine Limit: {math_approved}",
-    }
+    def _is_rate_limit_error(exc: Exception) -> bool:
+        """Check if the exception is a 429 RESOURCE_EXHAUSTED error."""
+        err_str = str(exc)
+        return "429" in err_str or "RESOURCE_EXHAUSTED" in err_str
 
-    if component in ["Employee Cost", "Repairs & Maintenance", "Administration & General"]:
-        base_query = f"Regulations regarding {component} operation and maintenance expenses truing up"
-    else:
-        base_query = f"Regulations regarding {component} capital expenditure true up"
+    for attempt in range(1, max_retries + 1):
+        try:
+            myt_norm      = myt_expenses.get(component, claimed_val)
+            math_approved = deterministic_math.get(component, myt_norm)
+            math_result   = {
+                "amount": math_approved,
+                "status": "Deterministic Calculation",
+                "rule_applied": f"Math Engine Limit: {math_approved}",
+            }
 
-    # Step 1: Narrative extraction (let exceptions surface)
-    _log(f"Extracting narrative for '{component}'…")
-    licensee_narrative = extract_narrative(petition_text, component)
+            if component in ["Employee Cost", "Repairs & Maintenance", "Administration & General"]:
+                base_query = f"Regulations regarding {component} operation and maintenance expenses truing up"
+            else:
+                base_query = f"Regulations regarding {component} capital expenditure true up"
 
-    # Step 2: RAG legal context (let exceptions surface)
-    _log(f"Querying legal precedents for '{component}'…")
-    from src.rag.file_search_store import query_regulations
-    legal_context = query_regulations(f"{base_query}. Precedent for: {licensee_narrative[:300]}")
+            # Step 1: Narrative extraction
+            _log(f"Extracting narrative for '{component}'…")
+            licensee_narrative = extract_narrative(petition_text, component)
 
-    # Step 3: Chief Auditor decision (let exceptions surface)
-    _log(f"Chief Auditor analysing '{component}'…")
-    decision = auditor.analyze_component(
-        component_name=component,
-        claimed_lakhs=claimed_val,
-        myt_norm_lakhs=myt_norm,
-        math_result=math_result,
-        legal_context=legal_context,
-        licensee_narrative=licensee_narrative,
-    )
+            # Step 2: RAG legal context
+            _log(f"Querying legal precedents for '{component}'…")
+            from src.rag.file_search_store import query_regulations
+            legal_context = query_regulations(f"{base_query}. Precedent for: {licensee_narrative[:300]}")
 
-    result = {
-        "claimed":       claimed_val,
-        "approved":      decision["amount"],
-        "variance":      decision["variance"],
-        "justification": decision["justification"],
-        "myt_norm":      myt_norm,
-    }
-    _log(f"✓ '{component}' done — approved=₹{decision['amount']:.2f}L")
-    return component, result
+            # Step 3: Chief Auditor decision
+            _log(f"Chief Auditor analysing '{component}'…")
+            decision = auditor.analyze_component(
+                component_name=component,
+                claimed_lakhs=claimed_val,
+                myt_norm_lakhs=myt_norm,
+                math_result=math_result,
+                legal_context=legal_context,
+                licensee_narrative=licensee_narrative,
+            )
+
+            result = {
+                "claimed":       claimed_val,
+                "approved":      decision["amount"],
+                "variance":      decision["variance"],
+                "justification": decision["justification"],
+                "myt_norm":      myt_norm,
+            }
+            _log(f"✓ '{component}' done — approved=₹{decision['amount']:.2f}L")
+            return component, result
+
+        except Exception as e:
+            if _is_rate_limit_error(e) and attempt < max_retries:
+                wait = 10 * (2 ** (attempt - 1))  # 10s, 20s, 40s
+                _log(f"⚠️ '{component}' hit rate limit (attempt {attempt}/{max_retries}). Retrying in {wait}s…")
+                _time.sleep(wait)
+            else:
+                raise  # Non-retryable error or final attempt — let it propagate
 
 
 class AgentState(TypedDict):

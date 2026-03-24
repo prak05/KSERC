@@ -1,0 +1,1232 @@
+{
+  "meta": {
+    "licensee_name": "KDHP",
+    "financial_year": "2024-25",
+    "analysis_id": "0bb6ce75-76ef-47f6-b87e-946fc86b24a6",
+    "timestamp": "2026-03-23T14:52:50.793131",
+    "original_filenames": "1_Petition.pdf, Annex A_KDHP_Electricity FS_Audit Report Mar 25_Signed.pdf, Annex A1_Electricity Accounts_FY25_Signed.pdf, Annex B_Electricity Audit 2024-25_Audit v6 - with ARR-ERC.pdf"
+  },
+  "cover": {
+    "licensee_name": "KDHP",
+    "licensee_full_name": "Kannan Devan Hills Plantations Company Private Limited",
+    "financial_year": "2024-25",
+    "order_type": "Truing Up",
+    "petition_number": "OP No. XX/2025",
+    "order_date": "DD.MM.YYYY",
+    "hearing_date": "",
+    "in_the_matter_of": "Petition for Truing Up of Accounts of M/s Kannan Devan Hills Plantations Company Private Limited for the financial year 2024-25 under the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021.",
+    "petitioner_name": "Shri. C. P. George",
+    "petitioner_designation": "Manager (Electrical), KDHP Co. Pvt. Ltd.",
+    "respondent_name": "Kerala State Electricity Board Limited (KSEB Ltd)",
+    "respondent_designation": "Represented by Standing Counsel",
+    "petition_details": "Truing Up of Accounts of Kannan Devan Hills Plantations Company Private Limited for FY 2024-25"
+  },
+  "introduction": {
+    "paragraphs": [
+      {
+        "seq": 1,
+        "text": "M/s Kannan Devan Hills Plantations Company Private Limited is a deemed distribution licensee under Section 14 of the Electricity Act, 2003, engaged in the distribution and supply of electricity in the area notified by the Government of Kerala. The licensee filed a petition for Truing Up of accounts for the financial year 2024-25 before the Kerala State Electricity Regulatory Commission under the provisions of the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021."
+      },
+      {
+        "seq": 2,
+        "text": "The Commission has notified the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, which came into effect from 01.04.2022. The fourth control period under these Regulations is from 2022-23 to 2026-27 (5 years). The Commission has approved the Multi Year Tariff (MYT) framework for the licensee for this control period, specifying the Aggregate Revenue Requirement (ARR) for each year of the control period."
+      },
+      {
+        "seq": 3,
+        "text": "As per Regulation 3(67) of the KSERC Tariff Regulations, 2021, \"Truing Up\" means an exercise to assess the actual prudent costs incurred by the distribution licensee vis-a-vis the approved ARR and ascertain the actual gap or surplus for the year under consideration. The licensee is required to file the truing up petition within six months of the close of the financial year along with the audited annual accounts."
+      },
+      {
+        "seq": 4,
+        "text": "The licensee has claimed a total expenditure of Rs. 3,890.16 Lakhs and total revenue of Rs. 3,831.53 Lakhs for FY 2024-25, resulting in a claimed revenue gap of Rs. 58.63 Lakhs. The petition was filed along with the audited annual accounts, ARR schedules, and supporting annexures as required under the Regulations."
+      },
+      {
+        "seq": 5,
+        "text": "The petition was admitted by the Commission and a public notice was issued inviting comments and objections from the public. The petition was heard in the presence of the representatives of the petitioner and the respondent KSEB Ltd. The following table provides a summary comparison of the ARR components."
+      }
+    ],
+    "tables": [
+      {
+        "caption": "Summary of ARR for Truing Up",
+        "unit": "(Rs. in Lakhs)",
+        "columns": [
+          "Sl. No.",
+          "Particulars",
+          "Approved in ARR Order",
+          "Claimed in Truing Up Petition",
+          "Trued Up by Commission"
+        ],
+        "rows": [
+          {
+            "sl": "",
+            "particular": "EXPENDITURE",
+            "myt_approved": "",
+            "claimed": "",
+            "approved": "",
+            "is_header": true
+          },
+          {
+            "sl": 1,
+            "particular": "Power Purchase Cost",
+            "myt_approved": 3491.65,
+            "claimed": 3434.48,
+            "approved": 3415.76
+          },
+          {
+            "sl": 2,
+            "particular": "Employee Cost",
+            "myt_approved": 182.75,
+            "claimed": 257.53,
+            "approved": 203.66
+          },
+          {
+            "sl": 3,
+            "particular": "Repairs & Maintenance",
+            "myt_approved": 45.83,
+            "claimed": 51.17,
+            "approved": 45.83
+          },
+          {
+            "sl": 4,
+            "particular": "Administration & General Expenses",
+            "myt_approved": 15.14,
+            "claimed": 23.3,
+            "approved": 17.19
+          },
+          {
+            "sl": 5,
+            "particular": "Depreciation",
+            "myt_approved": 13.74,
+            "claimed": 14.5,
+            "approved": 12.61
+          },
+          {
+            "sl": 6,
+            "particular": "Interest on Long-Term Loans",
+            "myt_approved": 4.97,
+            "claimed": 71.19,
+            "approved": 6.17
+          },
+          {
+            "sl": 7,
+            "particular": "Interest on Consumer Security Deposits",
+            "myt_approved": 20.05,
+            "claimed": 0,
+            "approved": 20.05
+          },
+          {
+            "sl": 8,
+            "particular": "Interest on Working Capital",
+            "myt_approved": 38.4,
+            "claimed": 0,
+            "approved": 38.26
+          },
+          {
+            "sl": 9,
+            "particular": "Carrying Cost on Revenue Gaps",
+            "myt_approved": 0,
+            "claimed": 0,
+            "approved": 0
+          },
+          {
+            "sl": 10,
+            "particular": "Return on Net Fixed Assets (RoNFA)",
+            "myt_approved": 6.4,
+            "claimed": 5.63,
+            "approved": 5.63
+          },
+          {
+            "sl": 11,
+            "particular": "Other Debits",
+            "myt_approved": 0.33,
+            "claimed": 24.89,
+            "approved": 0.33
+          },
+          {
+            "sl": 12,
+            "particular": "Section 3(1) Electricity Duty",
+            "myt_approved": 0,
+            "claimed": 0,
+            "approved": 0
+          },
+          {
+            "sl": 13,
+            "particular": "Other Expenses",
+            "myt_approved": 0,
+            "claimed": 7.47,
+            "approved": 7.47
+          },
+          {
+            "sl": 14,
+            "particular": "Prior Period Employee Cost (Wage Revision)",
+            "myt_approved": 0,
+            "claimed": 0,
+            "approved": 27.21
+          },
+          {
+            "sl": "",
+            "particular": "A. TOTAL EXPENDITURE",
+            "myt_approved": 3819.2599999999998,
+            "claimed": 3890.16,
+            "approved": 3741.85,
+            "is_total": true
+          },
+          {
+            "sl": "",
+            "particular": "REVENUE",
+            "myt_approved": "",
+            "claimed": "",
+            "approved": "",
+            "is_header": true
+          },
+          {
+            "sl": 15,
+            "particular": "Revenue from Sale of Power",
+            "myt_approved": 0,
+            "claimed": 3707.46,
+            "approved": 3707.46
+          },
+          {
+            "sl": 16,
+            "particular": "Non-Tariff Income",
+            "myt_approved": 0,
+            "claimed": 124.07,
+            "approved": 124.07
+          },
+          {
+            "sl": "",
+            "particular": "B. TOTAL REVENUE",
+            "myt_approved": 0,
+            "claimed": 3831.53,
+            "approved": 3831.53,
+            "is_total": true
+          },
+          {
+            "sl": "",
+            "particular": "C. REVENUE GAP(-) / SURPLUS(+)  (B - A)",
+            "myt_approved": -3819.26,
+            "claimed": -58.63,
+            "approved": 89.68,
+            "is_total": true,
+            "is_gap": true
+          }
+        ],
+        "number": 1
+      }
+    ]
+  },
+  "hearing": {
+    "paragraphs": [
+      {
+        "seq": 6,
+        "text": "The petition was posted for hearing on DD.MM.YYYY. The representatives of the petitioner M/s Kannan Devan Hills Plantations Company Private Limited and the respondent M/s Kerala State Electricity Board Limited (KSEB Ltd) were present during the hearing."
+      },
+      {
+        "seq": 7,
+        "text": "The representatives of the licensee submitted that the total expenditure incurred during FY 2024-25 was Rs. 3,890.16 Lakhs and the total revenue realized was Rs. 3,831.53 Lakhs. The licensee requested the Commission to approve the truing up of accounts for FY 2024-25 as per the audited annual accounts."
+      },
+      {
+        "seq": 8,
+        "text": "The licensee further submitted that the actual distribution loss during FY 2024-25 was 9.52%, which was within the target set by the Commission in the MYT Order. The licensee claimed the benefit of efficiency gain on account of reduction in distribution loss."
+      },
+      {
+        "seq": 9,
+        "text": "Regarding employee cost, the licensee submitted that the total employee cost for FY 2024-25 was Rs. 257.53 Lakhs, which includes basic pay, dearness allowance, provident fund contribution, gratuity, leave encashment and other allowances as per the applicable pay scales and service conditions."
+      },
+      {
+        "seq": 10,
+        "text": "The respondent KSEB Ltd submitted its verification report on the petition filed by Kannan Devan Hills Plantations Company Private Limited. The respondent verified the energy input, energy sales, and distribution loss figures reported by the licensee and confirmed that the figures are in agreement with the data available with KSEB Ltd."
+      },
+      {
+        "seq": 11,
+        "text": "The Commission has heard both the parties and examined the petition in detail along with the audited annual accounts, ARR schedules and supporting annexures. The Commission has also considered the verification report submitted by KSEB Ltd. The Commission now proceeds to examine each component of the ARR and revenue on a prudence check basis."
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "energy_sales",
+      "title": "Energy Sales and Revenue",
+      "paragraphs": [
+        {
+          "seq": 12,
+          "text": "The Commission has examined the energy sales data submitted by KDHP for FY 2024-25. The licensee has reported category-wise energy sales and the corresponding revenue realized. The details are given in the table below."
+        }
+      ],
+      "tables": [],
+      "decision": null
+    },
+    {
+      "id": "distribution_loss",
+      "title": "Distribution Loss",
+      "paragraphs": [
+        {
+          "seq": 13,
+          "text": "The licensee has reported an actual distribution loss of 9.52% for FY 2024-25. The target distribution loss approved in the MYT Order is 9.07%. The details of the distribution loss computation are given in the table below."
+        },
+        {
+          "seq": 14,
+          "text": "The actual distribution loss of 9.52% is within the target of 9.07% approved in the MYT Order. No penalty for excess distribution loss is applicable.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Distribution Loss Computation",
+          "unit": "",
+          "columns": [
+            "Particulars",
+            "Amount"
+          ],
+          "rows": [
+            {
+              "particular": "Energy Sales (MU)",
+              "cells": [
+                0
+              ]
+            },
+            {
+              "particular": "Wheeled Output (MU)",
+              "cells": [
+                0
+              ]
+            },
+            {
+              "particular": "Total Output (MU)",
+              "cells": [
+                0
+              ],
+              "is_total": true
+            },
+            {
+              "particular": "Energy Input (MU)",
+              "cells": [
+                0
+              ]
+            },
+            {
+              "particular": "Distribution Loss (MU)",
+              "cells": [
+                0
+              ]
+            },
+            {
+              "particular": "Distribution Loss (%)",
+              "cells": [
+                "9.52%"
+              ]
+            },
+            {
+              "particular": "Target Loss (%)",
+              "cells": [
+                "9.07%"
+              ]
+            }
+          ],
+          "number": 2
+        }
+      ],
+      "decision": "The actual distribution loss of 9.52% is within the target of 9.07% approved in the MYT Order. No penalty for excess distribution loss is applicable."
+    },
+    {
+      "id": "ppc",
+      "title": "Power Purchase Cost",
+      "paragraphs": [
+        {
+          "seq": 15,
+          "text": "The licensee has claimed Rs. 3,434.48 Lakhs towards Power Purchase Cost for FY 2024-25."
+        },
+        {
+          "seq": 16,
+          "text": "The actual distribution loss (57.73 Lakh units) exceeds the approved target loss (54.74 Lakh units, target 9.07%). Excess loss of 2.99 Lakh units at APPC Rs. 6.26/unit = Rs. 18.72 Lakhs disallowed per Regulation 73(3). Approved PPC: Rs. 3415.76 Lakhs."
+        },
+        {
+          "seq": 17,
+          "text": "The Commission approves Rs. 3,415.76 Lakhs towards Power Purchase Cost for FY 2024-25.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Power Purchase Cost",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Amount"
+          ],
+          "rows": [
+            {
+              "particular": "Cost of Power Purchase (Claimed)",
+              "amount": 3434.48
+            },
+            {
+              "particular": "Total Approved Power Purchase Cost",
+              "amount": 3415.76,
+              "is_total": true
+            }
+          ],
+          "number": 3
+        }
+      ],
+      "decision": "The Commission approves Rs. 3,415.76 Lakhs towards Power Purchase Cost for FY 2024-25."
+    },
+    {
+      "id": "employee_cost",
+      "title": "Employee Cost",
+      "paragraphs": [
+        {
+          "seq": 18,
+          "text": "The licensee has claimed Rs. 257.53 Lakhs towards Employee Cost for FY 2024-25. The MYT approved norm for Employee Cost is Rs. 182.75 Lakhs."
+        },
+        {
+          "seq": 19,
+          "text": "The claimed Employee Expenses of Rs. 257.53 Lakhs exceeds the effective ceiling of Rs. 203.66 Lakhs (MYT norm (FY-specific) + Wage Revision (Rs. 20.91L)). The excess of Rs. 53.87 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 203.66 Lakhs. This includes Rs. 20.91 Lakhs approved on account of wage revision (uncontrollable expense, per KSERC precedent and ARR Order OP 28/2022 para 26). Precedent: In KDHP FY 2022-23 (KDHP TU 2022-23), the Commission approved Rs. 171.67 Lakhs against a claim of Rs. 179.80 Lakhs (4.5% reduction)."
+        },
+        {
+          "seq": 20,
+          "text": "The Commission approves Rs. 203.66 Lakhs towards Employee Cost for FY 2024-25, disallowing Rs. 53.87 Lakhs.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Employee Cost",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Basic Pay & Allowances",
+              "myt_approved": "",
+              "claimed": 257.53,
+              "approved": ""
+            },
+            {
+              "particular": "Terminal Benefits",
+              "myt_approved": "",
+              "claimed": 0,
+              "approved": ""
+            },
+            {
+              "particular": "Total Employee Cost",
+              "myt_approved": 182.75,
+              "claimed": 257.53,
+              "approved": 203.66,
+              "is_total": true
+            }
+          ],
+          "number": 4
+        }
+      ],
+      "decision": "The Commission approves Rs. 203.66 Lakhs towards Employee Cost for FY 2024-25, disallowing Rs. 53.87 Lakhs."
+    },
+    {
+      "id": "rm_expense",
+      "title": "Repairs & Maintenance",
+      "paragraphs": [
+        {
+          "seq": 21,
+          "text": "The licensee has claimed Rs. 51.17 Lakhs towards Repairs & Maintenance for FY 2024-25. The MYT approved norm for this component is Rs. 45.83 Lakhs."
+        },
+        {
+          "seq": 22,
+          "text": "The claimed R&M of Rs. 51.17 Lakhs was analysed item-by-item using KSERC Regulation 80(3). The Commission approves Rs. 45.83 Lakhs as the normative O&M component. Total approved: Rs. 45.83 Lakhs."
+        },
+        {
+          "seq": 23,
+          "text": "The Commission approves Rs. 45.83 Lakhs towards Repairs & Maintenance for FY 2024-25, disallowing Rs. 5.34 Lakhs.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Repairs & Maintenance",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Repairs & Maintenance",
+              "myt_approved": 45.83,
+              "claimed": 51.17,
+              "approved": 45.83,
+              "is_total": true
+            }
+          ],
+          "number": 5
+        }
+      ],
+      "decision": "The Commission approves Rs. 45.83 Lakhs towards Repairs & Maintenance for FY 2024-25, disallowing Rs. 5.34 Lakhs."
+    },
+    {
+      "id": "ag_expense",
+      "title": "Administration & General Expenses",
+      "paragraphs": [
+        {
+          "seq": 24,
+          "text": "The licensee has claimed Rs. 23.30 Lakhs towards Administration & General Expenses for FY 2024-25. The MYT approved norm for this component is Rs. 15.14 Lakhs."
+        },
+        {
+          "seq": 25,
+          "text": "The claimed Administration & General Expenses of Rs. 23.30 Lakhs exceeds the effective ceiling of Rs. 17.19 Lakhs (MYT norm (FY-specific) + BEE Energy Audit fee (change-in-law Rs. 2.05L)). The excess of Rs. 6.11 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 17.19 Lakhs. This includes Rs. 2.05 Lakhs approved as BEE-mandated Energy Audit fee (change in law, per KSERC precedent). Precedent: In KDHP FY 2022-23 (KDHP TU 2022-23), the Commission approved Rs. 19.37 Lakhs against a claim of Rs. 30.50 Lakhs (36.5% reduction)."
+        },
+        {
+          "seq": 26,
+          "text": "The Commission approves Rs. 17.19 Lakhs towards Administration & General Expenses for FY 2024-25, disallowing Rs. 6.11 Lakhs.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Administration & General Expenses",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Administration & General Expenses",
+              "myt_approved": 15.14,
+              "claimed": 23.3,
+              "approved": 17.19,
+              "is_total": true
+            }
+          ],
+          "number": 6
+        }
+      ],
+      "decision": "The Commission approves Rs. 17.19 Lakhs towards Administration & General Expenses for FY 2024-25, disallowing Rs. 6.11 Lakhs."
+    },
+    {
+      "id": "depreciation",
+      "title": "Depreciation",
+      "paragraphs": [
+        {
+          "seq": 27,
+          "text": "The licensee has claimed Rs. 14.50 Lakhs towards Depreciation for FY 2024-25. The MYT approved norm for this component is Rs. 13.74 Lakhs."
+        },
+        {
+          "seq": 28,
+          "text": "The licensee has claimed Rs.14.50 lakh as depreciation for the year. As per Regulation 27 of the Tariff Regulations 2021, no depreciation is admissible on assets created through consumer contribution, government grants, capital subsidies, or accumulated regulatory surplus. The Commission deducts Rs.0.79 lakh towards consumer contribution (from prior kserc order) (Rs.14.96L × 5.28%). The Commission hereby approves Rs.12.61 lakh as depreciation for the year."
+        },
+        {
+          "seq": 29,
+          "text": "The Commission approves Rs. 12.61 Lakhs towards Depreciation for FY 2024-25, disallowing Rs. 1.89 Lakhs.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Depreciation",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Depreciation",
+              "myt_approved": 13.74,
+              "claimed": 14.5,
+              "approved": 12.61,
+              "is_total": true
+            }
+          ],
+          "number": 7
+        }
+      ],
+      "decision": "The Commission approves Rs. 12.61 Lakhs towards Depreciation for FY 2024-25, disallowing Rs. 1.89 Lakhs."
+    },
+    {
+      "id": "interest_lt",
+      "title": "Interest on Long-Term Loans",
+      "paragraphs": [
+        {
+          "seq": 30,
+          "text": "The licensee has claimed Rs. 71.19 Lakhs towards Interest on Long-Term Loans for FY 2024-25. The MYT approved norm for this component is Rs. 4.97 Lakhs."
+        },
+        {
+          "seq": 31,
+          "text": "KSERC Regulation 26: Interest computed on normative loan basis. Opening Loan = Rs. 74.53L, Less Depreciation/Repayment = Rs. 14.50L, Closing = Rs. 60.03L. Average Normative Loan = Rs. 67.28L × 9.15% = Rs. 6.16L."
+        },
+        {
+          "seq": 32,
+          "text": "The Commission approves Rs. 6.17 Lakhs towards Interest on Long-Term Loans for FY 2024-25, disallowing Rs. 65.02 Lakhs.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Interest on Long-Term Loans",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Interest on Long-Term Loans",
+              "myt_approved": 4.97,
+              "claimed": 71.19,
+              "approved": 6.17,
+              "is_total": true
+            }
+          ],
+          "number": 8
+        }
+      ],
+      "decision": "The Commission approves Rs. 6.17 Lakhs towards Interest on Long-Term Loans for FY 2024-25, disallowing Rs. 65.02 Lakhs."
+    },
+    {
+      "id": "interest_csd",
+      "title": "Interest on Consumer Security Deposits",
+      "paragraphs": [
+        {
+          "seq": 33,
+          "text": "The licensee has not claimed any amount towards Interest on Consumer Security Deposits for FY 2024-25. However, as per Regulation 79 of the KSERC Tariff Regulations, 2021, interest on consumer security deposits is an admissible expenditure that the licensee is entitled to include in the ARR. The Commission computes this normatively based on the security deposit balance and the applicable rate prescribed under the Kerala Electricity Supply Code."
+        },
+        {
+          "seq": 34,
+          "text": "No amount claimed under Interest on Consumer Security Deposits for FY 2024-25."
+        },
+        {
+          "seq": 35,
+          "text": "The Commission approves Rs. 20.05 Lakhs towards Interest on Consumer Security Deposits for FY 2024-25.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Interest on Consumer Security Deposits",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Amount"
+          ],
+          "rows": [
+            {
+              "particular": "Consumer Security Deposit Balance (Rs. Lakhs)",
+              "amount": 0
+            },
+            {
+              "particular": "Rate of Interest (%)",
+              "amount": "—"
+            },
+            {
+              "particular": "Interest on Consumer Security Deposits",
+              "amount": 20.05,
+              "is_total": true
+            }
+          ],
+          "number": 9
+        }
+      ],
+      "decision": "The Commission approves Rs. 20.05 Lakhs towards Interest on Consumer Security Deposits for FY 2024-25."
+    },
+    {
+      "id": "interest_wc",
+      "title": "Interest on Working Capital",
+      "paragraphs": [
+        {
+          "seq": 36,
+          "text": "The licensee has not claimed any amount towards Interest on Working Capital for FY 2024-25. However, as per Regulation 78 of the KSERC Tariff Regulations, 2021, interest on normative working capital is an admissible expense. The Commission computes the normative working capital requirement and the applicable interest thereon, as the licensee is entitled to this allowance under the Regulations."
+        },
+        {
+          "seq": 37,
+          "text": "No amount claimed under Interest on Working Capital for FY 2024-25."
+        },
+        {
+          "seq": 38,
+          "text": "The Commission approves Rs. 38.26 Lakhs towards Interest on Working Capital for FY 2024-25.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Working Capital Computation",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Amount"
+          ],
+          "rows": [
+            {
+              "particular": "O&M Expenses — One Month",
+              "amount": 0
+            },
+            {
+              "particular": "Maintenance Spares (15% of R&M)",
+              "amount": 0
+            },
+            {
+              "particular": "Receivables — Two Months",
+              "amount": 0
+            },
+            {
+              "particular": "Less: Consumer Security Deposits",
+              "amount": 0
+            },
+            {
+              "particular": "Normative Working Capital",
+              "amount": 0,
+              "is_total": true
+            },
+            {
+              "particular": "Interest Rate (%)",
+              "amount": "—"
+            },
+            {
+              "particular": "Interest on Working Capital",
+              "amount": 38.26,
+              "is_total": true
+            }
+          ],
+          "number": 10
+        }
+      ],
+      "decision": "The Commission approves Rs. 38.26 Lakhs towards Interest on Working Capital for FY 2024-25."
+    },
+    {
+      "id": "carrying_cost",
+      "title": "Carrying Cost on Revenue Gaps",
+      "paragraphs": [
+        {
+          "seq": 39,
+          "text": "The licensee has not claimed any amount towards Carrying Cost on Revenue Gaps for FY 2024-25. The Commission has not approved any amount for the same."
+        }
+      ],
+      "tables": [],
+      "decision": "The licensee has not claimed any amount towards Carrying Cost on Revenue Gaps for FY 2024-25. The Commission has not approved any amount for the same."
+    },
+    {
+      "id": "ronfa",
+      "title": "Return on Net Fixed Assets (RoNFA)",
+      "paragraphs": [
+        {
+          "seq": 40,
+          "text": "The licensee has claimed Rs. 5.63 Lakhs towards Return on Net Fixed Assets (RoNFA) for FY 2024-25. The MYT approved norm for this component is Rs. 6.40 Lakhs."
+        },
+        {
+          "seq": 41,
+          "text": "Return on Net Fixed Assets of Rs. 5.63 Lakhs has been computed at 5.5% on the eligible NFA base after excluding assets funded by consumer contributions, Government grants, and normative loans. The claim is approved."
+        },
+        {
+          "seq": 42,
+          "text": "The Commission approves the claimed amount of Rs. 5.63 Lakhs towards Return on Net Fixed Assets (RoNFA) for FY 2024-25.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Return on Net Fixed Assets (RoNFA)",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Return on Net Fixed Assets (RoNFA)",
+              "myt_approved": 6.4,
+              "claimed": 5.63,
+              "approved": 5.63,
+              "is_total": true
+            }
+          ],
+          "number": 11
+        }
+      ],
+      "decision": "The Commission approves the claimed amount of Rs. 5.63 Lakhs towards Return on Net Fixed Assets (RoNFA) for FY 2024-25."
+    },
+    {
+      "id": "other_debits",
+      "title": "Other Debits",
+      "paragraphs": [
+        {
+          "seq": 43,
+          "text": "The licensee has claimed Rs. 24.89 Lakhs towards Other Debits for FY 2024-25. The MYT approved norm for this component is Rs. 0.33 Lakhs."
+        },
+        {
+          "seq": 44,
+          "text": "The claimed Other Debits of Rs. 24.89 Lakhs exceeds the MYT approved norm of Rs. 0.33 Lakhs. The Commission has consistently disallowed claims under provision for doubtful debts (no amount written off as bad debt) and bank guarantee charges related to legal proceedings against KSERC orders. Only periodical inspection charges are approved. The Commission approves Rs. 0.33 Lakhs."
+        },
+        {
+          "seq": 45,
+          "text": "The Commission approves Rs. 0.33 Lakhs towards Other Debits for FY 2024-25, disallowing Rs. 24.56 Lakhs.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Other Debits",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Other Debits",
+              "myt_approved": 0.33,
+              "claimed": 24.89,
+              "approved": 0.33,
+              "is_total": true
+            }
+          ],
+          "number": 12
+        }
+      ],
+      "decision": "The Commission approves Rs. 0.33 Lakhs towards Other Debits for FY 2024-25, disallowing Rs. 24.56 Lakhs."
+    },
+    {
+      "id": "elec_duty",
+      "title": "Section 3(1) Electricity Duty",
+      "paragraphs": [
+        {
+          "seq": 46,
+          "text": "The licensee has not claimed any amount towards Section 3(1) Electricity Duty for FY 2024-25. The Commission has not approved any amount for the same."
+        }
+      ],
+      "tables": [],
+      "decision": "The licensee has not claimed any amount towards Section 3(1) Electricity Duty for FY 2024-25. The Commission has not approved any amount for the same."
+    },
+    {
+      "id": "other_expenses",
+      "title": "Other Expenses",
+      "paragraphs": [
+        {
+          "seq": 47,
+          "text": "The licensee has claimed Rs. 7.47 Lakhs towards Other Expenses for FY 2024-25. The MYT approved norm for this component is Rs. 0.00 Lakhs."
+        },
+        {
+          "seq": 48,
+          "text": "Other Expenses of Rs. 7.47 Lakhs claimed for FY 2024-25 have been examined and found to be reasonable. Approved as claimed."
+        },
+        {
+          "seq": 49,
+          "text": "The Commission approves the claimed amount of Rs. 7.47 Lakhs towards Other Expenses for FY 2024-25.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Other Expenses",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "particular": "Other Expenses",
+              "myt_approved": 0,
+              "claimed": 7.47,
+              "approved": 7.47,
+              "is_total": true
+            }
+          ],
+          "number": 13
+        }
+      ],
+      "decision": "The Commission approves the claimed amount of Rs. 7.47 Lakhs towards Other Expenses for FY 2024-25."
+    },
+    {
+      "id": "revenue_from_sale",
+      "title": "Revenue from Sale of Power",
+      "paragraphs": [
+        {
+          "seq": 50,
+          "text": "The licensee has reported revenue from sale of power of Rs. 3,707.46 Lakhs for FY 2024-25. The Commission has examined the category-wise energy sales and the corresponding tariff revenue."
+        },
+        {
+          "seq": 51,
+          "text": "The Commission approves the revenue from sale of power at Rs. 3,707.46 Lakhs for FY 2024-25 as reported by the licensee.",
+          "is_decision": true
+        }
+      ],
+      "tables": [],
+      "decision": "The Commission approves the revenue from sale of power at Rs. 3,707.46 Lakhs for FY 2024-25 as reported by the licensee."
+    },
+    {
+      "id": "wheeling_charges",
+      "title": "Wheeling Charges",
+      "paragraphs": [
+        {
+          "seq": 52,
+          "text": "The licensee has not reported any wheeling charge income for FY 2024-25."
+        }
+      ],
+      "tables": [],
+      "decision": null
+    },
+    {
+      "id": "non_tariff_income",
+      "title": "Non-Tariff Income",
+      "paragraphs": [
+        {
+          "seq": 53,
+          "text": "The licensee has reported non-tariff income of Rs. 124.07 Lakhs for FY 2024-25, comprising delayed payment surcharge, meter rent, miscellaneous receipts and other income. The Commission approves the same."
+        }
+      ],
+      "tables": [],
+      "decision": "The licensee has reported non-tariff income of Rs. 124.07 Lakhs for FY 2024-25, comprising delayed payment surcharge, meter rent, miscellaneous receipts and other income. The Commission approves the same."
+    },
+    {
+      "id": "arr_gap",
+      "title": "Approved ARR and Revenue Gap",
+      "paragraphs": [
+        {
+          "seq": 54,
+          "text": "After examination of all expense heads and revenue items, the Commission approves a total expenditure of Rs. 3,741.85 Lakhs and total revenue of Rs. 3,831.53 Lakhs for KDHP for FY 2024-25."
+        },
+        {
+          "seq": 55,
+          "text": "The Commission determines a revenue surplus of Rs. 89.68 Lakhs for FY 2024-25. This surplus shall be carried forward and adjusted in the next tariff revision.",
+          "is_decision": true
+        }
+      ],
+      "tables": [
+        {
+          "caption": "Approved ARR and Revenue Summary",
+          "unit": "(Rs. in Lakhs)",
+          "columns": [
+            "Sl. No.",
+            "Particulars",
+            "Approved in ARR Order",
+            "Claimed in Truing Up Petition",
+            "Trued Up by Commission"
+          ],
+          "rows": [
+            {
+              "sl": "",
+              "particular": "EXPENDITURE",
+              "myt_approved": "",
+              "claimed": "",
+              "approved": "",
+              "is_header": true
+            },
+            {
+              "sl": 1,
+              "particular": "Power Purchase Cost",
+              "myt_approved": 3491.65,
+              "claimed": 3434.48,
+              "approved": 3415.76
+            },
+            {
+              "sl": 2,
+              "particular": "Employee Cost",
+              "myt_approved": 182.75,
+              "claimed": 257.53,
+              "approved": 203.66
+            },
+            {
+              "sl": 3,
+              "particular": "Repairs & Maintenance",
+              "myt_approved": 45.83,
+              "claimed": 51.17,
+              "approved": 45.83
+            },
+            {
+              "sl": 4,
+              "particular": "Administration & General Expenses",
+              "myt_approved": 15.14,
+              "claimed": 23.3,
+              "approved": 17.19
+            },
+            {
+              "sl": 5,
+              "particular": "Depreciation",
+              "myt_approved": 13.74,
+              "claimed": 14.5,
+              "approved": 12.61
+            },
+            {
+              "sl": 6,
+              "particular": "Interest on Long-Term Loans",
+              "myt_approved": 4.97,
+              "claimed": 71.19,
+              "approved": 6.17
+            },
+            {
+              "sl": 7,
+              "particular": "Interest on Consumer Security Deposits",
+              "myt_approved": 20.05,
+              "claimed": 0,
+              "approved": 20.05
+            },
+            {
+              "sl": 8,
+              "particular": "Interest on Working Capital",
+              "myt_approved": 38.4,
+              "claimed": 0,
+              "approved": 38.26
+            },
+            {
+              "sl": 9,
+              "particular": "Carrying Cost on Revenue Gaps",
+              "myt_approved": 0,
+              "claimed": 0,
+              "approved": 0
+            },
+            {
+              "sl": 10,
+              "particular": "Return on Net Fixed Assets (RoNFA)",
+              "myt_approved": 6.4,
+              "claimed": 5.63,
+              "approved": 5.63
+            },
+            {
+              "sl": 11,
+              "particular": "Other Debits",
+              "myt_approved": 0.33,
+              "claimed": 24.89,
+              "approved": 0.33
+            },
+            {
+              "sl": 12,
+              "particular": "Section 3(1) Electricity Duty",
+              "myt_approved": 0,
+              "claimed": 0,
+              "approved": 0
+            },
+            {
+              "sl": 13,
+              "particular": "Other Expenses",
+              "myt_approved": 0,
+              "claimed": 7.47,
+              "approved": 7.47
+            },
+            {
+              "sl": 14,
+              "particular": "Prior Period Employee Cost (Wage Revision)",
+              "myt_approved": 0,
+              "claimed": 0,
+              "approved": 27.21
+            },
+            {
+              "sl": "",
+              "particular": "A. TOTAL APPROVED EXPENDITURE",
+              "myt_approved": 3819.2599999999998,
+              "claimed": 3890.16,
+              "approved": 3741.85,
+              "is_total": true
+            },
+            {
+              "sl": "",
+              "particular": "REVENUE",
+              "myt_approved": "",
+              "claimed": "",
+              "approved": "",
+              "is_header": true
+            },
+            {
+              "sl": 15,
+              "particular": "Revenue from Sale of Power",
+              "myt_approved": 0,
+              "claimed": 3707.46,
+              "approved": 3707.46
+            },
+            {
+              "sl": 16,
+              "particular": "Non-Tariff Income",
+              "myt_approved": 0,
+              "claimed": 124.07,
+              "approved": 124.07
+            },
+            {
+              "sl": "",
+              "particular": "B. TOTAL REVENUE",
+              "myt_approved": 0,
+              "claimed": 3831.53,
+              "approved": 3831.53,
+              "is_total": true
+            },
+            {
+              "sl": "",
+              "particular": "C. REVENUE GAP(-) / SURPLUS(+)  (B - A)",
+              "myt_approved": -3819.26,
+              "claimed": -58.63,
+              "approved": 89.68,
+              "is_total": true,
+              "is_gap": true
+            }
+          ],
+          "number": 14
+        }
+      ],
+      "decision": "The Commission determines a revenue surplus of Rs. 89.68 Lakhs for FY 2024-25. This surplus shall be carried forward and adjusted in the next tariff revision."
+    }
+  ],
+  "orders": {
+    "intro_para": {
+      "seq": 45,
+      "text": "Having considered the petition, the audited accounts, the submissions of the licensee, and the provisions of the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021, the Commission hereby orders as follows:"
+    },
+    "order_items": [
+      {
+        "letter": "a",
+        "text": "The total approved expenditure for KDHP for FY 2024-25 is Rs. 3,741.85 Lakhs."
+      },
+      {
+        "letter": "b",
+        "text": "The total approved revenue for KDHP for FY 2024-25 is Rs. 3,831.53 Lakhs."
+      },
+      {
+        "letter": "c",
+        "text": "The revenue surplus of Rs. 89.68 Lakhs is determined for FY 2024-25. This surplus shall be carried forward and adjusted in the next tariff determination."
+      },
+      {
+        "letter": "d",
+        "text": "The licensee is directed to submit the compliance report along with the updated asset register within 30 days of this order."
+      }
+    ],
+    "paragraphs": []
+  },
+  "values": {
+    "fy": "2024-25",
+    "licensee_name": "KDHP",
+    "analysis_id": "0bb6ce75-76ef-47f6-b87e-946fc86b24a6",
+    "total_claimed_expenditure": 3890.16,
+    "total_approved_expenditure": 3741.85,
+    "total_claimed_revenue": 3831.53,
+    "total_approved_revenue": 3831.53,
+    "revenue_gap": 89.68,
+    "actual_loss_pct": 9.52,
+    "target_loss_pct": 9.07,
+    "revenue_from_sale_claimed": 3707.46,
+    "revenue_from_sale_approved": 3707.46,
+    "wheeling_charges_claimed": 0,
+    "wheeling_charges_approved": 0,
+    "non_tariff_income_claimed": 124.07,
+    "non_tariff_income_approved": 124.07,
+    "other_revenue_claimed": 0,
+    "other_revenue_approved": 0,
+    "claimed_power_purchase_cost": 3434.48,
+    "approved_power_purchase_cost": 3415.76,
+    "myt_power_purchase_cost": 3491.65,
+    "variance_power_purchase_cost": -18.72,
+    "claimed_employee_cost": 257.53,
+    "approved_employee_cost": 203.66,
+    "myt_employee_cost": 182.75,
+    "variance_employee_cost": -53.87,
+    "claimed_repair_maintenance": 51.17,
+    "approved_repair_maintenance": 45.83,
+    "myt_repair_maintenance": 45.83,
+    "variance_repair_maintenance": -5.34,
+    "claimed_admin_general": 23.3,
+    "approved_admin_general": 17.19,
+    "myt_admin_general": 15.14,
+    "variance_admin_general": -6.11,
+    "claimed_depreciation": 14.5,
+    "approved_depreciation": 12.61,
+    "myt_depreciation": 13.74,
+    "variance_depreciation": -1.89,
+    "claimed_interest_long_term": 71.19,
+    "approved_interest_long_term": 6.17,
+    "myt_interest_long_term": 4.97,
+    "variance_interest_long_term": -65.02,
+    "claimed_interest_consumer_deposits": 0,
+    "approved_interest_consumer_deposits": 20.05,
+    "myt_interest_consumer_deposits": 20.05,
+    "variance_interest_consumer_deposits": 20.05,
+    "claimed_interest_working_capital": 0,
+    "approved_interest_working_capital": 38.26,
+    "myt_interest_working_capital": 38.4,
+    "variance_interest_working_capital": 38.26,
+    "claimed_carrying_cost": 0,
+    "approved_carrying_cost": 0,
+    "myt_carrying_cost": 0,
+    "variance_carrying_cost": 0,
+    "claimed_return_on_nfa": 5.63,
+    "approved_return_on_nfa": 5.63,
+    "myt_return_on_nfa": 6.4,
+    "variance_return_on_nfa": 0,
+    "claimed_other_debits": 24.89,
+    "approved_other_debits": 0.33,
+    "myt_other_debits": 0.33,
+    "variance_other_debits": -24.56,
+    "claimed_section3_1_duty": 0,
+    "approved_section3_1_duty": 0,
+    "myt_section3_1_duty": 0,
+    "variance_section3_1_duty": 0,
+    "claimed_other_expenses": 7.47,
+    "approved_other_expenses": 7.47,
+    "myt_other_expenses": 0,
+    "variance_other_expenses": 0,
+    "claimed_prior_period_employee_cost": 0,
+    "approved_prior_period_employee_cost": 27.21,
+    "myt_prior_period_employee_cost": 0,
+    "variance_prior_period_employee_cost": 27.21,
+    "norm_loan_opening": 73.01,
+    "norm_loan_closing": 61.92,
+    "norm_loan_average": 67.47,
+    "eblr_rate": 0.0915,
+    "norm_loan_interest": 6.17,
+    "wc_om_one_month": 22.22,
+    "wc_receivables": 617.91,
+    "wc_maintenance_spares": 0,
+    "wc_security_deposit": 297.01,
+    "wc_net": 343.12,
+    "wc_rate": 0.1115,
+    "wc_interest": 38.26,
+    "sd_balance": 297.01,
+    "sd_rate": 0.0675,
+    "sd_interest": 20.05,
+    "total_interest_expense": 135.67,
+    "approved_exp_section3_1_duty": 0,
+    "approved_exp_power_purchase_cost": 3415.76,
+    "approved_exp_repair_maintenance": 45.83,
+    "approved_exp_prior_period_employee_cost": 27.21,
+    "approved_exp_employee_cost": 203.66,
+    "approved_exp_admin_general": 17.19,
+    "approved_exp_depreciation": 12.61,
+    "approved_exp_interest_long_term": 6.17,
+    "approved_exp_interest_consumer_deposits": 20.05,
+    "approved_exp_interest_working_capital": 38.26,
+    "approved_exp_carrying_cost": 0,
+    "approved_exp_return_on_nfa": 5.63,
+    "approved_exp_other_debits": 0.33,
+    "approved_exp_other_expenses": 7.47,
+    "approved_exp_interest_finance": 135.67
+  },
+  "signature": {
+    "members": [
+      {
+        "name": "Sri. T.K Jose",
+        "designation": "Chairman"
+      },
+      {
+        "name": "Adv. A. J. Wilson",
+        "designation": "Member"
+      },
+      {
+        "name": "Sri. B. Pradeep",
+        "designation": "Member"
+      }
+    ],
+    "secretary": {
+      "name": "C.R.Satheesh Chandran",
+      "designation": "Secretary"
+    }
+  }
+}

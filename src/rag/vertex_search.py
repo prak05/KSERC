@@ -47,7 +47,7 @@ logger = logging.getLogger("kserc.vertex_search")
 # Configuration
 # ─────────────────────────────────────────────────────────────────────
 
-GCP_PROJECT_ID         = os.getenv("GCP_PROJECT_ID", "kserc-489316")
+GCP_PROJECT_ID         = os.getenv("GCP_PROJECT_ID", "kserc-trueup-v2")
 VERTEX_SEARCH_APP_ID   = os.getenv("VERTEX_SEARCH_APP_ID", "")
 VERTEX_SEARCH_LOCATION = os.getenv("VERTEX_SEARCH_LOCATION", "global")
 _AVAILABLE: Optional[bool] = None  # Cached availability check
@@ -124,7 +124,7 @@ def search(
         }
 
         # Use data store path directly — engine-based path returns 404 on new engines
-        DATA_STORE_ID = "kserc-regulatory-docs"
+        DATA_STORE_ID = "kserc-docs-store"
         url = (
             f"https://discoveryengine.googleapis.com/v1/projects/{GCP_PROJECT_ID}"
             f"/locations/{VERTEX_SEARCH_LOCATION}/collections/default_collection"

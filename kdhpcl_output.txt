@@ -1,0 +1,29 @@
+==========================================================================================
+KDHPCL FY 2024-25 — Pipeline Results
+==========================================================================================
+
+Total Claimed Expenditure:  Rs. 3855.06 L
+Total Approved Expenditure: Rs. 3734.17 L
+Total Claimed Revenue:      Rs. 3744.01 L
+Total Approved Revenue:     Rs. 3744.01 L
+Revenue Gap/Surplus:        Rs. 9.84 L
+
+COMPONENT SUMMARY:
+Component                                     MYT    Claimed   Approved  Status
+------------------------------------------------------------------------------------------
+  Power Purchase Cost                     3491.65    3434.48    3415.76  reduced
+  Employee Cost                            182.75     257.53     203.66  reduced
+  Repairs & Maintenance                     45.83      51.17      45.83  reduced
+  Administration & General Expenses         15.14       23.3      15.14  reduced
+  Depreciation                              13.74       14.5      12.61  reduced
+  Interest on Long-Term Loans                4.97      41.72       6.17  reduced
+  Interest on Consumer Security Deposits    20.05        0.0      20.05  increased
+  Interest on Working Capital                38.4        0.0      38.24  increased
+  Carrying Cost on Revenue Gaps               0.0        0.0        0.0  approved
+  Return on Net Fixed Assets (RoNFA)          6.4        0.0        0.0  approved
+  Other Debits                               0.33      24.89       0.33  reduced
+  Section 3(1) Electricity Duty               0.0        0.0        0.0  approved
+  Other Expenses                              0.0       7.47       7.47  approved
+
+DISALLOWANCES:
+------------------------------------------------------------------------------------------

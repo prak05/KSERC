@@ -1,8 +1,9 @@
-import json
+﻿import json
 import logging
 from typing import Dict, Any
 
 from src.gemini_client import generate
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("chief_auditor")
 
@@ -115,7 +116,7 @@ class ChiefAuditor:
             from src.models.schemas import AuditorDecision
             raw = generate(
                 prompt,
-                model="gemini-2.5-pro",  # Fast structured JSON — no AFC loops needed
+                model=GEMINI_MODEL,  # Fast structured JSON — no AFC loops needed
                 temperature=0.0,
                 response_mime_type="application/json",
                 response_schema=AuditorDecision,

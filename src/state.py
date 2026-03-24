@@ -119,6 +119,32 @@ class TruingUpState(TypedDict):
     # ── Human-in-the-Loop ──────────────────────────────────────────────
     human_override_notes: Optional[str]  # Free-text from reviewer
 
+    # ── Interest & Finance Charges ────────────────────────────────────
+    interest_finance_result: Dict[str, Any]
+    # Full engine output: per-component results, totals, cross-verification
+    interest_prior_year_data: Dict[str, Any]
+    # 10 values loaded from Firestore for prior-year balances
+    interest_cross_verification: List[Dict[str, Any]]
+    # 6 cross-check results, each with: check_name, passed, detail
+
+    # Rates — must be provided for the financial year being trued up
+    sbi_eblr_rate: float              # SBI EBLR on April 1 (e.g. 0.0915)
+    sbi_retail_td_rate: float         # SBI retail TD 1-year rate on April 1
+    supply_code_sd_rate: float        # Kerala Electricity Supply Code SD rate
+
+    # Cross-component routing
+    notional_surplus_for_nti: float   # Component G output → feeds NTI calc
+    ag_adjustment_for_bank_charges: float  # Reclassified bank charges → reduce A&G
+
+    # File handling
+    file_classifications: Dict[str, List[str]]
+    # Maps PDF filename → list of classifications (multi-class)
+    # e.g. {"annexure_b.pdf": ["KSERC_FORMATS", "AUDITED_ACCOUNTS"]}
+
+    # Provisional tracking
+    interest_is_provisional: bool     # True if ANY component is provisional
+    interest_provisional_components: List[str]  # e.g. ["normative_loan", "working_capital"]
+
     # ── Final Output ───────────────────────────────────────────────────
     output_pdf_path: str
     clarification_pdf_path: Optional[str]  # Path to generated clarification letter PDF

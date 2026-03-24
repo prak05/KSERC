@@ -1,4 +1,4 @@
-"""
+﻿"""
 KSERC SDL Truing Up — Gemini Vision Extraction Agent
 =====================================================
 
@@ -39,6 +39,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -299,6 +300,30 @@ Extract from the CLAIMED / "Truing up filed" column (NOT the Trued Up or Approve
   - consumer_security_deposit_balance: The security deposit amount (Rs Lakhs). If not found, return 0.0.
   - maintenance_spares_wc: The maintenance spares as per norms amount (Rs Lakhs). If not found, return 0.0.
 
+STEP 6 — EXTRACT RoNFA (Return on Net Fixed Assets) COMPUTATION:
+Look for a table titled "Computation of RoNFA" or "Return on Net Fixed Assets" or "Computation of Return on NFA" specifically for the CURRENT truing-up year (e.g. "for the year 2024-25").
+*** CRITICAL: This table usually has ONLY ONE data column — the petition/truing-up values. ***
+*** If the table has multiple columns (e.g. ARR-ERC Approved vs Truing Up Filed), extract from the TRUING UP / PETITION / CLAIMED column ONLY (the LAST data column, NOT the "Approved" column). ***
+This table typically has rows:
+  - "Gross fixed assets as at 1st April" → ronfa_gross_fixed_assets
+  - "Less: Accumulated depreciation" → ronfa_accumulated_depreciation (this is the TOTAL accumulated depreciation including all prior years, e.g. Rs.241.53 + Rs.12.18 + Rs.13.74 = Rs.267.45)
+  - "Less: Consumer contribution" → ronfa_consumer_contribution
+  - "Less: NFA for which interest is allowed" or "NFA for normative loan" → ronfa_nfa_for_normative_loan
+  - "Less: Asset additions for prior year" or "Less: Asset additions for 2023-24" → ronfa_prior_year_additions
+  - "Balance value of Net fixed assets" → ronfa_balance_nfa
+  - "Rate of Return" → ronfa_rate_pct (as percentage, e.g. 5.50)
+  - "Eligible Return" or "Return on NFA" → ronfa_eligible_return
+
+Extract from the TRUING UP PETITION column (the values the licensee is claiming):
+  - ronfa_gross_fixed_assets: Gross fixed assets at start of year (Rs Lakhs). If not found, return 0.0.
+  - ronfa_accumulated_depreciation: Total accumulated depreciation (Rs Lakhs). If not found, return 0.0.
+  - ronfa_consumer_contribution: Consumer contribution to assets (Rs Lakhs). If not found, return 0.0.
+  - ronfa_nfa_for_normative_loan: NFA for which interest is allowed / normative loan NFA (Rs Lakhs). If not found, return 0.0.
+  - ronfa_prior_year_additions: Capital additions from prior year excluded from NFA base (Rs Lakhs). If not found, return 0.0.
+  - ronfa_balance_nfa: Balance/eligible NFA after all deductions (Rs Lakhs). If not found, return 0.0.
+  - ronfa_rate_pct: Rate of return as percentage (e.g. 5.50 for 5.5%). If not found, return 0.0.
+  - ronfa_eligible_return: Computed eligible return / RoNFA claimed (Rs Lakhs). If not found, return 0.0.
+
 
 RULES:
 - ALL values are in Rs. LAKHS. Numbers like 4,652.88 = 4652.88 lakhs.
@@ -340,15 +365,22 @@ EXAMPLE 1 (Technopark 2023-24 — standard format):
   "energy_purchased_lakh_units": 110.00,
   "appc_rs_per_unit": 6.50,
   "consumer_security_deposit_balance": 124.59,
-  "maintenance_spares_wc": 0.0
+  "maintenance_spares_wc": 0.0,
+  "ronfa_gross_fixed_assets": 0.0,
+  "ronfa_accumulated_depreciation": 0.0,
+  "ronfa_consumer_contribution": 0.0,
+  "ronfa_nfa_for_normative_loan": 0.0,
+  "ronfa_prior_year_additions": 0.0,
+  "ronfa_balance_nfa": 0.0,
+  "ronfa_rate_pct": 0.0,
+  "ronfa_eligible_return": 0.0
 }
 
-EXAMPLE 2 (KDHP 2024-25 — consolidated O&M format):
-In the main ARR table, O&M Expenses = 332.00 (consolidated).
-But in the O&M sub-table: R&M=51.17, Employee=257.53, A&G=23.30.
-Also, Non-Tariff Income total = 124.07 (from Table 30 sub-table), NOT the
-"Other income" line (36.55) from the main ARR table.
-Use the SUB-TABLE breakdown values:
+EXAMPLE 2 (consolidated O&M format — when sub-tables exist):
+When the main ARR table shows a single consolidated O&M Expenses line,
+look for the O&M sub-table to find: R&M, Employee Cost, A&G separately.
+Similarly, look for Non-Tariff Income sub-table for the correct total.
+Use the SUB-TABLE breakdown values, NOT the consolidated line:
 {
   "claimed_expenses": {
     "power_purchase_cost": 3434.48,
@@ -357,10 +389,10 @@ Use the SUB-TABLE breakdown values:
     "admin_general": 23.30,
     "depreciation": 14.50,
     "interest_long_term": 41.72,
-    "interest_consumer_deposits": 0.0,
-    "interest_working_capital": 0.0,
+    "interest_consumer_deposits": 29.50,
+    "interest_working_capital": 15.80,
     "carrying_cost": 0.0,
-    "return_on_nfa": 0.0,
+    "return_on_nfa": 5.63,
     "other_debits": 24.89,
     "section3_1_duty": 0.0,
     "other_expenses": 7.47
@@ -369,19 +401,27 @@ Use the SUB-TABLE breakdown values:
     "revenue_from_sale": 3707.46,
     "wheeling_charges": 0.0,
     "non_tariff_income": 124.07,
-    "other_revenue": 36.55
+    "other_revenue": 0.0
   },
-  "total_expenditure": 3855.06,
-  "total_revenue": 3868.08,
-  "distribution_loss_pct": 0.0,
-  "bee_energy_audit_fee": 2.15,
-  "actual_loss_lakh_units": 0.0,
+  "total_expenditure": 3892.00,
+  "total_revenue": 3831.53,
+  "distribution_loss_pct": 9.52,
+  "bee_energy_audit_fee": 0.0,
+  "actual_loss_lakh_units": 57.73,
   "approved_loss_lakh_units": 0.0,
-  "energy_input_lakh_units": 0.0,
+  "energy_input_lakh_units": 548.83,
   "energy_purchased_lakh_units": 0.0,
-  "appc_rs_per_unit": 0.0,
-  "consumer_security_deposit_balance": 0.0,
-  "maintenance_spares_wc": 0.0
+  "appc_rs_per_unit": 6.26,
+  "consumer_security_deposit_balance": 297.01,
+  "maintenance_spares_wc": 0.0,
+  "ronfa_gross_fixed_assets": 438.11,
+  "ronfa_accumulated_depreciation": 267.45,
+  "ronfa_consumer_contribution": 14.96,
+  "ronfa_nfa_for_normative_loan": 54.86,
+  "ronfa_prior_year_additions": 11.80,
+  "ronfa_balance_nfa": 89.04,
+  "ronfa_rate_pct": 5.50,
+  "ronfa_eligible_return": 4.90
 }
 
 Now extract the data from the provided PDF pages. Return ONLY valid JSON.
@@ -476,7 +516,7 @@ If you truly cannot find it, return {"arr_pages": []}."""
 
         raw = generate_with_parts(
             parts,
-            model="gemini-2.5-flash",
+            model=GEMINI_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
         )
@@ -573,7 +613,7 @@ def _extract_with_gemini_vision(
             from src.models.schemas import ExtractionResult
             raw = generate_with_parts(
                 parts,
-                model="gemini-2.5-pro",
+                model=GEMINI_MODEL,
                 temperature=0.0,
                 response_mime_type="application/json",
                 response_schema=ExtractionResult,
@@ -673,6 +713,16 @@ def _extract_with_gemini_vision(
         if maint_spares > 0:
             claimed_expenses["__maintenance_spares_wc__"] = maint_spares
             logger.info(f"  [GeminiVision] maintenance_spares_wc: {maint_spares}")
+
+        # RoNFA computation fields
+        for ronfa_key in ["ronfa_gross_fixed_assets", "ronfa_accumulated_depreciation",
+                          "ronfa_consumer_contribution", "ronfa_nfa_for_normative_loan",
+                          "ronfa_prior_year_additions", "ronfa_balance_nfa",
+                          "ronfa_rate_pct", "ronfa_eligible_return"]:
+            ronfa_val = float(data.get(ronfa_key, 0.0) or 0.0)
+            if ronfa_val > 0:
+                claimed_expenses[f"__{ronfa_key}__"] = ronfa_val
+                logger.info(f"  [GeminiVision] {ronfa_key}: {ronfa_val}")
 
         return dist_loss
 
@@ -1322,7 +1372,7 @@ def extract_petition_data(state: dict) -> dict:
             raw = generate_with_pdf(
                 pdf_path=all_pdf_paths if len(all_pdf_paths) > 1 else pdf_path,
                 prompt=prompt,
-                model="gemini-2.5-pro",
+                model=GEMINI_MODEL,
                 temperature=0.0,
                 system_instruction=system_instruction,
                 response_mime_type="application/json",
@@ -1365,6 +1415,26 @@ def extract_petition_data(state: dict) -> dict:
                 f"APPC={appc_rs_per_unit} Rs/unit"
             )
             
+            # ── Capture IWC sub-component fields ──
+            _sec_dep = float(data.get("consumer_security_deposit_balance", 0.0) or 0.0)
+            _maint_sp = float(data.get("maintenance_spares_wc", 0.0) or 0.0)
+            if _sec_dep > 0:
+                claimed_expenses["__consumer_security_deposit_balance__"] = _sec_dep
+                logger.info(f"[NATIVE PDF] consumer_security_deposit_balance: {_sec_dep}")
+            if _maint_sp > 0:
+                claimed_expenses["__maintenance_spares_wc__"] = _maint_sp
+                logger.info(f"[NATIVE PDF] maintenance_spares_wc: {_maint_sp}")
+
+            # ── Capture RoNFA computation fields ──
+            for ronfa_key in ["ronfa_gross_fixed_assets", "ronfa_accumulated_depreciation",
+                              "ronfa_consumer_contribution", "ronfa_nfa_for_normative_loan",
+                              "ronfa_prior_year_additions", "ronfa_balance_nfa",
+                              "ronfa_rate_pct", "ronfa_eligible_return"]:
+                ronfa_val = float(data.get(ronfa_key, 0.0) or 0.0)
+                if ronfa_val > 0:
+                    claimed_expenses[f"__{ronfa_key}__"] = ronfa_val
+                    logger.info(f"[NATIVE PDF] {ronfa_key}: {ronfa_val}")
+
             logger.info(f"[NATIVE PDF] ARR extraction complete: total_exp={sum(claimed_expenses.values()):.2f}")
 
             # ── MU → Lakh Units auto-detection ──
@@ -1685,6 +1755,21 @@ def extract_petition_data(state: dict) -> dict:
     if maintenance_spares_wc > 0:
         logger.info(f"  IWC sub-component: maintenance_spares_wc = {maintenance_spares_wc}")
 
+    # Extract RoNFA computation fields from hidden keys
+    ronfa_gross_fixed_assets = float(claimed_expenses.pop("__ronfa_gross_fixed_assets__", 0.0) or 0.0)
+    ronfa_accumulated_depreciation = float(claimed_expenses.pop("__ronfa_accumulated_depreciation__", 0.0) or 0.0)
+    ronfa_consumer_contribution = float(claimed_expenses.pop("__ronfa_consumer_contribution__", 0.0) or 0.0)
+    ronfa_nfa_for_normative_loan = float(claimed_expenses.pop("__ronfa_nfa_for_normative_loan__", 0.0) or 0.0)
+    ronfa_prior_year_additions = float(claimed_expenses.pop("__ronfa_prior_year_additions__", 0.0) or 0.0)
+    ronfa_balance_nfa = float(claimed_expenses.pop("__ronfa_balance_nfa__", 0.0) or 0.0)
+    ronfa_rate_pct = float(claimed_expenses.pop("__ronfa_rate_pct__", 0.0) or 0.0)
+    ronfa_eligible_return = float(claimed_expenses.pop("__ronfa_eligible_return__", 0.0) or 0.0)
+    if ronfa_balance_nfa > 0:
+        logger.info(f"  RoNFA: GFA={ronfa_gross_fixed_assets}, AccDep={ronfa_accumulated_depreciation}, "
+                    f"CC={ronfa_consumer_contribution}, Loan={ronfa_nfa_for_normative_loan}, "
+                    f"Prior={ronfa_prior_year_additions}, BalNFA={ronfa_balance_nfa}, "
+                    f"Rate={ronfa_rate_pct}%, Return={ronfa_eligible_return}")
+
     # ── Targeted IWC Fallback ─────────────────────────────────────────────
     # If the main extraction didn't capture the security deposit (common for
     # multi-page petitions where the IWC table is on a later page), run a
@@ -1726,7 +1811,7 @@ def extract_petition_data(state: dict) -> dict:
                 gtypes.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"),
             ]
             raw = generate_with_parts(
-                parts, model="gemini-2.5-flash",
+                parts, model=GEMINI_MODEL,
                 temperature=0.0, response_mime_type="application/json",
             )
             import re as re_mod
@@ -1788,6 +1873,15 @@ def extract_petition_data(state: dict) -> dict:
         "normative_loan_additional":      normative_loan_additional,
         "normative_loan_repayment":       normative_loan_repayment,
         "normative_loan_rate":            normative_loan_rate,
+        # RoNFA computation
+        "ronfa_gross_fixed_assets":       ronfa_gross_fixed_assets,
+        "ronfa_accumulated_depreciation": ronfa_accumulated_depreciation,
+        "ronfa_consumer_contribution":    ronfa_consumer_contribution,
+        "ronfa_nfa_for_normative_loan":   ronfa_nfa_for_normative_loan,
+        "ronfa_prior_year_additions":     ronfa_prior_year_additions,
+        "ronfa_balance_nfa":              ronfa_balance_nfa,
+        "ronfa_rate_pct":                 ronfa_rate_pct,
+        "ronfa_eligible_return":          ronfa_eligible_return,
         "extraction_metadata": {
             "method": extraction_method,
             "checksum_passed": checksum_passed,

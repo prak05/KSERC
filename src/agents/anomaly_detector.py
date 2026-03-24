@@ -1,4 +1,4 @@
-"""
+﻿"""
 KSERC Truing-Up — Anomaly Detection Agent
 ==========================================
 Module  : anomaly_detector.py
@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import logging
 from typing import Any, Dict, List
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("kserc.anomaly_detector")
 
@@ -138,7 +139,7 @@ def detect_anomalies(state: Dict[str, Any]) -> Dict[str, Any]:
 
         raw = generate(
             prompt=prompt,
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
             temperature=0.1,
             response_mime_type="application/json",
             system_instruction=_SYSTEM_PROMPT,

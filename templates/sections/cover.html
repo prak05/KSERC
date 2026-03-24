@@ -1,0 +1,61 @@
+{# Cover page: Full KSERC order format #}
+<div class="kserc-header">
+    <h1>Kerala State Electricity Regulatory Commission</h1>
+    <p class="location">Thiruvananthapuram</p>
+    <hr class="separator">
+</div>
+
+{# Commission bench #}
+{% if signature and signature.members %}
+<p style="text-align: center; font-size: 12pt; margin: 10pt 0 4pt 0;"><b>Present:</b></p>
+{% for m in signature.members %}
+<p style="text-align: center; font-size: 12pt; margin: 2pt 0;">
+    <b>{{ m.name }}</b>, {{ m.designation }}
+</p>
+{% endfor %}
+{% endif %}
+
+<hr class="separator" style="margin: 12pt 0;">
+
+{# Petition number and date #}
+<table style="width: 100%; border: none; margin: 8pt 0;">
+    <tr>
+        <td style="border: none; text-align: left; width: 50%;"><b>{{ cover.petition_number }}</b></td>
+        <td style="border: none; text-align: right; width: 50%;">Dated: {{ cover.order_date }}</td>
+    </tr>
+</table>
+
+{# In the matter of #}
+<div style="margin: 12pt 0;">
+    <p style="text-indent: 40pt; margin: 4pt 0;"><b>In the matter of:</b></p>
+    <p style="text-indent: 40pt; margin: 6pt 0;">
+        {{ cover.in_the_matter_of }}
+    </p>
+</div>
+
+{# Petitioner and Respondent #}
+<table style="width: 100%; border: none; margin: 12pt 0; line-height: 1.8;">
+    <tr>
+        <td style="border: none; width: 50%; vertical-align: top; padding: 4pt 0;">
+            <b>Petitioner:</b><br>
+            {{ cover.petitioner_name }}<br>
+            <span style="font-size: 11pt;">{{ cover.petitioner_designation }}</span>
+        </td>
+        <td style="border: none; width: 50%; vertical-align: top; padding: 4pt 0;">
+            <b>Respondent:</b><br>
+            {{ cover.respondent_name }}<br>
+            <span style="font-size: 11pt;">{{ cover.respondent_designation }}</span>
+        </td>
+    </tr>
+</table>
+
+<hr class="separator" style="margin: 8pt 0;">
+
+{# Order heading #}
+<p style="text-align: center; font-size: 14pt; margin: 14pt 0 6pt 0;"><b>ORDER</b></p>
+
+{% if cover.hearing_date %}
+<p style="text-align: center; font-size: 11pt; margin: 4pt 0;">
+    (Heard on: {{ cover.hearing_date }})
+</p>
+{% endif %}

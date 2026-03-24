@@ -1,4 +1,4 @@
-"""
+﻿"""
 KSERC Truing-Up — R&M One-Time Expenditure Classification Engine
 ================================================================
 Module  : rm_classifier.py
@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any, Dict, List, Optional
+from src.config import GEMINI_MODEL
 
 logger = logging.getLogger("kserc.rm_classifier")
 
@@ -140,7 +141,7 @@ def classify_rm_item(
 
         raw = generate(
             prompt=prompt,
-            model="gemini-2.5-pro",
+            model=GEMINI_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=_SYSTEM_PROMPT,

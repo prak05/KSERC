@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style>
+        /* ── KSERC Order CSS ─────────────────────────────────────── */
+        @page {
+            size: A4;
+            margin: 3cm 3cm 3cm 3cm;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 13pt;
+            line-height: 1.65;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Cover / Header */
+        .kserc-header {
+            text-align: center;
+            margin-bottom: 24pt;
+        }
+        .kserc-header h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1pt;
+            margin: 0 0 4pt 0;
+        }
+        .kserc-header .sub {
+            font-size: 12pt;
+            margin: 2pt 0;
+        }
+        .kserc-header .location {
+            font-size: 11pt;
+            margin: 2pt 0;
+        }
+        .kserc-header .separator {
+            border: none;
+            border-top: 2px solid #000;
+            margin: 12pt 0;
+        }
+
+        /* Petition details block */
+        .petition-details {
+            margin: 16pt 0;
+            font-size: 12pt;
+        }
+        .petition-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .petition-details td {
+            padding: 3pt 4pt;
+            vertical-align: top;
+        }
+        .petition-details td:first-child {
+            width: 160pt;
+            font-weight: bold;
+        }
+
+        /* Section headings */
+        h2.section-title {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 20pt 0 10pt 0;
+            page-break-after: avoid;
+        }
+        h2.analysis-header {
+            font-size: 15pt;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: underline;
+            margin: 24pt 0 16pt 0;
+            page-break-after: avoid;
+        }
+
+        /* Numbered paragraphs */
+        p.numbered-para {
+            text-align: justify;
+            text-indent: 0;
+            margin: 6pt 0;
+        }
+        p.numbered-para .para-num {
+            font-weight: bold;
+            margin-right: 6pt;
+        }
+        p.decision-para {
+            font-weight: bold;
+            text-align: justify;
+            margin: 8pt 0;
+        }
+        p.decision-para .para-num {
+            margin-right: 6pt;
+        }
+
+        /* Data tables */
+        .table-wrapper {
+            page-break-inside: avoid;
+            margin: 14pt 0;
+        }
+        p.table-caption {
+            font-weight: bold;
+            text-align: center;
+            margin: 10pt 0 2pt 0;
+            font-size: 12pt;
+        }
+        p.table-unit {
+            text-align: right;
+            font-size: 10pt;
+            font-style: italic;
+            margin: 0 0 4pt 0;
+            color: #333;
+        }
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11pt;
+            margin: 4pt 0;
+        }
+        table.data-table th {
+            background-color: #f0f0f0;
+            border: 1px solid #000;
+            padding: 5pt 6pt;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10.5pt;
+        }
+        table.data-table td {
+            border: 1px solid #000;
+            padding: 4pt 6pt;
+            font-size: 11pt;
+        }
+        table.data-table td.num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        table.data-table tr.total-row {
+            font-weight: bold;
+            background-color: #f8f8f0;
+        }
+        table.data-table tr.header-row {
+            font-weight: bold;
+            background-color: #e8e8e8;
+        }
+        table.data-table tr.gap-row {
+            font-weight: bold;
+            background-color: #fff8e0;
+        }
+
+        /* Signature block */
+        .sig-table {
+            width: 100%;
+            border: none;
+            margin-top: 40pt;
+        }
+        .sig-table td {
+            text-align: center;
+            padding: 4pt 8pt;
+            border: none;
+            width: 33%;
+            vertical-align: top;
+        }
+        .secretary-block {
+            text-align: left;
+            margin-top: 30pt;
+        }
+        .secretary-block p {
+            margin: 2pt 0;
+        }
+
+        /* Orders section */
+        .orders-section {
+            margin-top: 20pt;
+            page-break-before: auto;
+        }
+        .orders-section h2 {
+            text-align: center;
+            text-decoration: underline;
+            font-size: 14pt;
+        }
+
+        /* Print-specific */
+        @media print {
+            body { margin: 0; }
+            .table-wrapper { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="kserc-header">
+    <h1>Kerala State Electricity Regulatory Commission</h1>
+    <p class="location">Thiruvananthapuram</p>
+    <hr class="separator">
+</div>
+
+<div class="petition-details">
+    <table>
+        <tr>
+            <td>Petition</td>
+            <td>: Truing Up of Accounts of  for FY </td>
+        </tr>
+        <tr>
+            <td>Licensee</td>
+            <td>: </td>
+        </tr>
+        <tr>
+            <td>Financial Year</td>
+            <td>: </td>
+        </tr>
+        <tr>
+            <td>Order Type</td>
+            <td>: Truing Up</td>
+        </tr>
+    </table>
+</div>
+
+<hr class="separator" style="margin: 16pt 0;">
+
+<p style="text-align: center; font-size: 12pt; margin: 10pt 0 4pt 0;"><b>Present:</b></p>
+<p style="text-align: center; font-size: 12pt; margin: 2pt 0;">
+    <b>Sri. T.K Jose</b>, Chairman
+</p>
+<p style="text-align: center; font-size: 12pt; margin: 2pt 0;">
+    <b>Adv. A. J. Wilson</b>, Member
+</p>
+<p style="text-align: center; font-size: 12pt; margin: 2pt 0;">
+    <b>Sri. B. Pradeep</b>, Member
+</p>
+
+<p class="numbered-para">
+    <span class="para-num">1.</span>
+     is a deemed distribution licensee under Section 14 of the Electricity Act, 2003, operating in the area notified by the Government of Kerala. The licensee filed a petition for Truing Up of accounts for the financial year  before the Kerala State Electricity Regulatory Commission.
+</p>
+<p class="numbered-para">
+    <span class="para-num">2.</span>
+    The licensee has claimed a total expenditure of Rs. 0.00 Lakhs and total revenue of Rs. 0.00 Lakhs for FY . The petition was filed along with the audited annual accounts, ARR schedules, and supporting annexures as required under the KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021.
+</p>
+
+
+    <h2 class="analysis-header">Analysis and Decision</h2>
+
+<h2 class="section-title">Energy Sales and Revenue</h2>
+
+<p class="numbered-para">
+    <span class="para-num">3.</span>
+    The Commission has examined the energy sales data submitted by  for FY . The licensee has reported category-wise energy sales and the corresponding revenue realized.
+</p>
+
+<h2 class="section-title">Distribution Loss</h2>
+
+<p class="numbered-para">
+    <span class="para-num">4.</span>
+    The licensee has reported an actual distribution loss of 0% for FY . The target distribution loss approved in the MYT Order is 0%.
+</p>
+<p class="numbered-para">
+    <span class="para-num">5.</span>
+    The actual distribution loss of 0% is within the target of 0% approved in the MYT Order. No penalty for excess distribution loss is applicable.
+</p>
+
+<h2 class="section-title">Revenue from Sale of Power</h2>
+
+<p class="numbered-para">
+    <span class="para-num">6.</span>
+    The licensee has reported revenue from sale of power of Rs. 0.00 Lakhs for FY . The Commission has examined the category-wise energy sales and the corresponding tariff revenue.
+</p>
+<p class="decision-para">
+    <span class="para-num">7.</span>
+    The Commission approves the revenue from sale of power at Rs. 0.00 Lakhs for FY  as reported by the licensee.
+</p>
+
+<h2 class="section-title">Wheeling Charges</h2>
+
+<p class="numbered-para">
+    <span class="para-num">8.</span>
+    The licensee has not reported any wheeling charge income for FY .
+</p>
+
+<h2 class="section-title">Non-Tariff Income</h2>
+
+<p class="numbered-para">
+    <span class="para-num">9.</span>
+    The licensee has not reported any non-tariff income for FY .
+</p>
+
+<h2 class="section-title">Approved ARR and Revenue Gap</h2>
+
+<p class="numbered-para">
+    <span class="para-num">10.</span>
+    After examination of all expense heads and revenue items, the Commission approves a total expenditure of Rs. 0.00 Lakhs and total revenue of Rs. 0.00 Lakhs for  for FY .
+</p>
+<p class="decision-para">
+    <span class="para-num">11.</span>
+    The Commission determines a revenue surplus of Rs. 0.00 Lakhs for FY . This surplus shall be carried forward and adjusted in the next tariff revision.
+</p>
+
+<div class="table-wrapper">
+    <p class="table-caption">Table 1: Approved ARR and Revenue Summary</p>
+    <p class="table-unit">(Rs. in Lakhs)</p>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Sl. No.</th>
+                <th>Particulars</th>
+                <th>Claimed by Licensee</th>
+                <th>Approved by Commission</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class=" header-row">
+                <td></td>
+
+                <td>EXPENDITURE</td>
+
+                <td class="num">
+                </td>
+
+                <td class="num">
+                </td>
+
+            </tr>
+            <tr class="total-row">
+                <td></td>
+
+                <td>A. TOTAL APPROVED EXPENDITURE</td>
+
+                <td class="num">
+                    0.00
+                </td>
+
+                <td class="num">
+                    0.00
+                </td>
+
+            </tr>
+            <tr class=" header-row">
+                <td></td>
+
+                <td>REVENUE</td>
+
+                <td class="num">
+                </td>
+
+                <td class="num">
+                </td>
+
+            </tr>
+            <tr class="">
+                <td>1</td>
+
+                <td>Revenue from Sale of Power</td>
+
+                <td class="num">
+                    0.00
+                </td>
+
+                <td class="num">
+                    0.00
+                </td>
+
+            </tr>
+            <tr class="total-row">
+                <td></td>
+
+                <td>B. TOTAL REVENUE</td>
+
+                <td class="num">
+                    0.00
+                </td>
+
+                <td class="num">
+                    0.00
+                </td>
+
+            </tr>
+            <tr class="total-row gap-row">
+                <td></td>
+
+                <td>C. REVENUE GAP / (SURPLUS) (A - B)</td>
+
+                <td class="num">
+                </td>
+
+                <td class="num">
+                    0.00
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="orders-section">
+    <h2>Orders of the Commission</h2>
+
+    <p class="decision-para">
+        <span class="para-num">12.</span>
+        The Commission hereby approves a total expenditure of Rs. 0.00 Lakhs for  for FY .
+    </p>
+    <p class="decision-para">
+        <span class="para-num">13.</span>
+        The Commission approves a total revenue of Rs. 0.00 Lakhs for  for FY .
+    </p>
+    <p class="decision-para">
+        <span class="para-num">14.</span>
+        The revenue surplus of Rs. 0.00 Lakhs shall be carried forward and adjusted in the next tariff revision.
+    </p>
+    <p class="decision-para">
+        <span class="para-num">15.</span>
+        The licensee is directed to submit the audited accounts, update the asset register, and file a compliance report within 30 days of this order.
+    </p>
+</div>
+<table class="sig-table">
+    <tr>
+        <td>Sd/-</td>
+        <td>Sd/-</td>
+        <td>Sd/-</td>
+    </tr>
+    <tr>
+        <td><b>Sri. T.K Jose</b></td>
+        <td><b>Adv. A. J. Wilson</b></td>
+        <td><b>Sri. B. Pradeep</b></td>
+    </tr>
+    <tr>
+        <td><b>Chairman</b></td>
+        <td><b>Member</b></td>
+        <td><b>Member</b></td>
+    </tr>
+</table>
+
+<div class="secretary-block">
+    <p><b>Approved for issue</b></p>
+    <p>Sd/-</p>
+    <p><b>C.R.Satheesh Chandran</b></p>
+    <p><b>Secretary</b></p>
+</div>
+
+</body>
+</html>
