@@ -1187,7 +1187,7 @@ async def _continue_pipeline_after_rm(
     state.update(audit_result)
 
     # ── Enforce R&M override after all audit passes ────────────────
-    rm_override = state.get("rm_one_time_override", 0.0)
+    rm_override = float(state.get("rm_one_time_override", 0) or 0)
     if rm_override > 0 and "approved_expenses" in state:
         rm_claimed = state.get("claimed_expenses", {}).get("repair_maintenance", 0.0)
         # Cap to claimed amount (can't approve more than claimed)
@@ -1539,7 +1539,7 @@ async def _run_analysis(
             f"{' (PROVISIONAL)' if is_provisional else ''}")
 
         # Apply AG adjustment if bank charges were reclassified
-        ag_adj = state.get("ag_adjustment_for_bank_charges", 0.0)
+        ag_adj = float(state.get("ag_adjustment_for_bank_charges", 0) or 0)
         if ag_adj > 0:
             current_ag = float(state.get("approved_expenses", {}).get("admin_general", 0.0))
             state["approved_expenses"]["admin_general"] = round(current_ag - ag_adj, 2)

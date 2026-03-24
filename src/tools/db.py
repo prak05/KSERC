@@ -83,7 +83,11 @@ def save_analysis(analysis_id: str, status: str, result: dict = None):
     if result is not None:
         data["result_json"] = json.dumps(result, default=str)
 
-    # Use merge to avoid overwriting progress_log when updating status
+    # Check if document exists — if not, initialize progress_log
+    doc = doc_ref.get()
+    if not doc.exists:
+        data["progress_log"] = []
+
     doc_ref.set(data, merge=True)
 
 
@@ -98,7 +102,7 @@ def get_analysis(analysis_id: str) -> Optional[dict]:
     data = doc.to_dict()
     result_json = data.get("result_json")
     progress_log = data.get("progress_log")
-    # Parse progress_log — ArrayUnion stores entries as JSON strings in a list
+    # Parse progress_log — entries stored as JSON strings in a list
     progress = []
     if isinstance(progress_log, list):
         for entry in progress_log:
@@ -123,17 +127,28 @@ def get_analysis(analysis_id: str) -> Optional[dict]:
 
 
 def update_progress(analysis_id: str, stage: str, message: str):
-    """Append a timestamped progress entry. Thread-safe via Firestore transactions."""
-    from google.cloud.firestore_v1 import ArrayUnion
-
+    """Append a timestamped progress entry. Uses read-modify-write for reliability."""
     ts = datetime.utcnow().strftime("%H:%M:%S")
-    entry = {"ts": ts, "stage": stage, "msg": message}
+    entry = json.dumps({"ts": ts, "stage": stage, "msg": message})
 
     db = _get_db()
     doc_ref = db.collection("analyses").document(analysis_id)
 
-    # Use ArrayUnion for atomic append
-    doc_ref.update({"progress_log": ArrayUnion([json.dumps(entry)])})
+    try:
+        # Read current progress, append, write back
+        doc = doc_ref.get()
+        if doc.exists:
+            data = doc.to_dict()
+            log = data.get("progress_log", [])
+            if not isinstance(log, list):
+                log = []
+            log.append(entry)
+            doc_ref.update({"progress_log": log})
+        else:
+            # Document doesn't exist yet — create it
+            doc_ref.set({"progress_log": [entry], "status": "RUNNING"})
+    except Exception as e:
+        logger.warning(f"Failed to update progress for {analysis_id}: {e}")
 
 
 # ── Economic Indicators ──────────────────────────────────────────────────
