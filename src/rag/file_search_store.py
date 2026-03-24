@@ -1,4 +1,4 @@
-﻿"""
+"""
 Gemini File Search Store — replaces the old custom RAG pipeline.
 
 Uses the google-genai Files API to:
@@ -127,19 +127,23 @@ def upload_reference_documents(
     files_to_upload = []
     target_categories = categories or list(REFERENCE_DOCS.keys())
     
-    for cat in target_categories:
-        for filename in REFERENCE_DOCS.get(cat, []):
-            filepath = DOCUMENTS_DIR / filename
-            if filepath.exists():
-                files_to_upload.append((cat, filename, filepath))
-            else:
-                logger.warning(f"Document not found: {filepath}")
-    
-    # Also scan for any PDFs in subdirectories (petitions are in subfolders)
-    for subdir in DOCUMENTS_DIR.iterdir():
-        if subdir.is_dir() and "Petition" in subdir.name:
-            for pdf in subdir.glob("*.pdf"):
-                files_to_upload.append(("petitions", pdf.name, pdf))
+    if not DOCUMENTS_DIR.exists():
+        logger.warning(f"Documents directory not found: {DOCUMENTS_DIR}")
+        logger.info("Running in cloud mode — will use files already uploaded to Gemini's Files API")
+    else:
+        for cat in target_categories:
+            for filename in REFERENCE_DOCS.get(cat, []):
+                filepath = DOCUMENTS_DIR / filename
+                if filepath.exists():
+                    files_to_upload.append((cat, filename, filepath))
+                else:
+                    logger.warning(f"Document not found: {filepath}")
+        
+        # Also scan for any PDFs in subdirectories (petitions are in subfolders)
+        for subdir in DOCUMENTS_DIR.iterdir():
+            if subdir.is_dir() and "Petition" in subdir.name:
+                for pdf in subdir.glob("*.pdf"):
+                    files_to_upload.append(("petitions", pdf.name, pdf))
     
     logger.info(f"Found {len(files_to_upload)} documents to process")
     

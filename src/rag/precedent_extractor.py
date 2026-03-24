@@ -1,4 +1,4 @@
-﻿"""
+"""
 Precedent Extractor — reads past KSERC truing-up orders and extracts
 structured data (claimed vs approved amounts, disallowances, reasoning)
 into a precedent database JSON.
@@ -18,8 +18,9 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s")
 logger = logging.getLogger("precedent_extractor")
 
-DOCS_DIR = r"C:\Users\adwai\OneDrive\Desktop\K-Project\Documents"
-OUTPUT_PATH = r"c:\Users\adwai\OneDrive\Desktop\K-Project\kserc_sdl_truing_up\data\precedent_db\precedent_db.json"
+_BASE_DIR = Path(__file__).resolve().parents[2]
+DOCS_DIR = str(Path(os.getenv("DOCUMENTS_DIR", str(_BASE_DIR / ".." / "Documents"))).resolve())
+OUTPUT_PATH = str(_BASE_DIR / "data" / "precedent_db" / "precedent_db.json")
 
 # Past truing-up orders to process
 TRUING_UP_ORDERS = [

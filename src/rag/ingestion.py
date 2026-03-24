@@ -17,10 +17,11 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger("rag_ingestion")
 
-DOCS_DIR = r"c:\Users\adwai\OneDrive\Desktop\K-Project\Documents"
-DB_DIR = r"c:\Users\adwai\OneDrive\Desktop\K-Project\kserc_sdl_truing_up\chroma_db"
-BM25_PATH = r"c:\Users\adwai\OneDrive\Desktop\K-Project\kserc_sdl_truing_up\bm25_retriever.pkl"
-DOC_STORE_PATH = r"c:\Users\adwai\OneDrive\Desktop\K-Project\kserc_sdl_truing_up\doc_store.pkl"
+_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DOCS_DIR = os.environ.get("DOCUMENTS_DIR", os.path.join(os.path.dirname(_BASE_DIR), "Documents"))
+DB_DIR = os.path.join(_BASE_DIR, "chroma_db")
+BM25_PATH = os.path.join(_BASE_DIR, "bm25_retriever.pkl")
+DOC_STORE_PATH = os.path.join(_BASE_DIR, "doc_store.pkl")
 
 REGULATION_FILES = [
     "Master Tariff Order (OP 18 2023).pdf",

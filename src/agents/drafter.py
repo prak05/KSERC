@@ -35,7 +35,9 @@ from src.config import GEMINI_MODEL
 logger = logging.getLogger(__name__)
 
 # Path to the reference KSERC order that serves as the exact template
-REFERENCE_ORDER_PDF = Path(r"C:\Users\adwai\OneDrive\Desktop\K-Project\Documents\Infopark True-Up 2022-23 (OP 82 2023).pdf")
+_BASE_DIR = Path(__file__).resolve().parents[2]
+_DOCUMENTS_DIR = Path(os.getenv("DOCUMENTS_DIR", str(_BASE_DIR / ".." / "Documents"))).resolve()
+REFERENCE_ORDER_PDF = _DOCUMENTS_DIR / "Infopark True-Up 2022-23 (OP 82 2023).pdf"
 
 # ── CSS that faithfully replicates the KSERC official order style ──────────
 KSERC_CSS = """
