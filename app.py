@@ -40,6 +40,7 @@ from fastapi import (
     Form,
     HTTPException,
     Request,
+    Response,
     UploadFile,
 )
 from fastapi.middleware.cors import CORSMiddleware
@@ -351,15 +352,31 @@ async def download_report(analysis_id: str):
 
     result = data["result"]
     pdf_path = result.get("output_pdf_path")
+    licensee = result.get("licensee_name", "Unknown")
+    fy = result.get("financial_year", "")
+    filename = f"KSERC_TrueUp_Order_{licensee}_{fy}.pdf"
 
-    if not pdf_path or not Path(pdf_path).exists():
-        raise HTTPException(404, "PDF report not yet generated")
+    # Try local file first (works on local dev)
+    if pdf_path and Path(pdf_path).exists():
+        return FileResponse(pdf_path, media_type="application/pdf", filename=filename)
 
-    return FileResponse(
-        pdf_path,
-        media_type="application/pdf",
-        filename=f"KSERC_TrueUp_Order_{result.get('licensee_name', 'Unknown')}_{result.get('financial_year', '')}.pdf",
-    )
+    # Cloud Run fallback: generate PDF from stored HTML on-the-fly
+    html_content = result.get("generated_html") or result.get("order_html")
+    if html_content:
+        try:
+            from weasyprint import HTML
+            from io import BytesIO
+            pdf_bytes = HTML(string=html_content).write_pdf()
+            return Response(
+                content=pdf_bytes,
+                media_type="application/pdf",
+                headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+            )
+        except Exception as e:
+            logger.error(f"On-the-fly PDF generation failed: {e}")
+            raise HTTPException(500, f"PDF generation failed: {str(e)}")
+
+    raise HTTPException(404, "PDF report not available — try generating the order again")
 
 
 from pydantic import BaseModel
@@ -502,9 +519,15 @@ async def generate_order(
     try:
         draft_result = await loop.run_in_executor(None, draft_order, draft_state)
 
-        # Update analysis with PDF path
+        # Update analysis with PDF path and HTML for Cloud Run download
         state["output_pdf_path"] = draft_result.get("output_pdf_path")
         state["pdf_available"] = True
+        
+        # Save HTML content so download endpoint works on Cloud Run
+        html_path = draft_result.get("output_html_path")
+        if html_path and Path(html_path).exists():
+            state["generated_html"] = Path(html_path).read_text(encoding="utf-8")
+        
         save_analysis(req.analysis_id, "COMPLETED", state)
 
         # Read back the generated HTML to show in frontend preview

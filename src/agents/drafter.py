@@ -418,6 +418,24 @@ def _generate_document_with_gemini(state: dict) -> str:
     data_block += f"  Use the row label 'Revenue (Gap)/Surplus' and show the value as a positive number.\n"
     data_block += "=== END TABLE 31 VALUES ===\n"
 
+    # ── Court hearing details (if provided by user) ──────────────────────
+    court_hearing = state.get("court_hearing", {})
+    if court_hearing and court_hearing.get("hearing_date"):
+        data_block += "\n=== COURT HEARING / ORAL SUBMISSIONS ===\n"
+        data_block += f"Hearing Date: {court_hearing.get('hearing_date', 'Not specified')}\n"
+        submissions = court_hearing.get("licensee_submissions", [])
+        if submissions:
+            data_block += "Licensee Submissions:\n"
+            for i, sub in enumerate(submissions, 1):
+                data_block += f"  {i}. {sub}\n"
+        resp = court_hearing.get("respondent_position", "")
+        if resp:
+            data_block += f"Respondent Position: {resp}\n"
+        obs = court_hearing.get("commission_observations", "")
+        if obs:
+            data_block += f"Commission Observations: {obs}\n"
+        data_block += "=== END COURT HEARING ===\n"
+
     # ── Disallowances with full justification text ────────────────────────────
     disallowances = state.get("disallowance_log", [])
     if disallowances:
