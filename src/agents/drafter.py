@@ -17,7 +17,17 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+try:
+    from weasyprint import HTML as WeasyHTML
+    HAS_WEASYPRINT = True
+except ImportError:
+    HAS_WEASYPRINT = False
+
+try:
+    from playwright.sync_api import sync_playwright
+    HAS_PLAYWRIGHT = True
+except ImportError:
+    HAS_PLAYWRIGHT = False
 
 from src.gemini_client import generate_with_pdf, get_client, get_api_key_client
 from src.config import GEMINI_MODEL
@@ -1668,25 +1678,35 @@ def draft_order(state: dict) -> dict:
             logger.warning(f"Original PDF is locked. Writing to: {final_pdf_path}")
     html_uri = f"file:///{html_path.resolve().as_posix()}"
     try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            page.goto(html_uri, wait_until='networkidle')
-            page.pdf(
-                path=str(final_pdf_path),
-                format='A4',
-                margin={
-                    'top': '3.0cm',
-                    'bottom': '3.0cm',
-                    'left': '3.0cm',
-                    'right': '3.0cm'
-                },
-                print_background=True,
-                display_header_footer=True,
-                header_template='<span style="font-size: 8px;"></span>',
-                footer_template='<div style="font-size: 10px; width: 100%; text-align: center;"><span class="pageNumber"></span></div>'
-            )
-            browser.close()
+        if HAS_WEASYPRINT:
+            # WeasyPrint — works in Docker/Cloud Run without a browser
+            logger.info("Using WeasyPrint for PDF generation")
+            html_doc = WeasyHTML(filename=str(html_path))
+            html_doc.write_pdf(str(final_pdf_path))
+        elif HAS_PLAYWRIGHT:
+            # Playwright fallback — needs Chromium installed
+            logger.info("Using Playwright for PDF generation")
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                page = browser.new_page()
+                page.goto(html_uri, wait_until='networkidle')
+                page.pdf(
+                    path=str(final_pdf_path),
+                    format='A4',
+                    margin={
+                        'top': '3.0cm',
+                        'bottom': '3.0cm',
+                        'left': '3.0cm',
+                        'right': '3.0cm'
+                    },
+                    print_background=True,
+                    display_header_footer=True,
+                    header_template='<span style="font-size: 8px;"></span>',
+                    footer_template='<div style="font-size: 10px; width: 100%; text-align: center;"><span class="pageNumber"></span></div>'
+                )
+                browser.close()
+        else:
+            raise ImportError("Neither weasyprint nor playwright is installed")
         logger.info(f"Successfully generated PDF at: {final_pdf_path}")
         state["output_pdf_path"] = str(final_pdf_path)
         state["output_html_path"] = str(html_path)
