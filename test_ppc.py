@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.insert(0, r'c:\Users\adwai\OneDrive\Desktop\K-Project\kserc-trueup-engine')
 
-os.environ["GOOGLE_API_KEY"] = "REDACTED_GOOGLE_API_KEY"
+os.environ["GOOGLE_API_KEY"] =
 os.environ["GEMINI_MODEL"] = "gemini-2.5-flash"
 
 from src.agents.extractor import extract_petition_data
