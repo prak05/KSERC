@@ -4,6 +4,10 @@
 service_account.json
 vertex_sa.json
 *_sa.json
+*_sa_*.json
+kserc_sa*.json
+*service*.json
+*.key.json
 
 # Python
 __pycache__/
