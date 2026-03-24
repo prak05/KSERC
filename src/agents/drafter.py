@@ -626,9 +626,13 @@ NEVER fabricate or invent sub-component values. Follow these rules strictly:
     )
 
     # Pre-load PDF bytes once (inline bytes for Vertex AI — no Files API needed)
-    logger.info("Loading reference PDF into memory...")
-    ref_pdf_bytes = Path(REFERENCE_ORDER_PDF).read_bytes()
-    logger.info(f"  Reference PDF: {len(ref_pdf_bytes):,} bytes")
+    ref_pdf_bytes = None
+    if Path(REFERENCE_ORDER_PDF).exists():
+        logger.info("Loading reference PDF into memory...")
+        ref_pdf_bytes = Path(REFERENCE_ORDER_PDF).read_bytes()
+        logger.info(f"  Reference PDF: {len(ref_pdf_bytes):,} bytes")
+    else:
+        logger.warning(f"Reference PDF not found: {REFERENCE_ORDER_PDF} — generating without format template")
 
     pet_pdf_bytes = None
     annexure_pdf_bytes_list = []  # Additional PDFs (annexures with detailed tables)
@@ -676,7 +680,9 @@ NEVER fabricate or invent sub-component values. Follow these rules strictly:
 
     def _build_pdf_parts():
         """Build inline byte parts for reference PDF + all petition/annexure PDFs."""
-        parts = [types.Part.from_bytes(data=ref_pdf_bytes, mime_type="application/pdf")]
+        parts = []
+        if ref_pdf_bytes:
+            parts.append(types.Part.from_bytes(data=ref_pdf_bytes, mime_type="application/pdf"))
         if pet_pdf_bytes:
             parts.append(types.Part.from_bytes(data=pet_pdf_bytes, mime_type="application/pdf"))
         # Include all annexure PDFs — these contain detailed tables
