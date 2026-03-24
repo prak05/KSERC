@@ -783,12 +783,12 @@ CRITICAL:
 - Never just say "Commission approves Rs.X" without the reasoning in Step 3.
 
 
-START with this EXACT header (use placeholders — the Commission fills in the actual values later):
+START with this EXACT header:
 <h1>KERALA STATE ELECTRICITY REGULATORY COMMISSION</h1>
 <h2>THIRUVANANTHAPURAM</h2>
-<p class="center bold">Petition No: [____]</p>
+<p class="center bold">Petition No: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 <table class="header-table">
-  <tr><td class="label">Present</td><td class="colon">:</td><td class="value"><b>[____], Chairman</b><br/><b>[____], Member</b><br/><b>[____], Member</b></td></tr>
+  <tr><td class="label">Present</td><td class="colon">:</td><td class="value"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, Chairman</b><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, Member</b><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, Member</b></td></tr>
   <tr class="spacer-row"><td colspan="3"></td></tr>
   <tr><td class="label">In the matter of</td><td class="colon">:</td><td class="value">Petition for approval of truing up of accounts for the financial year {fy}</td></tr>
   <tr class="spacer-row"><td colspan="3"></td></tr>
@@ -798,24 +798,23 @@ START with this EXACT header (use placeholders — the Commission fills in the a
   <tr><td class="label">Respondent</td><td class="colon">:</td><td class="value">M/s Kerala State Electricity Board Limited</td></tr>
   <tr><td class="label">Represented by</td><td class="colon">:</td><td class="value">[Names from petition]</td></tr>
   <tr class="spacer-row"><td colspan="3"></td></tr>
-  <tr><td class="label">Hearing</td><td class="colon">:</td><td class="value">[____]</td></tr>
+  <tr><td class="label">Hearing</td><td class="colon">:</td><td class="value">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
 </table>
-<p class="center bold">Order Dated [____]</p>
+<p class="center bold">Order Dated &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 
-PARAGRAPH NUMBERING RULE:
-- Do NOT hardcode paragraph numbers (1, 2, 3, 7, 8, 9, etc.).
-- Instead, use the placeholder "[__]." at the start of each numbered paragraph.
-- Example: "<p>[__].&nbsp;&nbsp;M/s {licensee} is a distribution licensee..."
-- The Commission will assign final paragraph numbers later.
-- For sub-points within a paragraph (a, b, c, etc.), those letters CAN be used.
+PARAGRAPH NUMBERING RULES:
+- For SECTION 1 (Introduction) and SECTION 3 (Energy Sales) onwards: use REAL sequential paragraph numbers starting from 1. Example: "1.&nbsp;&nbsp;M/s {licensee} is a distribution licensee..."
+- For SECTION 2 (Hearing on the Petition): Do NOT number the paragraphs. Leave blank space before each paragraph where numbers would go. The user will add paragraph numbers later.
+- Tables should be numbered sequentially: Table 1, Table 2, Table 3, etc.
+- Sub-points within a paragraph use letters (a), (b), (c), etc.
 
 THEN write ALL of these sections in full:
 
-SECTION 1 - INTRODUCTION (MINIMUM 6 paragraphs, each starting with [__].):
-Para: M/s {licensee} background — full license area description, consumer categories, network extent, date of license grant and license number.
-Para: Filing history — when this petition was filed citing date, what previous Commission orders govern FY {fy} tariff, the MYT order reference.
-Para: Legal basis — cite KSERC Tariff Regulations 2021 Regulation 3, 67, 68 on truing up process and what the Commission is required to do.
-Para: TABLE 1 — Comparison of ARR&ERC for FY {fy}.
+SECTION 1 - INTRODUCTION (MINIMUM 6 paragraphs, with sequential paragraph numbers starting from 1):
+Para 1: M/s {licensee} background — full license area description, consumer categories, network extent, date of license grant and license number.
+Para 2: Filing history — when this petition was filed citing date, what previous Commission orders govern FY {fy} tariff, the MYT order reference.
+Para 3: Legal basis — cite KSERC Tariff Regulations 2021 Regulation 3, 67, 68 on truing up process and what the Commission is required to do.
+Para 4: TABLE 1 — Comparison of ARR&ERC for FY {fy}.
 Caption: "Table 1\\nComparison of ARR&ERC {fy}  (Rs. Lakh)"
 Columns: Particulars | ARR&ERC Projected | ARR&ERC Approved | Truing Up petition
 Rows (ALL of these in this exact order):
@@ -837,26 +836,25 @@ The 'ARR&ERC Approved' column = the Commission's ARR-approved values (use MYT va
 The 'Truing Up petition' column = the licensee's claimed values from data_block.
 Do NOT include 'Trued Up by Commission' in this table — that comes later in the final ARR summary table.
 
-Para: TABLE 2 — Comparison of Income and Expenditure for the previous years.
+Para 5: TABLE 2 — Comparison of Income and Expenditure for the previous years.
 Caption: "Table 2\\nComparison of Income and Expenditure for the previous years  (Rs. lakh)"
 This is a multi-year comparison table. Show columns for each available FY (e.g., 2021-22, 2022-23, 2023-24).
 For each FY, show TWO sub-columns: "Truing Up petition" | "Trued Up"
 For the current FY {fy}, show only "Truing Up petition" column (since it's not yet trued up in this table).
 Rows: same as Table 1 (Power purchase cost, Employee Expenses, etc. through Revenue (Gap)/Surplus).
 Use data from the petition PDF and previous KSERC orders for historical values.
-Para: Brief overview of the Commission's approach to examining each cost head.
+Para 6: Brief overview of the Commission's approach to examining each cost head.
 
 SECTION 2 - HEARING ON THE PETITION:
 CRITICAL INSTRUCTIONS FOR THIS SECTION:
-- Use ONLY the court hearing data provided below in the COURT HEARING data block.
+- Do NOT number the paragraphs in this section. Leave blank space before each paragraph where numbers would go.
+- Use ONLY the court hearing data provided in the COURT HEARING data block.
 - Do NOT invent or auto-generate hearing submissions. Use ONLY what the user provided.
 - If no court hearing data is provided, write a PLACEHOLDER section with "[Hearing details to be inserted]".
-- Start with one paragraph (numbered [__].) stating the date and place of hearing.
-- Then write "[__]." paragraphs for KSEB's comments using the respondent_position data.
-- Then write "[__]." paragraphs for the Commission's observations using commission_observations data.
+- Write unnumbered paragraphs for the hearing date/place, licensee submissions, KSEB comments, and Commission observations.
 - Each sub-point should use letters (a), (b), (c), etc.
 
-SECTION 3 - ENERGY SALES AND CONSUMER MIX (MINIMUM 5 paragraphs, each starting with [__].):
+SECTION 3 - ENERGY SALES AND CONSUMER MIX (MINIMUM 5 paragraphs, continue sequential numbering from Section 1):
 Para: Explain consumer categories in {licensee}'s supply area — HT, LT, domestic, commercial, industrial, public lighting, etc.
 Para: Comparison of FY {fy} actual sales vs. approved in MYT order — units, increase/decrease and reasons.
 Para: Category-wise analysis — which categories grew, which declined and why.
@@ -1146,7 +1144,7 @@ CONTEXT - last 2500 chars of Part B:
 {tail_b}
 ---
 
-Use [__]. as the paragraph number placeholder at the start of each numbered paragraph. The Commission assigns final numbers later. Sub-points use (a), (b), (c), etc.
+Use real sequential paragraph numbers continuing from where the previous Part ended. Tables should be numbered sequentially. Sub-points use (a), (b), (c), etc.
 
 
 MANDATORY 4-STEP JUSTIFICATION STRUCTURE (for EVERY cost head and revenue item):
@@ -1380,7 +1378,7 @@ CONTEXT - last 2500 chars of Part C:
 {{tail_c}}
 ---
 
-Use [__]. as the paragraph number placeholder at the start of each numbered paragraph. The Commission assigns final numbers later. Sub-points use (a), (b), (c), etc.
+Use real sequential paragraph numbers continuing from where the previous Part ended. Tables should be numbered sequentially. Sub-points use (a), (b), (c), etc.
 
 SECTION 11 - REVENUE FROM SALE OF POWER (MINIMUM 3 paragraphs):
 Para 1: State the total revenue from sale of power and total units sold. Note increase/decrease compared to previous year.
