@@ -29,6 +29,16 @@ from src.config import GEMINI_MODEL
 
 logger = logging.getLogger(__name__)
 
+
+def _sf(val, default=0.0):
+    """Safe float conversion — prevents NoneType comparison crashes."""
+    if val is None:
+        return default
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return default
+
 # ── Precedent Lookup Integration ──────────────────────────────────────
 try:
     from src.rag.precedent_lookup import PrecedentLookup
@@ -148,7 +158,7 @@ def _get_order_learning_decision(
             if licensee.lower() in order_key.lower():
                 decisions = order_data.get("kserc_decisions", {})
                 decision = decisions.get(component, {})
-                if isinstance(decision, dict) and decision.get("claimed_amount", 0) > 0:
+                if isinstance(decision, dict) and _sf(decision.get("claimed_amount", 0)) > 0:
                     result["same_licensee_decision"] = {
                         "order_ref": order_key,
                         **decision,
@@ -366,15 +376,15 @@ def _audit_power_purchase(
 
         # Enrich energy data from deep extraction if not already present
         energy_data = detailed_tables.get("energy_data", {})
-        if energy_input_mu == 0 and energy_data.get("energy_input_mu", 0) > 0:
+        if energy_input_mu == 0 and _sf(energy_data.get("energy_input_mu", 0)) > 0:
             energy_input_mu = float(energy_data["energy_input_mu"])
             state["energy_input_mu"] = energy_input_mu
             logger.info(f"PPC: Enriched energy_input_mu from deep tables: {energy_input_mu} MU")
-        if energy_sold_mu == 0 and energy_data.get("energy_sold_mu", 0) > 0:
+        if energy_sold_mu == 0 and _sf(energy_data.get("energy_sold_mu", 0)) > 0:
             energy_sold_mu = float(energy_data["energy_sold_mu"])
             state["energy_sold_mu"] = energy_sold_mu
             logger.info(f"PPC: Enriched energy_sold_mu from deep tables: {energy_sold_mu} MU")
-        if excess_demand_charges == 0 and energy_data.get("excess_demand_charges", 0) > 0:
+        if excess_demand_charges == 0 and _sf(energy_data.get("excess_demand_charges", 0)) > 0:
             excess_demand_charges = float(energy_data["excess_demand_charges"])
             logger.info(f"PPC: Found excess demand charges from deep tables: {excess_demand_charges} Lakhs")
 
@@ -966,14 +976,14 @@ def _audit_norm_capped_component(
             )
 
     # Prior period wage revision — shown as a separate line item
-    # If wage revision was denied in the previous year's order, the petitioner
-    # may claim it as prior period expense. This is tracked separately.
+    # The extraction is the sole gatekeeper — it only sets wage_revision_prior_period
+    # if the petition EXPLICITLY mentions wage/pay revision with specific amounts.
     if key == "employee_cost" and wage_revision_prior_period > 0.0:
         prior_amt = round(wage_revision_prior_period, 2)
         approved_expenses["prior_period_employee_cost"] = prior_amt
         logger.info(
             f"{display}: Prior period wage revision Rs.{prior_amt:.2f}L "
-            f"(denied in previous year) — added as separate line item"
+            f"(explicitly claimed in petition) — added as separate line item"
         )
 
     if effective_cap > 0.0 and claimed > effective_cap:
@@ -1374,6 +1384,14 @@ def _audit_return_on_nfa_reg28(
     key = "return_on_nfa"
     claimed = claimed_expenses.get(key, 0.0)
     display = COMPONENT_DISPLAY.get(key, key)
+    
+    # If claimed_expenses didn't pick up RoNFA but the extractor found it in state,
+    # use the extracted value (ronfa_eligible_return is from the petition's RoNFA table)
+    ronfa_from_extraction = float(state.get("ronfa_eligible_return", 0.0) or 0.0)
+    if claimed == 0.0 and ronfa_from_extraction > 0.0:
+        claimed = ronfa_from_extraction
+        claimed_expenses[key] = claimed
+        logger.info(f"RoNFA: claimed_expenses was 0, using extracted ronfa_eligible_return={claimed:.2f}")
     
     if claimed == 0.0:
         approved_expenses[key] = 0.0
@@ -2216,7 +2234,7 @@ def _audit_other_debits(
     # Get MYT norm or precedent for other_debits
     norm = _myt_norm(myt_norms, "other_debits")
     prec = _get_precedent_approved(licensee, "other_debits", fy) if _precedent_lookup and licensee else None
-    precedent_approved = prec["approved"] if prec and prec.get("approved", 0) > 0 else 0.0
+    precedent_approved = prec["approved"] if prec and _sf(prec.get("approved", 0)) > 0 else 0.0
     
     # If MYT norm or precedent is available, use it as a guide
     if norm > 0 and claimed <= norm:
@@ -2293,9 +2311,9 @@ def audit_petition(state: dict) -> dict:
     - kserc_methodology_rules: Rules learned from ALL past orders, regulations, amendments
     - myt_baseline_norms: Benchmarks from Revised ARR Approved, past orders, MYT fallback
     """
-    claimed_expenses: Dict[str, float] = state.get("claimed_expenses", {})
-    claimed_revenues: Dict[str, float] = state.get("claimed_revenues", {})
-    myt_norms: Dict[str, float] = state.get("myt_baseline_norms", {})
+    claimed_expenses: Dict[str, float] = {k: _sf(v) for k, v in state.get("claimed_expenses", {}).items()}
+    claimed_revenues: Dict[str, float] = {k: _sf(v) for k, v in state.get("claimed_revenues", {}).items()}
+    myt_norms: Dict[str, float] = {k: _sf(v) for k, v in state.get("myt_baseline_norms", {}).items()}
     licensee = state.get("licensee_name", "Unknown")
     fy = state.get("financial_year", "")
     ai_insights = state.get("ai_insights", {})
@@ -2501,6 +2519,7 @@ def audit_petition(state: dict) -> dict:
                         })
                 
                 # Prior period wage revision — separate line item
+                # Extraction is the gatekeeper — only set if petition explicitly claims it
                 if key == "employee_cost" and wage_revision_prior > 0.0:
                     approved_expenses["prior_period_employee_cost"] = round(wage_revision_prior, 2)
                     logger.info(
@@ -2645,7 +2664,7 @@ def audit_petition(state: dict) -> dict:
                     for order_key, order_data in relevant_orders.items():
                         decisions = order_data.get("kserc_decisions", {})
                         for comp, d in decisions.items():
-                            if isinstance(d, dict) and d.get("claimed_amount", 0) > 0:
+                            if isinstance(d, dict) and _sf(d.get("claimed_amount", 0)) > 0:
                                 claimed = d.get("claimed_amount", 0)
                                 approved = d.get("approved_amount", 0)
                                 reasoning = str(d.get("kserc_reasoning", ""))[:100]

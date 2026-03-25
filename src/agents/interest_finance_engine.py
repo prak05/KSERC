@@ -645,9 +645,9 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
                 f"missing: {prior_data.get('missing_fields', [])}")
 
     # ── Step 2: Get extracted claimed expenses ───────────────────────
-    claimed = state.get("claimed_expenses", {})
-    approved = state.get("approved_expenses", {})
-    approved_revenues = state.get("approved_revenues", {})
+    claimed = {k: float(v or 0.0) for k, v in state.get("claimed_expenses", {}).items()}
+    approved = {k: float(v or 0.0) for k, v in state.get("approved_expenses", {}).items()}
+    approved_revenues = {k: float(v or 0.0) for k, v in state.get("approved_revenues", {}).items()}
 
     # Check if O&M and depreciation are approved yet
     om_components = ["employee_cost", "repair_maintenance", "admin_general"]

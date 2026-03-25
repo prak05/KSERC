@@ -152,10 +152,70 @@ def _validate_file(file: UploadFile) -> None:
 # Routes
 # ═══════════════════════════════════════════════════════════════════════
 
+
 @app.get("/api/health")
 async def health():
     """Health check endpoint."""
     return {"status": "ok", "service": "KSERC Truing Up Analysis"}
+
+
+# ── Regulation Document Management ────────────────────────────────────
+
+@app.get("/api/regulations")
+async def list_regulations():
+    """List all pre-extracted regulation documents in Firestore."""
+    from src.rag.file_search_store import list_stored_regulations
+    docs = list_stored_regulations()
+    return {"docs": docs, "count": len(docs)}
+
+
+@app.post("/api/regulations/upload")
+async def upload_regulation(
+    file: UploadFile = File(...),
+    category: str = Form("regulations"),
+):
+    """
+    Upload a regulation PDF, extract text (PyMuPDF first, Gemini fallback),
+    and store in Firestore for fast regulation queries.
+    """
+    if not file.filename.lower().endswith('.pdf'):
+        raise HTTPException(400, "Only PDF files are supported")
+    
+    if category not in ["regulations", "myt_orders", "past_orders", "other_licensee_orders"]:
+        raise HTTPException(400, f"Invalid category. Must be one of: regulations, myt_orders, past_orders, other_licensee_orders")
+    
+    # Save uploaded file temporarily
+    import tempfile, os
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    try:
+        content = await file.read()
+        tmp.write(content)
+        tmp.close()
+        
+        from src.rag.file_search_store import extract_and_store_regulation
+        result = extract_and_store_regulation(
+            pdf_path=tmp.name,
+            filename=file.filename,
+            category=category,
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(500, f"Extraction failed: {str(e)}")
+    finally:
+        try:
+            os.unlink(tmp.name)
+        except:
+            pass
+
+
+@app.delete("/api/regulations/{doc_id}")
+async def remove_regulation(doc_id: str):
+    """Delete a regulation document from Firestore."""
+    from src.rag.file_search_store import delete_stored_regulation
+    success = delete_stored_regulation(doc_id)
+    if not success:
+        raise HTTPException(500, "Failed to delete regulation")
+    return {"deleted": doc_id}
 
 
 @app.post("/api/analyze")
@@ -313,8 +373,10 @@ async def analyze_petition(
                 user_id="system"
             )
         except Exception as e:
-            logger.error(f"Analysis failed: {e}")
-            save_analysis(analysis_id, "FAILED", {"error": str(e)})
+            import traceback
+            tb = traceback.format_exc()
+            logger.error(f"Analysis failed: {e}\n{tb}", exc_info=True)
+            save_analysis(analysis_id, "FAILED", {"error": str(e), "traceback": tb})
 
     background_tasks.add_task(bg_task)
     

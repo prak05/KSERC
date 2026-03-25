@@ -201,7 +201,7 @@ def extract_all_tables(
     )
     pdf_hash = compute_pdf_hash(all_pdf_paths)
 
-    cached = get_cached_deep_extraction(pdf_hash, licensee_name, financial_year)
+    cached = None  # DISABLED: fresh extraction for current petition always
     if cached:
         return cached
 
@@ -316,7 +316,8 @@ def extract_all_tables(
 
     # ── Save to cache (Firestore-backed) ──────────────────────────────
     if all_tables:
-        save_deep_extraction_cache(pdf_hash, licensee_name, financial_year, result)
+        pass  # DISABLED: never cache petition data — always fresh extract
+        # save_deep_extraction_cache(pdf_hash, licensee_name, financial_year, result)
 
     return result
 
@@ -1114,30 +1115,34 @@ def deep_extract_node(state: dict) -> dict:
         try:
             from src.gemini_client import generate_with_pdf as _gen_pdf
             wage_prompt = (
-                f"Check if this petition for FY {fy} explicitly claims WAGE REVISION or PAY REVISION.\n\n"
-                f"IMPORTANT DISTINCTION:\n"
-                f"- WAGE/PAY REVISION means a formal government-mandated pay scale revision (like 11th BPC, "
-                f"CDA pay revision) that increases employee costs across the board.\n"
-                f"- This is NOT the same as general employee cost increases due to medical expenses, "
-                f"bonus, leave encashment, increments, or hiring more staff.\n\n"
+                f"Analyze this KSERC truing-up petition for {licensee} FY {fy}.\n\n"
+                f"Find if the licensee EXPLICITLY claims WAGE REVISION or PAY REVISION.\n"
+                f"This means a formal government-mandated pay scale revision such as:\n"
+                f"- Wage revision / Pay revision / Salary revision\n"
+                f"- Pay commission implementation (e.g., 11th BPC, CDA pay revision)\n"
+                f"- Pay arrears specifically from a wage/pay revision\n"
+                f"- Prior period wage revision amounts denied in earlier truing-up orders\n\n"
+                f"IMPORTANT: Do NOT confuse general employee cost increases (medical, bonus, "
+                f"increments, hiring) with wage revision. Only report if the petition explicitly "
+                f"uses words like 'wage revision', 'pay revision', 'salary revision', 'pay commission', "
+                f"'CDA', 'BPC', or 'pay arrears'.\n\n"
                 f"Return JSON in this EXACT format:\n"
                 f'{{"mentions_wage_revision": false, '
                 f'"wage_revision_current_year_amount": 0.0, '
                 f'"wage_revision_prior_period_amount": 0.0, '
                 f'"total_wage_revision_claimed": 0.0}}\n\n'
-                f"- mentions_wage_revision: Set to true ONLY if the petition explicitly uses the words "
-                f"'wage revision', 'pay revision', 'salary revision', or 'pay commission' "
-                f"and claims a specific amount for it. Set to false if only general employee cost "
-                f"increases are mentioned.\n"
-                f"- wage_revision_current_year_amount: Amount claimed for CURRENT year wage revision. "
-                f"Set to 0.0 if not explicitly claimed.\n"
-                f"- wage_revision_prior_period_amount: Amount from PREVIOUS year(s) that was denied "
-                f"by KSERC and is now re-claimed. Set to 0.0 if not explicitly claimed.\n"
-                f"- total_wage_revision_claimed: Total. Set to 0.0 if no wage revision claimed.\n\n"
+                f"- mentions_wage_revision: Set to true ONLY if the petition explicitly mentions "
+                f"wage/pay revision with a specific amount. Set to false if no such claim.\n"
+                f"- wage_revision_current_year_amount: Amount in Rs. Lakhs for FY {fy}. Use 0.0 if not claimed.\n"
+                f"- wage_revision_prior_period_amount: Amount in Rs. Lakhs from previous years. Use 0.0 if not claimed.\n"
+                f"- total_wage_revision_claimed: Sum of current + prior. Use 0.0 if none.\n\n"
+                f"DO NOT hallucinate amounts. If unsure, return all zeros with mentions_wage_revision=false.\n"
                 f"Return ONLY valid JSON. No markdown. No explanation."
             )
+            # Use all PDFs — wage revision may be in any annexure
+            wage_pdf_path = all_pdf_paths if len(all_pdf_paths) > 1 else pdf_path
             raw_wage = _gen_pdf(
-                pdf_path=pdf_path,
+                pdf_path=wage_pdf_path,
                 prompt=wage_prompt,
                 model=GEMINI_MODEL,
                 temperature=0.0,
@@ -1146,12 +1151,13 @@ def deep_extract_node(state: dict) -> dict:
             if not raw_wage:
                 logger.warning("[Wage Revision] Gemini returned empty response")
                 raise ValueError("Empty Gemini response")
+            logger.info(f"[Wage Revision] Gemini raw response: {raw_wage[:300]}")
             wage_data = json.loads(raw_wage.strip())
             
             # Only apply if petition explicitly mentions wage revision
             mentions_wr = wage_data.get("mentions_wage_revision", False)
             if not mentions_wr:
-                logger.info("[Wage Revision] Petition does NOT mention wage/pay revision — skipping")
+                logger.info("[Wage Revision] Gemini confirms: petition does NOT mention wage/pay revision — no wage revision applied")
             else:
                 wr_prior = float(wage_data.get("wage_revision_prior_period_amount", 0) or 0)
                 wr_current = float(wage_data.get("wage_revision_current_year_amount", 0) or 0)

@@ -4,6 +4,7 @@ import Navigation from './components/Navigation'
 import UploadForm from './components/UploadForm'
 import ResultsDashboard from './components/ResultsDashboard'
 import ReferenceDataPage from './components/ReferenceDataPage'
+import RegulationManager from './components/RegulationManager'
 import LoadingScreen from './components/LoadingScreen'
 import OrderDrafter from './components/OrderDrafter'
 import Footer from './components/Footer'
@@ -364,6 +365,9 @@ export default function App() {
 
                         {/* Reference Data */}
                         {view === 'reference' && !loading && <ReferenceDataPage />}
+
+                        {/* Regulations */}
+                        {view === 'regulations' && !loading && <RegulationManager />}
                     </main>
 
                     <Footer />

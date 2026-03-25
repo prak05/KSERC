@@ -20,7 +20,7 @@ from pathlib import Path
 try:
     from weasyprint import HTML as WeasyHTML
     HAS_WEASYPRINT = True
-except ImportError:
+except (ImportError, OSError):
     HAS_WEASYPRINT = False
 
 try:

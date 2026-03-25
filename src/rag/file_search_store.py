@@ -357,6 +357,95 @@ def create_regulation_cache(
 # Query Interface — replaces legal_researcher.query_regulations()
 # ═══════════════════════════════════════════════════════════════════════
 
+def _query_from_cached_text(
+    question: str,
+    categories: Optional[List[str]] = None,
+    model: str = GEMINI_MODEL,
+) -> tuple[Optional[str], List[str]]:
+    """
+    Query pre-extracted regulation text from Firestore instead of sending full PDFs.
+    Returns (result_text, missing_filenames).
+    """
+    try:
+        from src.tools.db import _get_db
+        from src.gemini_client import get_client
+        from google.genai import types
+        
+        db = _get_db()
+        target_categories = categories or ["regulations", "myt_orders"]
+        
+        # Determine all expected files for these categories
+        expected_files = []
+        for cat in target_categories:
+            expected_files.extend(REFERENCE_DOCS.get(cat, []))
+            
+        # Directly scan the collection — no index needed
+        docs = db.collection("regulation_extractions").stream()
+        
+        combined_text = []
+        found_files = set()
+        for doc in docs:
+            data = doc.to_dict()
+            cat = data.get("category", "")
+            filename = data.get("filename", "")
+            content = data.get("content", "")
+            if cat in target_categories and content:
+                combined_text.append(f"\n{'='*80}\n📄 {filename}\n{'='*80}\n{content}")
+                found_files.add(filename)
+        
+        if not combined_text:
+            logger.info("[CachedText] No pre-extracted regulations found in Firestore")
+            return None, expected_files
+            
+        # Find which expected files are missing from cache
+        missing_files = [f for f in expected_files if f not in found_files]
+        if missing_files:
+            logger.info(f"[CachedText] Missing {len(missing_files)} files from cache: {missing_files}")
+        
+        logger.info(f"[CachedText] Loaded {len(combined_text)} pre-extracted docs ({len(found_files)} unique files)")
+        
+        full_context = "\n".join(combined_text)
+        logger.info(f"[CachedText] Total context: {len(full_context):,} chars from {len(combined_text)} docs")
+        
+        # Query Gemini with text context (much faster than PDF)
+        client = get_client()
+        prompt = f"""You are a KSERC (Kerala State Electricity Regulatory Commission) legal expert.
+
+You have the following regulatory documents available:
+
+{full_context}
+
+Based on these documents, answer the following question thoroughly.
+
+IMPORTANT:
+- Cite specific regulation clause numbers (e.g., "Clause 27 of KSERC Tariff Regulations 2021")
+- Reference specific past order numbers and dates when citing precedent
+- Include exact amounts from past orders when relevant
+- Be precise and complete
+
+QUESTION: {question}"""
+        
+        config = types.GenerateContentConfig(
+            temperature=0.1,
+            response_mime_type="text/plain",
+        )
+        
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=config,
+        )
+        
+        result = response.text.strip()
+        logger.info(f"[CachedText] Query answered from pre-extracted text ({len(result)} chars)")
+        return result, missing_files
+        
+    except Exception as e:
+        logger.warning(f"[CachedText] Failed to query from cached text: {e}")
+        expected = [f for cat in (categories or ["regulations", "myt_orders"]) for f in REFERENCE_DOCS.get(cat, [])]
+        return None, expected
+
+
 def query_regulations(
     question: str,
     categories: Optional[List[str]] = None,
@@ -366,29 +455,34 @@ def query_regulations(
     """
     Query uploaded reference documents with a natural language question.
     
-    This replaces the old legal_researcher.query_regulations() function.
-    If a context cache exists, uses it for 75% token savings.
-    Otherwise, sends file references inline.
-    
-    Args:
-        question: The regulation/legal question to answer.
-        categories: Which document categories to search.
-                    Default: ['regulations', 'myt_orders', 'past_orders', 'other_licensee_orders']
-        model: Which Gemini model to use.
-        use_cache: Whether to try using context caching (default True).
-    
-    Returns:
-        The answer text with citations.
+    Priority:
+      1. Pre-extracted text from Firestore (fastest — no PDF scanning)
+      2. Gemini context cache (fast — cached PDF context)
+      3. Inline file references (slowest — sends full PDFs)
     """
     from src.gemini_client import get_client
     from google.genai import types
     
     client = get_client()
     
-    # Try cached path first (cheaper)
+    # Priority 1: Try pre-extracted text from Firestore (fastest)
+    cached_result, missing_files = _query_from_cached_text(question, categories, model)
+    if cached_result and not missing_files:
+        logger.info("[QueryRegs] ✅ Full hit from pre-extracted text cache — no PDFs needed!")
+        return cached_result
+    
+    if cached_result and missing_files:
+        # Partial cache hit — we got 6/7 docs, only 1 missing
+        # Use the cached result directly (good enough for most queries)
+        logger.info(f"[QueryRegs] Partial cache hit ({len(missing_files)} files missing). Using cached text only.")
+        return cached_result
+        
+    logger.info(f"[QueryRegs] Cache miss. Falling back to PDF-based methods for {len(missing_files)} files.")
+    
+    # Priority 2: Try Gemini context cache (PDF-based but cached server-side)
     if use_cache:
         cache_name = create_regulation_cache(
-            categories=["regulations", "myt_orders"],
+            categories=categories or ["regulations", "myt_orders"],
             model=model,
         )
         if cache_name:
@@ -416,59 +510,31 @@ QUESTION: {question}""",
                 return result
             except Exception as e:
                 logger.warning(f"Cached query failed, falling back to inline: {e}")
-    
-    # Fallback: inline file references
-    target_categories = categories or ["regulations", "myt_orders", "past_orders", "other_licensee_orders"]
-    file_uris = ensure_files_uploaded(categories=target_categories)
-    
-    # Build content parts: file references + question
+                
+    # Priority 3: Inline file references — load PDFs from disk
+    target_categories = categories or ["regulations", "myt_orders"]
     parts = []
     
-    if file_uris:
-        # Add file references from Files API
-        cache_data = _load_upload_cache()
-        for filename, uri in file_uris.items():
-            file_info = cache_data.get("files", {}).get(filename, {})
-            file_cat = file_info.get("category", "")
-            if file_cat in target_categories:
-                parts.append(types.Part.from_uri(file_uri=uri, mime_type="application/pdf"))
-    
-    # Fallback: load PDFs directly from disk as inline bytes
-    if not parts and DOCUMENTS_DIR.exists():
-        logger.info("Files API unavailable — loading regulatory PDFs as inline bytes from disk")
-        for cat in target_categories:
-            for filename in REFERENCE_DOCS.get(cat, []):
-                filepath = DOCUMENTS_DIR / filename
-                if filepath.exists() and filepath.stat().st_size < 20_000_000:  # <20MB
-                    try:
-                        pdf_bytes = filepath.read_bytes()
-                        parts.append(types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"))
-                        logger.info(f"  Loaded inline: {filename} ({len(pdf_bytes)//1024} KB)")
-                    except Exception as e:
-                        logger.warning(f"  Failed to load {filename}: {e}")
+    for cat in target_categories:
+        for filename in REFERENCE_DOCS.get(cat, []):
+            filepath = DOCUMENTS_DIR / filename
+            if filepath.exists() and filepath.stat().st_size < 20_000_000:
+                try:
+                    pdf_bytes = filepath.read_bytes()
+                    parts.append(types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"))
+                    logger.info(f"  Loaded inline: {filename} ({len(pdf_bytes)//1024} KB)")
+                except Exception as e:
+                    logger.warning(f"  Failed to load {filename}: {e}")
     
     if not parts:
         logger.warning("No reference documents available for query")
         return "No reference documents available. Please upload documents first."
     
-    # Add the question
-    parts.append(types.Part.from_text(text=f"""You are a KSERC (Kerala State Electricity Regulatory Commission) legal expert.
-
-Based on the uploaded regulatory documents, past orders, and MYT norms, answer the following question thoroughly.
-
-IMPORTANT:
-- Cite specific regulation clause numbers (e.g., "Clause 27 of KSERC Tariff Regulations 2021")
-- Reference specific past order numbers and dates when citing precedent
-- Include exact amounts from past orders when relevant
-- Be precise and complete
-
+    parts.append(types.Part.from_text(text=f"""You are a KSERC legal expert.
+Answer the following question thoroughly, citing specific clause numbers and order references.
 QUESTION: {question}"""))
     
-    # Generate response
-    config = types.GenerateContentConfig(
-        temperature=0.1,
-        response_mime_type="text/plain",
-    )
+    config = types.GenerateContentConfig(temperature=0.1)
     
     try:
         response = client.models.generate_content(
@@ -476,14 +542,149 @@ QUESTION: {question}"""))
             contents=parts,
             config=config,
         )
-        
         result = response.text.strip()
-        logger.info(f"File Search query answered ({len(result)} chars)")
+        logger.info(f"File Search query answered inline ({len(result)} chars)")
         return result
-        
     except Exception as e:
-        logger.error(f"File Search query failed: {e}")
-        return f"Query failed: {str(e)}"
+        logger.error(f"Failed to query regulations: {e}")
+        return f"Error querying regulations: {str(e)}"
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Regulation Document Management — CRUD for Firestore cache
+# ═══════════════════════════════════════════════════════════════════════
+
+def list_stored_regulations() -> list:
+    """List all regulation documents stored in Firestore."""
+    try:
+        from src.tools.db import _get_db
+        db = _get_db()
+        docs = db.collection("regulation_extractions").stream()
+        result = []
+        for doc in docs:
+            d = doc.to_dict()
+            result.append({
+                "doc_id": doc.id,
+                "filename": d.get("filename", ""),
+                "category": d.get("category", ""),
+                "chars": d.get("chars", 0),
+                "method": d.get("method", "unknown"),
+                "extracted_at": d.get("extracted_at", ""),
+            })
+        return sorted(result, key=lambda x: x.get("category", ""))
+    except Exception as e:
+        logger.error(f"Failed to list stored regulations: {e}")
+        return []
+
+
+def extract_and_store_regulation(pdf_path: str, filename: str, category: str) -> dict:
+    """
+    Extract text from a regulation PDF and store in Firestore.
+    
+    Strategy: PyMuPDF first (fast, works for structured PDFs).
+    If quality is poor (<100 chars/page avg), fallback to Gemini extraction.
+    
+    Returns:
+        dict with {filename, category, chars, method, doc_id}
+    """
+    import fitz  # PyMuPDF
+    import time
+    
+    logger.info(f"[RegExtract] Starting extraction: {filename} (category={category})")
+    
+    # Step 1: Try PyMuPDF extraction
+    doc = fitz.open(pdf_path)
+    page_count = doc.page_count
+    
+    pages_text = []
+    for page in doc:
+        text = page.get_text("text")
+        if text.strip():
+            pages_text.append(f"\n--- Page {page.number + 1} ---\n{text}")
+    doc.close()
+    
+    pymupdf_text = "\n".join(pages_text)
+    avg_chars_per_page = len(pymupdf_text) / max(page_count, 1)
+    
+    logger.info(f"[RegExtract] PyMuPDF: {len(pymupdf_text):,} chars, {page_count} pages, avg {avg_chars_per_page:.0f} chars/page")
+    
+    # Step 2: Decide if quality is good enough
+    method = "pymupdf"
+    final_text = pymupdf_text
+    
+    if avg_chars_per_page < 100:
+        # Likely scanned/image PDF — fallback to Gemini
+        logger.info(f"[RegExtract] PyMuPDF quality too low ({avg_chars_per_page:.0f} chars/page). Falling back to Gemini.")
+        try:
+            from src.gemini_client import get_client
+            from google.genai import types
+            from src.config import GEMINI_MODEL
+            
+            client = get_client()
+            pdf_bytes = open(pdf_path, "rb").read()
+            
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=[
+                    types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"),
+                    "Extract ALL text content from this PDF document. Preserve the structure, headings, clause numbers, and tables. Return the full text content only, no commentary.",
+                ],
+                config=types.GenerateContentConfig(temperature=0.0),
+            )
+            gemini_text = response.text.strip()
+            
+            if len(gemini_text) > len(pymupdf_text):
+                final_text = gemini_text
+                method = "gemini"
+                logger.info(f"[RegExtract] Gemini extraction: {len(gemini_text):,} chars (better than PyMuPDF)")
+            else:
+                logger.info(f"[RegExtract] Gemini result not better, keeping PyMuPDF output")
+        except Exception as e:
+            logger.warning(f"[RegExtract] Gemini fallback failed: {e}. Using PyMuPDF output.")
+    
+    if not final_text.strip():
+        raise ValueError(f"Failed to extract any text from {filename}")
+    
+    # Step 3: Store in Firestore
+    from src.tools.db import _get_db
+    db = _get_db()
+    
+    doc_id = filename.replace(" ", "_").replace(".", "_").replace(",", "").replace("(", "").replace(")", "")
+    
+    data = {
+        "filename": filename,
+        "category": category,
+        "content": final_text,
+        "chars": len(final_text),
+        "extracted_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "method": method,
+        "page_count": page_count,
+    }
+    
+    db.collection("regulation_extractions").document(doc_id).set(data)
+    logger.info(f"[RegExtract] ✅ Stored '{filename}' as '{doc_id}' ({len(final_text):,} chars, method={method})")
+    
+    return {
+        "doc_id": doc_id,
+        "filename": filename,
+        "category": category,
+        "chars": len(final_text),
+        "method": method,
+        "page_count": page_count,
+    }
+
+
+def delete_stored_regulation(doc_id: str) -> bool:
+    """Delete a regulation document from Firestore."""
+    try:
+        from src.tools.db import _get_db
+        db = _get_db()
+        db.collection("regulation_extractions").document(doc_id).delete()
+        logger.info(f"[RegExtract] Deleted regulation: {doc_id}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to delete regulation {doc_id}: {e}")
+        return False
 
 
 # ═══════════════════════════════════════════════════════════════════════

@@ -1261,7 +1261,7 @@ def extract_petition_data(state: dict) -> dict:
     cache_key = f"{pdf_hash}_{licensee_name}_{target_fy}".replace(" ", "_")
     cache_file = cache_dir / f"{cache_key}.json"
     
-    if cache_file.exists():
+    if False and cache_file.exists():  # DISABLED: always fresh extract
         try:
             cached = json.loads(cache_file.read_text(encoding="utf-8"))
             # Only use cache if it has valid expense data (non-zero total)

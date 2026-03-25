@@ -2,6 +2,7 @@ const TABS = [
     { id: 'upload', label: '↑ Submit', icon: '01' },
     { id: 'results', label: '◆ Audit Results', icon: '02' },
     { id: 'reference', label: '■ Reference Data', icon: '03' },
+    { id: 'regulations', label: '⚖ Regulations', icon: '04' },
 ]
 
 export default function Navigation({ activeView, onNavigate, hasResults }) {
