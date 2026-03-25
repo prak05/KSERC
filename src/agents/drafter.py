@@ -564,18 +564,45 @@ def _generate_document_with_gemini(state: dict) -> str:
             hist_exp = hist_data.get("approved_expenses", {})
             if hist_exp:
                 data_block += f"  Approved Expenses:\n"
+                # Key fallback map: exp_keys name -> possible Firestore key aliases
+                _key_aliases = {
+                    "employee_cost": ["employee_cost", "employee_expenses"],
+                    "return_on_nfa": ["return_on_nfa", "return_on_net_fixed_assets"],
+                    "interest_long_term": ["interest_long_term", "interest_finance_charges"],
+                    "interest_working_capital": ["interest_working_capital", "interest_on_working_capital"],
+                    "repair_maintenance": ["repair_maintenance", "repair_maintenance_expenses"],
+                    "admin_general": ["admin_general", "administration_general_expenses"],
+                    "other_debits": ["other_debits"],
+                }
+                def _get_hist_val(d, key):
+                    """Look up value with alias fallback."""
+                    aliases = _key_aliases.get(key, [key])
+                    for alias in aliases:
+                        v = d.get(alias, 0.0)
+                        if v and float(v or 0) > 0:
+                            return float(v)
+                    return 0.0
                 for k in exp_keys:
-                    v = float(hist_exp.get(k, 0.0) or 0.0)
+                    v = _get_hist_val(hist_exp, k)
                     if v > 0:
                         data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
-                total_hist_exp = sum(float(hist_exp.get(k, 0.0) or 0.0) for k in exp_keys)
+                total_hist_exp = sum(_get_hist_val(hist_exp, k) for k in exp_keys)
                 data_block += f"    TOTAL: {total_hist_exp:.2f}\n"
             # Approved revenues
             hist_rev = hist_data.get("approved_revenues", {})
             if hist_rev:
                 data_block += f"  Approved Revenues:\n"
+                _rev_aliases = {
+                    "revenue_from_sale": ["revenue_from_sale", "revenue_from_sale_of_power"],
+                    "non_tariff_income": ["non_tariff_income", "other_income"],
+                }
                 for k in rev_keys:
-                    v = float(hist_rev.get(k, 0.0) or 0.0)
+                    aliases = _rev_aliases.get(k, [k])
+                    v = 0.0
+                    for alias in aliases:
+                        v = float(hist_rev.get(alias, 0.0) or 0.0)
+                        if v > 0:
+                            break
                     if v > 0:
                         data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
             # Claimed expenses
@@ -615,6 +642,22 @@ def _generate_document_with_gemini(state: dict) -> str:
             if rm_claimed:
                 data_block += f"  R&M Line Items (Truing Up petition):\n"
                 for k, v in rm_claimed.items():
+                    v = float(v or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # Employee line items (claimed — for Table 9)
+            emp_claimed = hist_data.get("employee_claimed_line_items", {})
+            if emp_claimed:
+                data_block += f"  Employee Line Items (Truing Up petition):\n"
+                for k, v in emp_claimed.items():
+                    v = float(v or 0.0)
+                    if v > 0:
+                        data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
+            # Employee line items (approved/trued up)
+            emp_approved = hist_data.get("employee_line_items", {})
+            if emp_approved:
+                data_block += f"  Employee Line Items (Trued Up):\n"
+                for k, v in emp_approved.items():
                     v = float(v or 0.0)
                     if v > 0:
                         data_block += f"    {k.replace('_', ' ').title()}: {v:.2f}\n"
