@@ -1,0 +1,30 @@
+======================================================================
+Technopark FY 2024-25 — Pipeline Results
+======================================================================
+
+Total Claimed Expenditure:  Rs. 7569.94 L
+Total Approved Expenditure: Rs. 6947.99 L
+Total Claimed Revenue:      Rs. 344.54 L
+Total Approved Revenue:     Rs. 344.54 L
+Revenue Gap/Surplus:        Rs. -6603.45 L
+
+COMPONENT SUMMARY:
+Component                                   MYT    Claimed   Approved Status
+------------------------------------------------------------------------------------------
+  Power Purchase Cost                   6367.53    6369.16    6316.64  reduced
+  Employee Cost                           29.61      60.73      29.61  reduced
+  Repairs & Maintenance                  346.28     551.17     346.28  reduced
+  Administration & General Expenses       39.37     129.91      39.37  reduced
+  Depreciation                            142.6      69.89       30.9  reduced
+  Interest on Long-Term Loans              7.87     134.16     134.16  approved
+  Interest on Consumer Security Deposi    89.52     134.16     140.22  increased
+  Interest on Working Capital               0.0        0.0        0.0  approved
+  Carrying Cost on Revenue Gaps             0.0        0.0        0.0  approved
+  Return on Net Fixed Assets (RoNFA)      21.07      85.24      38.31  reduced
+  Other Debits                              0.0        0.0        0.0  approved
+  Section 3(1) Electricity Duty             0.0       27.0        0.0  reduced
+  Other Expenses                            0.0       8.52       8.52  approved
+  Prior Period Employee Cost (Wage Rev      0.0        0.0        0.0  approved
+
+DISALLOWANCES:
+----------------------------------------------------------------------

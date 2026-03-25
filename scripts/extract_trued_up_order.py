@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 # ── Config ──
 PDFS = {
-    "KDHP": r"C:\Users\adwai\OneDrive\Desktop\K-Project\Documents\KANNADEVAN 2023-24.pdf",
+    "KDHP": r"C:\Users\adwai\OneDrive\Desktop\K-Project\Documents\kannan devan 2023-24.pdf",
     "Technopark": r"C:\Users\adwai\OneDrive\Desktop\K-Project\Documents\techonaprk2023-24.pdf",
     "Infopark": r"C:\Users\adwai\OneDrive\Desktop\K-Project\Documents\info[aprk 2023-24 acutal trued up.pdf",
 }
