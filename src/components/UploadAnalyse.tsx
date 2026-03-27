@@ -19,11 +19,8 @@ export default function UploadAnalyse({ licensees, onStartAnalysis }: UploadAnal
   const [selectedYear, setSelectedYear] = useState('2024-25');
 
   const [uploadSlots, setUploadSlots] = useState<DocumentUploadSlot[]>([
-    { id: 'annual_accounts', label: 'Audited Annual Accounts (PDF)', mandatory: true, file: null },
-    { id: 'arr_order', label: 'ARR Order for FY 2024-25 (PDF)', mandatory: true, file: null },
-    { id: 'prev_truing_up', label: 'Previous Year Truing-Up Order (PDF)', mandatory: true, file: null },
-    { id: 'energy_audit', label: 'Energy Audit Statement (PDF/Excel)', mandatory: false, file: null },
-    { id: 'tariff_schedule', label: 'Tariff Schedule (PDF)', mandatory: false, file: null },
+    { id: 'truing_up', label: 'Truing-up Order / Petition (PDF)', mandatory: true, file: null },
+    { id: 'arr_order', label: 'ARR Order (PDF)', mandatory: true, file: null },
   ]);
 
   const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});

@@ -34,6 +34,12 @@ db.exec(`
     status TEXT DEFAULT 'pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+  CREATE TABLE IF NOT EXISTS knowledge_base (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    section_name TEXT NOT NULL,
+    content TEXT NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 // Seed Licensees if empty
@@ -59,7 +65,17 @@ if (historyCount.count === 0) {
   insert.run('INFOPARK', '2024-25', -79.76, -64.72, 'GAP', '15.04L disallowed');
 }
 
+// Seed Knowledge Base if empty
+const kbCount = db.prepare("SELECT COUNT(*) as count FROM knowledge_base").get() as { count: number };
+if (kbCount.count === 0) {
+  const insert = db.prepare("INSERT INTO knowledge_base (section_name, content) VALUES (?, ?)");
+  insert.run('Normative Rules (2026)', '1. Power Purchase: Approved merit order dispatch required. 2. Employee Cost: AICPI escalation capped at 4.2%. 3. O&M: Normalized using 5-year average.');
+  insert.run('Tariff Regulations', 'Tariff must reflect cost of supply. RPO targets increased by 2% for solar.');
+  insert.run('Historical Extremes', 'Technopark FY21: 280L Surplus. Infopark FY25: 64L Gap.');
+}
+
 async function startServer() {
+  // Main App Server
   const app = express();
   const PORT = 3000;
 
@@ -74,6 +90,17 @@ async function startServer() {
   app.get("/api/history", (req, res) => {
     const rows = db.prepare("SELECT * FROM historical_orders").all();
     res.json(rows);
+  });
+
+  app.get("/api/rules", (req, res) => {
+    const rows = db.prepare("SELECT * FROM knowledge_base").all();
+    res.json(rows);
+  });
+
+  app.post("/api/rules", (req, res) => {
+    const { section_name, content } = req.body;
+    db.prepare("INSERT INTO knowledge_base (section_name, content) VALUES (?, ?)").run(section_name, content);
+    res.json({ success: true });
   });
 
   app.post("/api/calculate", (req, res) => {
@@ -104,8 +131,36 @@ async function startServer() {
     });
   }
 
+  // SECOND SERVER for Rules on 6969
+  const rulesApp = express();
+  const RULES_PORT = 6969;
+  rulesApp.use(express.json());
+  
+  // Rules landing page
+  rulesApp.get("/rules", (req, res) => {
+    const rows = db.prepare("SELECT * FROM knowledge_base").all();
+    let html = `<html><head><title>KSERC Knowledge Base</title><style>
+      body { font-family: sans-serif; padding: 40px; background: #f0f2f5; }
+      .section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+      h1 { color: #003366; }
+      h2 { color: #cc9900; border-bottom: 2px solid #cc9900; padding-bottom: 10px; }
+      pre { white-space: pre-wrap; font-size: 14px; line-height: 1.6; }
+    </style></head><body><h1>KSERC Rules & Knowledge Base v2026</h1>`;
+    
+    rows.forEach(row => {
+      html += `<div class="section"><h2>${row.section_name}</h2><pre>${row.content}</pre></div>`;
+    });
+    
+    html += `</body></html>`;
+    res.send(html);
+  });
+
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Main Server running on http://localhost:${PORT}`);
+  });
+
+  rulesApp.listen(RULES_PORT, "0.0.0.0", () => {
+    console.log(`Rules Server running on http://localhost:${RULES_PORT}/rules`);
   });
 }
 

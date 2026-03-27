@@ -38,4 +38,5 @@ export type Page =
   | 'reasoning' 
   | 'reports' 
   | 'history' 
-  | 'benchmarks';
+  | 'benchmarks'
+  | 'rules';

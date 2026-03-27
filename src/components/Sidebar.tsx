@@ -13,6 +13,7 @@ export default function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'history', label: 'Historical Orders', icon: History },
     { id: 'benchmarks', label: 'Benchmarks', icon: Info },
+    { id: 'rules', label: 'Knowledge Base', icon: FileText },
   ] as const;
 
   return (
