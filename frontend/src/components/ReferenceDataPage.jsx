@@ -20,7 +20,7 @@ function ExtractionReviewTable({ rows, onRowChange }) {
     )
     return (
         <div style={{ overflowX: 'auto', marginTop: 12 }}>
-            <table className="neon-table">
+            <table className="data-table">
                 <thead>
                     <tr>
                         <th style={{ textAlign: 'center', width: 50 }}>Sl.</th>
@@ -42,7 +42,7 @@ function ExtractionReviewTable({ rows, onRowChange }) {
                             <td style={{ textAlign: 'right' }}>
                                 <input type="number" step="any" value={row.value ?? ''}
                                     onChange={e => onRowChange(idx, 'value', parseFloat(e.target.value) || 0)}
-                                    className="neon-input" style={{ width: 90, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '4px 8px' }} />
+                                    className="input-field" style={{ width: 90, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '4px 8px' }} />
                             </td>
                             <td className="mono">{row.unit}</td>
                             <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>{row.page ?? '—'}</td>
@@ -103,7 +103,7 @@ function PDFUploadSection({ orderType, label, description }) {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div className="glass-card" style={{ padding: '24px 28px' }}>
+            <div className="card" style={{ padding: '24px 28px' }}>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.03em', textTransform: 'none', lineHeight: 1.3, marginBottom: 4 }}>{label}</h3>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 16, maxWidth: 700 }}>{description}</p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, marginBottom: 14 }}>
@@ -133,7 +133,7 @@ function PDFUploadSection({ orderType, label, description }) {
                         >✕</span>}
                     </div>
                     <input type="text" placeholder="Order No." value={orderNumber} onChange={e => setOrderNumber(e.target.value)}
-                        className="neon-input" style={{ fontSize: '11px' }} />
+                        className="input-field" style={{ fontSize: '11px' }} />
                     {orderType === 'past_order' && (
                         <NeonSelect value={licensee} onChange={setLicensee} options={LICENSEES} placeholder="Licensee" />
                     )}
@@ -141,38 +141,38 @@ function PDFUploadSection({ orderType, label, description }) {
                         <NeonSelect value={financialYear} onChange={setFinancialYear} options={FINANCIAL_YEARS} placeholder="Year" />
                     )}
                 </div>
-                <button onClick={handleUpload} disabled={!file || loading} className="laser-btn" style={{ fontSize: '0.7rem', padding: '10px 22px', opacity: (!file || loading) ? 0.3 : 1 }}>
+                <button onClick={handleUpload} disabled={!file || loading} className="btn-primary" style={{ fontSize: '0.7rem', padding: '10px 22px', opacity: (!file || loading) ? 0.3 : 1 }}>
                     {loading ? '⏳ Extracting…' : '🔼 Upload & Extract'}
                 </button>
                 {error && <p className="mono" style={{ color: 'var(--red)', marginTop: 8 }}>🔴 {error}</p>}
             </div>
 
             {extracted && editableRows.length > 0 && (
-                <div className="glass-card animate-slide-up" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '24px 28px' }}>
+                <div className="card animate-slide-up" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '24px 28px' }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 12, borderBottom: '1px solid var(--border)', paddingBottom: 12 }}>
                         <span className="mono" style={{ color: 'var(--green)' }}>✅ Extracted {editableRows.length} values</span>
-                        <span className="neon-tag tag-neutral">Edit before confirming</span>
+                        <span className="tag-neutral">Edit before confirming</span>
                     </div>
                     <ExtractionReviewTable rows={editableRows} onRowChange={handleRowChange} />
                     <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-                        <button onClick={handleConfirm} className="laser-btn" style={{ fontSize: '0.7rem', padding: '10px 22px' }}>💾 Confirm & Save</button>
-                        <button onClick={() => { setExtracted(null); setEditableRows([]) }} className="ghost-btn">Cancel</button>
+                        <button onClick={handleConfirm} className="btn-primary" style={{ fontSize: '0.7rem', padding: '10px 22px' }}>💾 Confirm & Save</button>
+                        <button onClick={() => { setExtracted(null); setEditableRows([]) }} className="btn-secondary">Cancel</button>
                     </div>
                 </div>
             )}
 
             {saveStatus && (
-                <div className="glass-card" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '10px 18px' }}>
+                <div className="card" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '10px 18px' }}>
                     <p className="mono" style={{ color: 'var(--green)' }}>🟢 {saveStatus}</p>
                 </div>
             )}
 
             {orders.length > 0 && (
-                <div className="glass-card" style={{ padding: '20px 24px' }}>
+                <div className="card" style={{ padding: '20px 24px' }}>
                     <p className="mono-wide" style={{ color: 'var(--accent)', marginBottom: 12, fontSize: '9px' }}>📂 Uploaded Orders</p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 10 }}>
                         {orders.map(o => (
-                            <div key={o.id} className="lum-card" style={{ padding: '14px 16px' }}>
+                            <div key={o.id} className="card" style={{ padding: '14px 16px' }}>
                                 <span style={{ fontWeight: 600, fontSize: '0.8rem', display: 'block', marginBottom: 4 }}>{o.order_number || 'Unnamed'}</span>
                                 <span className="mono" style={{ color: 'var(--text-tertiary)' }}>
                                     {o.licensee} {o.financial_year && `• ${o.financial_year}`}
@@ -220,7 +220,7 @@ function EconomicIndicatorsSection() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', maxWidth: 600 }}>Economic indicators per FY. Used by auditor for O&M escalation.</p>
             <div style={{ overflowX: 'auto' }}>
-                <table className="neon-table">
+                <table className="data-table">
                     <thead>
                         <tr>
                             <th>Year</th>
@@ -236,20 +236,20 @@ function EconomicIndicatorsSection() {
                                     <td style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.9rem' }}>{row.financial_year}</td>
                                     {cols.map(c => (
                                         <td key={c.key} style={{ textAlign: 'right' }}>
-                                            {isE ? <input type="number" step="any" value={eR[c.key] ?? ''} onChange={e => setEditing(ed => ({ ...ed, [row.financial_year]: { ...eR, [c.key]: e.target.value } }))} className="neon-input" style={{ width: 75, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '3px 6px' }} />
+                                            {isE ? <input type="number" step="any" value={eR[c.key] ?? ''} onChange={e => setEditing(ed => ({ ...ed, [row.financial_year]: { ...eR, [c.key]: e.target.value } }))} className="input-field" style={{ width: 75, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '3px 6px' }} />
                                                 : <span style={{ fontFamily: 'var(--font-mono)' }}>{row[c.key] ?? <span style={{ color: 'var(--text-tertiary)' }}>—</span>}</span>}
                                         </td>
                                     ))}
                                     <td style={{ textAlign: 'center' }}>
                                         {isE ? (
                                             <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-                                                <button onClick={() => { handleSave({ financial_year: row.financial_year, ...eR }); setEditing(e => { const n = { ...e }; delete n[row.financial_year]; return n }) }} className="laser-btn" style={{ fontSize: '9px', padding: '4px 12px' }}>Save</button>
-                                                <button onClick={() => setEditing(e => { const n = { ...e }; delete n[row.financial_year]; return n })} className="ghost-btn" style={{ fontSize: '9px', padding: '4px 12px' }}>Cancel</button>
+                                                <button onClick={() => { handleSave({ financial_year: row.financial_year, ...eR }); setEditing(e => { const n = { ...e }; delete n[row.financial_year]; return n }) }} className="btn-primary" style={{ fontSize: '9px', padding: '4px 12px' }}>Save</button>
+                                                <button onClick={() => setEditing(e => { const n = { ...e }; delete n[row.financial_year]; return n })} className="btn-secondary" style={{ fontSize: '9px', padding: '4px 12px' }}>Cancel</button>
                                             </div>
                                         ) : (
                                             <div style={{ display: 'flex', gap: 6, justifyContent: 'center', alignItems: 'center' }}>
-                                                <button onClick={() => setEditing(e => ({ ...e, [row.financial_year]: { ...row } }))} className="ghost-btn" style={{ fontSize: '9px', padding: '4px 12px' }}>Edit</button>
-                                                {saveStatus[row.financial_year] && <span className="neon-tag tag-approved">{saveStatus[row.financial_year]}</span>}
+                                                <button onClick={() => setEditing(e => ({ ...e, [row.financial_year]: { ...row } }))} className="btn-secondary" style={{ fontSize: '9px', padding: '4px 12px' }}>Edit</button>
+                                                {saveStatus[row.financial_year] && <span className="badge-compliant">{saveStatus[row.financial_year]}</span>}
                                             </div>
                                         )}
                                     </td>
@@ -262,11 +262,11 @@ function EconomicIndicatorsSection() {
                             </td>
                             {cols.map(c => (
                                 <td key={c.key} style={{ textAlign: 'right' }}>
-                                    <input type="number" step="any" placeholder="0" value={newRow[c.key]} onChange={e => setNewRow(r => ({ ...r, [c.key]: e.target.value }))} className="neon-input" style={{ width: 75, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '3px 6px' }} />
+                                    <input type="number" step="any" placeholder="0" value={newRow[c.key]} onChange={e => setNewRow(r => ({ ...r, [c.key]: e.target.value }))} className="input-field" style={{ width: 75, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '3px 6px' }} />
                                 </td>
                             ))}
                             <td style={{ textAlign: 'center' }}>
-                                <button onClick={handleAddNew} disabled={!newRow.financial_year} className="laser-btn" style={{ fontSize: '9px', padding: '5px 14px', opacity: newRow.financial_year ? 1 : 0.3 }}>Add</button>
+                                <button onClick={handleAddNew} disabled={!newRow.financial_year} className="btn-primary" style={{ fontSize: '9px', padding: '5px 14px', opacity: newRow.financial_year ? 1 : 0.3 }}>Add</button>
                             </td>
                         </tr>
                     </tbody>
@@ -301,7 +301,7 @@ function MYTNormsSection() {
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                 {LICENSEES.map(l => (
                     <button key={l} onClick={() => setSelectedLicensee(l)}
-                        className={selectedLicensee === l ? 'laser-btn' : 'ghost-btn'}
+                        className={selectedLicensee === l ? 'btn-primary' : 'btn-secondary'}
                         style={{ fontSize: '0.65rem', padding: '8px 18px' }}>{l}</button>
                 ))}
                 <NeonSelect value={selectedYear} onChange={setSelectedYear} options={availableYears} placeholder="Select year" style={{ marginLeft: 'auto', minWidth: 140 }} />
@@ -309,7 +309,7 @@ function MYTNormsSection() {
 
             {Object.keys(currentNorms).length > 0 ? (
                 <div style={{ overflowX: 'auto' }}>
-                    <table className="neon-table">
+                    <table className="data-table">
                         <thead><tr><th>Field</th><th style={{ textAlign: 'right' }}>Value</th><th>Unit</th></tr></thead>
                         <tbody>
                             {Object.entries(currentNorms).map(([key, val]) => {
@@ -318,7 +318,7 @@ function MYTNormsSection() {
                                     <tr key={key}>
                                         <td style={{ fontWeight: 500, textTransform: 'capitalize' }}>{key.replace(/_/g, ' ')}</td>
                                         <td style={{ textAlign: 'right' }}>
-                                            {editing ? <input type="number" step="any" defaultValue={val} onChange={e => setEditValues(v => ({ ...v, [key]: e.target.value }))} className="neon-input" style={{ width: 110, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', padding: '4px 8px' }} />
+                                            {editing ? <input type="number" step="any" defaultValue={val} onChange={e => setEditValues(v => ({ ...v, [key]: e.target.value }))} className="input-field" style={{ width: 110, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', padding: '4px 8px' }} />
                                                 : <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent)', fontSize: '0.9rem' }}>{val}</span>}
                                         </td>
                                         <td className="mono" style={{ color: 'var(--text-tertiary)' }}>{unit}</td>
@@ -335,10 +335,10 @@ function MYTNormsSection() {
             )}
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                 {editing ? <>
-                    <button onClick={handleSave} className="laser-btn" style={{ fontSize: '0.7rem', padding: '8px 20px' }}>💾 Save</button>
-                    <button onClick={() => { setEditing(false); setEditValues({}) }} className="ghost-btn">Cancel</button>
-                </> : <button onClick={() => { setEditing(true); setEditValues({}) }} className="ghost-btn ghost-btn-accent">🖊️ Edit</button>}
-                {saveStatus && <span className="neon-tag tag-approved">{saveStatus}</span>}
+                    <button onClick={handleSave} className="btn-primary" style={{ fontSize: '0.7rem', padding: '8px 20px' }}>💾 Save</button>
+                    <button onClick={() => { setEditing(false); setEditValues({}) }} className="btn-secondary">Cancel</button>
+                </> : <button onClick={() => { setEditing(true); setEditValues({}) }} className="btn-secondary ">🖊️ Edit</button>}
+                {saveStatus && <span className="badge-compliant">{saveStatus}</span>}
             </div>
         </div>
     )
@@ -372,7 +372,7 @@ export default function ReferenceDataPage() {
                 ))}
             </div>
 
-            <div className="glass-card" style={{ padding: '28px 32px', minHeight: 400 }}>
+            <div className="card" style={{ padding: '28px 32px', minHeight: 400 }}>
                 <div className="animate-fade-in" key={activeTab}>
                     {activeTab === 'economic' && <EconomicIndicatorsSection />}
                     {activeTab === 'myt' && <MYTNormsSection />}

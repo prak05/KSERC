@@ -220,17 +220,17 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
                         📄 Order Drafter
                     </h2>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                        {licensee && <span className="neon-tag tag-neutral">{licensee}</span>}
-                        {fy && <span className="neon-tag tag-neutral">FY {fy}</span>}
+                        {licensee && <span className="tag-neutral">{licensee}</span>}
+                        {fy && <span className="tag-neutral">FY {fy}</span>}
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                    <button onClick={onBack} className="ghost-btn">← Back</button>
+                    <button onClick={onBack} className="btn-secondary">← Back</button>
                     {!previewHtml && !loading && (
                         <button
                             onClick={handleGenerate}
                             disabled={loading}
-                            className="laser-btn"
+                            className="btn-primary"
                             style={{ padding: '10px 24px' }}
                         >
                             ⚡ Generate Draft
@@ -242,7 +242,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
                                 <button
                                     onClick={handleGenerate}
                                     disabled={loading}
-                                    className="ghost-btn"
+                                    className="btn-secondary"
                                     title="Regenerate from scratch"
                                 >
                                     🔄 Regenerate
@@ -250,7 +250,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
                             )}
                             <button
                                 onClick={toggleEditMode}
-                                className={`ghost-btn ${editMode ? 'ghost-btn-accent' : ''}`}
+                                className={`btn-secondary ${editMode ? '' : ''}`}
                                 style={editMode ? {
                                     color: '#1a5aff', borderColor: 'rgba(26,90,255,0.5)',
                                     background: 'rgba(26,90,255,0.08)',
@@ -261,7 +261,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
                             <button
                                 onClick={handleFinalize}
                                 disabled={loading}
-                                className="laser-btn"
+                                className="btn-primary"
                                 style={{ padding: '10px 20px', position: 'relative' }}
                             >
                                 {loading ? '⏳ Rendering…' : '📑 Finalize PDF'}
@@ -276,7 +276,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
                             {pdfUrl && (
                                 <button
                                     onClick={() => window.open(pdfUrl, '_blank')}
-                                    className="laser-btn"
+                                    className="btn-primary"
                                     style={{ padding: '10px 20px', background: 'var(--green)', color: '#000' }}
                                 >
                                     📥 Download PDF
@@ -289,7 +289,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
 
             {/* Status bar */}
             {status && (
-                <div className="glass-card" style={{
+                <div className="card" style={{
                     padding: '10px 18px',
                     borderColor: status.startsWith('Error') ? 'rgba(255,68,68,0.3)'
                         : status.includes('⚠️') ? 'rgba(255,200,0,0.3)'
@@ -308,7 +308,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
 
             {/* Loading indicator */}
             {loading && !previewHtml && (
-                <div className="glass-card" style={{ padding: '60px 40px', textAlign: 'center' }}>
+                <div className="card" style={{ padding: '60px 40px', textAlign: 'center' }}>
                     <div style={{ fontSize: '3rem', marginBottom: 16, animation: 'pulse 1.5s ease-in-out infinite' }}>⏳</div>
                     <h3 style={{ fontSize: '1.2rem', letterSpacing: '-0.03em', marginBottom: 8 }}>
                         Generating Order…
@@ -321,7 +321,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
 
             {/* Full-width Preview */}
             {previewHtml && (
-                <div className="glass-card" style={{ padding: 0, overflow: 'hidden', flex: 1, minHeight: '80vh' }}>
+                <div className="card" style={{ padding: 0, overflow: 'hidden', flex: 1, minHeight: '80vh' }}>
                     <div style={{
                         background: editMode ? 'rgba(26,90,255,0.06)' : 'rgba(191,255,0,0.04)',
                         borderBottom: '1px solid var(--border)',
@@ -358,7 +358,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
 
             {/* Empty state */}
             {!previewHtml && !loading && (
-                <div className="glass-card" style={{ padding: '60px 40px', textAlign: 'center' }}>
+                <div className="card" style={{ padding: '60px 40px', textAlign: 'center' }}>
                     <div style={{ fontSize: '3rem', marginBottom: 16 }}>📄</div>
                     <h3 style={{ fontSize: '1.2rem', letterSpacing: '-0.03em', marginBottom: 8 }}>
                         Ready to Draft

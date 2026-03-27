@@ -1,0 +1,1997 @@
+{
+  "order_tables": [
+    {
+      "table_number": "Table 1",
+      "title": "Comparison of ARR&ERC for the period 2019-20 and 2020-21",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "Approved in ARR (Rs. lakh) (A)",
+        "Truing Up Petition (Rs. lakh) (B)",
+        "Variance (Rs. lakh) (C)= (B)-(A)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Revenue from Sale of Power",
+          "Approved in ARR (Rs. lakh) (A)": 3887.85,
+          "Truing Up Petition (Rs. lakh) (B)": 3553.4,
+          "Variance (Rs. lakh) (C)= (B)-(A)": -334.45
+        },
+        {
+          "Particulars": "Other Income",
+          "Approved in ARR (Rs. lakh) (A)": 120.95,
+          "Truing Up Petition (Rs. lakh) (B)": 97.05,
+          "Variance (Rs. lakh) (C)= (B)-(A)": -23.9
+        },
+        {
+          "Particulars": "Total Income",
+          "Approved in ARR (Rs. lakh) (A)": 4008.8,
+          "Truing Up Petition (Rs. lakh) (B)": 3650.45,
+          "Variance (Rs. lakh) (C)= (B)-(A)": -358.35
+        },
+        {
+          "Particulars": "Purchase of Power",
+          "Approved in ARR (Rs. lakh) (A)": 3619.16,
+          "Truing Up Petition (Rs. lakh) (B)": 3167.46,
+          "Variance (Rs. lakh) (C)= (B)-(A)": -451.7
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "Approved in ARR (Rs. lakh) (A)": null,
+          "Truing Up Petition (Rs. lakh) (B)": 8.95,
+          "Variance (Rs. lakh) (C)= (B)-(A)": null
+        },
+        {
+          "Particulars": "Employee Cost",
+          "Approved in ARR (Rs. lakh) (A)": 211.24,
+          "Truing Up Petition (Rs. lakh) (B)": 137.93,
+          "Variance (Rs. lakh) (C)= (B)-(A)": -73.31
+        },
+        {
+          "Particulars": "A &G Expenses",
+          "Approved in ARR (Rs. lakh) (A)": null,
+          "Truing Up Petition (Rs. lakh) (B)": 35.69,
+          "Variance (Rs. lakh) (C)= (B)-(A)": null
+        },
+        {
+          "Particulars": "Depreciation",
+          "Approved in ARR (Rs. lakh) (A)": 72.03,
+          "Truing Up Petition (Rs. lakh) (B)": 96.47,
+          "Variance (Rs. lakh) (C)= (B)-(A)": 24.44
+        },
+        {
+          "Particulars": "Return on Equity",
+          "Approved in ARR (Rs. lakh) (A)": 21.86,
+          "Truing Up Petition (Rs. lakh) (B)": 34.85,
+          "Variance (Rs. lakh) (C)= (B)-(A)": 12.99
+        },
+        {
+          "Particulars": "Total Expenditure",
+          "Approved in ARR (Rs. lakh) (A)": 3924.29,
+          "Truing Up Petition (Rs. lakh) (B)": 3481.35,
+          "Variance (Rs. lakh) (C)= (B)-(A)": -442.94
+        },
+        {
+          "Particulars": "Net Surplus/(Deficit)",
+          "Approved in ARR (Rs. lakh) (A)": 84.51,
+          "Truing Up Petition (Rs. lakh) (B)": 169.1,
+          "Variance (Rs. lakh) (C)= (B)-(A)": 84.59
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 2",
+      "title": "Comparison of Energy Sales and No. of Consumers for 2019-20 and 2020-21",
+      "component": "energy",
+      "headers": [
+        "Category",
+        "No of consumers",
+        "Sales In lakh Units"
+      ],
+      "rows": [
+        {
+          "Category": "HT - Industrial [HT-I(A) & I(B)]",
+          "No of consumers": 28,
+          "Sales In lakh Units": 398.17
+        },
+        {
+          "Category": "HT- Agricultural [HT-III(B)]",
+          "No of consumers": 1,
+          "Sales In lakh Units": 11.86
+        },
+        {
+          "Category": "LT - Industrial [LT-IV(A) &IV(B)]",
+          "No of consumers": 93,
+          "Sales In lakh Units": 87.1
+        },
+        {
+          "Category": "LT - Commercial [LT-VII(A)]",
+          "No of consumers": 14,
+          "Sales In lakh Units": 2.03
+        },
+        {
+          "Category": "LT - Other categories [LT- VI(A),VI(B),VI(D),VI(F) &VIII(B)]",
+          "No of consumers": 28,
+          "Sales In lakh Units": 4.41
+        }
+      ],
+      "totals": {
+        "Total": {
+          "No of consumers": 164,
+          "Sales In lakh Units": 503.57
+        }
+      }
+    },
+    {
+      "table_number": "Table 3",
+      "title": "Comparison of Energy Requirement and Distribution Loss",
+      "component": "energy",
+      "headers": [
+        "SI no",
+        "Particulars",
+        "As per Truing Up Petition",
+        "Trued Up",
+        "ARR Approved",
+        "As per Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "SI no": 1,
+          "Particulars": "Energy Requirement (lakh units)",
+          "As per Truing Up Petition": null,
+          "Trued Up": null,
+          "ARR Approved": null
+        },
+        {
+          "SI no": null,
+          "Particulars": "a) Purchase from KSEB Ltd",
+          "As per Truing Up Petition": 494.3,
+          "Trued Up": 565.8,
+          "ARR Approved": 566.5
+        },
+        {
+          "SI no": null,
+          "Particulars": "b) Self-generation (Solar)",
+          "As per Truing Up Petition": 15.77,
+          "Trued Up": 9.4,
+          "ARR Approved": 15.1
+        },
+        {
+          "SI no": null,
+          "Particulars": "Total",
+          "As per Truing Up Petition": 510.07,
+          "Trued Up": 575.2,
+          "ARR Approved": 581.6
+        },
+        {
+          "SI no": 2,
+          "Particulars": "Energy sales (lakh units)",
+          "As per Truing Up Petition": 503.57,
+          "Trued Up": 567.1,
+          "ARR Approved": 573.6
+        },
+        {
+          "SI no": 3,
+          "Particulars": "Distribution loss (lakh units) (1-2)",
+          "As per Truing Up Petition": 6.5,
+          "Trued Up": 8.1,
+          "ARR Approved": 8.0
+        },
+        {
+          "SI no": 4,
+          "Particulars": "Distribution loss (%)",
+          "As per Truing Up Petition": 1.27,
+          "Trued Up": 1.41,
+          "ARR Approved": 1.38
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 4",
+      "title": "Details of cost of power purchase for the year 2019-20 and 2020-21",
+      "component": "power_purchase",
+      "headers": [
+        "Particulars",
+        "2020-21"
+      ],
+      "rows": [
+        {
+          "Particulars": "Energy Purchase (In lakh units)",
+          "2020-21": 494.3
+        },
+        {
+          "Particulars": "Contract Demand (kVA)",
+          "2020-21": 13000
+        },
+        {
+          "Particulars": "Maximum Demand (kVA)",
+          "2020-21": 117472
+        },
+        {
+          "Particulars": "Excess Demand (kVA)",
+          "2020-21": 0.0
+        },
+        {
+          "Particulars": "Excess Demand Charges (Rs. lakh) (A)",
+          "2020-21": 0.0
+        },
+        {
+          "Particulars": "Demand charge (Rs. /kVA)",
+          "2020-21": "Rs.340/kVA"
+        },
+        {
+          "Particulars": "Total Demand Charges (Rs. lakh) (B)",
+          "2020-21": 399.4
+        },
+        {
+          "Particulars": "Energy charges (Rs. kWh)",
+          "2020-21": "Rs 5.6/kWh"
+        },
+        {
+          "Particulars": "Total Energy Charges (Rs. lakh) (C)",
+          "2020-21": 2768.05
+        },
+        {
+          "Particulars": "Any Other Charges (Specify) (Rs. lakh) (D)",
+          "2020-21": "Nil"
+        }
+      ],
+      "totals": {
+        "Cost of power purchase (Rs. lakhs) (A+B+C+D)": 3167.46,
+        "Average Power Purchase Cost (Rs/unit)": 6.41
+      }
+    },
+    {
+      "table_number": "Table 5",
+      "title": "Difference in power purchase cost as per petition and KSEB records",
+      "component": "power_purchase",
+      "headers": [
+        "SI No",
+        "Particulars",
+        "As per Truing Up Petition",
+        "As per KSEBL records"
+      ],
+      "rows": [
+        {
+          "SI No": 1,
+          "Particulars": "Power purchase of M/s CSEZA for the year 2020-21 (MU)",
+          "As per Truing Up Petition": 49.429,
+          "As per KSEBL records": 49.429
+        },
+        {
+          "SI No": 2,
+          "Particulars": "Total Charges [fixed + energy charges (Rs lakhs)]",
+          "As per Truing Up Petition": 3167.46,
+          "As per KSEBL records": 3176.65
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 6",
+      "title": "Details of the cost of power purchase approved for 2020-21",
+      "component": "power_purchase",
+      "headers": [
+        "SI No",
+        "Particulars",
+        "Percentage/Unit",
+        "Amount (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "SI No": 1,
+          "Particulars": "Actual Energy loss (lakh units)",
+          "Percentage/Unit": "1.27%",
+          "Amount (Rs. lakh)": 6.5
+        },
+        {
+          "SI No": 2,
+          "Particulars": "Energy loss at approved distribution loss (lakh units)",
+          "Percentage/Unit": "1.38%",
+          "Amount (Rs. lakh)": 7.04
+        },
+        {
+          "SI No": 3,
+          "Particulars": "Efficiency gain (lakh units)",
+          "Percentage/Unit": null,
+          "Amount (Rs. lakh)": 0.54
+        },
+        {
+          "SI No": 4,
+          "Particulars": "Efficiency gain at average power purchase cost (Rs.lakh) (0.54 lakh units x Rs.6.41/unit)",
+          "Percentage/Unit": null,
+          "Amount (Rs. lakh)": 3.46
+        },
+        {
+          "SI No": 5,
+          "Particulars": "Efficiency gain to be retained by licensee (2/3rd) (Rs.lakh)",
+          "Percentage/Unit": null,
+          "Amount (Rs. lakh)": 2.31
+        },
+        {
+          "SI No": 6,
+          "Particulars": "Actual Power purchase cost (Rs.lakh)",
+          "Percentage/Unit": null,
+          "Amount (Rs. lakh)": 3167.46
+        }
+      ],
+      "totals": {
+        "Approved Power purchase cost (Rs.lakh) (5+6)": 3169.77
+      }
+    },
+    {
+      "table_number": "Table 7",
+      "title": "Comparison of the O&M Expenses for 2019-20 and 2020-21",
+      "component": "other",
+      "headers": [
+        "O&M Expenses",
+        "As per Regulation (Rs. lakh)",
+        "As per Truing Up Petition (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "O&M Expenses": "Employee expenses",
+          "As per Regulation (Rs. lakh)": 173.49,
+          "As per Truing Up Petition (Rs. lakh)": 137.93
+        },
+        {
+          "O&M Expenses": "R&M expenses",
+          "As per Regulation (Rs. lakh)": 8.4,
+          "As per Truing Up Petition (Rs. lakh)": 8.95
+        },
+        {
+          "O&M Expenses": "A&G expenses",
+          "As per Regulation (Rs. lakh)": 29.35,
+          "As per Truing Up Petition (Rs. lakh)": 35.69
+        }
+      ],
+      "totals": {
+        "Total": 182.57
+      }
+    },
+    {
+      "table_number": "Table 8",
+      "title": "Comparison of Employee Cost for the year 2019-20 and 2020-21",
+      "component": "employee",
+      "headers": [
+        "Particulars",
+        "As per the Regulation (Rs. lakh)",
+        "As per Truing Up Petition (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee Expenses",
+          "As per the Regulation (Rs. lakh)": null,
+          "As per Truing Up Petition (Rs. lakh)": 24.46
+        },
+        {
+          "Particulars": "Charges to O&M Agency",
+          "As per the Regulation (Rs. lakh)": 173.49,
+          "As per Truing Up Petition (Rs. lakh)": 113.47
+        }
+      ],
+      "totals": {
+        "Total": {
+          "As per the Regulation (Rs. lakh)": 173.49,
+          "As per Truing Up Petition (Rs. lakh)": 137.93
+        }
+      }
+    },
+    {
+      "table_number": "Table 9",
+      "title": "Details of Apportionment of Employee Expenses for Power Distribution- CSEZA staff for 2020-2021",
+      "component": "employee",
+      "headers": [
+        "SI. No.",
+        "Designation",
+        "Gross salary (Rs. Lakhs)",
+        "No. of posts taken for Power Disitribution",
+        "Percentage of time contribution apportioned to Power Distribution Business",
+        "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)"
+      ],
+      "rows": [
+        {
+          "SI. No.": null,
+          "Designation": "A. Salary Expenses of Direct Employees of CSEZA",
+          "Gross salary (Rs. Lakhs)": null,
+          "No. of posts taken for Power Disitribution": null,
+          "Percentage of time contribution apportioned to Power Distribution Business": null,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": null
+        },
+        {
+          "SI. No.": 1,
+          "Designation": "Development Commissioner",
+          "Gross salary (Rs. Lakhs)": 26.46304,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 5,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 1.32315
+        },
+        {
+          "SI. No.": 2,
+          "Designation": "Dy Development Commisioner",
+          "Gross salary (Rs. Lakhs)": 22.19248,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 5,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 1.10962
+        },
+        {
+          "SI. No.": 3,
+          "Designation": "Security Officer",
+          "Gross salary (Rs. Lakhs)": 20.68372,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 5,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 1.03419
+        },
+        {
+          "SI. No.": 4,
+          "Designation": "Assistant Development Commissioner",
+          "Gross salary (Rs. Lakhs)": 10.78852,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 50,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 5.39426
+        },
+        {
+          "SI. No.": 5,
+          "Designation": "Asst Security Officer",
+          "Gross salary (Rs. Lakhs)": 7.63368,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 5,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 0.38168
+        },
+        {
+          "SI. No.": 6,
+          "Designation": "Assistant",
+          "Gross salary (Rs. Lakhs)": 13.59688,
+          "No. of posts taken for Power Disitribution": 2,
+          "Percentage of time contribution apportioned to Power Distribution Business": 100,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 27.19376
+        },
+        {
+          "SI. No.": 7,
+          "Designation": "Head Security Guard",
+          "Gross salary (Rs. Lakhs)": 11.06456,
+          "No. of posts taken for Power Disitribution": 2,
+          "Percentage of time contribution apportioned to Power Distribution Business": 5,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 1.10646
+        },
+        {
+          "SI. No.": 8,
+          "Designation": "Security Guard",
+          "Gross salary (Rs. Lakhs)": 1.89872,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 5,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 0.09494
+        },
+        {
+          "SI. No.": 9,
+          "Designation": "Peon/ Multi Tasking Staff",
+          "Gross salary (Rs. Lakhs)": 3.70486,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 20,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 0.74097
+        },
+        {
+          "SI. No.": null,
+          "Designation": "B. Employees engaged by CSEZA on contract basis",
+          "Gross salary (Rs. Lakhs)": null,
+          "No. of posts taken for Power Disitribution": null,
+          "Percentage of time contribution apportioned to Power Distribution Business": null,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": null
+        },
+        {
+          "SI. No.": 1,
+          "Designation": "Electrical Expert (Electrical Consultant) for Regulatory Affairs & Power Distribution matters",
+          "Gross salary (Rs. Lakhs)": 0.5,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 100,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 6.0
+        },
+        {
+          "SI. No.": 2,
+          "Designation": "Legal Expert",
+          "Gross salary (Rs. Lakhs)": 0.6,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 30,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 2.16
+        },
+        {
+          "SI. No.": 3,
+          "Designation": "Chartered Accountant",
+          "Gross salary (Rs. Lakhs)": 0.429,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 40,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 2.0592
+        },
+        {
+          "SI. No.": 4,
+          "Designation": "Software Expert for Preapaid Metering System& System Administration",
+          "Gross salary (Rs. Lakhs)": null,
+          "No. of posts taken for Power Disitribution": 1,
+          "Percentage of time contribution apportioned to Power Distribution Business": 100,
+          "Total annual salary expenses to be apportioned to Power dsitribution business based on time contribution (Rs. Lakhs)": 0.0
+        }
+      ],
+      "totals": {
+        "Subtotal (A)": 38.37903,
+        "Subtotal (B)": 10.2192,
+        "Total Employee Cost for Power Distribution Business (A+B)": 48.59823
+      }
+    },
+    {
+      "table_number": "Table 10",
+      "title": "Comparison of A&G expenses for the year 2019-20 and 2020-21",
+      "component": "admin_general",
+      "headers": [
+        "Particulars",
+        "Truing Up Petition (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Rent Rates & Taxes",
+          "Truing Up Petition (Rs. lakh)": 10.04
+        },
+        {
+          "Particulars": "Insurance",
+          "Truing Up Petition (Rs. lakh)": 1.96
+        },
+        {
+          "Particulars": "Electricity charges & Water charges",
+          "Truing Up Petition (Rs. lakh)": 0.09
+        },
+        {
+          "Particulars": "Truing Up Application fee to KSERC & Other petition fee to KSERC",
+          "Truing Up Petition (Rs. lakh)": 0.56
+        },
+        {
+          "Particulars": "Inspection Fee (Electrical Inspectorate)",
+          "Truing Up Petition (Rs. lakh)": 0.39
+        },
+        {
+          "Particulars": "License fee and other related fee",
+          "Truing Up Petition (Rs. lakh)": 1.15
+        },
+        {
+          "Particulars": "Printing & Stationery",
+          "Truing Up Petition (Rs. lakh)": 0.09
+        },
+        {
+          "Particulars": "Bank Charges",
+          "Truing Up Petition (Rs. lakh)": 0.01
+        },
+        {
+          "Particulars": "V-sat, Internet and related charges",
+          "Truing Up Petition (Rs. lakh)": 4.82
+        },
+        {
+          "Particulars": "Travelling Expenses",
+          "Truing Up Petition (Rs. lakh)": null
+        },
+        {
+          "Particulars": "Charges for monitoring and managing pre-paid metering",
+          "Truing Up Petition (Rs. lakh)": 16.6
+        }
+      ],
+      "totals": {
+        "Grand Total": 35.69
+      }
+    },
+    {
+      "table_number": "Table 11",
+      "title": "Repair and Maintenance for the year 2019-20 and 2020-21",
+      "component": "repair_maintenance",
+      "headers": [
+        "Particulars",
+        "As per the Regulation (Rs. Lakh)",
+        "Truing Up Petition (Rs. Lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "R&M Expenses",
+          "As per the Regulation (Rs. Lakh)": 8.4,
+          "Truing Up Petition (Rs. Lakh)": 8.95
+        }
+      ],
+      "totals": {
+        "Total": 8.95
+      }
+    },
+    {
+      "table_number": "Table 12",
+      "title": "R&M expenses for the year 2020-21",
+      "component": "repair_maintenance",
+      "headers": [
+        "S.No.",
+        "Description of works",
+        "Amount (Rs. Lakhs)",
+        "Remarks"
+      ],
+      "rows": [
+        {
+          "S.No.": 1,
+          "Description of works": "Replaced the cable end termination box in 630 KVA Transformer, Plot No.34",
+          "Amount (Rs. Lakhs)": 0.898,
+          "Remarks": "Was included in MYT petition"
+        },
+        {
+          "S.No.": 2,
+          "Description of works": "Purchasing of Alstorm Trip Supervision relay, Schineder PM 210 Power logic digital meter, Siemens relays (7SJ62 & amp; 7UT61)",
+          "Amount (Rs. Lakhs)": 4.262,
+          "Remarks": "Was included in MYT petition for 2019-20,but done in 2020-21"
+        },
+        {
+          "S.No.": 3,
+          "Description of works": "Refilling of fire extinguishers in 110 KV Substation",
+          "Amount (Rs. Lakhs)": 0.10625,
+          "Remarks": "Was included in MYT petition"
+        },
+        {
+          "S.No.": 4,
+          "Description of works": "Testing of relays in 110 KV Substation",
+          "Amount (Rs. Lakhs)": 0.688,
+          "Remarks": "Was included in MYT petition for 2019-20, but done in 2020-21"
+        },
+        {
+          "S.No.": 5,
+          "Description of works": "Servicing of 3 nos ABB make VCB in 110 KV Substation",
+          "Amount (Rs. Lakhs)": 0.3,
+          "Remarks": "Was not planned in MYT Petition , but had to be done on urgent basis as additional work"
+        },
+        {
+          "S.No.": 6,
+          "Description of works": "Relay Testing and Commissioning(trip ckt relay)",
+          "Amount (Rs. Lakhs)": 0.18,
+          "Remarks": "Was included in MYT petition for 2019-20, but done in 2020- 21."
+        },
+        {
+          "S.No.": 7,
+          "Description of works": "Arresting oil Leak in Power Transformer 1 and 400KVA Transformer in 110KV Substation",
+          "Amount (Rs. Lakhs)": 0.3,
+          "Remarks": "Was not planned in MYT Petition , but had to be done on urgent basis as additional work"
+        },
+        {
+          "S.No.": 8,
+          "Description of works": "Arresting oil Leak in metering CT in 110 kV Substation",
+          "Amount (Rs. Lakhs)": 0.1,
+          "Remarks": "Was not planned in MYT Petition , but had to be done on urgent basis as additional work"
+        },
+        {
+          "S.No.": 9,
+          "Description of works": "Replacement of faulty electrical equipment in 110 KV Substation",
+          "Amount (Rs. Lakhs)": 0.953,
+          "Remarks": "Was not planned in MYT Petition , but had to be done on urgent basis as additional work"
+        },
+        {
+          "S.No.": 10,
+          "Description of works": "Replacement of rusted control cable entry box of PT & CT in 110 kV substation",
+          "Amount (Rs. Lakhs)": 0.366,
+          "Remarks": "Was not planned in MYT Petition , but had to be done on urgent basis as additional work"
+        },
+        {
+          "S.No.": 11,
+          "Description of works": "Consumption of spares",
+          "Amount (Rs. Lakhs)": 0.79278,
+          "Remarks": null
+        }
+      ],
+      "totals": {
+        "Total Amount (In Rupees)": 8.94603
+      }
+    },
+    {
+      "table_number": "Table 13",
+      "title": "O&M Expenses approved for the year 2020-21",
+      "component": "other",
+      "headers": [
+        "SI. no",
+        "Particulars",
+        "Rs. lakh"
+      ],
+      "rows": [
+        {
+          "SI. no": 1,
+          "Particulars": "Total O&M approved as per the Regulations",
+          "Rs. lakh": 211.24
+        },
+        {
+          "SI. no": 2,
+          "Particulars": "Total O&M claimed as per the Truing Up Petition",
+          "Rs. lakh": 182.57
+        },
+        {
+          "SI. no": 3,
+          "Particulars": "Total Efficiency Gain (1-2)",
+          "Rs. lakh": 28.67
+        },
+        {
+          "SI. no": 4,
+          "Particulars": "Efficiency Gain to be retained by the licensee (2/3rd of (3)) = 28.67*2/3",
+          "Rs. lakh": 19.11
+        }
+      ],
+      "totals": {
+        "Approved O&M for the Truing Up of accounts (2+4)": 201.68
+      }
+    },
+    {
+      "table_number": "Table 14",
+      "title": "Assets additions during the year 2020-21",
+      "component": "capital",
+      "headers": [
+        "SI No",
+        "Asset description",
+        "Total amount of added/capitalized (Rs. Lakhs)",
+        "Date of Commissioning/ capitalization",
+        "Remarks"
+      ],
+      "rows": [
+        {
+          "SI No": 1,
+          "Asset description": "Replacement of existing HT panel in SDF-16 with IP 67 indoor type RMU under power distribution system in CSEZ",
+          "Total amount of added/capitalized (Rs. Lakhs)": 18.198,
+          "Date of Commissioning/ capitalization": "17-Mar-21",
+          "Remarks": "This was planned in MYT and approved by Commission for FY 2019-20. But since capex order came only on 2.12.2019, there was no enough time for tendering and implementing in 2019-20. Hence the work had to be postponed to FY 2020-21."
+        },
+        {
+          "SI No": 2,
+          "Asset description": "Supply, Installation, Testing and Commissioning of 110kV, 31.5KA 800A triple pole, Centre post rotating, horizontal double breaker isolator without earth switch in 110kV sub-station of CSEZ",
+          "Total amount of added/capitalized (Rs. Lakhs)": 9.48281,
+          "Date of Commissioning/ capitalization": "20-Sep-20",
+          "Remarks": "This was planned in MYT and approved by Commission for FY 2019-20. But since capex order came only on 2.12.2019, there was no enough time for tendering and implementing in 2019-20. Hence the work had to be postponed to FY 2020-21."
+        },
+        {
+          "SI No": 3,
+          "Asset description": "Supply Installation testing and commissioning of of 653 kWp Grid connected Solar power station at slanting /stone pitched area behind the premises of biological plant/canteen in CSEZ",
+          "Total amount of added/capitalized (Rs. Lakhs)": 314.03866,
+          "Date of Commissioning/ capitalization": "1-Apr-20",
+          "Remarks": "This was planned in MYT and approved by Commission for FY 2019-20. This was physically completed in February 2020 and put on trial running. After trial running, this was commissioned and capitalized on 1.4.2020."
+        }
+      ],
+      "totals": {
+        "Total": 341.71947
+      }
+    },
+    {
+      "table_number": "Table 15",
+      "title": "Assets additions during the year 2020-21",
+      "component": "capital",
+      "headers": [
+        "Asset Description",
+        "Assets Addition (Rs lakh)",
+        "Approved by the Commission (Rs lakh)"
+      ],
+      "rows": [
+        {
+          "Asset Description": "110 KV Metering CT& PT and ABT meter",
+          "Assets Addition (Rs lakh)": 25.12,
+          "Approved by the Commission (Rs lakh)": 25.12
+        },
+        {
+          "Asset Description": "New Prepaid Metering software",
+          "Assets Addition (Rs lakh)": 33.43,
+          "Approved by the Commission (Rs lakh)": 33.43
+        },
+        {
+          "Asset Description": "Total for 2016-17 (A)",
+          "Assets Addition (Rs lakh)": 58.55,
+          "Approved by the Commission (Rs lakh)": 58.55
+        },
+        {
+          "Asset Description": "11 KV RMUS",
+          "Assets Addition (Rs lakh)": 113.11,
+          "Approved by the Commission (Rs lakh)": 113.11
+        },
+        {
+          "Asset Description": "636 kWp Grid Connected Roof Top Solar PV plants",
+          "Assets Addition (Rs lakh)": 508.8,
+          "Approved by the Commission (Rs lakh)": 405.45
+        },
+        {
+          "Asset Description": "Office Equipment-Lap top",
+          "Assets Addition (Rs lakh)": 3.5,
+          "Approved by the Commission (Rs lakh)": 3.5
+        },
+        {
+          "Asset Description": "Office equipment- Photo Copying machine",
+          "Assets Addition (Rs lakh)": 3.99,
+          "Approved by the Commission (Rs lakh)": 3.99
+        },
+        {
+          "Asset Description": "Total for 2017-18 (B)",
+          "Assets Addition (Rs lakh)": 629.4,
+          "Approved by the Commission (Rs lakh)": 526.05
+        },
+        {
+          "Asset Description": "Store Room",
+          "Assets Addition (Rs lakh)": 5.31,
+          "Approved by the Commission (Rs lakh)": 5.31
+        },
+        {
+          "Asset Description": "Fencing",
+          "Assets Addition (Rs lakh)": 3.3,
+          "Approved by the Commission (Rs lakh)": 3.3
+        },
+        {
+          "Asset Description": "Control Room (AC)",
+          "Assets Addition (Rs lakh)": 0.78,
+          "Approved by the Commission (Rs lakh)": 0.78
+        },
+        {
+          "Asset Description": "Operator cabin Room",
+          "Assets Addition (Rs lakh)": 1.25,
+          "Approved by the Commission (Rs lakh)": 1.25
+        },
+        {
+          "Asset Description": "Office Equipment's",
+          "Assets Addition (Rs lakh)": 2.19,
+          "Approved by the Commission (Rs lakh)": 2.19
+        },
+        {
+          "Asset Description": "New software for prepaid metering",
+          "Assets Addition (Rs lakh)": 5.48,
+          "Approved by the Commission (Rs lakh)": 5.48
+        },
+        {
+          "Asset Description": "Total for 2018-19 (C)",
+          "Assets Addition (Rs lakh)": 18.31,
+          "Approved by the Commission (Rs lakh)": 18.31
+        },
+        {
+          "Asset Description": "New software for prepaid metering",
+          "Assets Addition (Rs lakh)": 3.76,
+          "Approved by the Commission (Rs lakh)": 3.76
+        },
+        {
+          "Asset Description": "Total for 2019-20 (D)",
+          "Assets Addition (Rs lakh)": 3.76,
+          "Approved by the Commission (Rs lakh)": 3.76
+        },
+        {
+          "Asset Description": "11 KV RMUS",
+          "Assets Addition (Rs lakh)": 18.2,
+          "Approved by the Commission (Rs lakh)": 18.2
+        },
+        {
+          "Asset Description": "Switchgears, Control gear & Protection",
+          "Assets Addition (Rs lakh)": 9.48,
+          "Approved by the Commission (Rs lakh)": 9.48
+        },
+        {
+          "Asset Description": "Solar PV Plant",
+          "Assets Addition (Rs lakh)": 314.04,
+          "Approved by the Commission (Rs lakh)": 314.04
+        },
+        {
+          "Asset Description": "Total for 2020-21 (E)",
+          "Assets Addition (Rs lakh)": 341.72,
+          "Approved by the Commission (Rs lakh)": 341.72
+        }
+      ],
+      "totals": {
+        "Total (From 2016-17 to 2020-21) (A+B+C+D+E)": {
+          "Assets Addition (Rs lakh)": 1051.74,
+          "Approved by the Commission (Rs lakh)": 948.39
+        }
+      }
+    },
+    {
+      "table_number": "Table 16",
+      "title": "Depreciation claimed for the year 2020-21",
+      "component": "depreciation",
+      "headers": [
+        "SI. No.",
+        "Asset Group",
+        "Rate of depreciation (%)",
+        "At the beginning of the year (Rs. lakh)",
+        "Additions during the year (Rs. lakh)",
+        "Adjustment & deductions (Rs. lakh)",
+        "At the end of the year (Rs. lakh)",
+        "Provision for depreciation (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "SI. No.": 1,
+          "Asset Group": "Distribution lines",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 496.79,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 496.79,
+          "Provision for depreciation (Rs. lakh)": 8.29
+        },
+        {
+          "SI. No.": 2,
+          "Asset Group": "11KV RMU",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 113.11,
+          "Additions during the year (Rs. lakh)": 18.198,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 131.31,
+          "Provision for depreciation (Rs. lakh)": 6.05
+        },
+        {
+          "SI. No.": 3,
+          "Asset Group": "Plant & machinery(11KV RMU)",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 9.84,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 9.84,
+          "Provision for depreciation (Rs. lakh)": 0.52
+        },
+        {
+          "SI. No.": 4,
+          "Asset Group": "Switchgears, Control gear & Protection",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 510.08,
+          "Additions during the year (Rs. lakh)": 9.48,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 519.56,
+          "Provision for depreciation (Rs. lakh)": 15.96
+        },
+        {
+          "SI. No.": 5,
+          "Asset Group": "Control Room(AC)",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 0.78,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 0.78,
+          "Provision for depreciation (Rs. lakh)": 0.05
+        },
+        {
+          "SI. No.": 6,
+          "Asset Group": "Store Room",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 5.31,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 5.31,
+          "Provision for depreciation (Rs. lakh)": 0.28
+        },
+        {
+          "SI. No.": 7,
+          "Asset Group": "Fencing",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 3.3,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 3.3,
+          "Provision for depreciation (Rs. lakh)": 0.17
+        },
+        {
+          "SI. No.": 8,
+          "Asset Group": "Operator cabin Room",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 1.25,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 1.25,
+          "Provision for depreciation (Rs. lakh)": 0.07
+        },
+        {
+          "SI. No.": 9,
+          "Asset Group": "LT Distribution system",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 15.56,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 15.56,
+          "Provision for depreciation (Rs. lakh)": 0.82
+        },
+        {
+          "SI. No.": 10,
+          "Asset Group": "Transformers",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 3.5,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 3.5,
+          "Provision for depreciation (Rs. lakh)": 0.18
+        },
+        {
+          "SI. No.": 11,
+          "Asset Group": "Switchgears, Control gear & Protection",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 1.35,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 1.35,
+          "Provision for depreciation (Rs. lakh)": 0.07
+        },
+        {
+          "SI. No.": 12,
+          "Asset Group": "Communication equipment",
+          "Rate of depreciation (%)": 6.33,
+          "At the beginning of the year (Rs. lakh)": 54.41,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 54.41,
+          "Provision for depreciation (Rs. lakh)": 3.44
+        },
+        {
+          "SI. No.": 13,
+          "Asset Group": "Meters",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 164.75,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 164.75,
+          "Provision for depreciation (Rs. lakh)": 5.45
+        },
+        {
+          "SI. No.": 14,
+          "Asset Group": "Furniture & fixtures",
+          "Rate of depreciation (%)": 6.33,
+          "At the beginning of the year (Rs. lakh)": 0.44,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 0.44,
+          "Provision for depreciation (Rs. lakh)": 0.03
+        },
+        {
+          "SI. No.": 15,
+          "Asset Group": "Office Equipments",
+          "Rate of depreciation (%)": 6.33,
+          "At the beginning of the year (Rs. lakh)": 11.07,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 11.07,
+          "Provision for depreciation (Rs. lakh)": 0.7
+        },
+        {
+          "SI. No.": 16,
+          "Asset Group": "New software for prepaid metering",
+          "Rate of depreciation (%)": 15.0,
+          "At the beginning of the year (Rs. lakh)": 42.66,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 42.66,
+          "Provision for depreciation (Rs. lakh)": 6.4
+        },
+        {
+          "SI. No.": 17,
+          "Asset Group": "Solar PV Plant",
+          "Rate of depreciation (%)": 5.83,
+          "At the beginning of the year (Rs. lakh)": 508.8,
+          "Additions during the year (Rs. lakh)": 314.04,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 822.84,
+          "Provision for depreciation (Rs. lakh)": 47.97
+        }
+      ],
+      "totals": {
+        "Gross Asset": {
+          "At the beginning of the year (Rs. lakh)": 1943.02,
+          "Additions during the year (Rs. lakh)": 341.72,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": 2284.74,
+          "Provision for depreciation (Rs. lakh)": 96.47
+        }
+      }
+    },
+    {
+      "table_number": "Table 17",
+      "title": "Depreciation approved for the year 2020-21",
+      "component": "depreciation",
+      "headers": [
+        "Asset Group",
+        "Rate of depreciation (%)",
+        "At the beginning of the year (Rs. lakh)",
+        "Additions during the year (Rs. lakh)",
+        "Adjustment & deductions (Rs. lakh)",
+        "At the end of the year (Rs. lakh)",
+        "Depreciation (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Asset Group": "Distribution lines",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 496.79,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 496.79,
+          "Depreciation (Rs. lakh)": 7.55
+        },
+        {
+          "Asset Group": "11kV RMU",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 114.17,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 1.06,
+          "At the end of the year (Rs. lakh)": 113.11,
+          "Depreciation (Rs. lakh)": 5.97
+        },
+        {
+          "Asset Group": "Plant & machinery (11kV RMU)",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 9.84,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 9.84,
+          "Depreciation (Rs. lakh)": 0.52
+        },
+        {
+          "Asset Group": "Switchgears, Control gear & Protection",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 510.09,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 510.09,
+          "Depreciation (Rs. lakh)": 15.7
+        },
+        {
+          "Asset Group": "Control Room (AC)",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 0.78,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 0.78,
+          "Depreciation (Rs. lakh)": 0.04
+        },
+        {
+          "Asset Group": "Store Room",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 5.31,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 5.31,
+          "Depreciation (Rs. lakh)": 0.28
+        },
+        {
+          "Asset Group": "Fencing",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 3.3,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 3.3,
+          "Depreciation (Rs. lakh)": 0.17
+        },
+        {
+          "Asset Group": "Operator cabin Room",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 1.25,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 1.25,
+          "Depreciation (Rs. lakh)": 0.07
+        },
+        {
+          "Asset Group": "LT Distribution system",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 15.56,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 15.56,
+          "Depreciation (Rs. lakh)": 0.82
+        },
+        {
+          "Asset Group": "Transformers",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 3.5,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 3.5,
+          "Depreciation (Rs. lakh)": 0.18
+        },
+        {
+          "Asset Group": "Switchgears, Control gear & Protection",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 1.35,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 1.35,
+          "Depreciation (Rs. lakh)": 0.07
+        },
+        {
+          "Asset Group": "Communication equipment",
+          "Rate of depreciation (%)": 6.33,
+          "At the beginning of the year (Rs. lakh)": 54.41,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 54.41,
+          "Depreciation (Rs. lakh)": 3.44
+        },
+        {
+          "Asset Group": "Meters",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 164.75,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 164.75,
+          "Depreciation (Rs. lakh)": 5.45
+        },
+        {
+          "Asset Group": "Furniture & fixtures",
+          "Rate of depreciation (%)": 6.33,
+          "At the beginning of the year (Rs. lakh)": 0.44,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 0.44,
+          "Depreciation (Rs. lakh)": 0.03
+        },
+        {
+          "Asset Group": "Office Equipment's",
+          "Rate of depreciation (%)": 6.33,
+          "At the beginning of the year (Rs. lakh)": 11.07,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 11.07,
+          "Depreciation (Rs. lakh)": 0.7
+        },
+        {
+          "Asset Group": "New software for prepaid metering",
+          "Rate of depreciation (%)": 15.0,
+          "At the beginning of the year (Rs. lakh)": 38.91,
+          "Additions during the year (Rs. lakh)": 3.76,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 42.66,
+          "Depreciation (Rs. lakh)": 6.25
+        },
+        {
+          "Asset Group": "Solar PV Plant",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": 405.45,
+          "Additions during the year (Rs. lakh)": 0.0,
+          "Adjustment & deductions (Rs. lakh)": 0.0,
+          "At the end of the year (Rs. lakh)": 405.45,
+          "Depreciation (Rs. lakh)": 21.41
+        },
+        {
+          "Asset Group": "Gross Asset for 2019- 20",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": 1836.98,
+          "Additions during the year (Rs. lakh)": 3.76,
+          "Adjustment & deductions (Rs. lakh)": 1.06,
+          "At the end of the year (Rs. lakh)": 1839.68,
+          "Depreciation (Rs. lakh)": 68.68
+        },
+        {
+          "Asset Group": "Add: Asset Addition during 2020-21",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": null,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": null
+        },
+        {
+          "Asset Group": "11 KV RMUs",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 18.198,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 0.04
+        },
+        {
+          "Asset Group": "Switchgears, Control gear & Protection",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 9.48,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 0.26
+        },
+        {
+          "Asset Group": "Solar PV Plant",
+          "Rate of depreciation (%)": 5.28,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 314.04,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 16.58
+        },
+        {
+          "Asset Group": "Sub-total",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 341.72,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 16.88
+        },
+        {
+          "Asset Group": "Total Depreciation (Less) Assets addition through Accumulated surplus",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": null,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 85.56
+        },
+        {
+          "Asset Group": "2016-17",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 58.55,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": null
+        },
+        {
+          "Asset Group": "2017-18",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 526.05,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": null
+        },
+        {
+          "Asset Group": "2018-19",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 18.31,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 32.03
+        },
+        {
+          "Asset Group": "2019-20",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 3.76,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": null
+        },
+        {
+          "Asset Group": "2020-21",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 341.72,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 16.88
+        },
+        {
+          "Asset Group": "Total Assets created through accumulated surplus",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 948.39,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": 48.91
+        },
+        {
+          "Asset Group": "Balance Assets Considered for Depreciation",
+          "Rate of depreciation (%)": null,
+          "At the beginning of the year (Rs. lakh)": null,
+          "Additions during the year (Rs. lakh)": 1233.01,
+          "Adjustment & deductions (Rs. lakh)": null,
+          "At the end of the year (Rs. lakh)": null,
+          "Depreciation (Rs. lakh)": null
+        }
+      ],
+      "totals": {
+        "Depreciation Approved [85.56 lakh-48.91 lakh]": 36.65
+      }
+    },
+    {
+      "table_number": "Table 18",
+      "title": "Return on NFA for the year 2019-20 and 2020-21",
+      "component": "return_on_nfa",
+      "headers": [
+        "Particulars",
+        "As per Truing Up Petition (Rs. lakh)",
+        "Trued Up (Rs. lakh)",
+        "ARR Approved (Rs. lakh)",
+        "As per Truing Up Petition (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "GFA at the beginning of the year",
+          "As per Truing Up Petition (Rs. lakh)": 1943.02,
+          "Trued Up (Rs. lakh)": 1835.92,
+          "ARR Approved (Rs. lakh)": null
+        },
+        {
+          "Particulars": "(Less) Assets created out of Surplus",
+          "As per Truing Up Petition (Rs. lakh)": null,
+          "Trued Up (Rs. lakh)": -602.91,
+          "ARR Approved (Rs. lakh)": null
+        },
+        {
+          "Particulars": "GFA at the beginning of the year eligible for RoNFA",
+          "As per Truing Up Petition (Rs. lakh)": null,
+          "Trued Up (Rs. lakh)": 1233.01,
+          "ARR Approved (Rs. lakh)": null
+        },
+        {
+          "Particulars": "(Less) Cumulative depreciation at the beginning of the year on assets eligible for RoNFA",
+          "As per Truing Up Petition (Rs. lakh)": -781.42,
+          "Trued Up (Rs. lakh)": -672.19,
+          "ARR Approved (Rs. lakh)": null
+        },
+        {
+          "Particulars": "Net fixed assets at the beginning of the year",
+          "As per Truing Up Petition (Rs. lakh)": 1161.61,
+          "Trued Up (Rs. lakh)": 560.82,
+          "ARR Approved (Rs. lakh)": null
+        }
+      ],
+      "totals": {
+        "3% on Net fixed assets at the beginning of the year": {
+          "As per Truing Up Petition (Rs. lakh)": 34.85,
+          "Trued Up (Rs. lakh)": 16.82,
+          "ARR Approved (Rs. lakh)": 21.86
+        }
+      }
+    },
+    {
+      "table_number": "Table 19",
+      "title": "NFA eligible for return for the year 2020-21",
+      "component": "return_on_nfa",
+      "headers": [
+        "Particulars",
+        "As per petition (Rs.lakh)",
+        "Approved in Truing up (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "GFA at the beginning of the year (01-04-2020)",
+          "As per petition (Rs.lakh)": 1943.02,
+          "Approved in Truing up (Rs. lakh)": 1839.68
+        },
+        {
+          "Particulars": "(Less) Assets created out of Surplus up to 2019- 20",
+          "As per petition (Rs.lakh)": null,
+          "Approved in Truing up (Rs. lakh)": null
+        },
+        {
+          "Particulars": "2016-17",
+          "As per petition (Rs.lakh)": null,
+          "Approved in Truing up (Rs. lakh)": -58.55
+        },
+        {
+          "Particulars": "2017-18",
+          "As per petition (Rs.lakh)": null,
+          "Approved in Truing up (Rs. lakh)": -526.05
+        },
+        {
+          "Particulars": "2018-19",
+          "As per petition (Rs.lakh)": null,
+          "Approved in Truing up (Rs. lakh)": -18.31
+        },
+        {
+          "Particulars": "2019-20",
+          "As per petition (Rs.lakh)": null,
+          "Approved in Truing up (Rs. lakh)": -3.76
+        },
+        {
+          "Particulars": "GFA at the beginning of the year eligible for RONFA",
+          "As per petition (Rs.lakh)": 1943.02,
+          "Approved in Truing up (Rs. lakh)": 1233.01
+        },
+        {
+          "Particulars": "(Less) Cumulative depreciation at the beginning of the year on assets eligible for RoNFA",
+          "As per petition (Rs.lakh)": -781.42,
+          "Approved in Truing up (Rs. lakh)": -708.84
+        },
+        {
+          "Particulars": "Net fixed assets at the beginning of the year",
+          "As per petition (Rs.lakh)": 1161.6,
+          "Approved in Truing up (Rs. lakh)": 524.17
+        }
+      ],
+      "totals": {
+        "3% on Net fixed assets at the beginning of the year": {
+          "As per petition (Rs.lakh)": 34.85,
+          "Approved in Truing up (Rs. lakh)": 15.73
+        }
+      }
+    },
+    {
+      "table_number": "Table 20",
+      "title": "Details of Revenue from Sale of Power for the year 2019-20 and 2020-21",
+      "component": "other",
+      "headers": [
+        "Category",
+        "Sales In lakh Units",
+        "Revenue from sale (Rs. lakh)",
+        "Average Realisation"
+      ],
+      "rows": [
+        {
+          "Category": "HT - Industrial [HT-I(A) & I(B)]",
+          "Sales In lakh Units": 398.17,
+          "Revenue from sale (Rs. lakh)": 2775.91,
+          "Average Realisation": 6.97
+        },
+        {
+          "Category": "HT- Agricultural [HT- III(B)]",
+          "Sales In lakh Units": 11.86,
+          "Revenue from sale (Rs. lakh)": 49.01,
+          "Average Realisation": 4.13
+        },
+        {
+          "Category": "LT - Industrial [LT-IV(A) &IV(B)]",
+          "Sales In lakh Units": 87.1,
+          "Revenue from sale (Rs. lakh)": 667.32,
+          "Average Realisation": 7.66
+        },
+        {
+          "Category": "LT - Commercial [LT- VII(A)]",
+          "Sales In lakh Units": 2.03,
+          "Revenue from sale (Rs. lakh)": 23.67,
+          "Average Realisation": 11.69
+        },
+        {
+          "Category": "LT - Other categories",
+          "Sales In lakh Units": 4.41,
+          "Revenue from sale (Rs. lakh)": 41.51,
+          "Average Realisation": 9.41
+        },
+        {
+          "Category": "Gross Amount",
+          "Sales In lakh Units": 503.57,
+          "Revenue from sale (Rs. lakh)": 3557.42,
+          "Average Realisation": null
+        },
+        {
+          "Category": "(Less) Fuel Surcharge",
+          "Sales In lakh Units": null,
+          "Revenue from sale (Rs. lakh)": 4.02,
+          "Average Realisation": null
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Sales In lakh Units": 503.57,
+          "Revenue from sale (Rs. lakh)": 3553.4,
+          "Average Realisation": 7.06
+        }
+      }
+    },
+    {
+      "table_number": "Table 21",
+      "title": "Details of Non-Tariff Income for the year 2019-20 and 2020-21",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "As per Truing Up Petition (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Income from sale of scrap.",
+          "As per Truing Up Petition (Rs. lakh)": 0.0
+        },
+        {
+          "Particulars": "Interest on investments, fixed and call deposits and bank balances.",
+          "As per Truing Up Petition (Rs. lakh)": 75.84
+        },
+        {
+          "Particulars": "Interest on advances to KSEB Ltd",
+          "As per Truing Up Petition (Rs. lakh)": 19.11
+        },
+        {
+          "Particulars": "Miscellaneous Receipts",
+          "As per Truing Up Petition (Rs. lakh)": 0.0
+        },
+        {
+          "Particulars": "Commission for collection of electricity duty",
+          "As per Truing Up Petition (Rs. lakh)": 1.08
+        },
+        {
+          "Particulars": "Meter/service line rentals",
+          "As per Truing Up Petition (Rs. lakh)": 1.02
+        }
+      ],
+      "totals": {
+        "Grand Total": 97.05
+      }
+    },
+    {
+      "table_number": "Table 22",
+      "title": "Details of FD interest during 2020-21",
+      "component": "interest",
+      "headers": [
+        "SINO",
+        "FD No",
+        "Opening date",
+        "Value as on 01/04/2020 (Rs. Lakhs)",
+        "Value as on 31/03/2021 (Rs. Lakhs)",
+        "Interest (Rs. Lakhs)",
+        "Interest as per petition (Rs. Lakhs)"
+      ],
+      "rows": [
+        {
+          "SINO": 1,
+          "FD No": "6607142762",
+          "Opening date": "2/15/2018",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 96.93742,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 103.19028,
+          "Interest (Rs. Lakhs)": 6.25286,
+          "Interest as per petition (Rs. Lakhs)": 6.115687
+        },
+        {
+          "SINO": 2,
+          "FD No": "6606918408",
+          "Opening date": "2/14/2018",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 102.63961,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 109.26028,
+          "Interest (Rs. Lakhs)": 6.62067,
+          "Interest as per petition (Rs. Lakhs)": 6.472542
+        },
+        {
+          "SINO": 3,
+          "FD No": "6727905671",
+          "Opening date": "2/19/2019",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 35.0,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 38.08346,
+          "Interest (Rs. Lakhs)": 3.08346,
+          "Interest as per petition (Rs. Lakhs)": 2.667182
+        },
+        {
+          "SINO": 4,
+          "FD No": "6608432756",
+          "Opening date": "2/19/2018",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 96.93742,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 103.19028,
+          "Interest (Rs. Lakhs)": 6.25286,
+          "Interest as per petition (Rs. Lakhs)": 6.1266
+        },
+        {
+          "SINO": 5,
+          "FD No": "6606918179",
+          "Opening date": "2/14/2018",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 102.63961,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 109.26028,
+          "Interest (Rs. Lakhs)": 6.62067,
+          "Interest as per petition (Rs. Lakhs)": 6.194752
+        },
+        {
+          "SINO": 6,
+          "FD No": "6606253032",
+          "Opening date": "2/12/2018",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 102.63961,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 109.26028,
+          "Interest (Rs. Lakhs)": 6.62067,
+          "Interest as per petition (Rs. Lakhs)": 6.466763
+        },
+        {
+          "SINO": 7,
+          "FD No": "6579800834",
+          "Opening date": "11/9/2017",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 12.66676,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 13.50375,
+          "Interest (Rs. Lakhs)": 0.83699,
+          "Interest as per petition (Rs. Lakhs)": 0.7767281
+        },
+        {
+          "SINO": 8,
+          "FD No": "6522095475",
+          "Opening date": "4/21/2017",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 85.32292,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 91.20891,
+          "Interest (Rs. Lakhs)": 5.88599,
+          "Interest as per petition (Rs. Lakhs)": 5.522625
+        },
+        {
+          "SINO": 9,
+          "FD No": "6410484094",
+          "Opening date": "2/3/2016",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 89.10592,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 94.32274,
+          "Interest (Rs. Lakhs)": 5.21682,
+          "Interest as per petition (Rs. Lakhs)": 5.055975
+        },
+        {
+          "SINO": 10,
+          "FD No": "6406996904",
+          "Opening date": "1/21/2016",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 116.14787,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 122.94789,
+          "Interest (Rs. Lakhs)": 6.80002,
+          "Interest as per petition (Rs. Lakhs)": 6.543246
+        },
+        {
+          "SINO": 11,
+          "FD No": "6406666705",
+          "Opening date": "1/20/2016",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 116.14787,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 122.94789,
+          "Interest (Rs. Lakhs)": 6.80002,
+          "Interest as per petition (Rs. Lakhs)": 6.509508
+        },
+        {
+          "SINO": 12,
+          "FD No": "6452686320",
+          "Opening date": "7/26/2016",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 17.65274,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 18.8748,
+          "Interest (Rs. Lakhs)": 1.22206,
+          "Interest as per petition (Rs. Lakhs)": 1.10173
+        },
+        {
+          "SINO": 13,
+          "FD No": "6406279353",
+          "Opening date": "1/19/2016",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 116.14787,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 122.94789,
+          "Interest (Rs. Lakhs)": 6.80002,
+          "Interest as per petition (Rs. Lakhs)": 6.535997
+        },
+        {
+          "SINO": 14,
+          "FD No": "6780192483",
+          "Opening date": "7/16/2019",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 30.0,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 32.07684,
+          "Interest (Rs. Lakhs)": 2.07684,
+          "Interest as per petition (Rs. Lakhs)": 1.864326
+        },
+        {
+          "SINO": 15,
+          "FD No": "6871223488",
+          "Opening date": "3/19/2020",
+          "Value as on 01/04/2020 (Rs. Lakhs)": 3.2386,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 3.44411,
+          "Interest (Rs. Lakhs)": 0.20551,
+          "Interest as per petition (Rs. Lakhs)": 0.204522
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Value as on 01/04/2020 (Rs. Lakhs)": 1123.22422,
+          "Value as on 31/03/2021 (Rs. Lakhs)": 1194.51968,
+          "Interest (Rs. Lakhs)": 71.29546,
+          "Interest as per petition (Rs. Lakhs)": 68.15818
+        },
+        "Interest earned on Short term FD as per Annexure 2": {
+          "Interest (Rs. Lakhs)": 7.68674,
+          "Interest as per petition (Rs. Lakhs)": 7.68674
+        },
+        "Grand Total": {
+          "Interest (Rs. Lakhs)": 78.9822,
+          "Interest as per petition (Rs. Lakhs)": 75.84492
+        }
+      }
+    },
+    {
+      "table_number": "Table 23",
+      "title": "Non-Tariff Income approved for the year 2020-21",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "As per Truing Up Petition (Rs. lakh)",
+        "Trued Up (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on investments, fixed and call deposits and bank balances.",
+          "As per Truing Up Petition (Rs. lakh)": 75.84,
+          "Trued Up (Rs. lakh)": 78.98
+        },
+        {
+          "Particulars": "Interest on advances on KSEB Ltd",
+          "As per Truing Up Petition (Rs. lakh)": 19.11,
+          "Trued Up (Rs. lakh)": 19.11
+        },
+        {
+          "Particulars": "Miscellaneous Receipts",
+          "As per Truing Up Petition (Rs. lakh)": 0.0,
+          "Trued Up (Rs. lakh)": 0.0
+        },
+        {
+          "Particulars": "Commission for collection of electricity duty",
+          "As per Truing Up Petition (Rs. lakh)": 1.08,
+          "Trued Up (Rs. lakh)": 1.08
+        },
+        {
+          "Particulars": "Meter/service line rentals",
+          "As per Truing Up Petition (Rs. lakh)": 1.02,
+          "Trued Up (Rs. lakh)": 1.02
+        }
+      ],
+      "totals": {
+        "Grand Total": {
+          "As per Truing Up Petition (Rs. lakh)": 97.05,
+          "Trued Up (Rs. lakh)": 100.19
+        }
+      }
+    },
+    {
+      "table_number": "Table 24",
+      "title": "Approved Truing Up of account for the year 2020-21",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "Approved in ARR (Rs. lakh)",
+        "Truing Up Petition (Rs. lakh)",
+        "Trued Up (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Revenue from Sale of Power",
+          "Approved in ARR (Rs. lakh)": 3887.85,
+          "Truing Up Petition (Rs. lakh)": 3553.4,
+          "Trued Up (Rs. lakh)": 3553.4
+        },
+        {
+          "Particulars": "Other Income",
+          "Approved in ARR (Rs. lakh)": 120.95,
+          "Truing Up Petition (Rs. lakh)": 97.05,
+          "Trued Up (Rs. lakh)": 100.19
+        },
+        {
+          "Particulars": "Total Income",
+          "Approved in ARR (Rs. lakh)": 4008.8,
+          "Truing Up Petition (Rs. lakh)": 3650.45,
+          "Trued Up (Rs. lakh)": 3653.59
+        },
+        {
+          "Particulars": "Purchase of Power",
+          "Approved in ARR (Rs. lakh)": 3619.16,
+          "Truing Up Petition (Rs. lakh)": 3167.46,
+          "Trued Up (Rs. lakh)": 3169.77
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "Approved in ARR (Rs. lakh)": null,
+          "Truing Up Petition (Rs. lakh)": 8.95,
+          "Trued Up (Rs. lakh)": null
+        },
+        {
+          "Particulars": "Employee Cost",
+          "Approved in ARR (Rs. lakh)": 211.24,
+          "Truing Up Petition (Rs. lakh)": 137.93,
+          "Trued Up (Rs. lakh)": 201.68
+        },
+        {
+          "Particulars": "A &G Expenses",
+          "Approved in ARR (Rs. lakh)": null,
+          "Truing Up Petition (Rs. lakh)": 35.69,
+          "Trued Up (Rs. lakh)": null
+        },
+        {
+          "Particulars": "Depreciation",
+          "Approved in ARR (Rs. lakh)": 72.03,
+          "Truing Up Petition (Rs. lakh)": 96.47,
+          "Trued Up (Rs. lakh)": 36.65
+        },
+        {
+          "Particulars": "Return on Equity",
+          "Approved in ARR (Rs. lakh)": 21.86,
+          "Truing Up Petition (Rs. lakh)": 34.85,
+          "Trued Up (Rs. lakh)": 15.73
+        },
+        {
+          "Particulars": "Total Expenditure",
+          "Approved in ARR (Rs. lakh)": 3924.29,
+          "Truing Up Petition (Rs. lakh)": 3481.35,
+          "Trued Up (Rs. lakh)": 3423.83
+        }
+      ],
+      "totals": {
+        "Net Surplus/(Deficit)": {
+          "Approved in ARR (Rs. lakh)": 84.51,
+          "Truing Up Petition (Rs. lakh)": 169.1,
+          "Trued Up (Rs. lakh)": 229.76
+        }
+      }
+    }
+  ],
+  "kserc_decisions": {
+    "power_purchase": {
+      "claimed_amount": 3167.46,
+      "approved_amount": 3169.77,
+      "adjustment_amount": 2.31,
+      "kserc_reasoning": "The 2/3rd of efficiency gain at average power purchase cost of Rs 2.31 lakh is hereby allowed to the power purchase cost and the Commission hereby approves the power purchase cost of Rs.3169.77 lakh for the purpose of truing-up for the year 2020-21.",
+      "key_observations": [
+        "Difference in power purchase cost with KSEB Ltd records (Rs. 3167.46 lakh claimed vs Rs. 3176.65 lakh as per KSEBL records).",
+        "Efficiency gain due to lower actual distribution loss (1.27%) compared to approved (1.38%)."
+      ],
+      "methodology_applied": "Regulation 72 (4) of Tariff Regulations 2018 (sharing of efficiency gain 2:1 between licensee and consumers)."
+    },
+    "employee_cost": {
+      "claimed_amount": 137.93,
+      "approved_amount": 137.93,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "Since the actual employee cost is within the norms fixed, the Commission hereby approves the actual employee expenses of Rs.137.93 lakh for the year 2020-21.",
+      "key_observations": [
+        "Licensee limited employee cost to a level lower than the norms fixed by the Commission.",
+        "Overall employee cost decreased from Rs.138.96 lakh in 2019-20 to Rs.137.93 lakh in 2020-21."
+      ],
+      "methodology_applied": "Approved as per actuals, as it was within norms."
+    },
+    "repair_maintenance": {
+      "claimed_amount": 8.95,
+      "approved_amount": 8.95,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "The Commission has duly considered the explanations/clarifications furnished in the licensee's submission regarding the emergency/one time works undertaken in 2020-21 to provide reliable supply to consumers. Accordingly, the Commission hereby approves the actual amount of Rs.8.95 lakh as R&M expense for the year 2020-21.",
+      "key_observations": [
+        "Increase of Rs.3.75 lakhs (72.12%) in R&M expense compared to 2019-20.",
+        "Reasons for increase include works postponed from FY 2019-20 due to COVID-19 and emergency/one-time works undertaken in 2020-21."
+      ],
+      "methodology_applied": "Approved as per actuals, considering explanations for increase."
+    },
+    "admin_general": {
+      "claimed_amount": 35.69,
+      "approved_amount": 35.69,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "Considering the details furnished by the licensee and decision of the licensee to revamp the entire prepaid metering system to new prepaid smart energy meter system and associated software by December 2023, the Commission hereby approves the actual amount of Rs.35.69 lakh as the Administrative and General expenses for the year 2020-21.",
+      "key_observations": [
+        "Total A&G expense increased by 20.05% compared to the previous year.",
+        "Increase mainly due to the increase in monthly charge for management of prepaid metering system (from Rs.0.55 lakh to Rs.1.32 lakh).",
+        "Licensee is planning to revamp the entire prepaid metering system to new prepaid smart energy meter system by December 2023."
+      ],
+      "methodology_applied": "Approved as per actuals, considering explanations and future plans for system revamp."
+    },
+    "depreciation": {
+      "claimed_amount": 96.47,
+      "approved_amount": 36.65,
+      "adjustment_amount": -59.82,
+      "kserc_reasoning": "Accordingly, against a claim of Rs.96.47 lakh in the Truing Up petition, the Commission hereby approves the depreciation of Rs.36.65 lakh for the year 2020-21.",
+      "key_observations": [
+        "Licensee claimed depreciation for the entire assets, though not eligible for depreciation on assets created out of accumulated regulatory surplus.",
+        "Assets worth Rs.948.39 lakh were created out of accumulated surplus, and depreciation of Rs.48.91 lakh applicable to these assets is deducted."
+      ],
+      "methodology_applied": "Regulation 27(2) (depreciation on fixed assets), disallowance of depreciation on assets created from accumulated regulatory surplus."
+    },
+    "interest_long_term": {
+      "claimed_amount": 0.0,
+      "approved_amount": 0.0,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "The licensee has not claimed any interest and finance charges for 2020-21.",
+      "key_observations": [],
+      "methodology_applied": "Approved as claimed (nil)."
+    },
+    "interest_consumer_deposits": {
+      "claimed_amount": 0.0,
+      "approved_amount": 0.0,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "Since the licensee is following the pre-payment metering system, interest on working capital is also not allowable.",
+      "key_observations": [],
+      "methodology_applied": "Disallowed as per pre-payment metering system."
+    },
+    "return_on_nfa": {
+      "claimed_amount": 34.85,
+      "approved_amount": 15.73,
+      "adjustment_amount": -19.12,
+      "kserc_reasoning": "As shown above, after deducting the assets created out of accumulated surplus, the RoNFA eligible for the year 2020-21 is Rs. 15.73 lakh. Accordingly, the Commission hereby approves Rs.15.73 lakh (3% of Rs.524.17 lakh) as return on net fixed assets for the year 2020-21 as against Rs.34.85 lakh claimed by the licensee.",
+      "key_observations": [
+        "Assets created from 2016-17 using accumulated surplus have no cost of funds.",
+        "Return on NFA is not allowable for assets created from accumulated surplus."
+      ],
+      "methodology_applied": "Deduction of RoNFA on assets created from accumulated regulatory surplus."
+    },
+    "other_debits": {
+      "claimed_amount": null,
+      "approved_amount": null,
+      "adjustment_amount": null,
+      "kserc_reasoning": null,
+      "key_observations": [],
+      "methodology_applied": null
+    }
+  },
+  "energy_decision": {
+    "actual_loss_pct": 1.27,
+    "target_loss_pct": 1.38,
+    "penalty_or_gain": 2.31,
+    "kserc_reasoning": "The Commission hereby approves the actual distribution loss of 1.27% as claimed by the licensee. Accordingly, as per the provision of the regulations, the power purchase cost for the year is computed as shown below.",
+    "excess_demand_action": "No excess demand or charges were recorded for 2020-21 as per Table 4."
+  },
+  "capital_structure_verified": {
+    "gfa_claimed": 1051.74,
+    "gfa_approved": 948.39,
+    "additions_claimed": 341.72,
+    "additions_approved": 341.72,
+    "kserc_reasoning": "The Commission after considering the items of capital expenditure of Rs.341.72 lakh and the submissions by the petitioner to justify this expenditure, approves Rs.341.72 lakh for inclusion in the asset base, subject to the condition that the licensee is not eligible for depreciation and other financing costs on the said items. It is pertinent to mention that assets worth Rs.948.39 lakh are created out of the accumulated surplus till the year 2020-21 as per the approved figures."
+  },
+  "final_summary": {
+    "total_claimed": 169.1,
+    "total_approved": 229.76,
+    "total_disallowed": 78.94,
+    "revenue_gap_surplus": 229.76
+  },
+  "_meta": {
+    "licensee": "CSEZA",
+    "fy": "2020-21",
+    "order_ref": "CSEZA TU 2020-21",
+    "method": "native_pdf_upload",
+    "tables_found": 24
+  }
+}

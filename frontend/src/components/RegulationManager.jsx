@@ -102,7 +102,7 @@ export default function RegulationManager() {
     return (
         <div className="animate-slide-up">
             {/* Header */}
-            <div className="glass-card" style={{ padding: '28px 32px', marginBottom: 24 }}>
+            <div className="card" style={{ padding: '28px 32px', marginBottom: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
                     <div>
                         <h2 style={{ fontSize: '1.3rem', letterSpacing: '-0.03em', marginBottom: 6 }}>
@@ -123,7 +123,7 @@ export default function RegulationManager() {
             </div>
 
             {/* Upload Section */}
-            <div className="glass-card" style={{ padding: '24px 28px', marginBottom: 24, border: '1px solid rgba(0, 212, 255, 0.15)' }}>
+            <div className="card" style={{ padding: '24px 28px', marginBottom: 24, border: '1px solid rgba(0, 212, 255, 0.15)' }}>
                 <h3 style={{ fontSize: '0.95rem', letterSpacing: '-0.02em', marginBottom: 16, color: '#00d4ff' }}>
                     📤 Upload New Regulation
                 </h3>
@@ -172,7 +172,7 @@ export default function RegulationManager() {
 
                     {/* Upload Button */}
                     <button
-                        className="laser-btn"
+                        className="btn-primary"
                         onClick={handleUpload}
                         disabled={!selectedFile || uploading}
                         style={{
@@ -205,7 +205,7 @@ export default function RegulationManager() {
 
             {/* Error */}
             {error && (
-                <div className="glass-card" style={{ padding: '12px 20px', marginBottom: 16, borderColor: 'rgba(255,68,68,0.3)' }}>
+                <div className="card" style={{ padding: '12px 20px', marginBottom: 16, borderColor: 'rgba(255,68,68,0.3)' }}>
                     <p className="mono" style={{ color: 'var(--red)', fontSize: '0.85rem' }}>
                         🔴 {error}
                         <button onClick={() => setError(null)} style={{
@@ -218,11 +218,11 @@ export default function RegulationManager() {
 
             {/* Document List */}
             {loading ? (
-                <div className="glass-card" style={{ padding: 40, textAlign: 'center' }}>
+                <div className="card" style={{ padding: 40, textAlign: 'center' }}>
                     <div className="mono" style={{ color: 'var(--text-secondary)' }}>Loading regulations…</div>
                 </div>
             ) : docs.length === 0 ? (
-                <div className="glass-card" style={{ padding: 40, textAlign: 'center' }}>
+                <div className="card" style={{ padding: 40, textAlign: 'center' }}>
                     <div style={{ fontSize: '2rem', marginBottom: 12 }}>📭</div>
                     <div className="mono" style={{ color: 'var(--text-secondary)' }}>No regulation documents stored yet. Upload one above.</div>
                 </div>
@@ -237,7 +237,7 @@ export default function RegulationManager() {
                             }}>
                                 {catInfo.label} ({catDocs.length})
                             </div>
-                            <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
+                            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                                 {catDocs.map((doc, i) => {
                                     const badge = METHOD_BADGES[doc.method] || METHOD_BADGES.unknown
                                     return (

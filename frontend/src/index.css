@@ -6,27 +6,27 @@
 
 /* ─── Design Tokens ──────────────────────────────────────────────────── */
 :root {
-  --bg: #050505;
-  --bg-elevated: #0A0A0A;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-glass: rgba(10, 10, 10, 0.8);
-  --accent: #BFFF00;
-  --accent-dim: rgba(191, 255, 0, 0.15);
-  --accent-glow: rgba(191, 255, 0, 0.3);
-  --text: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.4);
-  --text-tertiary: rgba(255, 255, 255, 0.2);
-  --border: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(255, 255, 255, 0.2);
-  --border-accent: rgba(191, 255, 0, 0.3);
-  --red: #FF4444;
-  --red-dim: rgba(255, 68, 68, 0.15);
-  --green: #00FF88;
-  --green-dim: rgba(0, 255, 136, 0.15);
-  --blue: #4488FF;
-  --blue-dim: rgba(68, 136, 255, 0.15);
-  --orange: #FF8844;
-  --orange-dim: rgba(255, 136, 68, 0.15);
+  --bg: #FFFFFF;
+  --bg-elevated: #F9FAFB;
+  --bg-card: #FFFFFF;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --accent: #2C6FAC;
+  --accent-dim: rgba(44, 111, 172, 0.15);
+  --accent-glow: rgba(44, 111, 172, 0.3);
+  --text: #000000;
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --text-tertiary: rgba(0, 0, 0, 0.4);
+  --border: rgba(0, 0, 0, 0.15);
+  --border-hover: rgba(0, 0, 0, 0.3);
+  --border-accent: rgba(44, 111, 172, 0.4);
+  --red: #D32F2F;
+  --red-dim: rgba(211, 47, 47, 0.15);
+  --green: #2E7D32;
+  --green-dim: rgba(46, 125, 50, 0.15);
+  --blue: #1976D2;
+  --blue-dim: rgba(25, 118, 210, 0.15);
+  --orange: #ED6C02;
+  --orange-dim: rgba(237, 108, 2, 0.15);
 
   --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
@@ -235,7 +235,7 @@ h1, h2, h3, h4, h5, h6 {
 .ghost-btn:hover {
   color: var(--text);
   border-color: var(--border-hover);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .ghost-btn-accent:hover {
@@ -250,7 +250,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 12px;
   letter-spacing: 0.05em;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.03);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
@@ -283,7 +283,7 @@ input[type="number"] {
   font-size: 12px;
   letter-spacing: 0.05em;
   padding: 12px 36px 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.03);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
@@ -302,8 +302,8 @@ input[type="number"] {
 }
 
 .neon-select option {
-  background: #111;
-  color: white;
+  background: #FFF;
+  color: #000;
 }
 
 /* ─── Tags ───────────────────────────────────────────────────────────── */
@@ -324,7 +324,7 @@ input[type="number"] {
 .tag-approved { background: var(--green-dim); color: var(--green); border-color: rgba(0, 255, 136, 0.3); }
 .tag-reduced { background: var(--red-dim); color: var(--red); border-color: rgba(255, 68, 68, 0.3); }
 .tag-modified { background: var(--orange-dim); color: var(--orange); border-color: rgba(255, 136, 68, 0.3); }
-.tag-neutral { background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+.tag-neutral { background: rgba(0,0,0,0.05); color: var(--text-secondary); }
 
 /* ─── Table ──────────────────────────────────────────────────────────── */
 .neon-table {
@@ -344,17 +344,17 @@ input[type="number"] {
   color: var(--text-secondary);
   text-align: left;
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .neon-table tbody td {
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--text-secondary);
 }
 
 .neon-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .neon-table tbody tr:hover td {

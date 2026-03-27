@@ -36,7 +36,7 @@ export default function TableEditor({ table, onRowChange, tableIdx, readOnly = f
             )}
 
             <div style={{ overflowX: 'auto' }}>
-                <table className="neon-table" style={{ fontSize: '0.8rem' }}>
+                <table className="data-table" style={{ fontSize: '0.8rem' }}>
                     <thead>
                         <tr>
                             {cols.map((col, i) => (
@@ -78,7 +78,7 @@ export default function TableEditor({ table, onRowChange, tableIdx, readOnly = f
                                                     type="text"
                                                     value={row.particular || ''}
                                                     onChange={e => onRowChange(tableIdx, ri, 'particular', e.target.value)}
-                                                    className="neon-input"
+                                                    className="input-field"
                                                     style={{ width: '100%', fontSize: '0.78rem', padding: '3px 6px', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border)' }}
                                                 />
                                             )}
@@ -97,7 +97,7 @@ export default function TableEditor({ table, onRowChange, tableIdx, readOnly = f
                                                         step="any"
                                                         value={row.claimed}
                                                         onChange={e => onRowChange(tableIdx, ri, 'claimed', parseFloat(e.target.value) || 0)}
-                                                        className="neon-input"
+                                                        className="input-field"
                                                         style={{ width: 90, textAlign: 'right', fontSize: '0.78rem', padding: '3px 6px', fontFamily: 'var(--font-mono)' }}
                                                     />
                                                 )
@@ -117,7 +117,7 @@ export default function TableEditor({ table, onRowChange, tableIdx, readOnly = f
                                                         step="any"
                                                         value={row.approved}
                                                         onChange={e => onRowChange(tableIdx, ri, 'approved', parseFloat(e.target.value) || 0)}
-                                                        className="neon-input"
+                                                        className="input-field"
                                                         style={{ width: 90, textAlign: 'right', fontSize: '0.78rem', padding: '3px 6px', fontFamily: 'var(--font-mono)', color: 'var(--green)' }}
                                                     />
                                                 )
@@ -136,7 +136,7 @@ export default function TableEditor({ table, onRowChange, tableIdx, readOnly = f
                                                     step="any"
                                                     value={row.amount}
                                                     onChange={e => onRowChange(tableIdx, ri, 'amount', parseFloat(e.target.value) || 0)}
-                                                    className="neon-input"
+                                                    className="input-field"
                                                     style={{ width: 90, textAlign: 'right', fontSize: '0.78rem', padding: '3px 6px', fontFamily: 'var(--font-mono)' }}
                                                 />
                                             )}

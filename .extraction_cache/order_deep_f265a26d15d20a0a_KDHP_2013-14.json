@@ -1,0 +1,1212 @@
+{
+  "order_tables": [
+    {
+      "table_number": "Table 1",
+      "title": "KDHPCL-Comparative statement of ARR proposed and approved for 2013-14",
+      "component": "energy,power_purchase,interest,depreciation,employee_cost,repair_maintenance,admin_general,other_debits,return_on_equity,revenue",
+      "headers": [
+        "Particulars",
+        "ARR Proposed",
+        "ARR Approved",
+        "Truing up Proposed"
+      ],
+      "rows": [
+        {
+          "Particulars": "Total Energy Sales (MU)",
+          "ARR Proposed": 37.04,
+          "ARR Approved": 37.04,
+          "Truing up Proposed": 37.46
+        },
+        {
+          "Particulars": "Feed back (MU)",
+          "ARR Proposed": 6.88,
+          "ARR Approved": 6.88,
+          "Truing up Proposed": 7.8
+        },
+        {
+          "Particulars": "Distribution loss (MU)",
+          "ARR Proposed": 6.57,
+          "ARR Approved": 5.99,
+          "Truing up Proposed": 7.3
+        },
+        {
+          "Particulars": "Gross energy (MU)",
+          "ARR Proposed": 50.49,
+          "ARR Approved": 49.91,
+          "Truing up Proposed": 52.56
+        },
+        {
+          "Particulars": "Distribution loss %",
+          "ARR Proposed": "13.00%",
+          "ARR Approved": "12.00%",
+          "Truing up Proposed": "13.89%"
+        },
+        {
+          "Particulars": "Power Purchase Cost",
+          "ARR Proposed": 1865.39,
+          "ARR Approved": 1844.11,
+          "Truing up Proposed": 1949.58
+        },
+        {
+          "Particulars": "Interest & Financing Charges",
+          "ARR Proposed": 77.1,
+          "ARR Approved": 10.48,
+          "Truing up Proposed": 96.77
+        },
+        {
+          "Particulars": "Depreciation",
+          "ARR Proposed": 18.6,
+          "ARR Approved": 16.51,
+          "Truing up Proposed": 15.79
+        },
+        {
+          "Particulars": "Employee Cost",
+          "ARR Proposed": 102.57,
+          "ARR Approved": 72.13,
+          "Truing up Proposed": 102.64
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "ARR Proposed": 21.05,
+          "ARR Approved": 21.05,
+          "Truing up Proposed": 20.23
+        },
+        {
+          "Particulars": "A&G Expenses",
+          "ARR Proposed": 17.45,
+          "ARR Approved": 8.94,
+          "Truing up Proposed": 18.51
+        },
+        {
+          "Particulars": "Other debits",
+          "ARR Proposed": 12.11,
+          "ARR Approved": 0.2,
+          "Truing up Proposed": 13.11
+        },
+        {
+          "Particulars": "Return on Equity",
+          "ARR Proposed": null,
+          "ARR Approved": 5.0,
+          "Truing up Proposed": null
+        },
+        {
+          "Particulars": "Gross Revenue Requirements",
+          "ARR Proposed": 2114.27,
+          "ARR Approved": 1978.42,
+          "Truing up Proposed": 2216.63
+        },
+        {
+          "Particulars": "Revenue from sale of power",
+          "ARR Proposed": 1962.18,
+          "ARR Approved": 1953.75,
+          "Truing up Proposed": 2065.14
+        },
+        {
+          "Particulars": "Other Income",
+          "ARR Proposed": null,
+          "ARR Approved": 8.43,
+          "Truing up Proposed": 16.21
+        },
+        {
+          "Particulars": "Total Revenue",
+          "ARR Proposed": 1962.18,
+          "ARR Approved": 1962.18,
+          "Truing up Proposed": 2081.35
+        },
+        {
+          "Particulars": "Revenue Surplus/(Gap)",
+          "ARR Proposed": -152.09,
+          "ARR Approved": -16.24,
+          "Truing up Proposed": -135.28
+        }
+      ]
+    },
+    {
+      "table_number": "Table 2",
+      "title": "KDHPCL-Sale of power to various consumer categories",
+      "component": "energy",
+      "headers": [
+        "Consumer Category",
+        "No. of Consumers",
+        "Energy sold MU",
+        "No. of Consumers",
+        "Energy sold MU"
+      ],
+      "rows": [
+        {
+          "Consumer Category": "HT I Industrial",
+          "No. of Consumers": 46,
+          "Energy sold MU": 23.68
+        },
+        {
+          "Consumer Category": "HT III Agriculture",
+          "No. of Consumers": 4,
+          "Energy sold MU": 0.27
+        },
+        {
+          "Consumer Category": "HT VI Commercial",
+          "No. of Consumers": 11,
+          "Energy sold MU": 2.13
+        },
+        {
+          "Consumer Category": "LT I Domestic",
+          "No. of Consumers": 13392,
+          "Energy sold MU": 6.91
+        },
+        {
+          "Consumer Category": "LT II Colonies",
+          "No. of Consumers": 2,
+          "Energy sold MU": 0.07
+        },
+        {
+          "Consumer Category": "LT IV Industries",
+          "No. of Consumers": 195,
+          "Energy sold MU": 0.59
+        },
+        {
+          "Consumer Category": "LT V Agriculture",
+          "No. of Consumers": 10,
+          "Energy sold MU": 0.01
+        },
+        {
+          "Consumer Category": "LT VI Non Domestic",
+          "No. of Consumers": 705,
+          "Energy sold MU": 0.71
+        },
+        {
+          "Consumer Category": "LT VII Commercial",
+          "No. of Consumers": 1308,
+          "Energy sold MU": 2.77
+        },
+        {
+          "Consumer Category": "Street Lighting",
+          "No. of Consumers": 120,
+          "Energy sold MU": 0.32
+        },
+        {
+          "Consumer Category": "Total",
+          "No. of Consumers": 15793,
+          "Energy sold MU": 37.46
+        }
+      ]
+    },
+    {
+      "table_number": "Table 3",
+      "title": "KDHPCL-Details of distribution loss for the year 2013-14",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "ARR Proposed",
+        "ARR Approved",
+        "Truing up Proposed",
+        "Truing up Approved"
+      ],
+      "rows": [
+        {
+          "Particulars": "Total Energy Sales (MU)",
+          "ARR Proposed": 37.04,
+          "ARR Approved": 37.04,
+          "Truing up Proposed": 37.46,
+          "Truing up Approved": 37.46
+        },
+        {
+          "Particulars": "Feed back (MU)",
+          "ARR Proposed": 6.88,
+          "ARR Approved": 6.88,
+          "Truing up Proposed": 7.8,
+          "Truing up Approved": 7.8
+        },
+        {
+          "Particulars": "Distribution loss (MU)",
+          "ARR Proposed": 6.57,
+          "ARR Approved": 5.99,
+          "Truing up Proposed": 7.3,
+          "Truing up Approved": 6.17
+        },
+        {
+          "Particulars": "Gross energy (MU)",
+          "ARR Proposed": 50.49,
+          "ARR Approved": 49.91,
+          "Truing up Proposed": 52.56,
+          "Truing up Approved": 51.43
+        },
+        {
+          "Particulars": "Distribution loss %",
+          "ARR Proposed": "13.00%",
+          "ARR Approved": "12.00%",
+          "Truing up Proposed": "13.89%",
+          "Truing up Approved": "12.00%"
+        },
+        {
+          "Particulars": "Excess Distribution Loss (MU)",
+          "ARR Proposed": null,
+          "ARR Approved": null,
+          "Truing up Proposed": null,
+          "Truing up Approved": 1.13
+        }
+      ]
+    },
+    {
+      "table_number": "Table 4",
+      "title": "KDHPCL- Details of power purchase cost for 2013-14",
+      "component": "power_purchase",
+      "headers": [
+        "Particulars",
+        "As per ARR order for 2013-14",
+        "Actual"
+      ],
+      "rows": [
+        {
+          "Particulars": "Total Maximum Demand KVA",
+          "As per ARR order for 2013-14": 84000,
+          "Actual": 82700
+        },
+        {
+          "Particulars": "Rate (Rs./kVA)",
+          "As per ARR order for 2013-14": 300,
+          "Actual": 300
+        },
+        {
+          "Particulars": "Demand charges (Rs./lakh)",
+          "As per ARR order for 2013-14": 252.0,
+          "Actual": 248.1
+        },
+        {
+          "Particulars": "Excess demand charges (Rs./lakh)",
+          "As per ARR order for 2013-14": null,
+          "Actual": 4.05
+        },
+        {
+          "Particulars": "Total demand charges",
+          "As per ARR order for 2013-14": 252.0,
+          "Actual": 252.15
+        },
+        {
+          "Particulars": "Energy purchased (lakh units)",
+          "As per ARR order for 2013-14": 430.3,
+          "Actual": 447.61
+        },
+        {
+          "Particulars": "Rate (Rs.kWh)",
+          "As per ARR order for 2013-14": 3.7,
+          "Actual": 3.79
+        },
+        {
+          "Particulars": "Total energy charges",
+          "As per ARR order for 2013-14": 1592.11,
+          "Actual": 1697.43
+        },
+        {
+          "Particulars": "Other charges",
+          "As per ARR order for 2013-14": null,
+          "Actual": null
+        },
+        {
+          "Particulars": "Total charges",
+          "As per ARR order for 2013-14": 1844.11,
+          "Actual": 1949.58
+        },
+        {
+          "Particulars": "Average Power Purchase Cost (Rs./kWh)",
+          "As per ARR order for 2013-14": null,
+          "Actual": 4.36
+        }
+      ]
+    },
+    {
+      "table_number": "Table 5",
+      "title": "KDHPCL- Details of power purchase cost approved for 2013-14",
+      "component": "power_purchase",
+      "headers": [
+        "Particulars",
+        "Approved"
+      ],
+      "rows": [
+        {
+          "Particulars": "Total Maximum Demand KVA",
+          "Approved": 82700
+        },
+        {
+          "Particulars": "Rate (Rs./kVA)",
+          "Approved": 300
+        },
+        {
+          "Particulars": "Demand charges (Rs./lakh)",
+          "Approved": 248.1
+        },
+        {
+          "Particulars": "Excess demand charges (Rs./lakh)",
+          "Approved": 4.05
+        },
+        {
+          "Particulars": "Total demand charges",
+          "Approved": 252.15
+        },
+        {
+          "Particulars": "Energy purchased (lakh units)",
+          "Approved": 436.3
+        },
+        {
+          "Particulars": "Rate (Rs.kWh)",
+          "Approved": 3.79
+        },
+        {
+          "Particulars": "Total energy charges",
+          "Approved": 1653.58
+        },
+        {
+          "Particulars": "Total charges",
+          "Approved": 1905.73
+        }
+      ]
+    },
+    {
+      "table_number": "Table 6",
+      "title": "KDHPCL- Details of employee cost claimed for the year 2013-14",
+      "component": "employee_cost",
+      "headers": [
+        "Particulars",
+        "Employee cost claimed"
+      ],
+      "rows": [
+        {
+          "Particulars": "Salaries",
+          "Employee cost claimed": 22.18
+        },
+        {
+          "Particulars": "Overtime",
+          "Employee cost claimed": 19.15
+        },
+        {
+          "Particulars": "DA",
+          "Employee cost claimed": 13.7
+        },
+        {
+          "Particulars": "Other Allowances",
+          "Employee cost claimed": 3.28
+        },
+        {
+          "Particulars": "Bonus",
+          "Employee cost claimed": 2.77
+        },
+        {
+          "Particulars": "Medical reimbursement",
+          "Employee cost claimed": 0.03
+        },
+        {
+          "Particulars": "Leave travel concession",
+          "Employee cost claimed": 0.21
+        },
+        {
+          "Particulars": "Earned leave",
+          "Employee cost claimed": 0.49
+        },
+        {
+          "Particulars": "Workmen's compensation",
+          "Employee cost claimed": 0.02
+        },
+        {
+          "Particulars": "Contribution to PF",
+          "Employee cost claimed": 4.89
+        },
+        {
+          "Particulars": "Staff welfare expenses",
+          "Employee cost claimed": 0.76
+        },
+        {
+          "Particulars": "Terminal benefits",
+          "Employee cost claimed": null
+        },
+        {
+          "Particulars": "Salary of Manager & Executive",
+          "Employee cost claimed": 24.32
+        },
+        {
+          "Particulars": "ED/ Manager's salary proportion",
+          "Employee cost claimed": 10.84
+        },
+        {
+          "Particulars": "Total",
+          "Employee cost claimed": 102.64
+        }
+      ]
+    },
+    {
+      "table_number": "Table 7",
+      "title": "KDHPCL- Details of interest and finance charges for 2013-14",
+      "component": "interest",
+      "headers": [
+        "Particulars",
+        "Approved Rs.lakhs",
+        "Actual Rs.lakhs"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on Security Deposit",
+          "Approved Rs.lakhs": 8.43,
+          "Actual Rs.lakhs": 9.26
+        },
+        {
+          "Particulars": "Interest on average working capital",
+          "Approved Rs.lakhs": 2.05,
+          "Actual Rs.lakhs": 87.51
+        },
+        {
+          "Particulars": "Total",
+          "Approved Rs.lakhs": 10.48,
+          "Actual Rs.lakhs": 96.77
+        }
+      ]
+    },
+    {
+      "table_number": "Table 8",
+      "title": "KDHPCL- Details of R&M expenses for the year 2013-14",
+      "component": "repair_maintenance",
+      "headers": [
+        "Particulars",
+        "Approved",
+        "Actual"
+      ],
+      "rows": [
+        {
+          "Particulars": "Maintenance of Building",
+          "Approved": 1.14,
+          "Actual": 1.17
+        },
+        {
+          "Particulars": "Cable, HT Lines",
+          "Approved": 13.04,
+          "Actual": 11.99
+        },
+        {
+          "Particulars": "LT lines",
+          "Approved": 4.63,
+          "Actual": 3.77
+        },
+        {
+          "Particulars": "Vehicles/fuel",
+          "Approved": 1.93,
+          "Actual": 3.01
+        },
+        {
+          "Particulars": "Others",
+          "Approved": 0.31,
+          "Actual": 0.29
+        },
+        {
+          "Particulars": "Total",
+          "Approved": 21.05,
+          "Actual": 20.23
+        }
+      ]
+    },
+    {
+      "table_number": "Table 9",
+      "title": "KDHPCL-Comparison of A&G Expenses",
+      "component": "admin_general",
+      "headers": [
+        "Particulars",
+        "2010-11 (Actuals)",
+        "2011-12 (Actuals)",
+        "2012-13 (Actuals)",
+        "2013-14 (Actuals)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Rents, Rates and Taxes",
+          "2010-11 (Actuals)": 0.64,
+          "2011-12 (Actuals)": 0.94,
+          "2012-13 (Actuals)": 0.44,
+          "2013-14 (Actuals)": 0.55
+        },
+        {
+          "Particulars": "Security Arrangement",
+          "2010-11 (Actuals)": 0.48,
+          "2011-12 (Actuals)": 0.56,
+          "2012-13 (Actuals)": 0.87,
+          "2013-14 (Actuals)": 0.87
+        },
+        {
+          "Particulars": "Insurance",
+          "2010-11 (Actuals)": 0.14,
+          "2011-12 (Actuals)": 0.41,
+          "2012-13 (Actuals)": 0.14,
+          "2013-14 (Actuals)": 0.28
+        },
+        {
+          "Particulars": "Telephone/Telex charges",
+          "2010-11 (Actuals)": 0.07,
+          "2011-12 (Actuals)": 0.08,
+          "2012-13 (Actuals)": 0.05,
+          "2013-14 (Actuals)": 0.06
+        },
+        {
+          "Particulars": "Legal charges",
+          "2010-11 (Actuals)": 22.95,
+          "2011-12 (Actuals)": 18.25,
+          "2012-13 (Actuals)": 1.98,
+          "2013-14 (Actuals)": 0.28
+        },
+        {
+          "Particulars": "Bank charges on Bank Guarantee",
+          "2010-11 (Actuals)": 0.61,
+          "2011-12 (Actuals)": 4.76,
+          "2012-13 (Actuals)": 6.42,
+          "2013-14 (Actuals)": 6.22
+        },
+        {
+          "Particulars": "Audit Fees & consultancy charges",
+          "2010-11 (Actuals)": 0.55,
+          "2011-12 (Actuals)": 1.3,
+          "2012-13 (Actuals)": 0.56,
+          "2013-14 (Actuals)": 0.56
+        },
+        {
+          "Particulars": "Travelling expenses",
+          "2010-11 (Actuals)": 0.07,
+          "2011-12 (Actuals)": 0.15,
+          "2012-13 (Actuals)": 0.05,
+          "2013-14 (Actuals)": 0.17
+        },
+        {
+          "Particulars": "Conveyance and vehicle charges",
+          "2010-11 (Actuals)": 0.14,
+          "2011-12 (Actuals)": 0.17,
+          "2012-13 (Actuals)": 0.14,
+          "2013-14 (Actuals)": 0.01
+        },
+        {
+          "Particulars": "Fees and subscription",
+          "2010-11 (Actuals)": 0.5,
+          "2011-12 (Actuals)": 1.05,
+          "2012-13 (Actuals)": 0.45,
+          "2013-14 (Actuals)": 0.51
+        },
+        {
+          "Particulars": "Printing and Stationery",
+          "2010-11 (Actuals)": 0.3,
+          "2011-12 (Actuals)": 0.05,
+          "2012-13 (Actuals)": 0.62,
+          "2013-14 (Actuals)": 1.05
+        },
+        {
+          "Particulars": "Advertisement",
+          "2010-11 (Actuals)": 0.29,
+          "2011-12 (Actuals)": 0.11,
+          "2012-13 (Actuals)": null,
+          "2013-14 (Actuals)": null
+        },
+        {
+          "Particulars": "Electricity charges",
+          "2010-11 (Actuals)": 0.51,
+          "2011-12 (Actuals)": 0.36,
+          "2012-13 (Actuals)": 0.62,
+          "2013-14 (Actuals)": 3.91
+        },
+        {
+          "Particulars": "Miscellaneous expenses",
+          "2010-11 (Actuals)": 4.85,
+          "2011-12 (Actuals)": 7.58,
+          "2012-13 (Actuals)": 2.89,
+          "2013-14 (Actuals)": 4.04
+        },
+        {
+          "Particulars": "Total",
+          "2010-11 (Actuals)": 32.1,
+          "2011-12 (Actuals)": 35.77,
+          "2012-13 (Actuals)": 15.23,
+          "2013-14 (Actuals)": 18.51
+        }
+      ]
+    },
+    {
+      "table_number": "Table 10",
+      "title": "KDHPCL-Depreciation approved in the ARR for the year 2013-14",
+      "component": "depreciation",
+      "headers": [
+        "Particulars",
+        "Average Gross Fixed Assets",
+        "Rate of depreciation",
+        "Depreciation (Rs.lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "11 kV Works",
+          "Average Gross Fixed Assets": 211.59,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakh)": 11.17
+        },
+        {
+          "Particulars": "LT Lines, Service connections, etc",
+          "Average Gross Fixed Assets": 41.66,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakh)": 2.2
+        },
+        {
+          "Particulars": "Metering equipment",
+          "Average Gross Fixed Assets": 38.51,
+          "Rate of depreciation": "6.33%",
+          "Depreciation (Rs.lakh)": 2.44
+        },
+        {
+          "Particulars": "Miscellaneous equipment",
+          "Average Gross Fixed Assets": 22.53,
+          "Rate of depreciation": "6.33%",
+          "Depreciation (Rs.lakh)": 1.43
+        },
+        {
+          "Particulars": "Others",
+          "Average Gross Fixed Assets": 1.0,
+          "Rate of depreciation": "6.33%",
+          "Depreciation (Rs.lakh)": 0.06
+        },
+        {
+          "Particulars": "Grand Total:",
+          "Average Gross Fixed Assets": 315.29,
+          "Rate of depreciation": null,
+          "Depreciation (Rs.lakh)": 17.3
+        },
+        {
+          "Particulars": "(Less) Consumer contribution",
+          "Average Gross Fixed Assets": 14.96,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakh)": 0.79
+        },
+        {
+          "Particulars": "Total Depreciation allowable",
+          "Average Gross Fixed Assets": null,
+          "Rate of depreciation": null,
+          "Depreciation (Rs.lakh)": 16.51
+        }
+      ]
+    },
+    {
+      "table_number": "Table 11",
+      "title": "KDHPCL- Depreciation claimed for the year 2013-14",
+      "component": "depreciation",
+      "headers": [
+        "Particulars",
+        "Gross Fixed Assets (2013-14)",
+        "Rate of depreciation",
+        "Depreciation (Rs.lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "11 kV Works",
+          "Gross Fixed Assets (2013-14)": 198.48,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakh)": 10.48
+        },
+        {
+          "Particulars": "LT Lines, Service connections, etc",
+          "Gross Fixed Assets (2013-14)": 40.16,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakh)": 2.12
+        },
+        {
+          "Particulars": "Metering equipment",
+          "Gross Fixed Assets (2013-14)": 34.3,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakh)": 1.81
+        },
+        {
+          "Particulars": "Miscellaneous equipment",
+          "Gross Fixed Assets (2013-14)": 22.25,
+          "Rate of depreciation": "6.33%",
+          "Depreciation (Rs.lakh)": 1.41
+        },
+        {
+          "Particulars": "Grand Total:",
+          "Gross Fixed Assets (2013-14)": 295.19,
+          "Rate of depreciation": null,
+          "Depreciation (Rs.lakh)": 15.82
+        }
+      ]
+    },
+    {
+      "table_number": "Table 12",
+      "title": "KDHPCL-Depreciation approved in the ARR for the year 2013-14",
+      "component": "depreciation",
+      "headers": [
+        "Particulars",
+        "Gross Fixed Assets",
+        "Rate of depreciation",
+        "Depreciation (Rs.lakhs)"
+      ],
+      "rows": [
+        {
+          "Particulars": "11 kV Works",
+          "Gross Fixed Assets": 198.48,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakhs)": 10.46
+        },
+        {
+          "Particulars": "LT Lines, Service connections, etc",
+          "Gross Fixed Assets": 40.16,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakhs)": 2.12
+        },
+        {
+          "Particulars": "Metering equipment",
+          "Gross Fixed Assets": 34.3,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakhs)": 1.81
+        },
+        {
+          "Particulars": "Miscellaneous equipment",
+          "Gross Fixed Assets": 22.25,
+          "Rate of depreciation": "6.33%",
+          "Depreciation (Rs.lakhs)": 1.4
+        },
+        {
+          "Particulars": "Grand Total:",
+          "Gross Fixed Assets": 295.19,
+          "Rate of depreciation": null,
+          "Depreciation (Rs.lakhs)": 15.82
+        },
+        {
+          "Particulars": "(Less) Consumer contribution",
+          "Gross Fixed Assets": 14.96,
+          "Rate of depreciation": "5.28%",
+          "Depreciation (Rs.lakhs)": 0.79
+        },
+        {
+          "Particulars": "Total Depreciation allowable",
+          "Gross Fixed Assets": null,
+          "Rate of depreciation": null,
+          "Depreciation (Rs.lakhs)": 15.03
+        }
+      ]
+    },
+    {
+      "table_number": "Table 13",
+      "title": "KDHPCL- Details of other debits for the year 2013-14",
+      "component": "other_debits",
+      "headers": [
+        "Particulars",
+        "Approved",
+        "Actual"
+      ],
+      "rows": [
+        {
+          "Particulars": "Section 3 duty",
+          "Approved": null,
+          "Actual": 12.17
+        },
+        {
+          "Particulars": "Duty on distribution loss",
+          "Approved": null,
+          "Actual": 0.53
+        },
+        {
+          "Particulars": "Inspection Charges",
+          "Approved": 0.2,
+          "Actual": 0.42
+        },
+        {
+          "Particulars": "Total",
+          "Approved": 0.2,
+          "Actual": 13.11
+        }
+      ]
+    },
+    {
+      "table_number": "Table 14",
+      "title": "KDHPCL-Gross Revenue Requirements after truing up for 2013-14",
+      "component": "gross_revenue_requirements,power_purchase,interest,depreciation,employee_cost,repair_maintenance,admin_general,other_debits,return_on_equity",
+      "headers": [
+        "Particulars",
+        "Approved",
+        "Actuals",
+        "Trued up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Power Purchase Cost",
+          "Approved": 1844.11,
+          "Actuals": 1949.58,
+          "Trued up": 1864.83
+        },
+        {
+          "Particulars": "Interest & Financing Charges",
+          "Approved": 10.48,
+          "Actuals": 96.77,
+          "Trued up": 9.26
+        },
+        {
+          "Particulars": "Depreciation",
+          "Approved": 16.51,
+          "Actuals": 15.79,
+          "Trued up": 15.03
+        },
+        {
+          "Particulars": "Employee Cost",
+          "Approved": 72.13,
+          "Actuals": 102.64,
+          "Trued up": 72.48
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "Approved": 21.05,
+          "Actuals": 20.23,
+          "Trued up": 20.23
+        },
+        {
+          "Particulars": "A&G Expenses",
+          "Approved": 8.94,
+          "Actuals": 18.51,
+          "Trued up": 12.29
+        },
+        {
+          "Particulars": "Other debits",
+          "Approved": 0.2,
+          "Actuals": 13.11,
+          "Trued up": 0.42
+        },
+        {
+          "Particulars": "Return on Equity",
+          "Approved": 5.0,
+          "Actuals": null,
+          "Trued up": 5.0
+        },
+        {
+          "Particulars": "Gross Revenue Requirements",
+          "Approved": 1978.42,
+          "Actuals": 2216.63,
+          "Trued up": 1999.54
+        }
+      ]
+    },
+    {
+      "table_number": "Table 15",
+      "title": "KDHPCL- Details of Revenue from Sale of Power for 2013-14",
+      "component": "revenue",
+      "headers": [
+        "Category",
+        "Sales (MU)",
+        "Revenue (Rs.lakhs)",
+        "Average Tariff (Rs./kWh)"
+      ],
+      "rows": [
+        {
+          "Category": "HT Industrial",
+          "Sales (MU)": 23.68,
+          "Revenue (Rs.lakhs)": 1317.24,
+          "Average Tariff (Rs./kWh)": 5.56
+        },
+        {
+          "Category": "HT III Agriculture",
+          "Sales (MU)": 0.27,
+          "Revenue (Rs.lakhs)": 9.23,
+          "Average Tariff (Rs./kWh)": 3.45
+        },
+        {
+          "Category": "HT IV Commercial",
+          "Sales (MU)": 2.13,
+          "Revenue (Rs.lakhs)": 171.38,
+          "Average Tariff (Rs./kWh)": 8.06
+        },
+        {
+          "Category": "LT I Domestic",
+          "Sales (MU)": 6.91,
+          "Revenue (Rs.lakhs)": 180.67,
+          "Average Tariff (Rs./kWh)": 2.62
+        },
+        {
+          "Category": "LT II Colonies",
+          "Sales (MU)": 0.07,
+          "Revenue (Rs.lakhs)": 5.14,
+          "Average Tariff (Rs./kWh)": 6.91
+        },
+        {
+          "Category": "LT IV Industries",
+          "Sales (MU)": 0.59,
+          "Revenue (Rs.lakhs)": 30.28,
+          "Average Tariff (Rs./kWh)": 5.13
+        },
+        {
+          "Category": "LT V Agriculture",
+          "Sales (MU)": 0.01,
+          "Revenue (Rs.lakhs)": 0.27,
+          "Average Tariff (Rs./kWh)": 1.84
+        },
+        {
+          "Category": "LT Non-domestic",
+          "Sales (MU)": 0.71,
+          "Revenue (Rs.lakhs)": 55.98,
+          "Average Tariff (Rs./kWh)": 7.85
+        },
+        {
+          "Category": "LT Commercial",
+          "Sales (MU)": 2.77,
+          "Revenue (Rs.lakhs)": 258.46,
+          "Average Tariff (Rs./kWh)": 9.33
+        },
+        {
+          "Category": "Street lighting",
+          "Sales (MU)": 0.32,
+          "Revenue (Rs.lakhs)": 7.92,
+          "Average Tariff (Rs./kWh)": 2.5
+        },
+        {
+          "Category": "Total",
+          "Sales (MU)": 37.46,
+          "Revenue (Rs.lakhs)": 2036.57,
+          "Average Tariff (Rs./kWh)": 5.44
+        }
+      ]
+    },
+    {
+      "table_number": "Table 16",
+      "title": "KDHPCL- Details of other income for the year 2013-14",
+      "component": "other_income",
+      "headers": [
+        "Items",
+        "Amount in Rs.lakh)"
+      ],
+      "rows": [
+        {
+          "Items": "Fuse off calls/new application fee",
+          "Amount in Rs.lakh)": 0.05
+        },
+        {
+          "Items": "Reconnection fee",
+          "Amount in Rs.lakh)": 0.27
+        },
+        {
+          "Items": "Interest received on deposits with KSEB",
+          "Amount in Rs.lakh)": 9.02
+        },
+        {
+          "Items": "Public lighting",
+          "Amount in Rs.lakh)": 0.19
+        },
+        {
+          "Items": "Delayed payment charges",
+          "Amount in Rs.lakh)": 1.93
+        },
+        {
+          "Items": "Other receipts",
+          "Amount in Rs.lakh)": 17.1
+        },
+        {
+          "Items": "Total",
+          "Amount in Rs.lakh)": 28.56
+        }
+      ]
+    },
+    {
+      "table_number": "Table 17",
+      "title": "KDHPCL- Details of amounts approved in Truing up for the year 2013-14",
+      "component": "gross_revenue_requirements,power_purchase,interest,depreciation,employee_cost,repair_maintenance,admin_general,other_debits,return_on_equity,revenue",
+      "headers": [
+        "Particulars",
+        "ARR Approved",
+        "Truing up Claimed",
+        "Truing up Approved"
+      ],
+      "rows": [
+        {
+          "Particulars": "Power Purchase Cost",
+          "ARR Approved": 1844.11,
+          "Truing up Claimed": 1949.58,
+          "Truing up Approved": 1864.83
+        },
+        {
+          "Particulars": "Interest & Financing Charges",
+          "ARR Approved": 10.48,
+          "Truing up Claimed": 96.77,
+          "Truing up Approved": 9.26
+        },
+        {
+          "Particulars": "Depreciation",
+          "ARR Approved": 16.51,
+          "Truing up Claimed": 15.79,
+          "Truing up Approved": 15.03
+        },
+        {
+          "Particulars": "Employee Cost",
+          "ARR Approved": 72.13,
+          "Truing up Claimed": 102.64,
+          "Truing up Approved": 72.48
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "ARR Approved": 21.05,
+          "Truing up Claimed": 20.23,
+          "Truing up Approved": 20.23
+        },
+        {
+          "Particulars": "A&G Expenses",
+          "ARR Approved": 8.94,
+          "Truing up Claimed": 18.51,
+          "Truing up Approved": 12.29
+        },
+        {
+          "Particulars": "Other debits",
+          "ARR Approved": 0.2,
+          "Truing up Claimed": 13.11,
+          "Truing up Approved": 0.42
+        },
+        {
+          "Particulars": "Return on Equity",
+          "ARR Approved": 5.0,
+          "Truing up Claimed": null,
+          "Truing up Approved": 5.0
+        },
+        {
+          "Particulars": "Gross Revenue Requirements",
+          "ARR Approved": 1978.42,
+          "Truing up Claimed": 2216.63,
+          "Truing up Approved": 1999.54
+        },
+        {
+          "Particulars": "Revenue from sale of power",
+          "ARR Approved": 1953.75,
+          "Truing up Claimed": 2065.14,
+          "Truing up Approved": 2065.14
+        },
+        {
+          "Particulars": "Other Income",
+          "ARR Approved": 8.43,
+          "Truing up Claimed": 16.21,
+          "Truing up Approved": 16.21
+        },
+        {
+          "Particulars": "Total Revenue",
+          "ARR Approved": 1962.18,
+          "Truing up Claimed": 2081.35,
+          "Truing up Approved": 2081.35
+        },
+        {
+          "Particulars": "Revenue Surplus/(Gap)",
+          "ARR Approved": -16.24,
+          "Truing up Claimed": -135.28,
+          "Truing up Approved": 81.81
+        }
+      ]
+    }
+  ],
+  "kserc_decisions": {
+    "power_purchase": {
+      "claimed_amount": 1949.58,
+      "approved_amount": 1864.83,
+      "adjustment_amount": 84.75,
+      "kserc_reasoning": "The total power purchase cost for the year was Rs.1949.58lakhas against the approved level of Rs.1844.11 lakhs. The licensee has accounted Rs.1949.58 lakhs as the power purchase cost as shown below. Since the cost of excess power purchase on account of non-achievement of the target for reduction of distribution loss, is to be deducted (ie., 9.38 lakhs units @Rs.4.36 per unit), the total power purchase cost approved for the year is shown below. The power purchasecost approved for the year 2013-14 is Rs.1864.83 lakhs. (Rs.1905.73-Rs.40.90 lakhs)",
+      "key_observations": [
+        "Non-achievement of the target for reduction of distribution loss"
+      ],
+      "methodology_applied": "Deduction for excess distribution loss (9.38 lakh units * Rs.4.36/unit)"
+    },
+    "employee_cost": {
+      "claimed_amount": 102.64,
+      "approved_amount": 72.48,
+      "adjustment_amount": 30.16,
+      "kserc_reasoning": "Commission had approved a total employee cost of Rs.72.13 lakhs and the actual employee cost incurred according to the truing up petition submitted by the licensee is Rs.102.64 lakh. The actual employee cost is higher than the approved level by Rs.30.51 lakh. The licensee clarifies that the increase is mainly on account of the share of salary of manager and executive director which sums up to a total amount of Rs.35.16 lakhs against approved amount of Rs. 5 lakh by the Commission. The Commission generally approves a due share of employee expenses of senior management in the distribution business. The Commission had approved Rs.5 lakh towards this head as a proportion of salary of senior management in 2013-14.Accordingly, as has been done in previous years, a notional provision of Rs.5 lakhs is approved as a proportion of salary of senior management. Hence, the employee cost approved for the year 2013-14 is Rs. 72.48 lakhs.",
+      "key_observations": [
+        "Increase mainly on account of the share of salary of manager and executive director"
+      ],
+      "methodology_applied": "Approved notional provision of Rs.5 lakhs for senior management salary, consistent with previous years"
+    },
+    "repair_maintenance": {
+      "claimed_amount": 20.23,
+      "approved_amount": 20.23,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "The actual R&M expense claimed by the licensee for the year 2013-14 is Rs 20.23 lakh against an approved amount of Rs.21.05 lakhs. The split up of the R&M expenses is shown below. The expense on vehicles is higher than the approved amount by Rs.1.08 lakh and the licensee had clarified that it is on account of the increase in fuel charges for the year and frequent break-down of power line due to monsoon. The actual repair and maintenance cost of Rs. 20.23 lakh is approved for the year 2013-14.",
+      "key_observations": [
+        "Expense on vehicles higher due to increase in fuel charges and frequent break-down of power line due to monsoon"
+      ],
+      "methodology_applied": "Approved actual R&M cost"
+    },
+    "admin_general": {
+      "claimed_amount": 18.51,
+      "approved_amount": 12.29,
+      "adjustment_amount": 6.22,
+      "kserc_reasoning": "The Commission had, in its order on ARR dated 15-05-2013, clearly stated that the charges for the bank guarantee provided to KSEB as per the directions of the Hon'ble Supreme Court in Civil Appeal No.2144/2011 against the order of the Commission dated 25.05.2010 revising the BST retrospectively from 01.12.2011, is not admissible and accordingly the approved A&G expenses for the year 2013-14 is Rs.8.94 lakh. It is further directed that the licensee shall limit the expenses at the approved level. The actual A&G expense is higher than the approved amount of Rs.9.57 lakh. The actual amount booked under A&G expenses is Rs.18.51 lakh and it includes bank charges of Rs.6.22 lakh as detailed below. The actual A & G expenses, excluding the bank guarantee is only Rs.12.29 lakh. The Commission approves the A & G expenses of Rs.12.29 lakh for the purpose of truing up.",
+      "key_observations": [
+        "Bank guarantee charges not admissible"
+      ],
+      "methodology_applied": "Disallowed bank guarantee charges"
+    },
+    "depreciation": {
+      "claimed_amount": 15.79,
+      "approved_amount": 15.03,
+      "adjustment_amount": 0.76,
+      "kserc_reasoning": "The actual depreciation booked for the year is Rs.15.79 lakh which is less than the approved amount of Rs.16.51 lakh. The details of the depreciation approved by the Commission in the ARR for the year is tabulated below: The licensee has estimated the depreciation at 5.28% and 6.33% based on the revised CERC norms applicable from 2009-14 tariff periods. As per the order dated 15.05.2013 on ARR, the Commission had stated that the licensee should estimate the depreciation during the truing up process, as provided in the CERC regulations duly considering the vintage of assets. The depreciation proposed in the application is shown hereunder. As per the order dated 13-04-2012 of the Commission, depreciation on assets created out of consumer contribution is not allowable. After considering the claims of the licensee and the orders issued by the Commission the depreciation approved for the year 2013-14 is shown below. Hence, the Commission approves Rs.15.03 lakh as the depreciation for 2013-14 and directs that the licensee shall maintain the accounts strictly as per the provisions of revised CERC norms to avail the depreciation.",
+      "key_observations": [
+        "Depreciation on assets created out of consumer contribution is not allowable"
+      ],
+      "methodology_applied": "Disallowed depreciation on consumer contribution as per order dated 13-04-2012"
+    },
+    "interest_long_term": {
+      "claimed_amount": 87.51,
+      "approved_amount": 0.0,
+      "adjustment_amount": 87.51,
+      "kserc_reasoning": "The licensee claimed Rs.87.51 lakh towards the actual interest on working capital and Rs.9.26 lakh towards interest on security deposits from the consumers. The Commission had approved only Rs.2.05 lakh towards working capital and Rs.8.43 lakh on security deposits. The licensee has submitted that the interest on working capital for electricity distribution operation has been allocated at 11.25% for 9 months and 14.25% for 3 months being charged by the lender for funding the expenditure. The impact for the year under interest on working capital is Rs.87.51 lakhs. The Commission has analysed the final accounts submitted by the licensee. It is seen that the average investments in Current Assets for the year 2013-14 is Rs.255.43 lakh. However the average security deposit from customers and other current liabilities comes to Rs.362.05 lakh, which clearly shows that the company has negative working capital and whatever amount booked under finance charges for working capital is incurred for capital liabilities. Hence no interest is approved for working capital.",
+      "key_observations": [
+        "Company has negative working capital",
+        "Interest for working capital incurred for capital liabilities"
+      ],
+      "methodology_applied": "Disallowed interest on working capital"
+    },
+    "interest_consumer_deposits": {
+      "claimed_amount": 9.26,
+      "approved_amount": 9.26,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "The licensee claimed Rs.87.51 lakh towards the actual interest on working capital and Rs.9.26 lakh towards interest on security deposits from the consumers. The Commission had approved only Rs.2.05 lakh towards working capital and Rs.8.43 lakh on security deposits. The interest and finance charges approved for the year 2013-14 is Rs.9.26 lakh, ie the amount of interest actually paid out on security deposits.",
+      "key_observations": [
+        "Interest actually paid out on security deposits"
+      ],
+      "methodology_applied": "Approved actual interest paid on security deposits"
+    },
+    "return_on_equity": {
+      "claimed_amount": 0.0,
+      "approved_amount": 5.0,
+      "adjustment_amount": -5.0,
+      "kserc_reasoning": "The licensee has not shown any equity contribution in the distribution business. In the absence of actual equity in the distribution business, the Commission had provisionally approved a notional return of Rs.5 lakh for the year 2013-14 as per ARR order. Since the licensee has not submitted any reasonable ground for a better claim, the Commission approves the same amount of Rs.5 lakh towards the return on equity for the year 2013-14.",
+      "key_observations": [
+        "No actual equity contribution in the distribution business",
+        "No reasonable ground for a better claim submitted"
+      ],
+      "methodology_applied": "Approved notional return of Rs.5 lakh as per ARR order"
+    },
+    "other_debits": {
+      "claimed_amount": 13.11,
+      "approved_amount": 0.42,
+      "adjustment_amount": 12.69,
+      "kserc_reasoning": "The licensee has included duty on the distribution loss, Section 3 duty and periodical charges under the debits totaling to Rs.13.11 lakh under other debits. The Commission in the order on ARR for the year had stated that the duty under Section 3 of the Kerala Electricity Duty Act cannot be passed on to the consumers in view of the statutory provisions in the said Act and distribution loss is as part of duty under Section 4. The same view is followed as in the past orders and therefore Rs.0.42 lakh is approved under other debits of the licensee.",
+      "key_observations": [
+        "Duty under Section 3 of the Kerala Electricity Duty Act cannot be passed on to the consumers",
+        "Distribution loss is part of duty under Section 4"
+      ],
+      "methodology_applied": "Disallowed Section 3 duty and duty on distribution loss, approved only inspection charges"
+    }
+  },
+  "energy_decision": {
+    "actual_loss_pct": 13.89,
+    "target_loss_pct": 12.0,
+    "penalty_or_gain": 40.9,
+    "kserc_reasoning": "The licensee has proposed higher level of distribution loss for the control period when compared to the distribution loss level approved by the Commission. The actual distribution loss reported by the licensee for 2013-14 is 13.89% against the approved target of 12%. In absolute terms, this isan increase of 1.31 MU as against the approved losses. The actual distribution loss is 7.30 MU in 2013-14 as against 5.99 MU as approved by the Commission for that year. The Commission is of the view that it is not proper to approve a distribution loss target higher than the level approved for the year as reduction in the distribution loss is a criterion for measuring the improvement in the performance of the licensee. Hence, the distribution loss for the year 2013-14 is fixed at the same level in accordance with para (7) of ARR order dated 15-05-2013. It is found that there is a substantial increase in distribution loss for the year 2013-14. The Commission in the truing up order for 2012-13 of the licensee has taken a position that the increase in distribution loss might have been contributed by the increase in wheeling of electricity and also higher sales in the licence area. Since the licensee has no control over the energy taken through feedback points, it is not reasonable to load the entire burden of increase in distribution loss on account of the licensee. Hence, it is decided to apportion the excess distribution loss of 11.30 lakh units in the ratio of energy consumed by the licensee to the energy feedback into KSEB System, ie., 83:17. Thus 9.38 lakhs units of excess distribution loss will be on the account of the licensee.",
+    "excess_demand_action": "Excess demand charges of Rs.4.05 lakhs were approved as claimed by the licensee (Table 4 and Table 5)."
+  },
+  "capital_structure_verified": {
+    "gfa_claimed": 295.19,
+    "gfa_approved": 295.19,
+    "additions_claimed": null,
+    "additions_approved": null,
+    "kserc_reasoning": "As per the order dated 13-04-2012 of the Commission, depreciation on assets created out of consumer contribution is not allowable."
+  },
+  "final_summary": {
+    "total_claimed": 2216.63,
+    "total_approved": 1999.54,
+    "total_disallowed": 217.09,
+    "revenue_gap_surplus": 81.81
+  },
+  "_meta": {
+    "licensee": "KDHP",
+    "fy": "2013-14",
+    "order_ref": "KDHP TU 2013-14",
+    "method": "native_pdf_upload",
+    "tables_found": 17
+  }
+}

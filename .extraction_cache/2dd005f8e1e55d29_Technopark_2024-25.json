@@ -1,0 +1,85 @@
+{
+  "claimed_expenses": {
+    "power_purchase_cost": 6369.16,
+    "employee_cost": 60.73,
+    "repair_maintenance": 551.17,
+    "admin_general": 129.91,
+    "depreciation": 69.89,
+    "interest_long_term": 134.16,
+    "interest_consumer_deposits": 134.16,
+    "interest_working_capital": 0.0,
+    "carrying_cost": 0.0,
+    "return_on_nfa": 85.24,
+    "other_debits": 0.0,
+    "section3_1_duty": 27.0,
+    "other_expenses": 8.52
+  },
+  "claimed_revenues": {
+    "revenue_from_sale": 28.0,
+    "wheeling_charges": 0.0,
+    "non_tariff_income": 158.27,
+    "other_revenue": 158.27
+  },
+  "asset_register": [
+    {
+      "description": "8",
+      "gross_value": 8.0,
+      "net_value": 90.04
+    },
+    {
+      "description": "1",
+      "gross_value": 1.0,
+      "net_value": 1637.13
+    },
+    {
+      "description": "3",
+      "gross_value": 3.0,
+      "net_value": 90.04
+    },
+    {
+      "description": "a) Gross fixed assets",
+      "gross_value": 780697543.0,
+      "net_value": 780697543.0
+    },
+    {
+      "description": "c) Net Fixed assets( (a)-(b) )",
+      "gross_value": 552807902.0,
+      "net_value": 560832079.0
+    },
+    {
+      "description": "d) Capital works in progress",
+      "gross_value": 9987386.0,
+      "net_value": 5689130.0
+    }
+  ],
+  "claimed_distribution_loss_pct": 4.04,
+  "bee_energy_audit_fee": 0.0,
+  "actual_loss_lakh_units": 34.09,
+  "approved_loss_lakh_units": 0.0,
+  "energy_input_lakh_units": 842.78,
+  "energy_sales_lakh_units": 808.69,
+  "energy_purchased_lakh_units": 839.32,
+  "appc_rs_per_unit": 7.59,
+  "consumer_security_deposit_balance": 2077.3,
+  "maintenance_spares_wc": 0.0,
+  "om_annual_for_iwc": 741.84,
+  "normative_loan_opening": 0.0,
+  "normative_loan_additional": 0.0,
+  "normative_loan_repayment": 0.0,
+  "normative_loan_rate": 0.0,
+  "ronfa_gross_fixed_assets": 0.0,
+  "ronfa_accumulated_depreciation": 0.0,
+  "ronfa_consumer_contribution": 0.0,
+  "ronfa_nfa_for_normative_loan": 0.0,
+  "ronfa_prior_year_additions": 0.0,
+  "ronfa_balance_nfa": 0.0,
+  "ronfa_rate_pct": 0.0,
+  "ronfa_eligible_return": 0.0,
+  "extraction_metadata": {
+    "method": "document_ai",
+    "checksum_passed": true,
+    "extracted_total_expenditure": 7569.94,
+    "extracted_total_revenue": 344.54,
+    "extraction_warnings": []
+  }
+}

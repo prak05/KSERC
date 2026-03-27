@@ -1846,7 +1846,8 @@ async def _run_analysis(
         "rm_line_items": state.get("rm_line_items", []),
         "rm_norm": float(state.get("myt_baseline_norms", {}).get("repair_maintenance", 0.0) or 0.0),
 
-        # Keep approved_expenses for recalculation
+        # Keep claimed and approved expenses for frontend and drafting
+        "claimed_expenses": state.get("claimed_expenses", {}),
         "approved_expenses": state.get("approved_expenses", {}),
     }
 

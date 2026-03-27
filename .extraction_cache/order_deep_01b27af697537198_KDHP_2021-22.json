@@ -1,0 +1,2232 @@
+{
+  "order_tables": [
+    {
+      "table_number": "Table 1",
+      "title": "Comparison of ARR&ERC for the period 2020-21 and 2021-22",
+      "component": "summary_of_costs",
+      "headers": [
+        "Particulars",
+        "2020-21 Truing Up Petition",
+        "2020-21 Trued Up",
+        "2020-21 ARR&ERC (A)",
+        "2021-22 Truing Up petition (B)",
+        "2021-22 Difference (B)-(A)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Power purchase cost",
+          "2020-21 Truing Up Petition": 2689.53,
+          "2020-21 Trued Up": 2668.62,
+          "2020-21 ARR&ERC (A)": 3158.24,
+          "2021-22 Truing Up petition (B)": 2665.23,
+          "2021-22 Difference (B)-(A)": -493.01
+        },
+        {
+          "Particulars": "Employee Expenses",
+          "2020-21 Truing Up Petition": 166.07,
+          "2020-21 Trued Up": 157.48,
+          "2020-21 ARR&ERC (A)": 145.66,
+          "2021-22 Truing Up petition (B)": 172.12,
+          "2021-22 Difference (B)-(A)": 26.46
+        },
+        {
+          "Particulars": "Administration & General Expenses",
+          "2020-21 Truing Up Petition": 10.34,
+          "2020-21 Trued Up": 9.32,
+          "2020-21 ARR&ERC (A)": 15.84,
+          "2021-22 Truing Up petition (B)": 17.33,
+          "2021-22 Difference (B)-(A)": 1.49
+        },
+        {
+          "Particulars": "Repair & Maintenance Expenses",
+          "2020-21 Truing Up Petition": 48.55,
+          "2020-21 Trued Up": 48.55,
+          "2020-21 ARR&ERC (A)": 42.06,
+          "2021-22 Truing Up petition (B)": 52.84,
+          "2021-22 Difference (B)-(A)": 10.78
+        },
+        {
+          "Particulars": "Depreciation",
+          "2020-21 Truing Up Petition": 22.71,
+          "2020-21 Trued Up": 13.82,
+          "2020-21 ARR&ERC (A)": 26.21,
+          "2021-22 Truing Up petition (B)": 13.16,
+          "2021-22 Difference (B)-(A)": -13.05
+        },
+        {
+          "Particulars": "Interest on Working Capital and finance charges",
+          "2020-21 Truing Up Petition": 17.73,
+          "2020-21 Trued Up": 47.42,
+          "2020-21 ARR&ERC (A)": 68.34,
+          "2021-22 Truing Up petition (B)": 54.62,
+          "2021-22 Difference (B)-(A)": -13.72
+        },
+        {
+          "Particulars": "Other debits",
+          "2020-21 Truing Up Petition": 12.6,
+          "2020-21 Trued Up": 1.13,
+          "2020-21 ARR&ERC (A)": 0.63,
+          "2021-22 Truing Up petition (B)": 14.08,
+          "2021-22 Difference (B)-(A)": 13.45
+        },
+        {
+          "Particulars": "Provision for Bad debts",
+          "2020-21 Truing Up Petition": 0.35,
+          "2020-21 Trued Up": null,
+          "2020-21 ARR&ERC (A)": null,
+          "2021-22 Truing Up petition (B)": 0.0,
+          "2021-22 Difference (B)-(A)": null
+        },
+        {
+          "Particulars": "Return on Net Fixed Assets",
+          "2020-21 Truing Up Petition": null,
+          "2020-21 Trued Up": 3.83,
+          "2020-21 ARR&ERC (A)": 3.83,
+          "2021-22 Truing Up petition (B)": 3.46,
+          "2021-22 Difference (B)-(A)": -0.37
+        },
+        {
+          "Particulars": "Total Expenditure/ARR",
+          "2020-21 Truing Up Petition": 2967.88,
+          "2020-21 Trued Up": 2950.17,
+          "2020-21 ARR&ERC (A)": 3460.81,
+          "2021-22 Truing Up petition (B)": 2992.84,
+          "2021-22 Difference (B)-(A)": -467.97
+        },
+        {
+          "Particulars": "Revenue from Sale of Power",
+          "2020-21 Truing Up Petition": 2884.83,
+          "2020-21 Trued Up": 2884.83,
+          "2020-21 ARR&ERC (A)": 3412.93,
+          "2021-22 Truing Up petition (B)": 2955.48,
+          "2021-22 Difference (B)-(A)": -457.45
+        },
+        {
+          "Particulars": "Other income",
+          "2020-21 Truing Up Petition": 11.66,
+          "2020-21 Trued Up": 81.19,
+          "2020-21 ARR&ERC (A)": 63.81,
+          "2021-22 Truing Up petition (B)": 50.97,
+          "2021-22 Difference (B)-(A)": -12.84
+        },
+        {
+          "Particulars": "Total Income/ERC",
+          "2020-21 Truing Up Petition": 2896.49,
+          "2020-21 Trued Up": 2966.02,
+          "2020-21 ARR&ERC (A)": 3476.74,
+          "2021-22 Truing Up petition (B)": 3006.45,
+          "2021-22 Difference (B)-(A)": -470.29
+        },
+        {
+          "Particulars": "Revenue (Gap)/Surplus",
+          "2020-21 Truing Up Petition": -71.39,
+          "2020-21 Trued Up": 15.93,
+          "2020-21 ARR&ERC (A)": 15.93,
+          "2021-22 Truing Up petition (B)": 13.61,
+          "2021-22 Difference (B)-(A)": -2.32
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 2",
+      "title": "Difference of Power Purchase",
+      "component": "power_purchase",
+      "headers": [
+        "Sl No",
+        "Particulars",
+        "As per True up petition",
+        "As per records of KSEB Ltd"
+      ],
+      "rows": [
+        {
+          "Sl No": 1,
+          "Particulars": "Power purchase of KDHP for the year 2021-22 (lakh units)",
+          "As per True up petition": 484.0,
+          "As per records of KSEB Ltd": 484.0
+        },
+        {
+          "Sl No": 2,
+          "Particulars": "Total charges-fixed + energy charges (Rs in lakh)",
+          "As per True up petition": 2694.19,
+          "As per records of KSEB Ltd": 2694.82
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 3",
+      "title": "Category-wise consumers and sales for 2020-21 and 2021-22",
+      "component": "energy_sales",
+      "headers": [
+        "Particulars",
+        "Truing Up 2020-21 No. of Consumers",
+        "Truing Up 2020-21 Sales (lakh units)",
+        "Truing Up 2021-22 No. of Consumers",
+        "Truing Up 2021-22 Sales (lakh units)"
+      ],
+      "rows": [
+        {
+          "Particulars": "HT I A Industrial",
+          "Truing Up 2020-21 No. of Consumers": 22,
+          "Truing Up 2020-21 Sales (lakh units)": 284.2,
+          "Truing Up 2021-22 No. of Consumers": 22,
+          "Truing Up 2021-22 Sales (lakh units)": 281.6
+        },
+        {
+          "Particulars": "HT II General",
+          "Truing Up 2020-21 No. of Consumers": 3,
+          "Truing Up 2020-21 Sales (lakh units)": 4.1,
+          "Truing Up 2021-22 No. of Consumers": 3,
+          "Truing Up 2021-22 Sales (lakh units)": 4.2
+        },
+        {
+          "Particulars": "HT III Agriculture",
+          "Truing Up 2020-21 No. of Consumers": 2,
+          "Truing Up 2020-21 Sales (lakh units)": 3.3,
+          "Truing Up 2021-22 No. of Consumers": 2,
+          "Truing Up 2021-22 Sales (lakh units)": 3.4
+        },
+        {
+          "Particulars": "HT IV Commercial",
+          "Truing Up 2020-21 No. of Consumers": 9,
+          "Truing Up 2020-21 Sales (lakh units)": 13.0,
+          "Truing Up 2021-22 No. of Consumers": 9,
+          "Truing Up 2021-22 Sales (lakh units)": 15.1
+        },
+        {
+          "Particulars": "LT I Domestic",
+          "Truing Up 2020-21 No. of Consumers": 13538,
+          "Truing Up 2020-21 Sales (lakh units)": 74.3,
+          "Truing Up 2021-22 No. of Consumers": 14504,
+          "Truing Up 2021-22 Sales (lakh units)": 76.8
+        },
+        {
+          "Particulars": "LT IV Industries",
+          "Truing Up 2020-21 No. of Consumers": 88,
+          "Truing Up 2020-21 Sales (lakh units)": 4.0,
+          "Truing Up 2021-22 No. of Consumers": 87,
+          "Truing Up 2021-22 Sales (lakh units)": 3.8
+        },
+        {
+          "Particulars": "LT V Agriculture",
+          "Truing Up 2020-21 No. of Consumers": 5,
+          "Truing Up 2020-21 Sales (lakh units)": 0.1,
+          "Truing Up 2021-22 No. of Consumers": 6,
+          "Truing Up 2021-22 Sales (lakh units)": 0.1
+        },
+        {
+          "Particulars": "LT VI Non-Domestic",
+          "Truing Up 2020-21 No. of Consumers": 922,
+          "Truing Up 2020-21 Sales (lakh units)": 14.1,
+          "Truing Up 2021-22 No. of Consumers": 954,
+          "Truing Up 2021-22 Sales (lakh units)": 15.0
+        },
+        {
+          "Particulars": "LT VII Commercial",
+          "Truing Up 2020-21 No. of Consumers": 1179,
+          "Truing Up 2020-21 Sales (lakh units)": 17.9,
+          "Truing Up 2021-22 No. of Consumers": 1225,
+          "Truing Up 2021-22 Sales (lakh units)": 22.3
+        },
+        {
+          "Particulars": "Street Lighting",
+          "Truing Up 2020-21 No. of Consumers": 253,
+          "Truing Up 2020-21 Sales (lakh units)": 3.4,
+          "Truing Up 2021-22 No. of Consumers": 270,
+          "Truing Up 2021-22 Sales (lakh units)": 3.3
+        },
+        {
+          "Particulars": "LT TOD Tariff",
+          "Truing Up 2020-21 No. of Consumers": 2,
+          "Truing Up 2020-21 Sales (lakh units)": 0.1,
+          "Truing Up 2021-22 No. of Consumers": 3,
+          "Truing Up 2021-22 Sales (lakh units)": 0.1
+        },
+        {
+          "Particulars": "Total",
+          "Truing Up 2020-21 No. of Consumers": 16023,
+          "Truing Up 2020-21 Sales (lakh units)": 418.5,
+          "Truing Up 2021-22 No. of Consumers": 17085,
+          "Truing Up 2021-22 Sales (lakh units)": 425.7
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 4",
+      "title": "Distribution loss claimed for 2020-21 and 2021-22",
+      "component": "distribution_loss",
+      "headers": [
+        "Particulars",
+        "2020-21 For Truing up",
+        "2020-21 Trued Up",
+        "2021-22 For Truing up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Energy purchased (In lakh Units)",
+          "2020-21 For Truing up": 481.4,
+          "2020-21 Trued Up": 477.66,
+          "2021-22 For Truing up": 484.0
+        },
+        {
+          "Particulars": "KSEB Energy Feedback (In lakh Units)",
+          "2020-21 For Truing up": 91.2,
+          "2020-21 Trued Up": 91.2,
+          "2021-22 For Truing up": 46.6
+        },
+        {
+          "Particulars": "Gross energy in the system (In lakh Units)",
+          "2020-21 For Truing up": 572.6,
+          "2020-21 Trued Up": 568.86,
+          "2021-22 For Truing up": 530.6
+        },
+        {
+          "Particulars": "Energy Sales (In lakh Units)",
+          "2020-21 For Truing up": 418.5,
+          "2020-21 Trued Up": 418.5,
+          "2021-22 For Truing up": 425.7
+        },
+        {
+          "Particulars": "Distribution loss (In lakh Units)",
+          "2020-21 For Truing up": 62.9,
+          "2020-21 Trued Up": 59.16,
+          "2021-22 For Truing up": 58.3
+        },
+        {
+          "Particulars": "Distribution loss %",
+          "2020-21 For Truing up": 10.98,
+          "2020-21 Trued Up": 10.4,
+          "2021-22 For Truing up": 10.99
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 5",
+      "title": "Approved Energy input & Distribution Loss for the year 2021-22",
+      "component": "approved_energy_input_loss",
+      "headers": [
+        "Sl.No",
+        "Particulars",
+        "Approved in ARR for",
+        "As per Truing up petition for",
+        "Trued up"
+      ],
+      "rows": [
+        {
+          "Sl.No": 1,
+          "Particulars": "Energy Sales (In lakh Units)",
+          "Approved in ARR for": 500.2,
+          "As per Truing up petition for": 425.7,
+          "Trued up": 425.7
+        },
+        {
+          "Sl.No": 2,
+          "Particulars": "KSEB Energy Feedback (In lakh Units)",
+          "Approved in ARR for": 97.1,
+          "As per Truing up petition for": 46.6,
+          "Trued up": 46.6
+        },
+        {
+          "Sl.No": 3,
+          "Particulars": "Distribution loss",
+          "Approved in ARR for": "10.00%",
+          "As per Truing up petition for": "10.99%",
+          "Trued up": "10.00%"
+        },
+        {
+          "Sl.No": 4,
+          "Particulars": "Gross energy (In lakh Units)",
+          "Approved in ARR for": 663.7,
+          "As per Truing up petition for": 530.6,
+          "Trued up": 524.78
+        },
+        {
+          "Sl.No": 5,
+          "Particulars": "Distribution loss (In lakh Units) (4x3)",
+          "Approved in ARR for": 66.4,
+          "As per Truing up petition for": 58.3,
+          "Trued up": 52.48
+        },
+        {
+          "Sl.No": 6,
+          "Particulars": "Approved Energy Input (in lakh Units) (4-2)",
+          "Approved in ARR for": 566.6,
+          "As per Truing up petition for": 484.0,
+          "Trued up": 478.18
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 6",
+      "title": "Details of the cost of power purchase claimed for 2021-22",
+      "component": "power_purchase",
+      "headers": [
+        "Sl.No",
+        "Particulars",
+        "Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Sl.No": 1,
+          "Particulars": "Total Consumption in lakh units",
+          "Rs. lakh": 530.6
+        },
+        {
+          "Sl.No": 2,
+          "Particulars": "Less: Feed Back to KSEB in lakh units",
+          "Rs. lakh": 46.6
+        },
+        {
+          "Sl.No": 3,
+          "Particulars": "Billed Units",
+          "Rs. lakh": 484.0
+        },
+        {
+          "Sl.No": 4,
+          "Particulars": "Demand Charges (Rs. lakh)",
+          "Rs. lakh": 364.63
+        },
+        {
+          "Sl.No": 5,
+          "Particulars": "Excess Demand Charges (Rs. lakh)",
+          "Rs. lakh": 6.17
+        },
+        {
+          "Sl.No": 6,
+          "Particulars": "Energy Cost (Rs. lakh)",
+          "Rs. lakh": 2323.4
+        },
+        {
+          "Sl.No": 7,
+          "Particulars": "Total Power purchase cost (Rs. lakh)",
+          "Rs. lakh": 2694.19
+        },
+        {
+          "Sl.No": 8,
+          "Particulars": "Disallowed in Power Purchase Cost as per Tariff Regulation",
+          "Rs. lakh": 28.96
+        },
+        {
+          "Sl.No": 9,
+          "Particulars": "Power Purchase Cost Claimed (7-8)",
+          "Rs. lakh": 2665.23
+        },
+        {
+          "Sl.No": 8,
+          "Particulars": "Average power purchase Cost (Rs. /kWh) (7/3)",
+          "Rs. lakh": 5.57
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 7",
+      "title": "Details of approved power purchase cost for 2021-22",
+      "component": "power_purchase",
+      "headers": [
+        "Sl.No",
+        "Particulars",
+        "Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Sl.No": 1,
+          "Particulars": "Actual distribution loss (In lakh units) (Table 4)",
+          "Rs. lakh": 58.3
+        },
+        {
+          "Sl.No": 2,
+          "Particulars": "Approved distribution loss (In lakh units) (Table-5)",
+          "Rs. lakh": 52.48
+        },
+        {
+          "Sl.No": 3,
+          "Particulars": "Excess distribution loss (1-2) (In lakh units)",
+          "Rs. lakh": 5.82
+        },
+        {
+          "Sl.No": 4,
+          "Particulars": "Average power purchase cost Rs. /kWh",
+          "Rs. lakh": 5.57
+        },
+        {
+          "Sl.No": 5,
+          "Particulars": "Disallowed cost in power purchase (Rs in lakh) (3*4)",
+          "Rs. lakh": 32.42
+        },
+        {
+          "Sl.No": 6,
+          "Particulars": "Actual power purchase cost (Rs. lakh)",
+          "Rs. lakh": 2694.19
+        },
+        {
+          "Sl.No": 7,
+          "Particulars": "Approved power purchase cost (Rs. lakh) (6-5)",
+          "Rs. lakh": 2661.77
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 8",
+      "title": "Comparison of O&M expenses for 2020-21 and 2021-22 (Rs.Lakh)",
+      "component": "o&m_expenses",
+      "headers": [
+        "Particulars",
+        "2020-21 Truing up",
+        "2020-21 Trued Up",
+        "2021-22 ARR&ERC",
+        "2021-22 Truing Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee Expenses",
+          "2020-21 Truing up": 166.07,
+          "2020-21 Trued Up": 157.48,
+          "2021-22 ARR&ERC": 145.66,
+          "2021-22 Truing Up": 172.12
+        },
+        {
+          "Particulars": "Administration & General Expenses",
+          "2020-21 Truing up": 10.34,
+          "2020-21 Trued Up": 9.32,
+          "2021-22 ARR&ERC": 15.84,
+          "2021-22 Truing Up": 17.33
+        },
+        {
+          "Particulars": "Repair & Maintenance Expenses",
+          "2020-21 Truing up": 48.55,
+          "2020-21 Trued Up": 48.55,
+          "2021-22 ARR&ERC": 42.06,
+          "2021-22 Truing Up": 52.84
+        },
+        {
+          "Particulars": "Total O&M",
+          "2020-21 Truing up": 224.96,
+          "2020-21 Trued Up": 215.35,
+          "2021-22 ARR&ERC": 203.56,
+          "2021-22 Truing Up": 242.29
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 9",
+      "title": "Comparison of Employee Cost for the year 2020-21 and 2021-22 (Rs.lakh)",
+      "component": "employee_cost",
+      "headers": [
+        "Particulars",
+        "2020-21 Truing Up",
+        "2020-21 Trued Up",
+        "2021-22 ARR Approved",
+        "2021-22 Truing Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Basic Salary",
+          "2020-21 Truing Up": 66.79,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 72.33
+        },
+        {
+          "Particulars": "Dearness Allowance (DA)",
+          "2020-21 Truing Up": 10.02,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 10.8
+        },
+        {
+          "Particulars": "Leave Travel Allowance",
+          "2020-21 Truing Up": 0.34,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 0.44
+        },
+        {
+          "Particulars": "Earned Leave Encashment",
+          "2020-21 Truing Up": 1.38,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 1.38
+        },
+        {
+          "Particulars": "Other Allowances",
+          "2020-21 Truing Up": 8.25,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 7.69
+        },
+        {
+          "Particulars": "Medical Reimbursement",
+          "2020-21 Truing Up": 0.29,
+          "2020-21 Trued Up": 157.48,
+          "2021-22 ARR Approved": 145.66,
+          "2021-22 Truing Up": 0.53
+        },
+        {
+          "Particulars": "Overtime Payment",
+          "2020-21 Truing Up": 32.95,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 35.49
+        },
+        {
+          "Particulars": "Bonus/Ex-Gratia Payments",
+          "2020-21 Truing Up": 5.42,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 3.43
+        },
+        {
+          "Particulars": "Staff welfare expenses",
+          "2020-21 Truing Up": 0.98,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 1.19
+        },
+        {
+          "Particulars": "Provident Fund Contribution",
+          "2020-21 Truing Up": 9.46,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 10.34
+        },
+        {
+          "Particulars": "Salary of Manager & Executive - Electricals",
+          "2020-21 Truing Up": 15.26,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 14.53
+        },
+        {
+          "Particulars": "Share of Directors. Mgmt. Staff Salaries",
+          "2020-21 Truing Up": 14.93,
+          "2020-21 Trued Up": null,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 13.97
+        },
+        {
+          "Particulars": "Gross Employee Expenses",
+          "2020-21 Truing Up": 166.07,
+          "2020-21 Trued Up": 157.48,
+          "2021-22 ARR Approved": 145.66,
+          "2021-22 Truing Up": 172.12
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 10",
+      "title": "Category-wise split of the employee cost for 2020-21 and 2021-22",
+      "component": "employee_cost",
+      "headers": [
+        "Particulars",
+        "2020-21 No.",
+        "2020-21 Rs. Lakh",
+        "2021-22 No.",
+        "2021-22 Rs. Lakh"
+      ],
+      "rows": [
+        {
+          "Particulars": "Junior Technical Officers",
+          "2020-21 No.": 3,
+          "2020-21 Rs. Lakh": 15.66,
+          "2021-22 No.": 3,
+          "2021-22 Rs. Lakh": 16.71
+        },
+        {
+          "Particulars": "Switching Station Operations",
+          "2020-21 No.": 4,
+          "2020-21 Rs. Lakh": 16.69,
+          "2021-22 No.": 4,
+          "2021-22 Rs. Lakh": 16.86
+        },
+        {
+          "Particulars": "Technical Staff",
+          "2020-21 No.": 40,
+          "2020-21 Rs. Lakh": 75.72,
+          "2021-22 No.": 40,
+          "2021-22 Rs. Lakh": 80.86
+        },
+        {
+          "Particulars": "Other Workers",
+          "2020-21 No.": 11,
+          "2020-21 Rs. Lakh": 15.73,
+          "2021-22 No.": 11,
+          "2021-22 Rs. Lakh": 16.88
+        },
+        {
+          "Particulars": "Non-Technical Staff",
+          "2020-21 No.": 3,
+          "2020-21 Rs. Lakh": 9.48,
+          "2021-22 No.": 3,
+          "2021-22 Rs. Lakh": 9.55
+        },
+        {
+          "Particulars": "Share of Management Staff Expenses",
+          "2020-21 No.": null,
+          "2020-21 Rs. Lakh": 30.18,
+          "2021-22 No.": null,
+          "2021-22 Rs. Lakh": 28.5
+        },
+        {
+          "Particulars": "Other Allowances, Medical & Welfare Expenses",
+          "2020-21 No.": null,
+          "2020-21 Rs. Lakh": 2.61,
+          "2021-22 No.": null,
+          "2021-22 Rs. Lakh": 2.74
+        },
+        {
+          "Particulars": "Total",
+          "2020-21 No.": 61,
+          "2020-21 Rs. Lakh": 166.07,
+          "2021-22 No.": 61,
+          "2021-22 Rs. Lakh": 172.1
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 11",
+      "title": "Details of A&G expenses claimed over the years (Rs.lakh)",
+      "component": "admin_general",
+      "headers": [
+        "Particulars",
+        "2020-21 Truing Up",
+        "2020-21 Trued Up",
+        "2021-22 ARR Approved",
+        "2021-22 Truing Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Rent Rates & Taxes",
+          "2020-21 Truing Up": 0.4,
+          "2020-21 Trued Up": 0.4,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 3.63
+        },
+        {
+          "Particulars": "Insurance",
+          "2020-21 Truing Up": 0.38,
+          "2020-21 Trued Up": 0.38,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 0.84
+        },
+        {
+          "Particulars": "Telephone & Postage, etc.",
+          "2020-21 Truing Up": 0.05,
+          "2020-21 Trued Up": 0.05,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 0.01
+        },
+        {
+          "Particulars": "Legal charges",
+          "2020-21 Truing Up": 1.02,
+          "2020-21 Trued Up": 0.0,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 2.37
+        },
+        {
+          "Particulars": "Audit Fees",
+          "2020-21 Truing Up": 0.5,
+          "2020-21 Trued Up": 0.5,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 0.5
+        },
+        {
+          "Particulars": "Travelling expenses",
+          "2020-21 Truing Up": 0.07,
+          "2020-21 Trued Up": 0.07,
+          "2021-22 ARR Approved": 15.84,
+          "2021-22 Truing Up": 0.25
+        },
+        {
+          "Particulars": "Conveyance and vehicle hire charges",
+          "2020-21 Truing Up": 0.89,
+          "2020-21 Trued Up": 0.89,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 1.45
+        },
+        {
+          "Particulars": "Electricity charges",
+          "2020-21 Truing Up": 0.46,
+          "2020-21 Trued Up": 0.46,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 0.29
+        },
+        {
+          "Particulars": "Printing & Stationery",
+          "2020-21 Truing Up": 0.72,
+          "2020-21 Trued Up": 0.72,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 0.94
+        },
+        {
+          "Particulars": "Miscellaneous Expenses",
+          "2020-21 Truing Up": 4.07,
+          "2020-21 Trued Up": 4.07,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 4.85
+        },
+        {
+          "Particulars": "License Fee and other related fee",
+          "2020-21 Truing Up": 0.89,
+          "2020-21 Trued Up": 0.89,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 0.86
+        },
+        {
+          "Particulars": "Security arrangements",
+          "2020-21 Truing Up": 0.89,
+          "2020-21 Trued Up": 0.89,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up": 1.34
+        },
+        {
+          "Particulars": "Gross A&G Expenses",
+          "2020-21 Truing Up": 10.34,
+          "2020-21 Trued Up": 9.32,
+          "2021-22 ARR Approved": 15.84,
+          "2021-22 Truing Up": 17.33
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 12",
+      "title": "A&G expenses approved for 2021-22 (Rs. Lakh)",
+      "component": "admin_general",
+      "headers": [
+        "Particulars",
+        "ARR Approved",
+        "Truing Up",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Rent Rates & Taxes",
+          "ARR Approved": null,
+          "Truing Up": 3.63,
+          "Trued Up": 3.63
+        },
+        {
+          "Particulars": "Insurance",
+          "ARR Approved": null,
+          "Truing Up": 0.84,
+          "Trued Up": 0.84
+        },
+        {
+          "Particulars": "Telephone & Postage, etc.",
+          "ARR Approved": null,
+          "Truing Up": 0.01,
+          "Trued Up": 0.01
+        },
+        {
+          "Particulars": "Legal charges",
+          "ARR Approved": null,
+          "Truing Up": 2.37,
+          "Trued Up": 0.0
+        },
+        {
+          "Particulars": "Audit Fees",
+          "ARR Approved": null,
+          "Truing Up": 0.5,
+          "Trued Up": 0.5
+        },
+        {
+          "Particulars": "Travelling expenses",
+          "ARR Approved": null,
+          "Truing Up": 0.25,
+          "Trued Up": 0.25
+        },
+        {
+          "Particulars": "Conveyance and vehicle hire charges",
+          "ARR Approved": 15.84,
+          "Truing Up": 1.45,
+          "Trued Up": 1.45
+        },
+        {
+          "Particulars": "Electricity charges",
+          "ARR Approved": null,
+          "Truing Up": 0.29,
+          "Trued Up": 0.29
+        },
+        {
+          "Particulars": "Printing & Stationery",
+          "ARR Approved": null,
+          "Truing Up": 0.94,
+          "Trued Up": 0.94
+        },
+        {
+          "Particulars": "Miscellaneous Expenses",
+          "ARR Approved": null,
+          "Truing Up": 4.85,
+          "Trued Up": 4.85
+        },
+        {
+          "Particulars": "License Fee and other related fee",
+          "ARR Approved": null,
+          "Truing Up": 0.86,
+          "Trued Up": 0.86
+        },
+        {
+          "Particulars": "Security arrangements",
+          "ARR Approved": null,
+          "Truing Up": 1.34,
+          "Trued Up": 1.34
+        },
+        {
+          "Particulars": "Gross A&G Expenses",
+          "ARR Approved": 15.84,
+          "Truing Up": 17.33,
+          "Trued Up": 14.96
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 13",
+      "title": "Details of R&M expenses claimed by the licensee (Rs. lakh)",
+      "component": "repair_maintenance",
+      "headers": [
+        "Particulars",
+        "2020-21 Trued Up",
+        "ARR Approved",
+        "2021-22 Truing Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Plant & Machinery",
+          "2020-21 Trued Up": 1.24,
+          "ARR Approved": null,
+          "2021-22 Truing Up": 1.5
+        },
+        {
+          "Particulars": "Buildings",
+          "2020-21 Trued Up": 6.11,
+          "ARR Approved": null,
+          "2021-22 Truing Up": 1.66
+        },
+        {
+          "Particulars": "Lines & Cable Networks",
+          "2020-21 Trued Up": 27.84,
+          "ARR Approved": 42.06,
+          "2021-22 Truing Up": 33.22
+        },
+        {
+          "Particulars": "Vehicles",
+          "2020-21 Trued Up": 3.29,
+          "ARR Approved": null,
+          "2021-22 Truing Up": 4.45
+        },
+        {
+          "Particulars": "LT Lines, Upkeeps, etc.",
+          "2020-21 Trued Up": 10.07,
+          "ARR Approved": null,
+          "2021-22 Truing Up": 12.01
+        },
+        {
+          "Particulars": "Gross R&M Expenses",
+          "2020-21 Trued Up": 48.55,
+          "ARR Approved": 42.06,
+          "2021-22 Truing Up": 52.84
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 14",
+      "title": "Details of expenses incurred for R&M works of cables and line works (Rs. lakh)",
+      "component": "repair_maintenance_breakdown",
+      "headers": [
+        "Particulars",
+        "2020-21",
+        "2021-22"
+      ],
+      "rows": [
+        {
+          "Particulars": "Transformer service charges paid to power link services",
+          "2020-21": 1.11,
+          "2021-22": 2.67
+        },
+        {
+          "Particulars": "Transportation charges for transformer",
+          "2020-21": null,
+          "2021-22": 0.97
+        },
+        {
+          "Particulars": "Cost of sand & rubbles",
+          "2020-21": 1.17,
+          "2021-22": 0.49
+        },
+        {
+          "Particulars": "Cost of MS Angles, Transformer oil, paint & painting charges",
+          "2020-21": 11.3,
+          "2021-22": 12.16
+        },
+        {
+          "Particulars": "Under growth cutting charges",
+          "2020-21": 10.37,
+          "2021-22": 9.9
+        },
+        {
+          "Particulars": "Employee's transportation charges",
+          "2020-21": 0.29,
+          "2021-22": 1.45
+        },
+        {
+          "Particulars": "Cost of refreshments to workers",
+          "2020-21": 0.08,
+          "2021-22": 0.03
+        },
+        {
+          "Particulars": "Transformer inspection charges",
+          "2020-21": 0.95,
+          "2021-22": null
+        },
+        {
+          "Particulars": "Additional labour from estates",
+          "2020-21": 2.57,
+          "2021-22": 5.55
+        },
+        {
+          "Particulars": "Total",
+          "2020-21": 27.84,
+          "2021-22": 33.22
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 15",
+      "title": "O&M expenses approved for 2021-22 (Rs. lakh)",
+      "component": "o&m_expenses_summary",
+      "headers": [
+        "Particulars",
+        "ARR&ERC",
+        "Truing Up",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee Expenses",
+          "ARR&ERC": 145.66,
+          "Truing Up": 172.12,
+          "Trued Up": 169.31
+        },
+        {
+          "Particulars": "Administration & General Expenses",
+          "ARR&ERC": 15.84,
+          "Truing Up": 17.33,
+          "Trued Up": 14.96
+        },
+        {
+          "Particulars": "Repair & Maintenance Expenses",
+          "ARR&ERC": 42.06,
+          "Truing Up": 52.84,
+          "Trued Up": 50.9
+        },
+        {
+          "Particulars": "Total O&M",
+          "ARR&ERC": 203.56,
+          "Truing Up": 242.29,
+          "Trued Up": 235.17
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table -16",
+      "title": "Depreciation claimed for the year 2021-22",
+      "component": "depreciation",
+      "headers": [
+        "Asset group",
+        "GFA (Rs. lakh)",
+        "Asset Addition (Rs. lakh)",
+        "Rate of Deprecation",
+        "Depreciation (Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Asset group": "Assets over 12 years as on 31.03.2022",
+          "GFA (Rs. lakh)": null,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": null,
+          "Depreciation (Rs. lakh)": null
+        },
+        {
+          "Asset group": "Transformers",
+          "GFA (Rs. lakh)": 163.77,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": "1.14%",
+          "Depreciation (Rs. lakh)": 1.87
+        },
+        {
+          "Asset group": "Distribution lines",
+          "GFA (Rs. lakh)": 40.16,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": "1.14%",
+          "Depreciation (Rs. lakh)": 0.46
+        },
+        {
+          "Asset group": "Meters",
+          "GFA (Rs. lakh)": 18.22,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": "1.14%",
+          "Depreciation (Rs. lakh)": 0.21
+        },
+        {
+          "Asset group": "Others",
+          "GFA (Rs. lakh)": 11.65,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": "0.61%",
+          "Depreciation (Rs. lakh)": 0.07
+        },
+        {
+          "Asset group": "Sub-Total",
+          "GFA (Rs. lakh)": 233.8,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": null,
+          "Depreciation (Rs. lakh)": 2.61
+        },
+        {
+          "Asset group": "Assets less than 12 years as on 31.03.2022",
+          "GFA (Rs. lakh)": null,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": null,
+          "Depreciation (Rs. lakh)": null
+        },
+        {
+          "Asset group": "Transformers",
+          "GFA (Rs. lakh)": 110.9,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": "5.28%",
+          "Depreciation (Rs. lakh)": 5.86
+        },
+        {
+          "Asset group": "Meters",
+          "GFA (Rs. lakh)": 67.92,
+          "Asset Addition (Rs. lakh)": 3.91,
+          "Rate of Deprecation": "5.28%",
+          "Depreciation (Rs. lakh)": 3.64
+        },
+        {
+          "Asset group": "Others",
+          "GFA (Rs. lakh)": 14.32,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": "6.33%",
+          "Depreciation (Rs. lakh)": 0.91
+        },
+        {
+          "Asset group": "IT Equipment",
+          "GFA (Rs. lakh)": 0.92,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": "15.00%",
+          "Depreciation (Rs. lakh)": 0.14
+        },
+        {
+          "Asset group": "Sub-Total",
+          "GFA (Rs. lakh)": 194.06,
+          "Asset Addition (Rs. lakh)": 3.91,
+          "Rate of Deprecation": null,
+          "Depreciation (Rs. lakh)": 10.55
+        },
+        {
+          "Asset group": "TOTAL",
+          "GFA (Rs. lakh)": 427.86,
+          "Asset Addition (Rs. lakh)": null,
+          "Rate of Deprecation": null,
+          "Depreciation (Rs. lakh)": 13.16
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 17",
+      "title": "Depreciation approved for 2021-22",
+      "component": "depreciation",
+      "headers": [
+        "Asset Group",
+        "Rate of depreciation (%)",
+        "Beginning of the year",
+        "Additions during the year",
+        "End of the year",
+        "Depreciation during the year"
+      ],
+      "rows": [
+        {
+          "Asset Group": "Transformers",
+          "Rate of depreciation (%)": 5.28,
+          "Beginning of the year": 274.66,
+          "Additions during the year": 0.0,
+          "End of the year": 274.66,
+          "Depreciation during the year": 7.73
+        },
+        {
+          "Asset Group": "Distribution lines",
+          "Rate of depreciation (%)": 5.28,
+          "Beginning of the year": 40.16,
+          "Additions during the year": 0.0,
+          "End of the year": 40.16,
+          "Depreciation during the year": 0.46
+        },
+        {
+          "Asset Group": "Others",
+          "Rate of depreciation (%)": 6.33,
+          "Beginning of the year": 25.97,
+          "Additions during the year": 0.0,
+          "End of the year": 25.97,
+          "Depreciation during the year": 0.98
+        },
+        {
+          "Asset Group": "Meters",
+          "Rate of depreciation (%)": 5.28,
+          "Beginning of the year": 86.14,
+          "Additions during the year": 3.91,
+          "End of the year": 90.05,
+          "Depreciation during the year": 3.85
+        },
+        {
+          "Asset Group": "IT Equipment's",
+          "Rate of depreciation (%)": 15.0,
+          "Beginning of the year": 0.92,
+          "Additions during the year": 0.0,
+          "End of the year": 0.92,
+          "Depreciation during the year": 0.14
+        },
+        {
+          "Asset Group": "Gross Asset",
+          "Rate of depreciation (%)": null,
+          "Beginning of the year": 427.85,
+          "Additions during the year": 3.91,
+          "End of the year": 431.76,
+          "Depreciation during the year": 13.16
+        },
+        {
+          "Asset Group": "Less: Consumer contribution",
+          "Rate of depreciation (%)": 5.28,
+          "Beginning of the year": 14.96,
+          "Additions during the year": 0.0,
+          "End of the year": 14.96,
+          "Depreciation during the year": 0.79
+        },
+        {
+          "Asset Group": "Net Asset considered for depreciation",
+          "Rate of depreciation (%)": null,
+          "Beginning of the year": 419.96,
+          "Additions during the year": 3.91,
+          "End of the year": 423.87,
+          "Depreciation during the year": 12.37
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 18",
+      "title": "Comparison of Interest & Finance charges (Rs.lakh)",
+      "component": "interest_finance_charges",
+      "headers": [
+        "Particulars",
+        "2020-21 ARR Approved",
+        "2020-21 Truing Up Petition",
+        "2020-21 Trued Up",
+        "2021-22 ARR Approved",
+        "2021-22 Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on Normative Loan",
+          "2020-21 ARR Approved": 17.96,
+          "2020-21 Truing Up Petition": 6.62,
+          "2020-21 Trued Up": 7.02,
+          "2021-22 ARR Approved": 19.09,
+          "2021-22 Truing Up Petition": 5.36
+        },
+        {
+          "Particulars": "Interest on Working Capital",
+          "2020-21 ARR Approved": 28.25,
+          "2020-21 Truing Up Petition": 26.12,
+          "2020-21 Trued Up": 26.16,
+          "2021-22 ARR Approved": 28.8,
+          "2021-22 Truing Up Petition": 28.48
+        },
+        {
+          "Particulars": "Interest on Security deposits",
+          "2020-21 ARR Approved": 17.39,
+          "2020-21 Truing Up Petition": 9.98,
+          "2020-21 Trued Up": 9.98,
+          "2021-22 ARR Approved": 17.73,
+          "2021-22 Truing Up Petition": 8.03
+        },
+        {
+          "Particulars": "Bank Charges on LC to secure cost of monthly power purchase from KSEB Ltd",
+          "2020-21 ARR Approved": 2.67,
+          "2020-21 Truing Up Petition": 4.26,
+          "2020-21 Trued Up": 4.26,
+          "2021-22 ARR Approved": 2.72,
+          "2021-22 Truing Up Petition": 3.92
+        },
+        {
+          "Particulars": "Bank Charges on Rs 7.18 Cr Bank Guarantee to KSEB",
+          "2020-21 ARR Approved": null,
+          "2020-21 Truing Up Petition": 3.49,
+          "2020-21 Trued Up": 0.0,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up Petition": 6.83
+        },
+        {
+          "Particulars": "Shortfall in interest on security deposit to consumers",
+          "2020-21 ARR Approved": null,
+          "2020-21 Truing Up Petition": 2.0,
+          "2020-21 Trued Up": 0.0,
+          "2021-22 ARR Approved": null,
+          "2021-22 Truing Up Petition": 2.0
+        },
+        {
+          "Particulars": "Total",
+          "2020-21 ARR Approved": 66.27,
+          "2020-21 Truing Up Petition": 52.47,
+          "2020-21 Trued Up": 47.42,
+          "2021-22 ARR Approved": 68.34,
+          "2021-22 Truing Up Petition": 54.62
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 19",
+      "title": "Interest on Normative Loan Claimed 2021-22",
+      "component": "interest_long_term",
+      "headers": [
+        "Particulars",
+        "Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Net Normative loan \u2013 Opening",
+          "Truing Up Petition": 86.05
+        },
+        {
+          "Particulars": "Increase/Decrease due to ACE/de-capitalization during the year",
+          "Truing Up Petition": 3.91
+        },
+        {
+          "Particulars": "Less - Repayment of Normative Loan during the year",
+          "Truing Up Petition": 22.96
+        },
+        {
+          "Particulars": "Net Normative loan \u2013 Closing",
+          "Truing Up Petition": 67.0
+        },
+        {
+          "Particulars": "Average Normative Loan during the year",
+          "Truing Up Petition": 76.53
+        },
+        {
+          "Particulars": "Average Base Rate of SBI during the year (%)",
+          "Truing Up Petition": "7.00%"
+        },
+        {
+          "Particulars": "Interest on the normative loan for the year",
+          "Truing Up Petition": 5.36
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 20",
+      "title": "Normative loan approved for 2021-22",
+      "component": "interest_long_term",
+      "headers": [
+        "No",
+        "Particulars",
+        "(Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "No": 1,
+          "Particulars": "Normative loan at the beginning of the year",
+          "(Rs. lakh)": 86.05
+        },
+        {
+          "No": 2,
+          "Particulars": "Add: Additional Normative loan during the year",
+          "(Rs. lakh)": 3.91
+        },
+        {
+          "No": 3,
+          "Particulars": "Less: Allowable Depreciation/ Repayment for the year",
+          "(Rs. lakh)": 12.37
+        },
+        {
+          "No": 4,
+          "Particulars": "Closing Normative loan for the year (2+3-4)",
+          "(Rs. lakh)": 77.59
+        },
+        {
+          "No": 5,
+          "Particulars": "Average Loan for the year (2+5)/2",
+          "(Rs. lakh)": 81.82
+        },
+        {
+          "No": 6,
+          "Particulars": "Rate of Interest (%)",
+          "(Rs. lakh)": "7.00*"
+        },
+        {
+          "No": 7,
+          "Particulars": "Interest on Normative loan for the year",
+          "(Rs. lakh)": 5.73
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 21",
+      "title": "Working capital proposed by the licensee for 2021-22 (Rs. lakh)",
+      "component": "interest_working_capital",
+      "headers": [
+        "Particulars",
+        "Approved ARR/ERC",
+        "Truing up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "O & M Expenses- One month",
+          "Approved ARR/ERC": 16.96,
+          "Truing up Petition": 20.19
+        },
+        {
+          "Particulars": "Receivables-2 months",
+          "Approved ARR/ERC": 567.52,
+          "Truing up Petition": 492.58
+        },
+        {
+          "Particulars": "Less: security Deposit from consumers",
+          "Approved ARR/ERC": 283.76,
+          "Truing up Petition": 196.29
+        },
+        {
+          "Particulars": "Total working Capital",
+          "Approved ARR/ERC": 283.76,
+          "Truing up Petition": 316.48
+        },
+        {
+          "Particulars": "Interest rate (%)",
+          "Approved ARR/ERC": "10.15%",
+          "Truing up Petition": "9.00%"
+        },
+        {
+          "Particulars": "Interest on working capital",
+          "Approved ARR/ERC": 28.8,
+          "Truing up Petition": 28.48
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 22",
+      "title": "Interest on Working capital approved for 2021-22",
+      "component": "interest_working_capital",
+      "headers": [
+        "Particulars",
+        "(Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Approved O & M Expenses for One month (235.17/12)",
+          "(Rs. lakh)": 19.59
+        },
+        {
+          "Particulars": "Receivables-2 months Revenue from sale of power (2995.48/12 x 2)",
+          "(Rs. lakh)": 492.58
+        },
+        {
+          "Particulars": "Less: Security Deposit from Consumers",
+          "(Rs. lakh)": 196.29
+        },
+        {
+          "Particulars": "Total Working Capital",
+          "(Rs. lakh)": 315.88
+        },
+        {
+          "Particulars": "Interest Rate (%) *",
+          "(Rs. lakh)": "9.00%"
+        },
+        {
+          "Particulars": "Interest on Working Capital",
+          "(Rs. lakh)": 28.43
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 23",
+      "title": "Bank Charges Claimed",
+      "component": "bank_charges",
+      "headers": [
+        "Particulars",
+        "(Rs. lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Bank Charges on LC to secure cost of monthly power purchase from KSEB Ltd",
+          "(Rs. lakh)": 3.92
+        },
+        {
+          "Particulars": "Bank Charges on Rs 7.18 Cr Bank Guarantee to KSEB Ltd",
+          "(Rs. lakh)": 6.83
+        },
+        {
+          "Particulars": "Total",
+          "(Rs. lakh)": 10.75
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 24",
+      "title": "Interest & Finance charges approved for the year 2021-22",
+      "component": "interest_finance_charges_summary",
+      "headers": [
+        "Particulars",
+        "ARR Approved",
+        "Truing Up Petition",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on Normative Loan",
+          "ARR Approved": 19.09,
+          "Truing Up Petition": 5.36,
+          "Trued Up": 5.73
+        },
+        {
+          "Particulars": "Interest on Working Capital",
+          "ARR Approved": 28.8,
+          "Truing Up Petition": 28.48,
+          "Trued Up": 28.43
+        },
+        {
+          "Particulars": "Interest on Security deposits",
+          "ARR Approved": 17.73,
+          "Truing Up Petition": 8.03,
+          "Trued Up": 8.03
+        },
+        {
+          "Particulars": "Bank Charges on LC to secure cost of monthly power purchase from KSEB Ltd",
+          "ARR Approved": 2.72,
+          "Truing Up Petition": 3.92,
+          "Trued Up": 3.92
+        },
+        {
+          "Particulars": "Bank Charges on Rs 7.18 Cr Bank Guarantee to KSEB",
+          "ARR Approved": null,
+          "Truing Up Petition": 6.83,
+          "Trued Up": null
+        },
+        {
+          "Particulars": "Shortfall in interest on security deposit to consumers",
+          "ARR Approved": null,
+          "Truing Up Petition": 2.0,
+          "Trued Up": 2.0
+        },
+        {
+          "Particulars": "Total",
+          "ARR Approved": 68.34,
+          "Truing Up Petition": 54.62,
+          "Trued Up": 48.11
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 25",
+      "title": "Details of Any other items (Rs.lakh)",
+      "component": "other_debits",
+      "headers": [
+        "Particulars",
+        "2020-21 Truing Up Petition",
+        "2020-21 Trued Up",
+        "2021-22 ARR approved",
+        "2021-22 Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Section 3 Duty",
+          "2020-21 Truing Up Petition": 11.47,
+          "2020-21 Trued Up": 0.0,
+          "2021-22 ARR approved": 0.0,
+          "2021-22 Truing Up Petition": 12.95
+        },
+        {
+          "Particulars": "Inspection Charges",
+          "2020-21 Truing Up Petition": 1.13,
+          "2020-21 Trued Up": 1.13,
+          "2021-22 ARR approved": null,
+          "2021-22 Truing Up Petition": 1.13
+        },
+        {
+          "Particulars": "Provision for doubtful Debt",
+          "2020-21 Truing Up Petition": 0.35,
+          "2020-21 Trued Up": 0.0,
+          "2021-22 ARR approved": 0.63,
+          "2021-22 Truing Up Petition": 0.0
+        },
+        {
+          "Particulars": "Total",
+          "2020-21 Truing Up Petition": 12.95,
+          "2020-21 Trued Up": 1.13,
+          "2021-22 ARR approved": 0.63,
+          "2021-22 Truing Up Petition": 14.08
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 26",
+      "title": "Computation of RoNFA claimed for 2021-22",
+      "component": "return_on_nfa",
+      "headers": [
+        "Sl.No.",
+        "Particulars",
+        "Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Sl.No.": 1,
+          "Particulars": "GFA as on 01-04-2021",
+          "Rs. lakh": 427.85
+        },
+        {
+          "Sl.No.": 2,
+          "Particulars": "Less: Accumulated Depreciation",
+          "Rs. lakh": 218.57
+        },
+        {
+          "Sl.No.": 3,
+          "Particulars": "Less: Consumer Contribution",
+          "Rs. lakh": 7.89
+        },
+        {
+          "Sl.No.": 4,
+          "Particulars": "Less: GFA for which Interest charges are allowed on normative basis",
+          "Rs. lakh": 86.05
+        },
+        {
+          "Sl.No.": 5,
+          "Particulars": "Balance Value of NFA at the beginning of the year",
+          "Rs. lakh": 115.34
+        },
+        {
+          "Sl.No.": 6,
+          "Particulars": "Rate of Return",
+          "Rs. lakh": "3%"
+        },
+        {
+          "Sl.No.": 7,
+          "Particulars": "Eligible Return",
+          "Rs. lakh": 3.46
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 27",
+      "title": "Approved RoNFA for 2021-22",
+      "component": "return_on_nfa",
+      "headers": [
+        "Sl.No.",
+        "Particulars",
+        "Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Sl.No.": 1,
+          "Particulars": "GFA as on 01-04-2021",
+          "Rs. lakh": 427.85
+        },
+        {
+          "Sl.No.": 2,
+          "Particulars": "Less: Accumulated Depreciation (185.26+13.82)",
+          "Rs. lakh": 199.08
+        },
+        {
+          "Sl.No.": 3,
+          "Particulars": "Less: Consumer Contribution",
+          "Rs. lakh": 14.96
+        },
+        {
+          "Sl.No.": 4,
+          "Particulars": "Less: GFA for which Interest charges are allowed on normative basis",
+          "Rs. lakh": 86.05
+        },
+        {
+          "Sl.No.": 5,
+          "Particulars": "Balance Value of NFA at the beginning of the year",
+          "Rs. lakh": 127.76
+        },
+        {
+          "Sl.No.": 6,
+          "Particulars": "Rate of Return",
+          "Rs. lakh": "3.00%"
+        },
+        {
+          "Sl.No.": 7,
+          "Particulars": "Return on Net Fixed Assets",
+          "Rs. lakh": 3.83
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 28",
+      "title": "Revenue from sale of power for 2020-21 and 2021-22",
+      "component": "revenue_from_sale_of_power",
+      "headers": [
+        "Particulars",
+        "2020-21 No. of Consumers",
+        "2020-21 Sales in lakh units",
+        "2020-21 Total Revenue",
+        "2020-21 Average Realization",
+        "2021-22 No. of Consumers",
+        "2021-22 Sales in lakh units",
+        "2021-22 Total Revenue",
+        "2021-22 Average Realization"
+      ],
+      "rows": [
+        {
+          "Particulars": "HT IA Industrial",
+          "2020-21 No. of Consumers": 22,
+          "2020-21 Sales in lakh units": 284.2,
+          "2020-21 Total Revenue": 1979.27,
+          "2020-21 Average Realization": 6.96,
+          "2021-22 No. of Consumers": 22,
+          "2021-22 Sales in lakh units": 281.6,
+          "2021-22 Total Revenue": 1980.03,
+          "2021-22 Average Realization": 7.03
+        },
+        {
+          "Particulars": "HT II (Non Ind/Comml)",
+          "2020-21 No. of Consumers": 3,
+          "2020-21 Sales in lakh units": 4.1,
+          "2020-21 Total Revenue": 36.63,
+          "2020-21 Average Realization": 8.93,
+          "2021-22 No. of Consumers": 3,
+          "2021-22 Sales in lakh units": 4.2,
+          "2021-22 Total Revenue": 37.59,
+          "2021-22 Average Realization": 8.95
+        },
+        {
+          "Particulars": "HT III Agriculture",
+          "2020-21 No. of Consumers": 2,
+          "2020-21 Sales in lakh units": 3.3,
+          "2020-21 Total Revenue": 14.06,
+          "2020-21 Average Realization": 4.69,
+          "2021-22 No. of Consumers": 2,
+          "2021-22 Sales in lakh units": 3.4,
+          "2021-22 Total Revenue": 15.82,
+          "2021-22 Average Realization": 4.65
+        },
+        {
+          "Particulars": "HT IV Commercial",
+          "2020-21 No. of Consumers": 9,
+          "2020-21 Sales in lakh units": 13.0,
+          "2020-21 Total Revenue": 169.87,
+          "2020-21 Average Realization": 9.65,
+          "2021-22 No. of Consumers": 9,
+          "2021-22 Sales in lakh units": 15.1,
+          "2021-22 Total Revenue": 139.18,
+          "2021-22 Average Realization": 9.22
+        },
+        {
+          "Particulars": "LT I Domestic",
+          "2020-21 No. of Consumers": 13538,
+          "2020-21 Sales in lakh units": 74.3,
+          "2020-21 Total Revenue": 345.44,
+          "2020-21 Average Realization": 4.65,
+          "2021-22 No. of Consumers": 14504,
+          "2021-22 Sales in lakh units": 76.8,
+          "2021-22 Total Revenue": 358.84,
+          "2021-22 Average Realization": 4.67
+        },
+        {
+          "Particulars": "LT IV Industries",
+          "2020-21 No. of Consumers": 88,
+          "2020-21 Sales in lakh units": 4.0,
+          "2020-21 Total Revenue": 29.43,
+          "2020-21 Average Realization": 7.36,
+          "2021-22 No. of Consumers": 87,
+          "2021-22 Sales in lakh units": 3.8,
+          "2021-22 Total Revenue": 29.51,
+          "2021-22 Average Realization": 7.77
+        },
+        {
+          "Particulars": "LT V Agriculture",
+          "2020-21 No. of Consumers": 5,
+          "2020-21 Sales in lakh units": 0.1,
+          "2020-21 Total Revenue": 0.35,
+          "2020-21 Average Realization": 3.5,
+          "2021-22 No. of Consumers": 6,
+          "2021-22 Sales in lakh units": 0.1,
+          "2021-22 Total Revenue": 0.36,
+          "2021-22 Average Realization": 3.6
+        },
+        {
+          "Particulars": "LT VI Non-Domestic",
+          "2020-21 No. of Consumers": 922,
+          "2020-21 Sales in lakh units": 14.1,
+          "2020-21 Total Revenue": 130.29,
+          "2020-21 Average Realization": 9.24,
+          "2021-22 No. of Consumers": 954,
+          "2021-22 Sales in lakh units": 15.0,
+          "2021-22 Total Revenue": 136.39,
+          "2021-22 Average Realization": 9.09
+        },
+        {
+          "Particulars": "LT VII Commercial",
+          "2020-21 No. of Consumers": 1179,
+          "2020-21 Sales in lakh units": 17.9,
+          "2020-21 Total Revenue": 196.37,
+          "2020-21 Average Realization": 10.97,
+          "2021-22 No. of Consumers": 1225,
+          "2021-22 Sales in lakh units": 22.3,
+          "2021-22 Total Revenue": 234.34,
+          "2021-22 Average Realization": 10.51
+        },
+        {
+          "Particulars": "LT VIII Public Lighting",
+          "2020-21 No. of Consumers": 253,
+          "2020-21 Sales in lakh units": 3.4,
+          "2020-21 Total Revenue": 17.13,
+          "2020-21 Average Realization": 5.04,
+          "2021-22 No. of Consumers": 270,
+          "2021-22 Sales in lakh units": 3.3,
+          "2021-22 Total Revenue": 16.81,
+          "2021-22 Average Realization": 5.09
+        },
+        {
+          "Particulars": "LT TOD Tariff",
+          "2020-21 No. of Consumers": 2,
+          "2020-21 Sales in lakh units": 0.1,
+          "2020-21 Total Revenue": 0.8,
+          "2020-21 Average Realization": 8.0,
+          "2021-22 No. of Consumers": 3,
+          "2021-22 Sales in lakh units": 0.1,
+          "2021-22 Total Revenue": 0.98,
+          "2021-22 Average Realization": 9.8
+        },
+        {
+          "Particulars": "Sub Total",
+          "2020-21 No. of Consumers": 16023,
+          "2020-21 Sales in lakh units": 418.5,
+          "2020-21 Total Revenue": 2876.65,
+          "2020-21 Average Realization": 6.87,
+          "2021-22 No. of Consumers": 17085,
+          "2021-22 Sales in lakh units": 425.7,
+          "2021-22 Total Revenue": 2949.85,
+          "2021-22 Average Realization": 6.93
+        },
+        {
+          "Particulars": "Electricity Duty Recovery",
+          "2020-21 No. of Consumers": null,
+          "2020-21 Sales in lakh units": null,
+          "2020-21 Total Revenue": 114.46,
+          "2020-21 Average Realization": null,
+          "2021-22 No. of Consumers": null,
+          "2021-22 Sales in lakh units": null,
+          "2021-22 Total Revenue": 123.65,
+          "2021-22 Average Realization": null
+        },
+        {
+          "Particulars": "Other state Levies Recovery/Fuel Surcharge & Excess Over quota",
+          "2020-21 No. of Consumers": null,
+          "2020-21 Sales in lakh units": null,
+          "2020-21 Total Revenue": 4.91,
+          "2020-21 Average Realization": null,
+          "2021-22 No. of Consumers": null,
+          "2021-22 Sales in lakh units": null,
+          "2021-22 Total Revenue": null,
+          "2021-22 Average Realization": null
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 29",
+      "title": "Details of Non-Tariff income claimed",
+      "component": "non_tariff_income",
+      "headers": [
+        "Particulars",
+        "2020-21 For Truing Up",
+        "2020-21 Trued Up",
+        "2021-22 Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on Deposit with KSEB Ltd",
+          "2020-21 For Truing Up": null,
+          "2020-21 Trued Up": 14.84,
+          "2021-22 Truing Up Petition": null
+        },
+        {
+          "Particulars": "Miscellaneous recoveries",
+          "2020-21 For Truing Up": 11.66,
+          "2020-21 Trued Up": 11.66,
+          "2021-22 Truing Up Petition": 5.33
+        },
+        {
+          "Particulars": "Interest on accumulated Surplus",
+          "2020-21 For Truing Up": null,
+          "2020-21 Trued Up": 54.69,
+          "2021-22 Truing Up Petition": 48.06
+        },
+        {
+          "Particulars": "Less: Writeback of excess provision for doubt full debts",
+          "2020-21 For Truing Up": null,
+          "2020-21 Trued Up": null,
+          "2021-22 Truing Up Petition": -2.42
+        },
+        {
+          "Particulars": "Total",
+          "2020-21 For Truing Up": 11.66,
+          "2020-21 Trued Up": 81.19,
+          "2021-22 Truing Up Petition": 50.97
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 30",
+      "title": "Non-Tariff Income approved for 2021-22 (Rs lakh)",
+      "component": "non_tariff_income",
+      "headers": [
+        "Particulars",
+        "Truing Up Petition",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on Deposit with KSEB",
+          "Truing Up Petition": null,
+          "Trued Up": 14.84
+        },
+        {
+          "Particulars": "Miscellaneous recoveries",
+          "Truing Up Petition": 5.33,
+          "Trued Up": 5.33
+        },
+        {
+          "Particulars": "Interest on accumulated Surplus",
+          "Truing Up Petition": 48.06,
+          "Trued Up": 47.87
+        },
+        {
+          "Particulars": "Other Operational Income",
+          "Truing Up Petition": null,
+          "Trued Up": 5.63
+        },
+        {
+          "Particulars": "Less: Writeback of excess provision for doubt full debts",
+          "Truing Up Petition": -2.42,
+          "Trued Up": -2.42
+        },
+        {
+          "Particulars": "Total",
+          "Truing Up Petition": 50.97,
+          "Trued Up": 71.25
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 31",
+      "title": "Trued Up Income and Expenditure for the Year 2021-22 (Rs. lakh)",
+      "component": "final_summary",
+      "headers": [
+        "Particulars",
+        "ARR&ERC",
+        "Truing Up Petition",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Power purchase cost",
+          "ARR&ERC": 3158.24,
+          "Truing Up Petition": 2665.23,
+          "Trued Up": 2661.77
+        },
+        {
+          "Particulars": "Employee Expenses",
+          "ARR&ERC": 145.66,
+          "Truing Up Petition": 172.12,
+          "Trued Up": 169.31
+        },
+        {
+          "Particulars": "Administration & General Expenses",
+          "ARR&ERC": 15.84,
+          "Truing Up Petition": 17.33,
+          "Trued Up": 14.96
+        },
+        {
+          "Particulars": "Repair & Maintenance Expenses",
+          "ARR&ERC": 42.06,
+          "Truing Up Petition": 52.84,
+          "Trued Up": 50.9
+        },
+        {
+          "Particulars": "Depreciation",
+          "ARR&ERC": 26.21,
+          "Truing Up Petition": 13.16,
+          "Trued Up": 12.37
+        },
+        {
+          "Particulars": "Interest and Finance charges",
+          "ARR&ERC": 68.34,
+          "Truing Up Petition": 54.62,
+          "Trued Up": 48.11
+        },
+        {
+          "Particulars": "Other debits",
+          "ARR&ERC": 0.63,
+          "Truing Up Petition": 14.08,
+          "Trued Up": 1.13
+        },
+        {
+          "Particulars": "Return on Net Fixed Assets",
+          "ARR&ERC": 3.83,
+          "Truing Up Petition": 3.46,
+          "Trued Up": 3.83
+        },
+        {
+          "Particulars": "Total Expenditure/ARR",
+          "ARR&ERC": 3460.81,
+          "Truing Up Petition": 2992.84,
+          "Trued Up": 2962.38
+        },
+        {
+          "Particulars": "Revenue from Sale of Power",
+          "ARR&ERC": 3412.93,
+          "Truing Up Petition": 2955.48,
+          "Trued Up": 2949.85
+        },
+        {
+          "Particulars": "Other income",
+          "ARR&ERC": 63.81,
+          "Truing Up Petition": 50.97,
+          "Trued Up": 71.25
+        },
+        {
+          "Particulars": "Total Income/ERC",
+          "ARR&ERC": 3476.74,
+          "Truing Up Petition": 3006.45,
+          "Trued Up": 3021.1
+        },
+        {
+          "Particulars": "Revenue (Gap)/Surplus",
+          "ARR&ERC": 15.93,
+          "Truing Up Petition": 13.61,
+          "Trued Up": 58.72
+        }
+      ],
+      "totals": {}
+    }
+  ],
+  "kserc_decisions": {
+    "power_purchase": {
+      "claimed_amount": 2694.19,
+      "approved_amount": 2661.77,
+      "adjustment_amount": 32.42,
+      "kserc_reasoning": "Accordingly, considering the approved distribution loss of 10.00%, the Commission hereby approves the power purchase cost as Rs.2661.77 lakh for the year 2021-22 as against as 2694.19 lakh claimed in the petition.",
+      "key_observations": [
+        "actual distribution loss is higher than the approved level of distribution loss",
+        "quantum of power purchased corresponding to the excess distribution loss shall be disallowed"
+      ],
+      "methodology_applied": "approved distribution loss of 10.00% for the year 2021-22"
+    },
+    "employee_cost": {
+      "claimed_amount": 172.12,
+      "approved_amount": 169.31,
+      "adjustment_amount": 2.81,
+      "kserc_reasoning": "Therefore, the Commission hereby allows Rs.23.65 lakh towards wage revision in addition to the amount approved in ARR Order dated 11-11-2019 as per the provisions of Tariff Regulations. 2018. Accordingly, the Commission hereby approves the employee expenses of Rs.169.31 lakh (145.66+23.65) for the year 2021-22 against the licensee's claim of Rs.172.12 lakh.",
+      "key_observations": [
+        "impact of triennial wage revision for workers amounting to Rs.23.65 lakh",
+        "increase was not reflected in the norms approved by the Commission"
+      ],
+      "methodology_applied": "Regulation 14(3) of Tariff Regulations 2018"
+    },
+    "repair_maintenance": {
+      "claimed_amount": 52.84,
+      "approved_amount": 50.9,
+      "adjustment_amount": 1.94,
+      "kserc_reasoning": "As the Commission had approved Rs.48.55 lakh towards R&M expenses while truing up the accounts for the year 2020-21, the commission is inclined to approve R&M expenses for the year 2021-22 by applying the escalation factor of 4.84 %. Accordingly, the Commission hereby approves the R&M expenses of Rs.50.90 lakh (48.55+4.84%) for the year 2021-22. The Commission would however advice the licensee to maintain the reliability and quality of their service and must take timely action to ensure the same.",
+      "key_observations": [
+        "various items of expenses incurred for R&M works were of routine maintenance expense and there is no one-time expense which can be allowed over and above the norm"
+      ],
+      "methodology_applied": "applying the escalation factor of 4.84 % to 2020-21 trued up amount"
+    },
+    "admin_general": {
+      "claimed_amount": 17.33,
+      "approved_amount": 14.96,
+      "adjustment_amount": 2.37,
+      "kserc_reasoning": "The licensee in the truing up petition claimed Rs.2.37 lakh as Legal Charges incurred towards fee and expenses paid to the advocates to file appeal before the Appellate Tribunal for Electricity against the orders of KSERC. During the previous year also, the licensee claimed similar expenses and the Commission has taken a consistent stand that the expenses incurred towards legal proceedings cannot be charged to the A&G expenses unless there is an order from the respective Courts regarding payment of costs. Hence this amount of Rs.2.37 lakh is disallowed by the Commission. Based on the details furnished by the licensee, the Commission hereby approves Rs.14.96 lakh as the A&G expenses for the year 2021-22.",
+      "key_observations": [
+        "expenses incurred towards legal proceedings cannot be charged to the A&G expenses unless there is an order from the respective Courts regarding payment of costs"
+      ],
+      "methodology_applied": "Consistent stand from previous Truing up orders"
+    },
+    "depreciation": {
+      "claimed_amount": 13.16,
+      "approved_amount": 12.37,
+      "adjustment_amount": 0.79,
+      "kserc_reasoning": "After verifying the detailed calculations, the Commission hereby approves the depreciation of Rs.12.37 lakh for the year 2021-22 as shown below.",
+      "key_observations": [],
+      "methodology_applied": "provisions of Tariff Regulations, 2018"
+    },
+    "interest_long_term": {
+      "claimed_amount": 5.36,
+      "approved_amount": 5.73,
+      "adjustment_amount": -0.37,
+      "kserc_reasoning": "Accordingly, the interest on normative loan approved by the Commission for the year 2021-22 is Rs.5.73 lakh.",
+      "key_observations": [],
+      "methodology_applied": "Regulation 29(2) and 29(4) of the Tariff Regulations 2018"
+    },
+    "interest_working_capital": {
+      "claimed_amount": 28.48,
+      "approved_amount": 28.43,
+      "adjustment_amount": 0.05,
+      "kserc_reasoning": "Based on the approved O&M expenses and power purchase cost, the Commission approves Rs.28.43 lakh as interest on working capital for the year 2021-22 as worked out below:",
+      "key_observations": [],
+      "methodology_applied": "provisions of the Tariff Regulations 2018"
+    },
+    "interest_consumer_deposits": {
+      "claimed_amount": 8.03,
+      "approved_amount": 8.03,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "After examining the details, the Commission hereby approves Rs.8.03 lakh being the actual interest paid on security deposit for the year 2021-22.",
+      "key_observations": [
+        "lower claim is on account of decrease in interest rate from 4.50% to 4.25%"
+      ],
+      "methodology_applied": "actual interest paid on security deposit"
+    },
+    "bank_charges_lc": {
+      "claimed_amount": 3.92,
+      "approved_amount": 3.92,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "Considering the same, the Commission hereby approves the bank charges of Rs. 3.92 lakh for opening letter of credit.",
+      "key_observations": [
+        "claim of Rs.3.92 lakh is towards the bank charges for opening the letter of credit to KSEB Ltd as per the power purchase agreement"
+      ],
+      "methodology_applied": "Power purchase agreement"
+    },
+    "bank_charges_bg": {
+      "claimed_amount": 6.83,
+      "approved_amount": 0.0,
+      "adjustment_amount": 6.83,
+      "kserc_reasoning": "The Commission is of the opinion that pending the outcome of the case before the Hon'ble Supreme Court, this amount shall not be considered at present.",
+      "key_observations": [
+        "bank guarantee charges for the above purpose shall not be included in the allowable expenses",
+        "licensee has filed first appeal against the order of the Commission",
+        "Hon. APTEL has upheld the order of the Commission",
+        "licensee has filed second appeal before the Hon. Supreme Court"
+      ],
+      "methodology_applied": "Pending outcome of case before Hon'ble Supreme Court"
+    },
+    "prior_period_expense": {
+      "claimed_amount": 2.0,
+      "approved_amount": 2.0,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "Accordingly, the Commission hereby approves the shortfall amount of Rs.2.00 lakh for interest on security deposit from Consumers for the previous year 2020-21.",
+      "key_observations": [
+        "licensee clarified that they paid the amount during the current year"
+      ],
+      "methodology_applied": "Payment made during the current year"
+    },
+    "return_on_nfa": {
+      "claimed_amount": 3.46,
+      "approved_amount": 3.83,
+      "adjustment_amount": -0.37,
+      "kserc_reasoning": "Adopting the same method of calculation, the Commission hereby approves Rs. 3.83 lakh as RoNFA for the year 2021-22 as tabulated below:",
+      "key_observations": [],
+      "methodology_applied": "same method of calculation as 2020-21 truing up"
+    },
+    "other_debits": {
+      "claimed_amount": 14.08,
+      "approved_amount": 1.13,
+      "adjustment_amount": 12.95,
+      "kserc_reasoning": "The Commission has not been admitting Section 3(1) Duty as a revenue expenditure since as per the Kerala Electricity Duty Act, the Electricity Duty under this Section on the sales of energy should be borne by the Licensee and shall not be passed on to the consumers. Hence, the Commission disallows the licensee's claim of Rs.12.95 lakh as Section 3(1) duty. Commission considers the same and approves Rs.1.13 lakh, the periodical inspection charges under other debits. Accordingly, the Commission after disallowing the claim under Section 3(1) duty, approves an amount of Rs.1.13 lakh as Other debits for the year 2021-22.",
+      "key_observations": [
+        "Section 3(1) Duty under the Kerala Electricity Duty Act should be borne by the Licensee and shall not be passed on to the consumers",
+        "periodical inspection charges are approved"
+      ],
+      "methodology_applied": "Kerala Electricity Duty Act"
+    },
+    "revenue_from_sale_of_power": {
+      "claimed_amount": 2955.48,
+      "approved_amount": 2949.85,
+      "adjustment_amount": 5.63,
+      "kserc_reasoning": "The same is to be considered as part of other operational income under Non-Tariff Income and is treated accordingly. As such, the Commission hereby approves the revenue from sale of power at Rs.2949.85 lakh for the purpose of Truing Up of Accounts for the year 2021-22.",
+      "key_observations": [
+        "licensee has included revenue from other operations of Rs.5.63 lakh as part of Revenue from sale of power"
+      ],
+      "methodology_applied": "Reclassification of other operational income to Non-Tariff Income"
+    },
+    "non_tariff_income": {
+      "claimed_amount": 50.97,
+      "approved_amount": 71.25,
+      "adjustment_amount": -20.28,
+      "kserc_reasoning": "Therefore, the Commission is approving Rs.14.84 lakh being the amount of interest on security deposit worked out by the licensee and Rs.5.33 lakh claimed by the licensee as miscellaneous recoveries. Considering this argument, the Commission hereby adjust the differential amount of Rs.0.90 lakh in the interest on accumulated surplus for the current year and approves the amount of Rs.47.87 lakh (48.77-0.90) as interest on accumulated surplus for the year 2021-22. Thus, the Commission approves a total Non-tariff income of Rs.71.25 lakh during the year 2021-22 as tabulated below.",
+      "key_observations": [
+        "licensee has not considered the Interest on Deposit with KSEB as part of non-tariff income",
+        "Commission is approving Rs.14.84 lakh for interest on security deposit",
+        "Rs.5.33 lakh claimed as miscellaneous recoveries is approved",
+        "interest on accumulated surplus adjusted by Rs.0.90 lakh to Rs.47.87 lakh",
+        "Rs.2.42 lakh claimed as reversal of amount recovered from doubtful debts is approved"
+      ],
+      "methodology_applied": "Notional interest on accumulated revenue surplus at SBI retail term deposit rate (5.00%)"
+    }
+  },
+  "energy_decision": {
+    "actual_loss_pct": 10.99,
+    "target_loss_pct": 10.0,
+    "penalty_or_gain": 32.42,
+    "kserc_reasoning": "Accordingly, Commission is of the considered view that the distribution loss for the year 2021-22 is to be limited at the approved level of 10.00% and considering the same, the approved energy requirement for the year 2021-22 as shown below:",
+    "excess_demand_action": "The payment of Rs.6.17 lakh for excess demand charges is the penal charge paid by the licensee for the energy purchased over and above the contract demand. This amount is implicitly disallowed as part of the overall power purchase cost adjustment due to higher distribution loss, as the approved power purchase cost is lower than the claimed."
+  },
+  "capital_structure_verified": {
+    "gfa_claimed": 427.85,
+    "gfa_approved": 427.85,
+    "additions_claimed": 3.91,
+    "additions_approved": 3.91,
+    "kserc_reasoning": "Considering the details furnished by the licensee, the Commission hereby approves the assets addition of Rs.3.91 lakh for the year 2021-22."
+  },
+  "final_summary": {
+    "total_claimed_expenditure": 2992.84,
+    "total_approved_expenditure": 2962.38,
+    "total_claimed_income": 3006.45,
+    "total_approved_income": 3021.1,
+    "revenue_gap_surplus_claimed": 13.61,
+    "revenue_gap_surplus_approved": 58.72,
+    "total_disallowed_expenditure": 30.46,
+    "total_additional_income_approved": 14.65,
+    "kserc_final_order": {
+      "total_revenue": 3021.1,
+      "total_expenditure": 2962.38,
+      "revenue_surplus": 58.72,
+      "cumulative_revenue_surplus": 1034.08,
+      "cumulative_revenue_surplus_breakdown": "Rs.975.36 lakh (previous cumulative) + Rs.58.72 lakh (current year surplus)"
+    }
+  },
+  "_meta": {
+    "licensee": "KDHP",
+    "fy": "2021-22",
+    "order_ref": "KDHP TU 2021-22",
+    "method": "native_pdf_upload",
+    "tables_found": 31
+  }
+}

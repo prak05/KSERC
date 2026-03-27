@@ -76,90 +76,90 @@ export default function UploadForm({ onSubmit }) {
 
             {/* Parameter cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
-                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                <div className="card" style={{ padding: '22px 24px' }}>
                     <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
                         📈 CPI Inflation
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                         <input type="number" step="0.01" value={inflationPct} placeholder="0.00"
                             onChange={e => setInflationPct(e.target.value)}
-                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>%</span>
                     </div>
                 </div>
 
-                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                <div className="card" style={{ padding: '22px 24px' }}>
                     <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
                         🏛️ SBI EBLR + 2%
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                         <input type="number" step="0.01" value={sbiEblrPct} placeholder="0.00"
                             onChange={e => setSbiEblrPct(e.target.value)}
-                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>%</span>
                     </div>
                 </div>
 
-                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                <div className="card" style={{ padding: '22px 24px' }}>
                     <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
                         🔋 BEE Audit Fee
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                         <input type="number" step="0.01" value={beeFee} placeholder="0.00"
                             onChange={e => setBeeFee(e.target.value)}
-                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
                     </div>
                     <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Auto-extract</p>
                 </div>
 
-                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                <div className="card" style={{ padding: '22px 24px' }}>
                     <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
                         🔐 SD Interest Rate
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                         <input type="number" step="0.01" value={supplyCodeRate} placeholder="6.75"
                             onChange={e => setSupplyCodeRate(e.target.value)}
-                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>%</span>
                     </div>
                     <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Default 6.75%</p>
                 </div>
 
-                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                <div className="card" style={{ padding: '22px 24px' }}>
                     <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
                         🏦 Norm. Loan Opening
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                         <input type="number" step="0.01" value={normLoanOpening} placeholder="Auto"
                             onChange={e => setNormLoanOpening(e.target.value)}
-                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
                     </div>
                     <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Normative loan opening balance</p>
                 </div>
 
-                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                <div className="card" style={{ padding: '22px 24px' }}>
                     <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
                         🔒 SD Balance
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                         <input type="number" step="0.01" value={sdBalance} placeholder="Auto"
                             onChange={e => setSdBalance(e.target.value)}
-                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
                     </div>
                     <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Consumer security deposit balance</p>
                 </div>
 
-                <div className="lum-card" style={{ padding: '22px 24px' }}>
+                <div className="card" style={{ padding: '22px 24px' }}>
                     <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
                         📊 Cumulative Rev. Gap
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                         <input type="number" step="0.01" value={cumulativeGap} placeholder="Auto"
                             onChange={e => setCumulativeGap(e.target.value)}
-                            className="neon-input" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
+                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
                     </div>
                     <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>For carrying cost calculation</p>
@@ -172,7 +172,7 @@ export default function UploadForm({ onSubmit }) {
                 onDragLeave={() => setDragActive(false)}
                 onDrop={handleDrop}
                 onClick={() => document.getElementById('neon-file-input').click()}
-                className="lum-card"
+                className="card"
                 style={{
                     padding: '50px 32px',
                     textAlign: 'center',
@@ -197,7 +197,7 @@ export default function UploadForm({ onSubmit }) {
             </div>
 
             {/* Submit */}
-            <button type="submit" disabled={!canSubmit} className="laser-btn"
+            <button type="submit" disabled={!canSubmit} className="btn-primary"
                 style={{ width: '100%', padding: '16px 24px', fontSize: '0.85rem' }}>
                 🚀 Run Audit Pipeline
             </button>

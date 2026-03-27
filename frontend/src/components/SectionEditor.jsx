@@ -26,7 +26,7 @@ export default function SectionEditor({
         : 'var(--text-tertiary)'
 
     return (
-        <div className="glass-card animate-slide-up" style={{
+        <div className="card animate-slide-up" style={{
             animationDelay: `${sectionIdx * 30}ms`,
             borderLeftWidth: 2,
             borderLeftColor: statusColor,
@@ -63,7 +63,7 @@ export default function SectionEditor({
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     {section.decision && (
-                        <span className="neon-tag tag-approved" style={{ fontSize: '8px' }}>
+                        <span className="badge-compliant" style={{ fontSize: '8px' }}>
                             HAS DECISION
                         </span>
                     )}
@@ -96,7 +96,7 @@ export default function SectionEditor({
                                         value={para.text}
                                         onChange={e => onParagraphChange(sectionIdx, pi, e.target.value)}
                                         rows={Math.max(3, Math.ceil(para.text.length / 80))}
-                                        className="neon-input"
+                                        className="input-field"
                                         style={{
                                             flex: 1, resize: 'vertical',
                                             fontFamily: 'var(--font-body)',

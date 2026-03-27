@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import Header from './components/Header'
-import Navigation from './components/Navigation'
 import UploadForm from './components/UploadForm'
 import ResultsDashboard from './components/ResultsDashboard'
 import ReferenceDataPage from './components/ReferenceDataPage'
 import RegulationManager from './components/RegulationManager'
 import LoadingScreen from './components/LoadingScreen'
 import OrderDrafter from './components/OrderDrafter'
-import Footer from './components/Footer'
 
 class ErrorBoundary extends React.Component {
     constructor(props) { super(props); this.state = { hasError: false, error: null } }
@@ -15,11 +12,11 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 40, background: 'var(--bg)' }}>
-                <div className="glass-card" style={{ padding: '50px 40px', maxWidth: 500, textAlign: 'center' }}>
+                <div className="card" style={{ padding: '50px 40px', maxWidth: 500, textAlign: 'center' }}>
                     <div style={{ fontSize: '2.5rem', marginBottom: 16 }}>🛑</div>
                     <h3 style={{ fontSize: '1.2rem', letterSpacing: '-0.03em', marginBottom: 12 }}>System Error</h3>
                     <p className="mono" style={{ color: 'var(--red)', marginBottom: 20 }}>{this.state.error?.message}</p>
-                    <button className="laser-btn" onClick={() => window.location.reload()}>Reload</button>
+                    <button className="btn-primary" onClick={() => window.location.reload()}>Reload</button>
                 </div>
             </div>
         )
@@ -80,7 +77,7 @@ function RMReviewModal({ rmData, analysisId, onContinue, onCancel }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 24,
         }}>
-            <div className="glass-card" style={{
+            <div className="card" style={{
                 maxWidth: 800, width: '100%', maxHeight: '90vh', overflow: 'auto',
                 padding: '32px 36px', border: '1px solid rgba(0, 255, 136, 0.3)',
             }}>
@@ -181,7 +178,7 @@ function RMReviewModal({ rmData, analysisId, onContinue, onCancel }) {
                     <button
                         onClick={handleContinue}
                         disabled={submitting}
-                        className="laser-btn"
+                        className="btn-primary"
                         style={{ padding: '10px 28px', fontSize: '0.9rem' }}
                     >
                         {submitting ? '⏳ Continuing…' : `✅ Continue Analysis (${selectedItems.length} items selected)`}
@@ -194,6 +191,7 @@ function RMReviewModal({ rmData, analysisId, onContinue, onCancel }) {
 
 
 export default function App() {
+    const [loggedIn, setLoggedIn] = useState(false)
     const [view, setView] = useState('upload')
     const [resultsData, setResultsData] = useState(null)
     const [error, setError] = useState(null)
@@ -308,70 +306,133 @@ export default function App() {
         }
     }
 
+    if (!loggedIn) return (
+        <div className="login-overlay">
+            <div className="login-card">
+                <div className="lc-top">
+                    <div className="lc-logo-wrap">
+                        <div className="lc-logo" style={{ fontWeight: 800 }}>KSERC</div>
+                        <div style={{ width: 1, height: 38, background: 'rgba(255,255,255,.2)' }}></div>
+                        <div className="lc-logo" style={{ fontSize: 11 }}>RIET</div>
+                    </div>
+                    <div className="lc-h1">Kerala State Electricity Regulatory Commission</div>
+                    <div className="lc-h2">AI TRUING-UP ANALYTICAL TOOL — FY 2024-25</div>
+                </div>
+                <div className="lc-bdy">
+                    <label>Username</label>
+                    <input type="text" placeholder="staff@kserc.gov.in" />
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••" />
+                    <button 
+                        className="btn bp" 
+                        style={{ width: '100%', marginTop: 18, padding: 11, fontSize: 14 }} 
+                        onClick={() => setLoggedIn(true)}>
+                        Login to KSERC Portal
+                    </button>
+                </div>
+                <div className="lc-ft">Authorized access only &nbsp;·&nbsp; Work Order KSERC/CSO/03-05 &nbsp;·&nbsp; RIET Thiruvananthapuram</div>
+            </div>
+        </div>
+    )
+
     return (
         <ErrorBoundary>
-            <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
-                {/* Refraction glows */}
-                <div className="glow-blob" style={{ width: 500, height: 500, top: '-10%', right: '-5%' }} />
-                <div className="glow-blob" style={{ width: 400, height: 400, bottom: '10%', left: '-8%', opacity: 0.08 }} />
-
-                <div style={{ maxWidth: 1600, margin: '0 auto', padding: '0 32px', position: 'relative', zIndex: 1 }}>
-                    <Header />
-                    <Navigation activeView={view} onNavigate={setView} hasResults={!!resultsData} />
-
-                    <main style={{ paddingBottom: 80, minHeight: '65vh' }}>
-                        {/* Upload view */}
-                        {view === 'upload' && !loading && !rmReview && (
-                            <div className="animate-slide-up">
-                                <UploadForm onSubmit={handleAnalyze} />
-                                {error && (
-                                    <div className="glass-card" style={{ marginTop: 20, padding: '16px 24px', borderColor: 'rgba(255, 68, 68, 0.3)' }}>
-                                        <p className="mono" style={{ color: 'var(--red)' }}>🔴 {error}</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Loading — full-screen overlay */}
-                        {loading && <LoadingScreen progressLogs={progressLogs} />}
-
-                        {/* R&M Review Modal — shown when pipeline pauses */}
-                        {rmReview && (
-                            <RMReviewModal
-                                rmData={rmReview.rmData}
-                                analysisId={rmReview.analysisId}
-                                onContinue={handleRMContinue}
-                                onCancel={() => setRmReview(null)}
-                            />
-                        )}
-
-                        {/* Results */}
-                        {view === 'results' && resultsData && !loading && (
-                            <ResultsDashboard
-                                data={resultsData}
-                                onNewAnalysis={() => { setView('upload'); setResultsData(null); setError(null) }}
-                                onDraftOrder={() => setView('drafter')}
-                            />
-                        )}
-
-                        {/* Order Drafter */}
-                        {view === 'drafter' && resultsData && !loading && (
-                            <OrderDrafter
-                                analysisId={resultsData.analysis_id}
-                                analysisData={resultsData}
-                                onBack={() => setView('results')}
-                            />
-                        )}
-
-                        {/* Reference Data */}
-                        {view === 'reference' && !loading && <ReferenceDataPage />}
-
-                        {/* Regulations */}
-                        {view === 'regulations' && !loading && <RegulationManager />}
-                    </main>
-
-                    <Footer />
+            <header className="top">
+                <div className="top-logo">KSERC</div>
+                <div className="top-title"><b>Kerala State Electricity Regulatory Commission</b><small>AI Truing-Up Analytical Tool</small></div>
+                <div className="top-sep"></div>
+                <span className="top-wo">Work Order KSERC/CSO/03-05 &nbsp;·&nbsp; RIET Thiruvananthapuram</span>
+                <div className="top-r">
+                    <div className="top-user"><div className="ava">PS</div><span id="top-name">staff@kserc.gov.in</span></div>
+                    <span className="btn-out" onClick={() => setLoggedIn(false)}>Logout</span>
                 </div>
+            </header>
+
+            <div className="wrap">
+                <nav className="side">
+                    <div className="sb-sec">
+                        <div className="sb-lbl">Main</div>
+                        <div className={`nav ${view === 'upload' ? 'on' : ''}`} onClick={() => setView('upload')}>
+                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4-4 4M12 4v12"/></svg>
+                            Upload & Analyse
+                        </div>
+                        <div className={`nav ${view === 'results' ? 'on' : ''}`} onClick={() => resultsData && setView('results')} style={{ opacity: resultsData ? 1 : 0.5, cursor: resultsData ? 'pointer' : 'not-allowed'}}>
+                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            Analysis Results
+                        </div>
+                        <div className={`nav ${view === 'drafter' ? 'on' : ''}`} onClick={() => resultsData && setView('drafter')} style={{ opacity: resultsData ? 1 : 0.5, cursor: resultsData ? 'pointer' : 'not-allowed'}}>
+                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Generate Report
+                        </div>
+                    </div>
+                    <div className="sb-sec">
+                        <div className="sb-lbl">Reference</div>
+                        <div className={`nav ${view === 'reference' ? 'on' : ''}`} onClick={() => setView('reference')}>
+                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                            Reference Data
+                        </div>
+                        <div className={`nav ${view === 'regulations' ? 'on' : ''}`} onClick={() => setView('regulations')}>
+                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                            Regulatory Rules
+                        </div>
+                    </div>
+                    <div className="sb-bot">v0.1 · RIET ISR Project<br/>AI: Claude Sonnet 4 + Gemini<br/>Work Order: KSERC/CSO/03-05<br/>All data from uploaded documents</div>
+                </nav>
+
+                <main className="main">
+                    <div className="keynote-wrapper">
+                        <div style={{ padding: '32px', position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', maxWidth: 1600, margin: '0 auto', width: '100%', overflowY: 'auto' }}>
+                            {/* Upload view */}
+                            {view === 'upload' && !loading && !rmReview && (
+                                <div className="animate-slide-up" style={{flex: 1}}>
+                                    <UploadForm onSubmit={handleAnalyze} />
+                                    {error && (
+                                        <div className="card notice-box error" style={{ marginTop: 20, padding: '16px 24px' }}>
+                                            <p style={{ margin: 0 }}>🔴 {error}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Loading — full-screen overlay */}
+                            {loading && <LoadingScreen progressLogs={progressLogs} />}
+
+                            {/* R&M Review Modal — shown when pipeline pauses */}
+                            {rmReview && (
+                                <RMReviewModal
+                                    rmData={rmReview.rmData}
+                                    analysisId={rmReview.analysisId}
+                                    onContinue={handleRMContinue}
+                                    onCancel={() => setRmReview(null)}
+                                />
+                            )}
+
+                            {/* Results */}
+                            {view === 'results' && resultsData && !loading && (
+                                <ResultsDashboard
+                                    data={resultsData}
+                                    onNewAnalysis={() => { setView('upload'); setResultsData(null); setError(null) }}
+                                    onDraftOrder={() => setView('drafter')}
+                                />
+                            )}
+
+                            {/* Order Drafter */}
+                            {view === 'drafter' && resultsData && !loading && (
+                                <OrderDrafter
+                                    analysisId={resultsData.analysis_id}
+                                    analysisData={resultsData}
+                                    onBack={() => setView('results')}
+                                />
+                            )}
+
+                            {/* Reference Data */}
+                            {view === 'reference' && !loading && <ReferenceDataPage />}
+
+                            {/* Regulations */}
+                            {view === 'regulations' && !loading && <RegulationManager />}
+                        </div>
+                    </div>
+                </main>
             </div>
         </ErrorBoundary>
     )

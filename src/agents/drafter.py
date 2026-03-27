@@ -291,11 +291,15 @@ def _generate_document_with_gemini(state: dict) -> str:
         fy_minus_2 = fy
 
     exp_keys = [
-        "power_purchase_cost", "employee_cost", "repair_maintenance", "admin_general",
+        "power_purchase_cost", "employee_cost", "prior_period_employee_cost",
+        "admin_general", "repair_maintenance",
         "depreciation", "interest_long_term", "interest_consumer_deposits",
         "interest_working_capital", "carrying_cost", "return_on_nfa",
         "other_debits", "section3_1_duty", "other_expenses"
     ]
+    # Interest sub-keys to be consolidated into a single row
+    _int_keys = ("interest_long_term", "interest_consumer_deposits",
+                 "interest_working_capital", "carrying_cost")
     rev_keys = ["revenue_from_sale", "wheeling_charges", "non_tariff_income", "other_revenue"]
 
     claimed_exp = state.get("claimed_expenses", {})
@@ -363,12 +367,23 @@ def _generate_document_with_gemini(state: dict) -> str:
     data_block += f"{'Component':<{col_w}} {'MYT ARR Approved':>18} {'For TrUp Claimed':>18} {'TrUp Approved':>15} {'Variance':>12}\n"
     data_block += "-" * (col_w + 67) + "\n"
     total_c, total_a, total_myt = 0.0, 0.0, 0.0
+    _int_done = False
     for k in exp_keys:
-        c = float(claimed_exp.get(k, 0.0) or 0.0)
-        a = float(approved_exp.get(k, 0.0) or 0.0)
-        m = float(myt_norms.get(k, 0.0) or 0.0)
-        if c > 0 or a > 0 or m > 0:
+        # Consolidate interest sub-items into a single row
+        if k in _int_keys:
+            if _int_done:
+                continue
+            _int_done = True
+            c = sum(float(claimed_exp.get(ik, 0.0) or 0.0) for ik in _int_keys)
+            a = sum(float(approved_exp.get(ik, 0.0) or 0.0) for ik in _int_keys)
+            m = sum(float(myt_norms.get(ik, 0.0) or 0.0) for ik in _int_keys)
+            name = "Interest And Finance Charges"
+        else:
+            c = float(claimed_exp.get(k, 0.0) or 0.0)
+            a = float(approved_exp.get(k, 0.0) or 0.0)
+            m = float(myt_norms.get(k, 0.0) or 0.0)
             name = k.replace("_", " ").title()
+        if c > 0 or a > 0 or m > 0:
             data_block += f"{name:<{col_w}} {m:>18.2f} {c:>18.2f} {a:>15.2f} {(a-c):>12.2f}\n"
             total_c   += c
             total_a   += a
@@ -411,11 +426,22 @@ def _generate_document_with_gemini(state: dict) -> str:
     data_block += "Gemini: You MUST use these exact values for the Trued Up column in Table 31.\n"
     data_block += "Do NOT calculate or derive these values yourself. Copy them exactly.\n\n"
     data_block += f"EXPENDITURE ROWS (Trued Up = Approved):\n"
+    _int_done2 = False
     for key in exp_keys:
-        a = float(approved_exp.get(key, claimed_exp.get(key, 0.0)) or 0.0)
-        c = float(claimed_exp.get(key, 0.0) or 0.0)
-        m = float(myt_norms.get(key, 0.0) or 0.0)
-        label = key.replace("_", " ").title()
+        # Consolidate interest sub-items into a single row
+        if key in _int_keys:
+            if _int_done2:
+                continue
+            _int_done2 = True
+            a = sum(float(approved_exp.get(ik, claimed_exp.get(ik, 0.0)) or 0.0) for ik in _int_keys)
+            c = sum(float(claimed_exp.get(ik, 0.0) or 0.0) for ik in _int_keys)
+            m = sum(float(myt_norms.get(ik, 0.0) or 0.0) for ik in _int_keys)
+            label = "Interest And Finance Charges"
+        else:
+            a = float(approved_exp.get(key, claimed_exp.get(key, 0.0)) or 0.0)
+            c = float(claimed_exp.get(key, 0.0) or 0.0)
+            m = float(myt_norms.get(key, 0.0) or 0.0)
+            label = key.replace("_", " ").title()
         if c > 0 or a > 0:
             data_block += f"  {label}: ARR&ERC={m:.2f}  Claimed={c:.2f}  TruedUp={a:.2f}\n"
     data_block += f"  TOTAL EXPENDITURE: ARR&ERC=---  Claimed={total_claimed_exp:.2f}  TruedUp={total_approved_exp:.2f}\n\n"

@@ -1,0 +1,473 @@
+{
+  "analysis_id": "bfe8679c-6274-4fab-84ef-1855eb5c4a11",
+  "licensee_name": "KDHP",
+  "financial_year": "2024-25",
+  "original_filename": "1_Petition.pdf, Annex A1_Electricity Accounts_FY25_Signed.pdf, Annex A_KDHP_Electricity FS_Audit Report Mar 25_Signed.pdf, Annex B_Electricity Audit 2024-25_Audit v6 - with ARR-ERC.pdf",
+  "timestamp": "2026-03-25T17:43:48.288572",
+  "total_claimed_expenditure": 3866.3,
+  "total_approved_expenditure": 3739.88,
+  "total_claimed_revenue": 3831.53,
+  "total_approved_revenue": 3831.53,
+  "final_revenue_gap_surplus": 91.65,
+  "imputed_interest": 0.0,
+  "components": [
+    {
+      "key": "power_purchase_cost",
+      "name": "Power Purchase Cost",
+      "proposed_myt": 3491.65,
+      "claimed": 3434.48,
+      "approved": 3415.76,
+      "variance": -18.72,
+      "variance_pct": -0.55,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The actual distribution loss (57.73 Lakh units) exceeds the approved target loss (54.74 Lakh units, target 9.07%). Excess loss of 2.99 Lakh units at APPC Rs. 6.26/unit = Rs. 18.72 Lakhs disallowed per Regulation 73(3). Approved PPC: Rs. 3415.76 Lakhs."
+    },
+    {
+      "key": "employee_cost",
+      "name": "Employee Cost",
+      "proposed_myt": 182.75,
+      "claimed": 239.09,
+      "approved": 203.66,
+      "variance": -35.43,
+      "variance_pct": -14.82,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The claimed Employee Expenses of Rs. 239.09 Lakhs exceeds the effective ceiling of Rs. 203.66 Lakhs (MYT norm (FY-specific) + Wage Revision (Rs. 20.91L)). The excess of Rs. 35.43 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 203.66 Lakhs. This includes Rs. 20.91 Lakhs approved on account of wage revision (uncontrollable expense, per KSERC precedent and ARR Order OP 28/2022 para 26). Precedent: In KDHP FY 2022-23 (KDHP TU 2022-23), the Commission approved Rs. 171.67 Lakhs against a claim of Rs. 179.80 Lakhs (4.5% reduction)."
+    },
+    {
+      "key": "repair_maintenance",
+      "name": "Repairs & Maintenance",
+      "proposed_myt": 45.83,
+      "claimed": 47.49,
+      "approved": 45.83,
+      "variance": -1.66,
+      "variance_pct": -3.5,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The claimed R&M of Rs. 47.49 Lakhs was analysed item-by-item using KSERC Regulation 80(3). The Commission approves Rs. 45.83 Lakhs as the normative O&M component. Total approved: Rs. 45.83 Lakhs."
+    },
+    {
+      "key": "admin_general",
+      "name": "Administration & General Expenses",
+      "proposed_myt": 15.14,
+      "claimed": 21.56,
+      "approved": 15.14,
+      "variance": -6.42,
+      "variance_pct": -29.78,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The claimed Administration & General Expenses of Rs. 21.56 Lakhs exceeds the effective ceiling of Rs. 15.14 Lakhs (MYT norm (FY-specific)). The excess of Rs. 6.42 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 15.14 Lakhs. Precedent: In KDHP FY 2022-23 (KDHP TU 2022-23), the Commission approved Rs. 19.37 Lakhs against a claim of Rs. 30.50 Lakhs (36.5% reduction)."
+    },
+    {
+      "key": "depreciation",
+      "name": "Depreciation",
+      "proposed_myt": 13.74,
+      "claimed": 14.5,
+      "approved": 12.61,
+      "variance": -1.89,
+      "variance_pct": -13.03,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The licensee has claimed Rs.14.50 lakh as depreciation for the year. As per Regulation 27 of the Tariff Regulations 2021, no depreciation is admissible on assets created through consumer contribution, government grants, capital subsidies, or accumulated regulatory surplus. The Commission deducts Rs.0.79 lakh towards consumer contribution (from prior kserc order) (Rs.14.96L \u00d7 5.28%). The Commission hereby approves Rs.12.61 lakh as depreciation for the year."
+    },
+    {
+      "key": "interest_long_term",
+      "name": "Interest on Long-Term Loans",
+      "proposed_myt": 4.97,
+      "claimed": 71.19,
+      "approved": 6.17,
+      "variance": -65.02,
+      "variance_pct": -91.33,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "KSERC Regulation 26: Interest computed on normative loan basis. Opening Loan = Rs. 74.53L, Less Depreciation/Repayment = Rs. 12.61L, Closing = Rs. 61.92L. Average Normative Loan = Rs. 68.22L \u00d7 9.15% = Rs. 6.24L."
+    },
+    {
+      "key": "interest_consumer_deposits",
+      "name": "Interest on Consumer Security Deposits",
+      "proposed_myt": 20.05,
+      "claimed": 0.0,
+      "approved": 20.05,
+      "variance": 20.05,
+      "variance_pct": 0.0,
+      "status": "increased",
+      "status_label": "Increased",
+      "justification": "No amount claimed under Interest on Consumer Security Deposits for FY 2024-25."
+    },
+    {
+      "key": "interest_working_capital",
+      "name": "Interest on Working Capital",
+      "proposed_myt": 38.4,
+      "claimed": 0.0,
+      "approved": 38.24,
+      "variance": 38.24,
+      "variance_pct": 0.0,
+      "status": "increased",
+      "status_label": "Increased",
+      "justification": "No amount claimed under Interest on Working Capital for FY 2024-25."
+    },
+    {
+      "key": "carrying_cost",
+      "name": "Carrying Cost on Revenue Gaps",
+      "proposed_myt": 0.0,
+      "claimed": 0.0,
+      "approved": 0.0,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "No amount claimed under Carrying Cost on Revenue Gaps for FY 2024-25."
+    },
+    {
+      "key": "return_on_nfa",
+      "name": "Return on Net Fixed Assets (RoNFA)",
+      "proposed_myt": 6.4,
+      "claimed": 5.63,
+      "approved": 5.63,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "Return on Net Fixed Assets of Rs. 5.63 Lakhs has been computed at 5.5% on the eligible NFA base after excluding assets funded by consumer contributions, Government grants, and normative loans. The claim is approved."
+    },
+    {
+      "key": "other_debits",
+      "name": "Other Debits",
+      "proposed_myt": 0.33,
+      "claimed": 24.89,
+      "approved": 0.33,
+      "variance": -24.56,
+      "variance_pct": -98.67,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The claimed Other Debits of Rs. 24.89 Lakhs exceeds the MYT approved norm of Rs. 0.33 Lakhs. The Commission has consistently disallowed claims under provision for doubtful debts (no amount written off as bad debt) and bank guarantee charges related to legal proceedings against KSERC orders. Only periodical inspection charges are approved. The Commission approves Rs. 0.33 Lakhs."
+    },
+    {
+      "key": "section3_1_duty",
+      "name": "Section 3(1) Electricity Duty",
+      "proposed_myt": 0.0,
+      "claimed": 0.0,
+      "approved": 0.0,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "No amount claimed under Section 3(1) Electricity Duty for FY 2024-25."
+    },
+    {
+      "key": "other_expenses",
+      "name": "Other Expenses",
+      "proposed_myt": 0.0,
+      "claimed": 7.47,
+      "approved": 7.47,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "Other Expenses of Rs. 7.47 Lakhs claimed for FY 2024-25 have been examined and found to be reasonable. Approved as claimed."
+    },
+    {
+      "key": "prior_period_employee_cost",
+      "name": "Prior Period Employee Cost (Wage Revision)",
+      "proposed_myt": 0.0,
+      "claimed": 0.0,
+      "approved": 27.21,
+      "variance": 27.21,
+      "variance_pct": 0.0,
+      "status": "increased",
+      "status_label": "Increased",
+      "justification": "No amount claimed under Prior Period Employee Cost (Wage Revision) for FY 2024-25."
+    }
+  ],
+  "disallowances": [
+    {
+      "item": "Power Purchase Cost \u2014 Distribution Loss Penalty",
+      "claimed": 3434.48,
+      "approved": 3415.76,
+      "amount_cut": 18.72,
+      "justification": "The actual distribution loss (57.73 Lakh units) exceeds the approved target loss (54.74 Lakh units, target 9.07%). Excess loss of 2.99 Lakh units at APPC Rs. 6.26/unit = Rs. 18.72 Lakhs disallowed per Regulation 73(3). Approved PPC: Rs. 3415.76 Lakhs."
+    },
+    {
+      "item": "Repairs & Maintenance (AI-classified)",
+      "claimed": 47.49,
+      "approved": 45.83,
+      "amount_cut": 1.66,
+      "justification": "The claimed R&M of Rs. 47.49 Lakhs was analysed item-by-item using KSERC Regulation 80(3). The Commission approves Rs. 45.83 Lakhs as the normative O&M component. Total approved: Rs. 45.83 Lakhs."
+    },
+    {
+      "item": "Employee Expenses",
+      "claimed": 239.09,
+      "approved": 203.66,
+      "amount_cut": 35.43,
+      "justification": "The claimed Employee Expenses of Rs. 239.09 Lakhs exceeds the effective ceiling of Rs. 203.66 Lakhs (MYT norm (FY-specific) + Wage Revision (Rs. 20.91L)). The excess of Rs. 35.43 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 203.66 Lakhs. This includes Rs. 20.91 Lakhs approved on account of wage revision (uncontrollable expense, per KSERC precedent and ARR Order OP 28/2022 para 26). Precedent: In KDHP FY 2022-23 (KDHP TU 2022-23), the Commission approved Rs. 171.67 Lakhs against a claim of Rs. 179.80 Lakhs (4.5% reduction)."
+    },
+    {
+      "item": "Administration & General Expenses",
+      "claimed": 21.56,
+      "approved": 15.14,
+      "amount_cut": 6.42,
+      "justification": "The claimed Administration & General Expenses of Rs. 21.56 Lakhs exceeds the effective ceiling of Rs. 15.14 Lakhs (MYT norm (FY-specific)). The excess of Rs. 6.42 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 15.14 Lakhs. Precedent: In KDHP FY 2022-23 (KDHP TU 2022-23), the Commission approved Rs. 19.37 Lakhs against a claim of Rs. 30.50 Lakhs (36.5% reduction)."
+    },
+    {
+      "item": "Depreciation",
+      "claimed": 14.5,
+      "approved": 12.61,
+      "amount_cut": 1.89,
+      "justification": "The licensee has claimed Rs.14.50 lakh as depreciation for the year. As per Regulation 27 of the Tariff Regulations 2021, no depreciation is admissible on assets created through consumer contribution, government grants, capital subsidies, or accumulated regulatory surplus. The Commission deducts Rs.0.79 lakh towards consumer contribution (from prior kserc order) (Rs.14.96L \u00d7 5.28%). The Commission hereby approves Rs.12.61 lakh as depreciation for the year."
+    },
+    {
+      "item": "Depreciation (Consumer Contribution (from prior KSERC order))",
+      "claimed": 14.96,
+      "approved": 0.0,
+      "amount_cut": 0.79,
+      "justification": "Deduction of Rs.0.79L on Consumer Contribution (from prior KSERC order) (Rs.14.96L \u00d7 5.28%). Method: deduct after. Source: Prior KSERC Truing-Up Order."
+    },
+    {
+      "item": "Interest on Normative Loan",
+      "claimed": 71.19,
+      "approved": 6.24,
+      "amount_cut": 64.95,
+      "justification": "KSERC Regulation 26: Interest computed on normative loan basis. Opening Loan = Rs. 74.53L, Less Depreciation/Repayment = Rs. 12.61L, Closing = Rs. 61.92L. Average Normative Loan = Rs. 68.22L \u00d7 9.15% = Rs. 6.24L."
+    },
+    {
+      "item": "Other Debits",
+      "claimed": 24.89,
+      "approved": 0.33,
+      "amount_cut": 24.56,
+      "justification": "The claimed Other Debits of Rs. 24.89 Lakhs exceeds the MYT approved norm of Rs. 0.33 Lakhs. The Commission has consistently disallowed claims under provision for doubtful debts (no amount written off as bad debt) and bank guarantee charges related to legal proceedings against KSERC orders. Only periodical inspection charges are approved. The Commission approves Rs. 0.33 Lakhs."
+    }
+  ],
+  "claimed_revenues": {
+    "revenue_from_sale": 3707.46,
+    "wheeling_charges": 0.0,
+    "non_tariff_income": 124.07,
+    "other_revenue": 0.0
+  },
+  "claimed_distribution_loss_pct": 9.52,
+  "target_distribution_loss_pct": 9.07,
+  "output_pdf_path": "",
+  "pdf_available": false,
+  "ai_insights": {},
+  "interest_finance": {
+    "component_a": {
+      "component": "A",
+      "name": "Interest on Long Term Loans",
+      "claimed_rs_lakhs": 71.19,
+      "approved_rs_lakhs": 71.19,
+      "interest_rs_lakhs": 71.19,
+      "status": "AS_CLAIMED",
+      "reason": "Approved as claimed based on audited loan schedule.",
+      "provisional": false,
+      "provisional_reason": ""
+    },
+    "component_b": {
+      "opening_balance": 73.01,
+      "qualifying_additions": 1.52,
+      "excluded_surplus_additions": 0,
+      "net_additions": 1.52,
+      "repayment_depreciation": 12.61,
+      "closing_balance": 61.92,
+      "raw_closing_balance": 61.92,
+      "is_exhausted": false,
+      "average_balance": 67.47,
+      "eblr_rate": 0.0915,
+      "interest_rs_lakhs": 6.17,
+      "provisional": false,
+      "provisional_reason": "",
+      "component": "B",
+      "name": "Interest on Normative Loan"
+    },
+    "component_c": {
+      "om_one_month": 22.05,
+      "receivables_two_months": 617.91,
+      "maintenance_spares": 0.0,
+      "cash_security_deposit": 297.01,
+      "other_deductions": 0.0,
+      "net_working_capital": 342.95,
+      "is_zero": false,
+      "zero_reason": "",
+      "rate": 0.1115,
+      "interest_rs_lakhs": 38.24,
+      "provisional": false,
+      "provisional_reason": "",
+      "component": "C",
+      "name": "Interest on Working Capital"
+    },
+    "component_d": {
+      "opening_balance": 297.01,
+      "supply_code_rate": 0.0675,
+      "interest_rs_lakhs": 20.05,
+      "component": "D",
+      "name": "Interest on Consumer Security Deposits"
+    },
+    "component_e": {
+      "component": "E",
+      "name": "Bank Charges",
+      "items": [],
+      "total_approved": 0.0,
+      "total_disallowed": 0.0,
+      "reclassified_from_ag": 0.0,
+      "needs_clarification": [],
+      "litigation_bg_status": {
+        "active": false,
+        "court_reference": ""
+      },
+      "interest_rs_lakhs": 0.0
+    },
+    "component_f": {
+      "applicable": false,
+      "cumulative_gap_base": 0.0,
+      "retail_td_rate": 0.068,
+      "carrying_cost_rs_lakhs": 0.0,
+      "component": "F",
+      "name": "Carrying Cost on Revenue Gaps"
+    },
+    "component_g": {
+      "applicable": false,
+      "cumulative_surplus_base": 0.0,
+      "less_surplus_additions": 0.0,
+      "net_base": 0.0,
+      "retail_td_rate": 0.068,
+      "notional_amount": 0.0,
+      "licensee_claimed_actual": 0.0,
+      "additional_to_nti": 0.0,
+      "component": "G",
+      "name": "Notional Interest on Accumulated Surplus",
+      "is_income_not_expense": true
+    },
+    "total_approved_interest_expense": 135.65,
+    "component_totals": {
+      "A": 71.19,
+      "B": 6.17,
+      "C": 38.24,
+      "D": 20.05,
+      "E": 0.0,
+      "F": 0.0
+    },
+    "income_additions": {
+      "notional_surplus_interest": 0.0,
+      "additional_to_nti": 0.0
+    },
+    "ag_adjustment_for_bank_charges": 0.0,
+    "is_provisional": false,
+    "provisional_components": [],
+    "provisional_warning": "",
+    "cross_verification": [
+      {
+        "check_name": "Total approved \u2264 claimed + reclassified",
+        "passed": false,
+        "detail": "Approved: 135.65, Ceiling: 0.00 (claimed 0.00 + reclassified 0.00 + prior period 0.00)"
+      },
+      {
+        "check_name": "Normative loan closing \u2265 0",
+        "passed": true,
+        "detail": "Closing balance: 61.92"
+      },
+      {
+        "check_name": "WC interest rate = EBLR + 2%",
+        "passed": true,
+        "detail": "Rate applied: 0.1115"
+      },
+      {
+        "check_name": "SD interest uses Supply Code rate",
+        "passed": true,
+        "detail": "Supply Code rate: 0.0675"
+      },
+      {
+        "check_name": "Component G routed to NTI (not expense)",
+        "passed": true,
+        "detail": "Not applicable (GAP position or zero surplus)"
+      },
+      {
+        "check_name": "Bank charges reclassification tracked",
+        "passed": true,
+        "detail": "Rs.0.00 lakh reclassified from A&G. ag_adjustment_for_bank_charges set for A&G deduction."
+      }
+    ],
+    "all_checks_passed": false,
+    "clarifications_needed": [],
+    "disallowances": []
+  },
+  "extraction_metadata": {
+    "method": "native_pdf_upload",
+    "checksum_passed": true,
+    "extracted_total_expenditure": 5080.56,
+    "extracted_total_revenue": 3831.53,
+    "extraction_warnings": []
+  },
+  "rm_line_items": [
+    {
+      "description": "Plant & Machinery",
+      "amount": 0.93,
+      "classification": "ROUTINE_RM",
+      "reason": "Regular repair, maintenance, and upkeep of electrical equipment and installations."
+    },
+    {
+      "description": "Buildings",
+      "amount": 0.35,
+      "classification": "ROUTINE_RM",
+      "reason": "Regular repair and maintenance of civil structures and buildings."
+    },
+    {
+      "description": "Lines & Cable Networks",
+      "amount": 38.64,
+      "classification": "ROUTINE_RM",
+      "reason": "Upkeep of network, transformer maintenance, and other recurring works including rewinding."
+    },
+    {
+      "description": "Vehicles",
+      "amount": 4.08,
+      "classification": "ROUTINE_RM",
+      "reason": "Regular upkeep of vehicles used in the electrical department."
+    },
+    {
+      "description": "LT Lines, upkeeps, etc.",
+      "amount": 7.17,
+      "classification": "ROUTINE_RM",
+      "reason": "Upkeep of LT lines, including minor replacements and standardization works."
+    }
+  ],
+  "rm_norm": 45.83,
+  "approved_expenses": {
+    "section3_1_duty": 0.0,
+    "power_purchase_cost": 3415.76,
+    "repair_maintenance": 45.83,
+    "prior_period_employee_cost": 27.21,
+    "employee_cost": 203.66,
+    "admin_general": 15.14,
+    "depreciation": 12.61,
+    "interest_long_term": 6.17,
+    "interest_consumer_deposits": 20.05,
+    "interest_working_capital": 38.24,
+    "carrying_cost": 0.0,
+    "return_on_nfa": 5.63,
+    "other_debits": 0.33,
+    "other_expenses": 7.47,
+    "interest_finance": 135.65
+  },
+  "petition_pdf_path": "C:\\Users\\adwai\\OneDrive\\Desktop\\K-Project\\kserc-trueup-engine\\uploads\\bfe8679c-6274-4fab-84ef-1855eb5c4a11_0.pdf",
+  "petition_input_path": "C:\\Users\\adwai\\OneDrive\\Desktop\\K-Project\\kserc-trueup-engine\\uploads\\bfe8679c-6274-4fab-84ef-1855eb5c4a11_0.pdf",
+  "upload_pdf_paths": [
+    "C:\\Users\\adwai\\OneDrive\\Desktop\\K-Project\\kserc-trueup-engine\\uploads\\bfe8679c-6274-4fab-84ef-1855eb5c4a11_0.pdf",
+    "C:\\Users\\adwai\\OneDrive\\Desktop\\K-Project\\kserc-trueup-engine\\uploads\\bfe8679c-6274-4fab-84ef-1855eb5c4a11_1.pdf",
+    "C:\\Users\\adwai\\OneDrive\\Desktop\\K-Project\\kserc-trueup-engine\\uploads\\bfe8679c-6274-4fab-84ef-1855eb5c4a11_2.pdf",
+    "C:\\Users\\adwai\\OneDrive\\Desktop\\K-Project\\kserc-trueup-engine\\uploads\\bfe8679c-6274-4fab-84ef-1855eb5c4a11_3.pdf"
+  ],
+  "myt_baseline_norms": {
+    "repair_maintenance": 45.83,
+    "interest_long_term": 4.97,
+    "carrying_cost": 0.0,
+    "return_on_nfa": 6.4,
+    "employee_cost": 182.75,
+    "avg_power_purchase_cost_rs_per_kwh": 6.36,
+    "interest_consumer_deposits": 20.05,
+    "admin_general": 15.14,
+    "power_purchase_cost": 3491.65,
+    "interest_working_capital": 38.4,
+    "_source": "Mid-Term Review Order OP 41/2025 \u2014 APPROVED column for FY 2024-25. Dist loss 9.07% from Approved column.",
+    "depreciation": 13.74,
+    "other_debits": 0.33,
+    "target_distribution_loss_pct": 9.07
+  }
+}

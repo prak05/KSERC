@@ -1,0 +1,3352 @@
+{
+  "order_tables": [
+    {
+      "table_number": "Table 1",
+      "title": "Comparison of ARR & ERC and Truing Up for 2022-23 (Rs. Lakh)",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "ARR & ERC Projected",
+        "ARR & ERC Approved",
+        "Petition for truing up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Cost of power purchase/ generation",
+          "ARR & ERC Projected": 4652.88,
+          "ARR & ERC Approved": 4652.67,
+          "Petition for truing up": 4652.88
+        },
+        {
+          "Particulars": "Employee Expenses",
+          "ARR & ERC Projected": 53.3,
+          "ARR & ERC Approved": 27.14,
+          "Petition for truing up": 54.54
+        },
+        {
+          "Particulars": "Administration and General",
+          "ARR & ERC Projected": 93.71,
+          "ARR & ERC Approved": 36.09,
+          "Petition for truing up": 92.05
+        },
+        {
+          "Particulars": "Repairs and Maintenance",
+          "ARR & ERC Projected": 449.91,
+          "ARR & ERC Approved": 317.37,
+          "Petition for truing up": 447.65
+        },
+        {
+          "Particulars": "Depreciation",
+          "ARR & ERC Projected": 171.89,
+          "ARR & ERC Approved": 142.6,
+          "Petition for truing up": 162.45
+        },
+        {
+          "Particulars": "Interest on long term loans",
+          "ARR & ERC Projected": 9.03,
+          "ARR & ERC Approved": 7.87,
+          "Petition for truing up": 8.96
+        },
+        {
+          "Particulars": "Interest on consumer deposits",
+          "ARR & ERC Projected": 72.7,
+          "ARR & ERC Approved": 63.91,
+          "Petition for truing up": 72.7
+        },
+        {
+          "Particulars": "Return on Net Fixed Assets",
+          "ARR & ERC Projected": 52.43,
+          "ARR & ERC Approved": 21.07,
+          "Petition for truing up": 86.6
+        }
+      ],
+      "totals": {
+        "Total Expenditure/ARR": {
+          "ARR & ERC Projected": 5555.86,
+          "ARR & ERC Approved": 5268.72,
+          "Petition for truing up": 5577.83
+        },
+        "Revenue from sale of power": {
+          "ARR & ERC Projected": 5751.09,
+          "ARR & ERC Approved": 5751.09,
+          "Petition for truing up": 5750.11
+        },
+        "Non-tariff income": {
+          "ARR & ERC Projected": 90.54,
+          "ARR & ERC Approved": 159.35,
+          "Petition for truing up": 78.09
+        },
+        "Total Revenue / ERC": {
+          "ARR & ERC Projected": 5841.63,
+          "ARR & ERC Approved": 5910.44,
+          "Petition for truing up": 5828.2
+        },
+        "Net Revenue Surplus/(Deficit)": {
+          "ARR & ERC Projected": 285.77,
+          "ARR & ERC Approved": 641.72,
+          "Petition for truing up": 250.37
+        }
+      }
+    },
+    {
+      "table_number": "Table 2",
+      "title": "Comparison of Income and Expenditure for the previous years (Rs. lakh)",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "2020-21 Truing Up Petition",
+        "2020-21 Trued Up",
+        "2021-22 Truing Up Petition",
+        "2021-22 Trued Up",
+        "2022-23 Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Purchase of Power",
+          "2020-21 Truing Up Petition": 3511.93,
+          "2020-21 Trued Up": 3466.17,
+          "2021-22 Truing Up Petition": 3494.83,
+          "2021-22 Trued Up": 3443.5,
+          "2022-23 Truing Up Petition": 4652.88
+        },
+        {
+          "Particulars": "Prior Period Power Purchase Cost",
+          "2020-21 Truing Up Petition": null,
+          "2020-21 Trued Up": 9.71,
+          "2021-22 Truing Up Petition": null,
+          "2021-22 Trued Up": null,
+          "2022-23 Truing Up Petition": null
+        },
+        {
+          "Particulars": "Employee Cost",
+          "2020-21 Truing Up Petition": 45.85,
+          "2020-21 Trued Up": 41.04,
+          "2021-22 Truing Up Petition": 50.11,
+          "2021-22 Trued Up": 43.03,
+          "2022-23 Truing Up Petition": 54.54
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "2020-21 Truing Up Petition": 376.29,
+          "2020-21 Trued Up": 293.47,
+          "2021-22 Truing Up Petition": 404.85,
+          "2021-22 Trued Up": 329.87,
+          "2022-23 Truing Up Petition": 447.65
+        },
+        {
+          "Particulars": "A &G Expenses",
+          "2020-21 Truing Up Petition": 89.27,
+          "2020-21 Trued Up": 57.35,
+          "2021-22 Truing Up Petition": 92.03,
+          "2021-22 Trued Up": 62.95,
+          "2022-23 Truing Up Petition": 92.05
+        },
+        {
+          "Particulars": "Depreciation",
+          "2020-21 Truing Up Petition": 154.06,
+          "2020-21 Trued Up": 142.6,
+          "2021-22 Truing Up Petition": 162.68,
+          "2021-22 Trued Up": 142.6,
+          "2022-23 Truing Up Petition": 162.45
+        },
+        {
+          "Particulars": "Interest and finance charges on long term loans",
+          "2020-21 Truing Up Petition": 30.08,
+          "2020-21 Trued Up": 17.32,
+          "2021-22 Truing Up Petition": 24.96,
+          "2021-22 Trued Up": 7.87,
+          "2022-23 Truing Up Petition": 8.96
+        },
+        {
+          "Particulars": "Interest on consumer security deposits etc",
+          "2020-21 Truing Up Petition": 98.85,
+          "2020-21 Trued Up": 98.85,
+          "2021-22 Truing Up Petition": 98.8,
+          "2021-22 Trued Up": 98.8,
+          "2022-23 Truing Up Petition": 72.7
+        },
+        {
+          "Particulars": "Return on NFA",
+          "2020-21 Truing Up Petition": 48.96,
+          "2020-21 Trued Up": 25.35,
+          "2021-22 Truing Up Petition": 53.08,
+          "2021-22 Trued Up": 21.07,
+          "2022-23 Truing Up Petition": 86.6
+        }
+      ],
+      "totals": {
+        "Total Expenditure": {
+          "2020-21 Truing Up Petition": 4355.3,
+          "2020-21 Trued Up": 4151.86,
+          "2021-22 Truing Up Petition": 4381.34,
+          "2021-22 Trued Up": 4149.69,
+          "2022-23 Truing Up Petition": 5577.83
+        },
+        "Revenue from Sale of Power": {
+          "2020-21 Truing Up Petition": 4260.79,
+          "2020-21 Trued Up": 4260.79,
+          "2021-22 Truing Up Petition": 4317.28,
+          "2021-22 Trued Up": 4317.28,
+          "2022-23 Truing Up Petition": 5750.11
+        },
+        "Non-Tariff Income": {
+          "2020-21 Truing Up Petition": 94.04,
+          "2020-21 Trued Up": 171.49,
+          "2021-22 Truing Up Petition": 83.67,
+          "2021-22 Trued Up": 162.14,
+          "2022-23 Truing Up Petition": 78.09
+        },
+        "Total Income": {
+          "2020-21 Truing Up Petition": 4354.83,
+          "2020-21 Trued Up": 4432.28,
+          "2021-22 Truing Up Petition": 4400.95,
+          "2021-22 Trued Up": 4479.42,
+          "2022-23 Truing Up Petition": 5828.2
+        },
+        "Net Surplus/(Deficit)": {
+          "2020-21 Truing Up Petition": -0.47,
+          "2020-21 Trued Up": 280.42,
+          "2021-22 Truing Up Petition": 19.61,
+          "2021-22 Trued Up": 329.73,
+          "2022-23 Truing Up Petition": 250.37
+        }
+      }
+    },
+    {
+      "table_number": "Table 3",
+      "title": "Comparison of Energy Sales and No of Consumers for 2021-22 and 2022-23",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "2021-22 Number of consumers",
+        "2021-22 Sales (Lakh Units)",
+        "2022-23 Number of consumers",
+        "2022-23 Sales (Lakh Units)"
+      ],
+      "rows": [
+        {
+          "Particulars": "LT - IV B IT/ITES below 10kW",
+          "2021-22 Number of consumers": 224,
+          "2021-22 Sales (Lakh Units)": 9.07,
+          "2022-23 Number of consumers": 220,
+          "2022-23 Sales (Lakh Units)": 10.93
+        },
+        {
+          "Particulars": "LT \u2013 IV B IT/ITES above 10kW up to 20kW",
+          "2021-22 Number of consumers": 70,
+          "2021-22 Sales (Lakh Units)": 4.59,
+          "2022-23 Number of consumers": 74,
+          "2022-23 Sales (Lakh Units)": 7.01
+        },
+        {
+          "Particulars": "LT - IV B IT/ITES above 20kW",
+          "2021-22 Number of consumers": 242,
+          "2021-22 Sales (Lakh Units)": 210.6,
+          "2022-23 Number of consumers": 238,
+          "2022-23 Sales (Lakh Units)": 249.31
+        },
+        {
+          "Particulars": "LT - VI (A) General",
+          "2021-22 Number of consumers": 3,
+          "2021-22 Sales (Lakh Units)": 0.12,
+          "2022-23 Number of consumers": 2,
+          "2022-23 Sales (Lakh Units)": 0.39
+        },
+        {
+          "Particulars": "LT VI (B) General",
+          "2021-22 Number of consumers": 9,
+          "2021-22 Sales (Lakh Units)": 1.04,
+          "2022-23 Number of consumers": 9,
+          "2022-23 Sales (Lakh Units)": 0.59
+        },
+        {
+          "Particulars": "LT VI (c) General (1ph or 3 ph)",
+          "2021-22 Number of consumers": 34,
+          "2021-22 Sales (Lakh Units)": 2.25,
+          "2022-23 Number of consumers": 33,
+          "2022-23 Sales (Lakh Units)": 2.38
+        },
+        {
+          "Particulars": "LT VI (F) General (1 ph)",
+          "2021-22 Number of consumers": 44,
+          "2021-22 Sales (Lakh Units)": 0.66,
+          "2022-23 Number of consumers": 51,
+          "2022-23 Sales (Lakh Units)": 0.68
+        },
+        {
+          "Particulars": "LT VII (A) Commercial (1-Ph)",
+          "2021-22 Number of consumers": 51,
+          "2021-22 Sales (Lakh Units)": 0.26,
+          "2022-23 Number of consumers": 50,
+          "2022-23 Sales (Lakh Units)": 0.44
+        },
+        {
+          "Particulars": "LT VI (F) General (3 ph)",
+          "2021-22 Number of consumers": 57,
+          "2021-22 Sales (Lakh Units)": 14.58,
+          "2022-23 Number of consumers": 125,
+          "2022-23 Sales (Lakh Units)": 22.86
+        },
+        {
+          "Particulars": "LT VII (A) Commercial (3-Ph)",
+          "2021-22 Number of consumers": 59,
+          "2021-22 Sales (Lakh Units)": 1.8,
+          "2022-23 Number of consumers": 57,
+          "2022-23 Sales (Lakh Units)": 3.77
+        },
+        {
+          "Particulars": "LT VII (B) Commercial",
+          "2021-22 Number of consumers": 11,
+          "2021-22 Sales (Lakh Units)": 0.02,
+          "2022-23 Number of consumers": 11,
+          "2022-23 Sales (Lakh Units)": 0.02
+        },
+        {
+          "Particulars": "LT IV A Industrial below 10 KW",
+          "2021-22 Number of consumers": 6,
+          "2021-22 Sales (Lakh Units)": 0.16,
+          "2022-23 Number of consumers": 6,
+          "2022-23 Sales (Lakh Units)": 0.22
+        },
+        {
+          "Particulars": "LT IV A Industrial above 10 KW below 20 KW",
+          "2021-22 Number of consumers": 2,
+          "2021-22 Sales (Lakh Units)": 0.13,
+          "2022-23 Number of consumers": 4,
+          "2022-23 Sales (Lakh Units)": 0.38
+        },
+        {
+          "Particulars": "LT IV A Industrial above 20 KW",
+          "2021-22 Number of consumers": 6,
+          "2021-22 Sales (Lakh Units)": 2.38,
+          "2022-23 Number of consumers": 7,
+          "2022-23 Sales (Lakh Units)": 2.82
+        },
+        {
+          "Particulars": "LT VI (G) General",
+          "2021-22 Number of consumers": 1,
+          "2021-22 Sales (Lakh Units)": 0.1,
+          "2022-23 Number of consumers": 1,
+          "2022-23 Sales (Lakh Units)": 0.07
+        },
+        {
+          "Particulars": "LT IX Display Lighting and Hording",
+          "2021-22 Number of consumers": 2,
+          "2021-22 Sales (Lakh Units)": 0.09,
+          "2022-23 Number of consumers": 2,
+          "2022-23 Sales (Lakh Units)": 0.08
+        },
+        {
+          "Particulars": "Self-Consumption",
+          "2021-22 Number of consumers": 2,
+          "2021-22 Sales (Lakh Units)": 1.96,
+          "2022-23 Number of consumers": 2,
+          "2022-23 Sales (Lakh Units)": 2.74
+        },
+        {
+          "Particulars": "Street Lighting",
+          "2021-22 Number of consumers": 16,
+          "2021-22 Sales (Lakh Units)": 1.51,
+          "2022-23 Number of consumers": 18,
+          "2022-23 Sales (Lakh Units)": 1.46
+        }
+      ],
+      "totals": {
+        "Sub Total (LT)": {
+          "2021-22 Number of consumers": 839,
+          "2021-22 Sales (Lakh Units)": 251.31,
+          "2022-23 Number of consumers": 910,
+          "2022-23 Sales (Lakh Units)": 306.15
+        },
+        "HT -I (B) IT & IT Services": {
+          "2021-22 Number of consumers": 17,
+          "2021-22 Sales (Lakh Units)": 232.97,
+          "2022-23 Number of consumers": 17,
+          "2022-23 Sales (Lakh Units)": 313.82
+        },
+        "HT -II (A) General": {
+          "2021-22 Number of consumers": 2,
+          "2021-22 Sales (Lakh Units)": 10.89,
+          "2022-23 Number of consumers": 2,
+          "2022-23 Sales (Lakh Units)": 13.98
+        },
+        "HT II B": {
+          "2021-22 Number of consumers": 3,
+          "2021-22 Sales (Lakh Units)": 2.79,
+          "2022-23 Number of consumers": 3,
+          "2022-23 Sales (Lakh Units)": 5.4
+        },
+        "HT-IV Commercial": {
+          "2021-22 Number of consumers": 1,
+          "2021-22 Sales (Lakh Units)": 2.82,
+          "2022-23 Number of consumers": 1,
+          "2022-23 Sales (Lakh Units)": 3.99
+        },
+        "Sub Total (HT)": {
+          "2021-22 Number of consumers": 23,
+          "2021-22 Sales (Lakh Units)": 249.46,
+          "2022-23 Number of consumers": 23,
+          "2022-23 Sales (Lakh Units)": 337.19
+        },
+        "Grand Total": {
+          "2021-22 Number of consumers": 862,
+          "2021-22 Sales (Lakh Units)": 500.77,
+          "2022-23 Number of consumers": 933,
+          "2022-23 Sales (Lakh Units)": 643.34
+        }
+      }
+    },
+    {
+      "table_number": "Table 4",
+      "title": "Distribution loss for the period 2021-22 and 2022-23",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "2021-22 As per Truing Up Petition",
+        "2021-22 Trued Up",
+        "2022-23 As per Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Energy sales (lakh units)",
+          "2021-22 As per Truing Up Petition": 500.77,
+          "2021-22 Trued Up": 500.77,
+          "2022-23 As per Truing Up Petition": 643.34
+        },
+        {
+          "Particulars": "Energy Requirement (lakh units)",
+          "2021-22 As per Truing Up Petition": 518.65,
+          "2021-22 Trued Up": 511.09,
+          "2022-23 As per Truing Up Petition": 673.07
+        },
+        {
+          "Particulars": "Distribution loss (lakh units)",
+          "2021-22 As per Truing Up Petition": 17.88,
+          "2021-22 Trued Up": 10.32,
+          "2022-23 As per Truing Up Petition": 29.73
+        },
+        {
+          "Particulars": "Distribution loss (%)",
+          "2021-22 As per Truing Up Petition": 3.45,
+          "2021-22 Trued Up": 2.02,
+          "2022-23 As per Truing Up Petition": 4.42
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 5",
+      "title": "Phase wise Distribution loss for 2022-23",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "Solar Generation (lakh unit)",
+        "Energy purchase (lakh unit)",
+        "Energy Sales (lakh unit)",
+        "Distribution Loss (lakh unit)",
+        "Loss (%)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Phase -1",
+          "Solar Generation (lakh unit)": 0.157,
+          "Energy purchase (lakh unit)": 432.09,
+          "Energy Sales (lakh unit)": 410.41,
+          "Distribution Loss (lakh unit)": 21.84,
+          "Loss (%)": 5.05
+        },
+        {
+          "Particulars": "Phase - 2&3",
+          "Solar Generation (lakh unit)": 3.24,
+          "Energy purchase (lakh unit)": 212.75,
+          "Energy Sales (lakh unit)": 209.75,
+          "Distribution Loss (lakh unit)": 6.25,
+          "Loss (%)": 2.89
+        },
+        {
+          "Particulars": "Phase-4 Technocity",
+          "Solar Generation (lakh unit)": 0.0,
+          "Energy purchase (lakh unit)": 18.58,
+          "Energy Sales (lakh unit)": 17.19,
+          "Distribution Loss (lakh unit)": 1.39,
+          "Loss (%)": 7.49
+        },
+        {
+          "Particulars": "Phase-5 Kollam",
+          "Solar Generation (lakh unit)": 0.0,
+          "Energy purchase (lakh unit)": 6.24,
+          "Energy Sales (lakh unit)": 5.99,
+          "Distribution Loss (lakh unit)": 0.25,
+          "Loss (%)": 4.04
+        }
+      ],
+      "totals": {
+        "Overall Losses": {
+          "Solar Generation (lakh unit)": 3.4,
+          "Energy purchase (lakh unit)": 669.67,
+          "Energy Sales (lakh unit)": 643.34,
+          "Distribution Loss (lakh unit)": 29.73,
+          "Loss (%)": 4.42
+        }
+      }
+    },
+    {
+      "table_number": "Table 6",
+      "title": "Phase wise Distribution loss for 2021-22",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "Solar Generation (lakh unit)",
+        "Energy purchase (lakh unit)",
+        "Energy Sales (lakh unit)",
+        "Distribution Loss (lakh unit)",
+        "Loss (%)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Phase -1",
+          "Solar Generation (lakh unit)": 0.16,
+          "Energy purchase (lakh unit)": 352.53,
+          "Energy Sales (lakh unit)": 340.04,
+          "Distribution Loss (lakh unit)": 12.65,
+          "Loss (%)": 3.59
+        },
+        {
+          "Particulars": "Phase - 2&3",
+          "Solar Generation (lakh unit)": 3.94,
+          "Energy purchase (lakh unit)": 147.18,
+          "Energy Sales (lakh unit)": 147.86,
+          "Distribution Loss (lakh unit)": 3.26,
+          "Loss (%)": 2.16
+        },
+        {
+          "Particulars": "Phase-4 Technocity",
+          "Solar Generation (lakh unit)": 0.0,
+          "Energy purchase (lakh unit)": 10.34,
+          "Energy Sales (lakh unit)": 8.68,
+          "Distribution Loss (lakh unit)": 1.66,
+          "Loss (%)": 16.07
+        },
+        {
+          "Particulars": "Phase-5 Kollam",
+          "Solar Generation (lakh unit)": 0.0,
+          "Energy purchase (lakh unit)": 4.5,
+          "Energy Sales (lakh unit)": 4.2,
+          "Distribution Loss (lakh unit)": 0.3,
+          "Loss (%)": 6.73
+        }
+      ],
+      "totals": {
+        "Overall Losses": {
+          "Solar Generation (lakh unit)": 4.1,
+          "Energy purchase (lakh unit)": 514.55,
+          "Energy Sales (lakh unit)": 500.77,
+          "Distribution Loss (lakh unit)": 17.88,
+          "Loss (%)": 3.45
+        }
+      }
+    },
+    {
+      "table_number": "Table 7",
+      "title": "Distribution loss approved for the year 2022-23",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "As per Truing Up Petition",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "A Total Energy Output (lakh units)",
+          "As per Truing Up Petition": 643.34,
+          "Trued Up": 643.34
+        },
+        {
+          "Particulars": "B Distribution loss (%)",
+          "As per Truing Up Petition": 4.42,
+          "Trued Up": 3.45
+        },
+        {
+          "Particulars": "C Distribution loss (in lakh units) [A/100-B)*B]",
+          "As per Truing Up Petition": 29.73,
+          "Trued Up": 22.99
+        },
+        {
+          "Particulars": "D Total Energy Requirement (lakh units)",
+          "As per Truing Up Petition": 673.07,
+          "Trued Up": 666.33
+        },
+        {
+          "Particulars": "E Energy Generated from Solar",
+          "As per Truing Up Petition": 3.4,
+          "Trued Up": 3.4
+        },
+        {
+          "Particulars": "F Energy Required from KSEB Ltd (lakh units)",
+          "As per Truing Up Petition": 669.67,
+          "Trued Up": 662.93
+        }
+      ],
+      "totals": {
+        "Excess Distribution Loss in lakh units (669.67-662.93)": {
+          "As per Truing Up Petition": null,
+          "Trued Up": 6.74
+        }
+      }
+    },
+    {
+      "table_number": "Table 8",
+      "title": "Details of Solar Generation over the years",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "2020-21 CUF Achieved",
+        "2020-21 Units Generated",
+        "2021-22 CUF Achieved",
+        "2021-22 Units Generated",
+        "2022-23 CUF Achieved",
+        "2022-23 Units Generated"
+      ],
+      "rows": [
+        {
+          "Particulars": "200 kWp",
+          "2020-21 CUF Achieved": 16.15,
+          "2020-21 Units Generated": 282944,
+          "2021-22 CUF Achieved": 16.58,
+          "2021-22 Units Generated": 290475,
+          "2022-23 CUF Achieved": 12.78,
+          "2022-23 Units Generated": 223883
+        },
+        {
+          "Particulars": "50 kWp",
+          "2020-21 CUF Achieved": 16.3,
+          "2020-21 Units Generated": 71411,
+          "2021-22 CUF Achieved": 15.28,
+          "2021-22 Units Generated": 66940,
+          "2022-23 CUF Achieved": 15.05,
+          "2022-23 Units Generated": 65923
+        },
+        {
+          "Particulars": "25 kWp",
+          "2020-21 CUF Achieved": 16.8,
+          "2020-21 Units Generated": 36787,
+          "2021-22 CUF Achieved": 16.62,
+          "2021-22 Units Generated": 36408,
+          "2022-23 CUF Achieved": 15.63,
+          "2022-23 Units Generated": 34224
+        },
+        {
+          "Particulars": "10 kWp",
+          "2020-21 CUF Achieved": 18.07,
+          "2020-21 Units Generated": 15828,
+          "2021-22 CUF Achieved": 18.12,
+          "2021-22 Units Generated": 15869,
+          "2022-23 CUF Achieved": 17.91,
+          "2022-23 Units Generated": 15693
+        }
+      ],
+      "totals": {
+        "Total": {
+          "2020-21 CUF Achieved": null,
+          "2020-21 Units Generated": 406970,
+          "2021-22 CUF Achieved": null,
+          "2021-22 Units Generated": 409692,
+          "2022-23 CUF Achieved": null,
+          "2022-23 Units Generated": 339723
+        },
+        "Generation": {
+          "2020-21 CUF Achieved": null,
+          "2020-21 Units Generated": 4.07,
+          "2021-22 CUF Achieved": null,
+          "2021-22 Units Generated": 4.1,
+          "2022-23 CUF Achieved": null,
+          "2022-23 Units Generated": 3.4
+        }
+      }
+    },
+    {
+      "table_number": "Table 9",
+      "title": "Phase wise power purchase cost for the period 2022-23",
+      "component": "power_purchase",
+      "headers": [
+        "Campus",
+        "Maximum demand KVA",
+        "Energy Received lakh units",
+        "Fixed charges Rs lakh",
+        "Variable charges Rs lakh",
+        "Incentive Rs. lakh",
+        "Other charge Rs. lakh",
+        "Total charge Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Campus": "Phase-1",
+          "Maximum demand KVA": 135000,
+          "Energy Received lakh units": 432.09,
+          "Fixed charges Rs lakh": 500.25,
+          "Variable charges Rs lakh": 2541.91,
+          "Incentive Rs. lakh": -38.48,
+          "Other charge Rs. lakh": 0.0,
+          "Total charge Rs. lakh": 3003.68
+        },
+        {
+          "Campus": "Phase -2 & 3",
+          "Maximum demand KVA": 55158,
+          "Energy Received lakh units": 212.75,
+          "Fixed charges Rs lakh": 205.0,
+          "Variable charges Rs lakh": 1252.55,
+          "Incentive Rs. lakh": -19.78,
+          "Other charge Rs. lakh": 0.0,
+          "Total charge Rs. lakh": 1437.77
+        },
+        {
+          "Campus": "Phase -4 Technocity",
+          "Maximum demand KVA": 9076,
+          "Energy Received lakh units": 18.58,
+          "Fixed charges Rs lakh": 33.64,
+          "Variable charges Rs lakh": 109.81,
+          "Incentive Rs. lakh": null,
+          "Other charge Rs. lakh": 11.83,
+          "Total charge Rs. lakh": 155.28
+        },
+        {
+          "Campus": "Phase -5 Kollam (2)",
+          "Maximum demand KVA": 3600,
+          "Energy Received lakh units": 6.24,
+          "Fixed charges Rs lakh": 14.17,
+          "Variable charges Rs lakh": 41.35,
+          "Incentive Rs. lakh": -0.36,
+          "Other charge Rs. lakh": 1.0,
+          "Total charge Rs. lakh": 56.16
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Maximum demand KVA": 202834,
+          "Energy Received lakh units": 669.67,
+          "Fixed charges Rs lakh": 753.05,
+          "Variable charges Rs lakh": 3945.62,
+          "Incentive Rs. lakh": -58.62,
+          "Other charge Rs. lakh": 12.83,
+          "Total charge Rs. lakh": 4652.88
+        },
+        "Average Power Purchase Cost (Rs /per unit)": {
+          "Maximum demand KVA": null,
+          "Energy Received lakh units": null,
+          "Fixed charges Rs lakh": null,
+          "Variable charges Rs lakh": null,
+          "Incentive Rs. lakh": null,
+          "Other charge Rs. lakh": null,
+          "Total charge Rs. lakh": 6.95
+        }
+      }
+    },
+    {
+      "table_number": "Table 10",
+      "title": "Phase wise power purchase cost for the period 2021-22",
+      "component": "power_purchase",
+      "headers": [
+        "Campus",
+        "Maximum demand KVA",
+        "Energy Received lakh units",
+        "Fixed charges Rs lakh",
+        "Variable charges Rs lakh",
+        "Incentive Rs. lakh",
+        "Other charge Rs. lakh",
+        "Total charge Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Campus": "Phase-1",
+          "Maximum demand KVA": 135000,
+          "Energy Received lakh units": 352.53,
+          "Fixed charges Rs lakh": 459.0,
+          "Variable charges Rs lakh": 1938.94,
+          "Incentive Rs. lakh": null,
+          "Other charge Rs. lakh": 0.0,
+          "Total charge Rs. lakh": 2397.94
+        },
+        {
+          "Campus": "Phase -2 & 3",
+          "Maximum demand KVA": 45216,
+          "Energy Received lakh units": 147.18,
+          "Fixed charges Rs lakh": 153.73,
+          "Variable charges Rs lakh": 809.48,
+          "Incentive Rs. lakh": null,
+          "Other charge Rs. lakh": 0.0,
+          "Total charge Rs. lakh": 963.21
+        },
+        {
+          "Campus": "Phase -4 Technocity",
+          "Maximum demand KVA": 9000,
+          "Energy Received lakh units": 10.34,
+          "Fixed charges Rs lakh": 30.6,
+          "Variable charges Rs lakh": 56.86,
+          "Incentive Rs. lakh": null,
+          "Other charge Rs. lakh": 5.94,
+          "Total charge Rs. lakh": 93.4
+        },
+        {
+          "Campus": "Phase -5 Kollam (2)",
+          "Maximum demand KVA": 3600,
+          "Energy Received lakh units": 4.5,
+          "Fixed charges Rs lakh": 12.24,
+          "Variable charges Rs lakh": 27.88,
+          "Incentive Rs. lakh": -0.41,
+          "Other charge Rs. lakh": 0.56,
+          "Total charge Rs. lakh": 40.27
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Maximum demand KVA": 192816,
+          "Energy Received lakh units": 514.55,
+          "Fixed charges Rs lakh": 655.57,
+          "Variable charges Rs lakh": 2833.16,
+          "Incentive Rs. lakh": -0.41,
+          "Other charge Rs. lakh": 6.51,
+          "Total charge Rs. lakh": 3494.83
+        },
+        "Average Power Purchase Cost (Rs /per unit)": {
+          "Maximum demand KVA": null,
+          "Energy Received lakh units": null,
+          "Fixed charges Rs lakh": null,
+          "Variable charges Rs lakh": null,
+          "Incentive Rs. lakh": null,
+          "Other charge Rs. lakh": null,
+          "Total charge Rs. lakh": 6.79
+        }
+      }
+    },
+    {
+      "table_number": "Table 11",
+      "title": "Approved power purchase cost for 2022-23",
+      "component": "power_purchase",
+      "headers": [
+        "No",
+        "Particulars",
+        "Value"
+      ],
+      "rows": [
+        {
+          "No": 1,
+          "Particulars": "Actual distribution loss (In lakh units)",
+          "Value": 29.73
+        },
+        {
+          "No": 2,
+          "Particulars": "Approved distribution loss (In lakh units)",
+          "Value": 22.99
+        },
+        {
+          "No": 3,
+          "Particulars": "Excess distribution loss (lakh units) (1-2)",
+          "Value": 6.74
+        },
+        {
+          "No": 4,
+          "Particulars": "Average Power Purchase Cost (Rs. per unit)",
+          "Value": 6.95
+        },
+        {
+          "No": 5,
+          "Particulars": "Excess power purchase cost to be disallowed (Rs. lakh) (4) * (3)",
+          "Value": 46.84
+        },
+        {
+          "No": 6,
+          "Particulars": "Actual Power purchase cost (Rs. lakh)",
+          "Value": 4652.88
+        },
+        {
+          "No": 7,
+          "Particulars": "Approved Power purchase cost (Rs. lakh) (6-5)",
+          "Value": 4606.04
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 12",
+      "title": "Comparison of O&M expenses (Rs. lakh)",
+      "component": "other",
+      "headers": [
+        "O&M Expenses",
+        "2021-22 Norms",
+        "2021-22 As per Truing Up Petition",
+        "2021-22 Trued up",
+        "2022-23 Norms",
+        "2022-23 As per Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "O&M Expenses": "Employee expenses",
+          "2021-22 Norms": 34.54,
+          "2021-22 As per Truing Up Petition": 53.85,
+          "2021-22 Trued up": 43.03,
+          "2022-23 Norms": 27.14,
+          "2022-23 As per Truing Up Petition": 54.54
+        },
+        {
+          "O&M Expenses": "R&M expenses",
+          "2021-22 Norms": 210.73,
+          "2021-22 As per Truing Up Petition": 404.85,
+          "2021-22 Trued up": 329.87,
+          "2022-23 Norms": 317.37,
+          "2022-23 As per Truing Up Petition": 447.65
+        },
+        {
+          "O&M Expenses": "A&G expenses",
+          "2021-22 Norms": 60.19,
+          "2021-22 As per Truing Up Petition": 92.03,
+          "2021-22 Trued up": 62.95,
+          "2022-23 Norms": 36.09,
+          "2022-23 As per Truing Up Petition": 92.05
+        }
+      ],
+      "totals": {
+        "Total": {
+          "2021-22 Norms": 305.46,
+          "2021-22 As per Truing Up Petition": 550.73,
+          "2021-22 Trued up": 435.85,
+          "2022-23 Norms": 380.6,
+          "2022-23 As per Truing Up Petition": 594.24
+        }
+      }
+    },
+    {
+      "table_number": "Table 13",
+      "title": "Comparison of Employee cost (Rs. lakh)",
+      "component": "employee",
+      "headers": [
+        "Particulars",
+        "2021-22 Truing Up claim",
+        "2022-23 Truing Up claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Basic Salary",
+          "2021-22 Truing Up claim": 15.89,
+          "2022-23 Truing Up claim": 17.24
+        },
+        {
+          "Particulars": "Dearness Allowance (DA)",
+          "2021-22 Truing Up claim": 5.72,
+          "2022-23 Truing Up claim": 6.21
+        },
+        {
+          "Particulars": "House Rent Allowance",
+          "2021-22 Truing Up claim": 0.53,
+          "2022-23 Truing Up claim": 0.59
+        },
+        {
+          "Particulars": "Other Allowances (CCA)",
+          "2021-22 Truing Up claim": 0.09,
+          "2022-23 Truing Up claim": 0.11
+        },
+        {
+          "Particulars": "Personal Pay",
+          "2021-22 Truing Up claim": 0.14,
+          "2022-23 Truing Up claim": null
+        },
+        {
+          "Particulars": "Arrears",
+          "2021-22 Truing Up claim": 0.79,
+          "2022-23 Truing Up claim": null
+        },
+        {
+          "Particulars": "Consolidated Pay",
+          "2021-22 Truing Up claim": 30.67,
+          "2022-23 Truing Up claim": 30.39
+        }
+      ],
+      "totals": {
+        "Grand Total": {
+          "2021-22 Truing Up claim": 53.85,
+          "2022-23 Truing Up claim": 54.54
+        }
+      }
+    },
+    {
+      "table_number": "Table 14",
+      "title": "Apportionment of Employee Cost for 2022-23",
+      "component": "employee",
+      "headers": [
+        "Designation",
+        "Posts",
+        "Gross Salary Rs.lakh",
+        "Ratio",
+        "Apportioned Salary Rs.lakh"
+      ],
+      "rows": [
+        {
+          "Designation": "Chief Executive Officer",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 33.66,
+          "Ratio": "10%",
+          "Apportioned Salary Rs.lakh": 3.37
+        },
+        {
+          "Designation": "Chief Finance Officer",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 22.32,
+          "Ratio": "20%",
+          "Apportioned Salary Rs.lakh": 4.46
+        },
+        {
+          "Designation": "GM (Projects)",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 20.0,
+          "Ratio": "25%",
+          "Apportioned Salary Rs.lakh": 5.0
+        },
+        {
+          "Designation": "Deputy Manager (Electrical)",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 10.97,
+          "Ratio": "100%",
+          "Apportioned Salary Rs.lakh": 10.97
+        },
+        {
+          "Designation": "Deputy Manager Finance",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 17.24,
+          "Ratio": "40%",
+          "Apportioned Salary Rs.lakh": 6.9
+        },
+        {
+          "Designation": "Sr. Executive Finance",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 4.64,
+          "Ratio": "75%",
+          "Apportioned Salary Rs.lakh": 3.48
+        },
+        {
+          "Designation": "Apprentice Trainee",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 2.55,
+          "Ratio": "50%",
+          "Apportioned Salary Rs.lakh": 1.28
+        },
+        {
+          "Designation": "Jr. Electrical Engineer",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 1.28,
+          "Ratio": "100%",
+          "Apportioned Salary Rs.lakh": 1.28
+        },
+        {
+          "Designation": "Supervisors/Meter readers",
+          "Posts": 4.0,
+          "Gross Salary Rs.lakh": 19.01,
+          "Ratio": "75%",
+          "Apportioned Salary Rs.lakh": 14.26
+        },
+        {
+          "Designation": "Civil Engineer",
+          "Posts": 1.0,
+          "Gross Salary Rs.lakh": 3.74,
+          "Ratio": "25%",
+          "Apportioned Salary Rs.lakh": 0.94
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Posts": null,
+          "Gross Salary Rs.lakh": 135.41,
+          "Ratio": null,
+          "Apportioned Salary Rs.lakh": 54.54
+        }
+      }
+    },
+    {
+      "table_number": "Table 15",
+      "title": "O&M Expenses as per the Tariff Regulations, 2021 (Rs. lakh)",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "Base year 2021-22",
+        "Control period 2022-23",
+        "Control period 2023-24",
+        "Control period 2024-25",
+        "Control period 2025-26",
+        "Control period 2026-27"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee Cost",
+          "Base year 2021-22": 25.99,
+          "Control period 2022-23": 27.14,
+          "Control period 2023-24": 28.35,
+          "Control period 2024-25": 29.61,
+          "Control period 2025-26": 30.93,
+          "Control period 2026-27": 32.31
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "Base year 2021-22": 303.84,
+          "Control period 2022-23": 317.37,
+          "Control period 2023-24": 331.51,
+          "Control period 2024-25": 346.28,
+          "Control period 2025-26": 361.7,
+          "Control period 2026-27": 377.81
+        },
+        {
+          "Particulars": "A&G Expenses",
+          "Base year 2021-22": 34.55,
+          "Control period 2022-23": 36.09,
+          "Control period 2023-24": 37.69,
+          "Control period 2024-25": 39.37,
+          "Control period 2025-26": 41.13,
+          "Control period 2026-27": 42.96
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Base year 2021-22": 364.37,
+          "Control period 2022-23": 380.6,
+          "Control period 2023-24": 397.55,
+          "Control period 2024-25": 415.26,
+          "Control period 2025-26": 433.76,
+          "Control period 2026-27": 453.08
+        }
+      }
+    },
+    {
+      "table_number": "Computation of Escalation Factors for this MYT Regulation",
+      "title": "Computation of Escalation Factors for this MYT Regulation",
+      "component": "other",
+      "headers": [
+        "Sl.No",
+        "Escalation factors/year",
+        "2017-18",
+        "2018-19",
+        "2019-20",
+        "2020-21"
+      ],
+      "rows": [
+        {
+          "Sl.No": 1,
+          "Escalation factors/year": "CPI (Industrial Workers) 2001=100",
+          "2017-18": 284.42,
+          "2018-19": 299.9,
+          "2019-20": 322.5,
+          "2020-21": 338.69
+        },
+        {
+          "Sl.No": 2,
+          "Escalation factors/year": "Annual CPI increase %",
+          "2017-18": 3.08,
+          "2018-19": 5.44,
+          "2019-20": 7.54,
+          "2020-21": 5.02
+        },
+        {
+          "Sl.No": 3,
+          "Escalation factors/year": "WPI (2011-12) series",
+          "2017-18": 114.9,
+          "2018-19": 119.8,
+          "2019-20": 121.8,
+          "2020-21": 123.4
+        },
+        {
+          "Sl.No": 4,
+          "Escalation factors/year": "Annual WPI increase %",
+          "2017-18": 2.96,
+          "2018-19": 4.26,
+          "2019-20": 1.67,
+          "2020-21": 1.31
+        },
+        {
+          "Sl.No": 5,
+          "Escalation factors/year": "CPI:WPI (70:30) weightage (%)",
+          "2017-18": 3.04,
+          "2018-19": 5.09,
+          "2019-20": 5.78,
+          "2020-21": 3.91
+        }
+      ],
+      "totals": {
+        "Average 4 Year annual increase @ 70:30 weightage (%)": {
+          "Sl.No": 6,
+          "Escalation factors/year": null,
+          "2017-18": null,
+          "2018-19": null,
+          "2019-20": null,
+          "2020-21": 4.454
+        }
+      }
+    },
+    {
+      "table_number": "Table 16",
+      "title": "Actual inflation for the year 2022-23",
+      "component": "other",
+      "headers": [
+        "Sl No",
+        "Particulars",
+        "2021-22",
+        "2022-23"
+      ],
+      "rows": [
+        {
+          "Sl No": 1,
+          "Particulars": "Consumer Price Index (2016 price level)",
+          "2021-22": 123.6333,
+          "2022-23": 131.1167
+        },
+        {
+          "Sl No": null,
+          "Particulars": "Increase in CPI in 2022-23 over 2021-22",
+          "2021-22": null,
+          "2022-23": 6.05
+        },
+        {
+          "Sl No": 2,
+          "Particulars": "Wholesale Price Index (base year 2011-12)",
+          "2021-22": 139.4,
+          "2022-23": 152.5
+        },
+        {
+          "Sl No": null,
+          "Particulars": "Increase in WPI in 2022-23 over 2021-22",
+          "2021-22": null,
+          "2022-23": 9.4
+        }
+      ],
+      "totals": {
+        "Weighted average increase (70% CPI & 30%WPI)": {
+          "Sl No": 3,
+          "Particulars": null,
+          "2021-22": null,
+          "2022-23": 7.06
+        }
+      }
+    },
+    {
+      "table_number": "Table 17",
+      "title": "Revised O&M expenses of Technopark approved for the year 2022-23 considering Actual Inflation (Rs. lakh)",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "Base year 2021-22",
+        "Control Period- 2022-23 Actual inflation",
+        "Control Period- 2022-23 O&M Approved"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee Cost",
+          "Base year 2021-22": 25.99,
+          "Control Period- 2022-23 Actual inflation": 7.06,
+          "Control Period- 2022-23 O&M Approved": 27.82
+        },
+        {
+          "Particulars": "R&M Expenses",
+          "Base year 2021-22": 303.84,
+          "Control Period- 2022-23 Actual inflation": 7.06,
+          "Control Period- 2022-23 O&M Approved": 325.29
+        },
+        {
+          "Particulars": "A&G Expenses",
+          "Base year 2021-22": 34.55,
+          "Control Period- 2022-23 Actual inflation": 7.06,
+          "Control Period- 2022-23 O&M Approved": 36.99
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Base year 2021-22": 364.37,
+          "Control Period- 2022-23 Actual inflation": null,
+          "Control Period- 2022-23 O&M Approved": 390.1
+        }
+      }
+    },
+    {
+      "table_number": "Table 18",
+      "title": "Employee cost approved for the year 2022-23 (Rs lakh)",
+      "component": "employee",
+      "headers": [
+        "Particulars",
+        "As per Regulations",
+        "As per Truing Up Petition",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee Cost",
+          "As per Regulations": 27.14,
+          "As per Truing Up Petition": 54.54,
+          "Trued Up": 27.82
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 19",
+      "title": "Details of R&M expenses for the years 2021-22 and 2022-23 (Rs. lakh)",
+      "component": "repair_maintenance",
+      "headers": [
+        "Particulars",
+        "2021-22 As per Truing Up Petition",
+        "2021-22 Trued up",
+        "2022-23 As per Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Phase-1 (Plant & Mach Only)",
+          "2021-22 As per Truing Up Petition": 254.15,
+          "2021-22 Trued up": 178.71,
+          "2022-23 As per Truing Up Petition": 269.29
+        },
+        {
+          "Particulars": "Phase 2 & 3 (do)",
+          "2021-22 As per Truing Up Petition": 91.42,
+          "2021-22 Trued up": 92.51,
+          "2022-23 As per Truing Up Petition": 68.25
+        },
+        {
+          "Particulars": "Phase -5 Kollam (do)",
+          "2021-22 As per Truing Up Petition": 33.26,
+          "2021-22 Trued up": 32.63,
+          "2022-23 As per Truing Up Petition": 32.97
+        },
+        {
+          "Particulars": "Phase 4 Technocity do)",
+          "2021-22 As per Truing Up Petition": null,
+          "2021-22 Trued up": null,
+          "2022-23 As per Truing Up Petition": 30.38
+        },
+        {
+          "Particulars": "Material and Spares Purchased",
+          "2021-22 As per Truing Up Petition": 10.8,
+          "2021-22 Trued up": 10.8,
+          "2022-23 As per Truing Up Petition": 11.16
+        },
+        {
+          "Particulars": "One-Time / Break-down works carried out",
+          "2021-22 As per Truing Up Petition": 15.22,
+          "2021-22 Trued up": 15.22,
+          "2022-23 As per Truing Up Petition": 35.6
+        }
+      ],
+      "totals": {
+        "Gross R&M Expenses": {
+          "2021-22 As per Truing Up Petition": 404.85,
+          "2021-22 Trued up": 329.87,
+          "2022-23 As per Truing Up Petition": 447.65
+        }
+      }
+    },
+    {
+      "table_number": "Table 20",
+      "title": "Phase wise split up of R&M for the period 2022-23",
+      "component": "repair_maintenance",
+      "headers": [
+        "Campus",
+        "Contractor",
+        "From",
+        "To",
+        "Contract Value (Rs)"
+      ],
+      "rows": [
+        {
+          "Campus": "Phase-I Kazhakuttam",
+          "Contractor": "Fathima Engineering Co. Pvt Ltd",
+          "From": "01-07-2020",
+          "To": "30-06-2023",
+          "Contract Value (Rs)": 79316774
+        },
+        {
+          "Campus": "Phase III Kazhakuttam",
+          "Contractor": "AEGIS Power Engineers",
+          "From": "01-01-2019",
+          "To": "30-06-2022",
+          "Contract Value (Rs)": 12963240
+        },
+        {
+          "Campus": "Phase III Kazhakuttam",
+          "Contractor": "AEGIS Power Engineers",
+          "From": "01-07-2022",
+          "To": "31-07-2022",
+          "Contract Value (Rs)": 4318181
+        },
+        {
+          "Campus": "Phase III Kazhakuttam",
+          "Contractor": "Geresh Electricals (P) Limited",
+          "From": "01-08-2022",
+          "To": "31-07-2025",
+          "Contract Value (Rs)": 12418800
+        },
+        {
+          "Campus": "Phase III & IV 110 kV Substations",
+          "Contractor": "Sterling and Wilson Pvt Ltd",
+          "From": "01-01-2022",
+          "To": "31-12-2024",
+          "Contract Value (Rs)": 18053836
+        },
+        {
+          "Campus": "Phase V Campus - Kollam",
+          "Contractor": "AEGIS Power Engineers",
+          "From": "01-06-2020",
+          "To": "30-09-2022",
+          "Contract Value (Rs)": 7899275
+        },
+        {
+          "Campus": "Phase V Campus - Kollam",
+          "Contractor": "AEGIS Power Engineers-Extn",
+          "From": "01-10-2022",
+          "To": "31-10-2022",
+          "Contract Value (Rs)": 284700
+        },
+        {
+          "Campus": "Phase V Campus - Kollam",
+          "Contractor": "ABM Electricals Pvt. Ltd.",
+          "From": "01-11-2022",
+          "To": "31-10-2025",
+          "Contract Value (Rs)": 10505712
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 21",
+      "title": "R&M expenses approved for truing up 2022-23 (Rs lakh)",
+      "component": "repair_maintenance",
+      "headers": [
+        "Particulars",
+        "As per Regulations",
+        "As per Truing Up Petition",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "R&M expenses",
+          "As per Regulations": 317.37,
+          "As per Truing Up Petition": 447.65,
+          "Trued Up": 402.43
+        }
+      ],
+      "totals": {}
+    },
+    {
+      "table_number": "Table 22",
+      "title": "A&G Expenses over the years (Rs. lakh)",
+      "component": "admin_general",
+      "headers": [
+        "Particulars",
+        "2021-22 Truing Up claim",
+        "2022-23 Truing up claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Insurance",
+          "2021-22 Truing Up claim": 3.21,
+          "2022-23 Truing up claim": 2.89
+        },
+        {
+          "Particulars": "Telephone & Postage, etc.",
+          "2021-22 Truing Up claim": 0.37,
+          "2022-23 Truing up claim": 0.35
+        },
+        {
+          "Particulars": "Audit Fees",
+          "2021-22 Truing Up claim": 0.36,
+          "2022-23 Truing up claim": 0.66
+        },
+        {
+          "Particulars": "Conveyance Charges (Hired Vehicle for Distribution Business)",
+          "2021-22 Truing Up claim": 6.72,
+          "2022-23 Truing up claim": 5.52
+        },
+        {
+          "Particulars": "Electricity charges",
+          "2021-22 Truing Up claim": 8.47,
+          "2022-23 Truing up claim": 12.1
+        },
+        {
+          "Particulars": "Professional & Consultancy Charges",
+          "2021-22 Truing Up claim": 0.05,
+          "2022-23 Truing up claim": 1.0
+        },
+        {
+          "Particulars": "Bank Charges",
+          "2021-22 Truing Up claim": 2.74,
+          "2022-23 Truing up claim": 1.89
+        },
+        {
+          "Particulars": "Petition and other Fees to KSERC / KSEB",
+          "2021-22 Truing Up claim": 2.92,
+          "2022-23 Truing up claim": 1.29
+        },
+        {
+          "Particulars": "License Fee and related fee to KSERC",
+          "2021-22 Truing Up claim": 1.37,
+          "2022-23 Truing up claim": 1.38
+        },
+        {
+          "Particulars": "Security arrangements (1 person night duty per station)",
+          "2021-22 Truing Up claim": 11.17,
+          "2022-23 Truing up claim": 11.73
+        },
+        {
+          "Particulars": "Others Fees (To Electrical Inspectorate and KSEBL)",
+          "2021-22 Truing Up claim": 25.21,
+          "2022-23 Truing up claim": 14.8
+        },
+        {
+          "Particulars": "Subscription to Institution",
+          "2021-22 Truing Up claim": 0.0,
+          "2022-23 Truing up claim": 1.18
+        },
+        {
+          "Particulars": "Staff Training Expense",
+          "2021-22 Truing Up claim": 0.36,
+          "2022-23 Truing up claim": 0.28
+        },
+        {
+          "Particulars": "Allowance for Doubtful debts",
+          "2021-22 Truing Up claim": 0.0,
+          "2022-23 Truing up claim": null
+        }
+      ],
+      "totals": {
+        "Gross A&G Expenses": {
+          "2021-22 Truing Up claim": 62.95,
+          "2022-23 Truing up claim": 55.07
+        },
+        "Ele. Duty u/s 3(I), KED Act": {
+          "2021-22 Truing Up claim": 29.08,
+          "2022-23 Truing up claim": 36.98
+        },
+        "Less: Expenses Capitalised": {
+          "2021-22 Truing Up claim": 0.0,
+          "2022-23 Truing up claim": null
+        },
+        "Net A&G Expenses": {
+          "2021-22 Truing Up claim": 92.03,
+          "2022-23 Truing up claim": 92.05
+        }
+      }
+    },
+    {
+      "table_number": "Table 23",
+      "title": "O&M expenses for the year 2022-23 (Rs. In lakhs)",
+      "component": "other",
+      "headers": [
+        "O&M Expenses",
+        "As per Regulation",
+        "As per Truing Up Petition",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "O&M Expenses": "Employee expenses",
+          "As per Regulation": 27.14,
+          "As per Truing Up Petition": 54.54,
+          "Trued Up": 27.82
+        },
+        {
+          "O&M Expenses": "R&M expenses",
+          "As per Regulation": 317.37,
+          "As per Truing Up Petition": 447.65,
+          "Trued Up": 402.43
+        },
+        {
+          "O&M Expenses": "A&G expenses",
+          "As per Regulation": 36.09,
+          "As per Truing Up Petition": 92.05,
+          "Trued Up": 36.99
+        }
+      ],
+      "totals": {
+        "Total": {
+          "As per Regulation": 380.6,
+          "As per Truing Up Petition": 594.24,
+          "Trued Up": 467.24
+        }
+      }
+    },
+    {
+      "table_number": "Table 24",
+      "title": "Capital expenditure during 2022-23",
+      "component": "capital",
+      "headers": [
+        "Project / Work",
+        "Rs.lakh"
+      ],
+      "rows": [
+        {
+          "Project / Work": "HT Distribution Network - Phase-4 (Paid to KSITIL)",
+          "Rs.lakh": 3.36
+        },
+        {
+          "Project / Work": "Solar Plant over EV Charging station-Phase-1",
+          "Rs.lakh": 9.17
+        },
+        {
+          "Project / Work": "Solar Plant 25 kW \u2013 Ad Charge- Phase-1",
+          "Rs.lakh": 0.03
+        },
+        {
+          "Project / Work": "Renewal of Power Distribution - Phase-1",
+          "Rs.lakh": 145.49
+        },
+        {
+          "Project / Work": "Solar Plant 25 kW \u2013 Ad Charge - Phase-4",
+          "Rs.lakh": 0.22
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Rs.lakh": 158.27
+        }
+      }
+    },
+    {
+      "table_number": "Table-25",
+      "title": "Depreciation claimed for 2022-23",
+      "component": "depreciation",
+      "headers": [
+        "Asset categories",
+        "GFA as on 1/4/2022 Rs. lakh",
+        "Asset Addition during the Year Rs. lakh",
+        "GFA as on 1/4/2022 Rs. lakh",
+        "Accumulated Depreciation as on 1/4/2022 Rs. lakh",
+        "Rate %",
+        "Depreciation for 2022-23 Rs. lakh",
+        "Accumulated depreciation as on 31/3/2022 Rs. lakh",
+        "NFA atte endof the year Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Asset categories": "Land & Rights",
+          "GFA as on 1/4/2022 Rs. lakh": null,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": null,
+          "Rate %": null,
+          "Depreciation for 2022-23 Rs. lakh": null,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": null,
+          "NFA atte endof the year Rs. lakh": null
+        },
+        {
+          "Asset categories": "Civil works",
+          "GFA as on 1/4/2022 Rs. lakh": 188.95,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 80.59,
+          "Rate %": 3.34,
+          "Depreciation for 2022-23 Rs. lakh": 6.31,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 86.9,
+          "NFA atte endof the year Rs. lakh": 102.04
+        },
+        {
+          "Asset categories": "Transmissionlines",
+          "GFA as on 1/4/2022 Rs. lakh": 661.95,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 456.66,
+          "Rate %": 5.28,
+          "Depreciation for 2022-23 Rs. lakh": 34.95,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 491.61,
+          "NFA atte endof the year Rs. lakh": 170.34
+        },
+        {
+          "Asset categories": "Substations",
+          "GFA as on 1/4/2022 Rs. lakh": 2561.64,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 1501.79,
+          "Rate %": 5.28,
+          "Depreciation for 2022-23 Rs. lakh": 135.16,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 1636.81,
+          "NFA atte endof the year Rs. lakh": 923.1
+        },
+        {
+          "Asset categories": "11 kV works",
+          "GFA as on 1/4/2022 Rs. lakh": 154.78,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 76.57,
+          "Rate %": 5.28,
+          "Depreciation for 2022-23 Rs. lakh": 8.17,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 84.74,
+          "NFA atte endof the year Rs. lakh": 70.04
+        },
+        {
+          "Asset categories": "LT lines/others*",
+          "GFA as on 1/4/2022 Rs. lakh": 73.65,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 26.75,
+          "Rate %": 5.28,
+          "Depreciation for 2022-23 Rs. lakh": 3.89,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 30.64,
+          "NFA atte endof the year Rs. lakh": 43.01
+        },
+        {
+          "Asset categories": "Metering equipment",
+          "GFA as on 1/4/2022 Rs. lakh": 6.94,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 3.31,
+          "Rate %": 5.28,
+          "Depreciation for 2022-23 Rs. lakh": 0.37,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 3.68,
+          "NFA atte endof the year Rs. lakh": 3.26
+        },
+        {
+          "Asset categories": "Electrical installations",
+          "GFA as on 1/4/2022 Rs. lakh": 96.86,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 29.04,
+          "Rate %": 5.28,
+          "Depreciation for 2022-23 Rs. lakh": 5.11,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 34.15,
+          "NFA atte endof the year Rs. lakh": 62.71
+        },
+        {
+          "Asset categories": "Softwares",
+          "GFA as on 1/4/2022 Rs. lakh": 6.26,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 1.86,
+          "Rate %": 15.0,
+          "Depreciation for 2022-23 Rs. lakh": 0.94,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 2.8,
+          "NFA atte endof the year Rs. lakh": 3.46
+        }
+      ],
+      "totals": {
+        "Total": {
+          "GFA as on 1/4/2022 Rs. lakh": 3751.03,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": 2176.57,
+          "Rate %": null,
+          "Depreciation for 2022-23 Rs. lakh": 194.91,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 2371.34,
+          "NFA atte endof the year Rs. lakh": 1377.96
+        },
+        "(Less)Assets created from Govt. grant/contributions": {
+          "GFA as on 1/4/2022 Rs. lakh": 612.06,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": null,
+          "Rate %": 5.28,
+          "Depreciation for 2022-23 Rs. lakh": -32.32,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": null,
+          "NFA atte endof the year Rs. lakh": null
+        },
+        "Depreciation for the year": {
+          "GFA as on 1/4/2022 Rs. lakh": null,
+          "Asset Addition during the Year Rs. lakh": null,
+          "Accumulated Depreciation as on 1/4/2022 Rs. lakh": null,
+          "Rate %": null,
+          "Depreciation for 2022-23 Rs. lakh": 162.45,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": null,
+          "NFA atte endof the year Rs. lakh": null
+        }
+      }
+    },
+    {
+      "table_number": "Table-26",
+      "title": "Assets capitalized during 2020-21 (Rs.lakh)",
+      "component": "capital",
+      "headers": [
+        "No",
+        "Particulars",
+        "Grant",
+        "Own fund"
+      ],
+      "rows": [
+        {
+          "No": 1,
+          "Particulars": "Air Insulated Substation - Technocity (110 kV)",
+          "Grant": 1663.14,
+          "Own fund": 32.21
+        },
+        {
+          "No": 2,
+          "Particulars": "Electrical Substation \u2013 Technocity (11 kV) a. 11Kv USS for Technocity",
+          "Grant": null,
+          "Own fund": 51.03
+        },
+        {
+          "No": null,
+          "Particulars": "b. Site Development for 110kV Substation, Technocity",
+          "Grant": null,
+          "Own fund": 228.38
+        },
+        {
+          "No": 3,
+          "Particulars": "Solar Power Plant Phase III",
+          "Grant": null,
+          "Own fund": 5.75
+        },
+        {
+          "No": 4,
+          "Particulars": "Power Distribution System",
+          "Grant": null,
+          "Own fund": 3.74
+        },
+        {
+          "No": 5,
+          "Particulars": "Billing software",
+          "Grant": null,
+          "Own fund": 1.41
+        },
+        {
+          "No": 6,
+          "Particulars": "160 KVA Outdoor Substation Phase III",
+          "Grant": null,
+          "Own fund": 1.32
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Grant": 1663.14,
+          "Own fund": 323.84
+        }
+      }
+    },
+    {
+      "table_number": "Table-27",
+      "title": "Assets capitalized during 2021-22 (Rs. In lakh)",
+      "component": "capital",
+      "headers": [
+        "Particulars",
+        "Grant"
+      ],
+      "rows": [
+        {
+          "Particulars": "Paid to KSEB Ltd for laying of 110 kV underground cable laying from KSEB Pothencode substation to Technocity 110kV substation.",
+          "Grant": 1838.66
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Grant": 1838.66
+        }
+      }
+    },
+    {
+      "table_number": "Table 28",
+      "title": "Depreciation for the year 2019-20",
+      "component": "depreciation",
+      "headers": [
+        "Asset categories",
+        "GFA as on 1/4/2019 Rs. lakh",
+        "Asset Addition during the Year Rs. lakh",
+        "GFA as on 1/4/2020 Rs. lakh",
+        "Accumulated depreciation as on 1/4/2019 Rs. lakh",
+        "Depreciation rate %",
+        "Depreciation for the year 2019-20 Rs. lakh",
+        "Accumulated depreciation as on 31/3/2020 Rs. lakh",
+        "NFA at the end of the year Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Asset categories": "Land & Rights",
+          "GFA as on 1/4/2019 Rs. lakh": null,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2019-20 Rs. lakh": null,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        {
+          "Asset categories": "Civil works",
+          "GFA as on 1/4/2019 Rs. lakh": 188.95,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": 188.95,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 67.98,
+          "Depreciation rate %": 3.34,
+          "Depreciation for the year 2019-20 Rs. lakh": 4.64,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 72.62,
+          "NFA at the end of the year Rs. lakh": 116.33
+        },
+        {
+          "Asset categories": "Transmission lines",
+          "GFA as on 1/4/2019 Rs. lakh": 661.95,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": 661.95,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 360.04,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2019-20 Rs. lakh": 24.68,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 384.72,
+          "NFA at the end of the year Rs. lakh": 277.23
+        },
+        {
+          "Asset categories": "Substations",
+          "GFA as on 1/4/2019 Rs. lakh": 2244.96,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": 2244.96,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 1087.42,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2019-20 Rs. lakh": 89.11,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 1176.53,
+          "NFA at the end of the year Rs. lakh": 1068.43
+        },
+        {
+          "Asset categories": "11 kV works",
+          "GFA as on 1/4/2019 Rs. lakh": 97.41,
+          "Asset Addition during the Year Rs. lakh": 57.37,
+          "GFA as on 1/4/2020 Rs. lakh": 154.78,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 50.13,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2019-20 Rs. lakh": 3.27,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 53.4,
+          "NFA at the end of the year Rs. lakh": 101.38
+        },
+        {
+          "Asset categories": "LT lines/others*",
+          "GFA as on 1/4/2019 Rs. lakh": 44.59,
+          "Asset Addition during the Year Rs. lakh": 29.07,
+          "GFA as on 1/4/2020 Rs. lakh": 73.65,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 15.13,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2019-20 Rs. lakh": 1.73,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 16.86,
+          "NFA at the end of the year Rs. lakh": 56.79
+        },
+        {
+          "Asset categories": "Metering equipment",
+          "GFA as on 1/4/2019 Rs. lakh": 6.94,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": 6.94,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 2.29,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2019-20 Rs. lakh": 0.31,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 2.59,
+          "NFA at the end of the year Rs. lakh": 4.35
+        },
+        {
+          "Asset categories": "Electrical installations",
+          "GFA as on 1/4/2019 Rs. lakh": 91.11,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": 91.11,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 11.4,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2019-20 Rs. lakh": 2.59,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 13.99,
+          "NFA at the end of the year Rs. lakh": 77.12
+        },
+        {
+          "Asset categories": "Softwares",
+          "GFA as on 1/4/2019 Rs. lakh": 0.47,
+          "Asset Addition during the Year Rs. lakh": 4.39,
+          "GFA as on 1/4/2020 Rs. lakh": 4.86,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 0.03,
+          "Depreciation rate %": 6.33,
+          "Depreciation for the year 2019-20 Rs. lakh": 0.17,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 0.2,
+          "NFA at the end of the year Rs. lakh": 4.66
+        }
+      ],
+      "totals": {
+        "Total": {
+          "GFA as on 1/4/2019 Rs. lakh": 3336.37,
+          "Asset Addition during the Year Rs. lakh": 90.84,
+          "GFA as on 1/4/2020 Rs. lakh": 3427.2,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": 1594.42,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2019-20 Rs. lakh": 126.49,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": 1720.91,
+          "NFA at the end of the year Rs. lakh": 1706.29
+        },
+        "(Less) Assets created from Govt. grants /contributions (Up to 2019-20)": {
+          "GFA as on 1/4/2019 Rs. lakh": 612.06,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": 612.06,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": null,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2019-20 Rs. lakh": -32.32,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        "Approved Depreciation": {
+          "GFA as on 1/4/2019 Rs. lakh": null,
+          "Asset Addition during the Year Rs. lakh": null,
+          "GFA as on 1/4/2020 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2019 Rs. lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2019-20 Rs. lakh": 94.17,
+          "Accumulated depreciation as on 31/3/2020 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        }
+      }
+    },
+    {
+      "table_number": "Table 29",
+      "title": "Depreciation for the year 2020-21",
+      "component": "depreciation",
+      "headers": [
+        "Asset categories",
+        "GFA as on 1/4/2020 Rs. lakh",
+        "Asset Addition during the Year Rs. Lakh",
+        "GFA as on 1/4/2021 Rs. lakh",
+        "Accumulated depreciation as on 1/4/2020 Rs. lakh",
+        "Depreciation rate %",
+        "Depreciation for the year 2020-21 Rs.lakh",
+        "Accumulated depreciation as on 31/3/2021 Rs. lakh",
+        "NFA at the end of the year Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Asset categories": "Land & Rights",
+          "GFA as on 1/4/2020 Rs. lakh": null,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2020-21 Rs.lakh": null,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        {
+          "Asset categories": "Civil works",
+          "GFA as on 1/4/2020 Rs. lakh": 188.95,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": 188.95,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 72.62,
+          "Depreciation rate %": 3.34,
+          "Depreciation for the year 2020-21 Rs.lakh": 4.64,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 77.26,
+          "NFA at the end of the year Rs. lakh": 111.69
+        },
+        {
+          "Asset categories": "Transmission lines",
+          "GFA as on 1/4/2020 Rs. lakh": 661.95,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": 661.95,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 384.72,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2020-21 Rs.lakh": 24.68,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 409.4,
+          "NFA at the end of the year Rs. lakh": 252.55
+        },
+        {
+          "Asset categories": "Substations",
+          "GFA as on 1/4/2020 Rs. lakh": 2244.96,
+          "Asset Addition during the Year Rs. Lakh": 1978.09,
+          "GFA as on 1/4/2021 Rs. lakh": 4223.05,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 1176.53,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2020-21 Rs.lakh": 89.11,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 1265.64,
+          "NFA at the end of the year Rs. lakh": 2957.41
+        },
+        {
+          "Asset categories": "11 kV works",
+          "GFA as on 1/4/2020 Rs. lakh": 154.78,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": 154.78,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 53.4,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2020-21 Rs.lakh": 4.78,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 58.18,
+          "NFA at the end of the year Rs. lakh": 96.6
+        },
+        {
+          "Asset categories": "LT lines/ others*",
+          "GFA as on 1/4/2020 Rs. lakh": 73.65,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": 73.65,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 16.86,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2020-21 Rs.lakh": 2.5,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 19.36,
+          "NFA at the end of the year Rs. lakh": 54.29
+        },
+        {
+          "Asset categories": "Metering equipment",
+          "GFA as on 1/4/2020 Rs. lakh": 6.94,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": 6.94,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 2.59,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2020-21 Rs.lakh": 0.31,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 2.9,
+          "NFA at the end of the year Rs. lakh": 4.04
+        },
+        {
+          "Asset categories": "Electrical installations",
+          "GFA as on 1/4/2020 Rs. lakh": 91.11,
+          "Asset Addition during the Year Rs. Lakh": 5.75,
+          "GFA as on 1/4/2021 Rs. lakh": 96.86,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 13.99,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2020-21 Rs.lakh": 2.59,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 16.58,
+          "NFA at the end of the year Rs. lakh": 80.29
+        },
+        {
+          "Asset categories": "Softwares",
+          "GFA as on 1/4/2020 Rs. lakh": 4.86,
+          "Asset Addition during the Year Rs. Lakh": 1.41,
+          "GFA as on 1/4/2021 Rs. lakh": 6.27,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 0.2,
+          "Depreciation rate %": 6.33,
+          "Depreciation for the year 2020-21 Rs.lakh": 0.31,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 0.51,
+          "NFA at the end of the year Rs. lakh": 5.76
+        }
+      ],
+      "totals": {
+        "Total": {
+          "GFA as on 1/4/2020 Rs. lakh": 3427.2,
+          "Asset Addition during the Year Rs. Lakh": 1985.25,
+          "GFA as on 1/4/2021 Rs. lakh": 5412.45,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": 1720.91,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2020-21 Rs.lakh": 128.91,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": 1849.82,
+          "NFA at the end of the year Rs. lakh": 3562.63
+        },
+        "(Less) Assets created from Govt. grants/ contributions (upto 2019-20)": {
+          "GFA as on 1/4/2020 Rs. lakh": 612.06,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": 612.06,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": null,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2020-21 Rs.lakh": -32.32,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        "Asset addition in the year 2020-21 Accumulated surplus : Rs. 322.11 lakh Grant: Rs. 1663.14 lakh": {
+          "GFA as on 1/4/2020 Rs. lakh": null,
+          "Asset Addition during the Year Rs. Lakh": 1985.25,
+          "GFA as on 1/4/2021 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2020-21 Rs.lakh": null,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        "Approved Depreciation": {
+          "GFA as on 1/4/2020 Rs. lakh": null,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2021 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2020 Rs. lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2020-21 Rs.lakh": 96.59,
+          "Accumulated depreciation as on 31/3/2021 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        }
+      }
+    },
+    {
+      "table_number": "Table 30",
+      "title": "Depreciation for the year 2021-22",
+      "component": "depreciation",
+      "headers": [
+        "Asset categories",
+        "GFA as on 1/4/2021 Rs. lakh",
+        "Asset Addition during the Year Rs. Lakh",
+        "GFA as on 1/4/2022 Rs. lakh",
+        "Accumulated depreciation as on 1/4/2021 Rs. Lakh",
+        "Depreciation rate %",
+        "Depreciation for the year 2021-22 Rs. lakh",
+        "Accumulated depreciation as on 31/3/2022 Rs. lakh",
+        "NFA at the end of the year Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Asset categories": "Land & Rights",
+          "GFA as on 1/4/2021 Rs. lakh": null,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2021-22 Rs. lakh": null,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        {
+          "Asset categories": "Civil works",
+          "GFA as on 1/4/2021 Rs. lakh": 188.95,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 188.95,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 77.26,
+          "Depreciation rate %": 3.34,
+          "Depreciation for the year 2021-22 Rs. lakh": 4.64,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 81.9,
+          "NFA at the end of the year Rs. lakh": 107.05
+        },
+        {
+          "Asset categories": "Transmission lines",
+          "GFA as on 1/4/2021 Rs. lakh": 661.95,
+          "Asset Addition during the Year Rs. Lakh": 1838.66,
+          "GFA as on 1/4/2022 Rs. lakh": 2500.61,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 409.4,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2021-22 Rs. lakh": 9.73,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 419.13,
+          "NFA at the end of the year Rs. lakh": 2081.48
+        },
+        {
+          "Asset categories": "Substations",
+          "GFA as on 1/4/2021 Rs. lakh": 4223.05,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 4223.05,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 1265.64,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2021-22 Rs. lakh": 83.0,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 1348.64,
+          "NFA at the end of the year Rs. lakh": 2874.41
+        },
+        {
+          "Asset categories": "11 kV works",
+          "GFA as on 1/4/2021 Rs. lakh": 154.78,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 154.78,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 58.18,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2021-22 Rs. lakh": 4.78,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 62.97,
+          "NFA at the end of the year Rs. lakh": 91.82
+        },
+        {
+          "Asset categories": "LT lines/ others*",
+          "GFA as on 1/4/2021 Rs. lakh": 73.65,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 73.65,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 19.36,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2021-22 Rs. lakh": 2.5,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 21.86,
+          "NFA at the end of the year Rs. lakh": 51.8
+        },
+        {
+          "Asset categories": "Metering equipment",
+          "GFA as on 1/4/2021 Rs. lakh": 6.94,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 6.94,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 2.9,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2021-22 Rs. lakh": 0.31,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 3.2,
+          "NFA at the end of the year Rs. lakh": 3.74
+        },
+        {
+          "Asset categories": "Electrical installations",
+          "GFA as on 1/4/2021 Rs. lakh": 96.86,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 96.86,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 16.58,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2021-22 Rs. lakh": 2.55,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 19.13,
+          "NFA at the end of the year Rs. lakh": 77.73
+        },
+        {
+          "Asset categories": "Softwares",
+          "GFA as on 1/4/2021 Rs. lakh": 6.27,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 6.27,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 0.51,
+          "Depreciation rate %": 6.33,
+          "Depreciation for the year 2021-22 Rs. lakh": 0.31,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 0.81,
+          "NFA at the end of the year Rs. lakh": 5.46
+        }
+      ],
+      "totals": {
+        "Total": {
+          "GFA as on 1/4/2021 Rs. lakh": 5412.45,
+          "Asset Addition during the Year Rs. Lakh": 1838.66,
+          "GFA as on 1/4/2022 Rs. lakh": 7251.11,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": 1849.82,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2021-22 Rs. lakh": 107.82,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": 1957.64,
+          "NFA at the end of the year Rs. lakh": 5293.47
+        },
+        "(Less) Assets created from Govt.grants/ contributions (upto 2019-20)": {
+          "GFA as on 1/4/2021 Rs. lakh": 612.06,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": 612.06,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": null,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2021-22 Rs. lakh": -32.32,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        "Asset addition in the year 2020-21 Accumulated surplus : Rs. 322.11 lakh Grant: Rs. 1663.14 lakh Asset addition in the year 2021-22 Grant: Rs. 1838.66 lakh": {
+          "GFA as on 1/4/2021 Rs. lakh": null,
+          "Asset Addition during the Year Rs. Lakh": 1985.25,
+          "GFA as on 1/4/2022 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2021-22 Rs. lakh": null,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        "Approved Depreciation": {
+          "GFA as on 1/4/2021 Rs. lakh": null,
+          "Asset Addition during the Year Rs. Lakh": null,
+          "GFA as on 1/4/2022 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2021 Rs. Lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2021-22 Rs. lakh": 75.5,
+          "Accumulated depreciation as on 31/3/2022 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        }
+      }
+    },
+    {
+      "table_number": "Table 31",
+      "title": "Depreciation for the year 2022-23",
+      "component": "depreciation",
+      "headers": [
+        "Asset categories",
+        "GFA as on 1/4/2022 Rs. lakh",
+        "GFA as on 1/4/2023 Rs. lakh",
+        "Accumulated depreciation as on 1/4/2022 Rs. Lakh",
+        "Depreciation rate %",
+        "Depreciation for the year 2022-23 Rs. lakh",
+        "Accumulated Depreciation as on 31/3/2023 Rs. lakh",
+        "NFA at the end of the year Rs. lakh"
+      ],
+      "rows": [
+        {
+          "Asset categories": "Land & Rights",
+          "GFA as on 1/4/2022 Rs. lakh": null,
+          "GFA as on 1/4/2023 Rs. lakh": null,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": null,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2022-23 Rs. lakh": null,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": null,
+          "NFA at the end of the year Rs. lakh": null
+        },
+        {
+          "Asset categories": "Civil works",
+          "GFA as on 1/4/2022 Rs. lakh": 188.95,
+          "GFA as on 1/4/2023 Rs. lakh": 188.95,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 81.9,
+          "Depreciation rate %": 3.34,
+          "Depreciation for the year 2022-23 Rs. lakh": 4.64,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 86.54,
+          "NFA at the end of the year Rs. lakh": 102.41
+        },
+        {
+          "Asset categories": "Transmission lines",
+          "GFA as on 1/4/2022 Rs. lakh": 2500.61,
+          "GFA as on 1/4/2023 Rs. lakh": 2500.61,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 419.13,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2022-23 Rs. lakh": 9.73,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 428.86,
+          "NFA at the end of the year Rs. lakh": 2071.74
+        },
+        {
+          "Asset categories": "Substations",
+          "GFA as on 1/4/2022 Rs. lakh": 4223.05,
+          "GFA as on 1/4/2023 Rs. lakh": 4223.05,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 1348.64,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2022-23 Rs. lakh": 83.0,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 1431.64,
+          "NFA at the end of the year Rs. lakh": 2791.41
+        },
+        {
+          "Asset categories": "11 kV works",
+          "GFA as on 1/4/2022 Rs. lakh": 154.78,
+          "GFA as on 1/4/2023 Rs. lakh": 154.78,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 62.97,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2022-23 Rs. lakh": 4.78,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 67.75,
+          "NFA at the end of the year Rs. lakh": 87.03
+        },
+        {
+          "Asset categories": "LT lines/ others*",
+          "GFA as on 1/4/2022 Rs. lakh": 73.65,
+          "GFA as on 1/4/2023 Rs. lakh": 73.65,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 21.86,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2022-23 Rs. lakh": 2.5,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 24.36,
+          "NFA at the end of the year Rs. lakh": 49.3
+        },
+        {
+          "Asset categories": "Metering equipment",
+          "GFA as on 1/4/2022 Rs. lakh": 6.94,
+          "GFA as on 1/4/2023 Rs. lakh": 6.94,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 3.2,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2022-23 Rs. lakh": 0.24,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 3.44,
+          "NFA at the end of the year Rs. lakh": 3.5
+        },
+        {
+          "Asset categories": "Electrical installations",
+          "GFA as on 1/4/2022 Rs. lakh": 96.86,
+          "GFA as on 1/4/2023 Rs. lakh": 96.86,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 19.13,
+          "Depreciation rate %": 5.28,
+          "Depreciation for the year 2022-23 Rs. lakh": 2.55,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 21.68,
+          "NFA at the end of the year Rs. lakh": 75.18
+        },
+        {
+          "Asset categories": "Softwares",
+          "GFA as on 1/4/2022 Rs. lakh": 6.27,
+          "GFA as on 1/4/2023 Rs. lakh": 6.27,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 0.81,
+          "Depreciation rate %": 6.33,
+          "Depreciation for the year 2022-23 Rs. lakh": 0.31,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 1.12,
+          "NFA at the end of the year Rs. lakh": 5.15
+        }
+      ],
+      "totals": {
+        "Total": {
+          "GFA as on 1/4/2022 Rs. lakh": 7251.11,
+          "GFA as on 1/4/2023 Rs. lakh": 7251.11,
+          "Accumulated depreciation as on 1/4/2022 Rs. Lakh": 1957.64,
+          "Depreciation rate %": null,
+          "Depreciation for the year 2022-23 Rs. lakh": 107.75,
+          "Accumulated Depreciation as on 31/3/2023 Rs. lakh": 2065.39,
+          "NFA at the end of the year Rs. lakh": 5185.72
+        }
+      }
+    },
+    {
+      "table_number": "Table 32",
+      "title": "Approved depreciation and claw back (Rs. In lakh)",
+      "component": "depreciation",
+      "headers": [
+        "Year",
+        "Depreciation originally claimed by the licensee",
+        "Depreciation approved by the commission",
+        "Revise calculated depreciation",
+        "Excess allowed in previous orders"
+      ],
+      "rows": [
+        {
+          "Year": "2019-20",
+          "Depreciation originally claimed by the licensee": 189.38,
+          "Depreciation approved by the commission": 142.6,
+          "Revise calculated depreciation": 94.17,
+          "Excess allowed in previous orders": 48.43
+        },
+        {
+          "Year": "2020-21",
+          "Depreciation originally claimed by the licensee": 154.06,
+          "Depreciation approved by the commission": 142.6,
+          "Revise calculated depreciation": 96.59,
+          "Excess allowed in previous orders": 46.52
+        },
+        {
+          "Year": "2021-22",
+          "Depreciation originally claimed by the licensee": 162.68,
+          "Depreciation approved by the commission": 142.6,
+          "Revise calculated depreciation": 75.5,
+          "Excess allowed in previous orders": 67.61
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Depreciation originally claimed by the licensee": null,
+          "Depreciation approved by the commission": null,
+          "Revise calculated depreciation": null,
+          "Excess allowed in previous orders": 162.56
+        }
+      }
+    },
+    {
+      "table_number": "Table-33",
+      "title": "Interest and finance charges (Rs. lakh)",
+      "component": "interest",
+      "headers": [
+        "Particulars",
+        "2020-21 Truing Up Petition",
+        "2020-21 Trued Up",
+        "2021-22 Truing Up Petition",
+        "2021-22 Trued Up",
+        "2022-23 Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest and finance charges on long term loans",
+          "2020-21 Truing Up Petition": 30.08,
+          "2020-21 Trued Up": 17.32,
+          "2021-22 Truing Up Petition": 24.96,
+          "2021-22 Trued Up": 7.87,
+          "2022-23 Truing Up Petition": 8.96
+        },
+        {
+          "Particulars": "Interest on consumer security deposits etc",
+          "2020-21 Truing Up Petition": 98.85,
+          "2020-21 Trued Up": 98.85,
+          "2021-22 Truing Up Petition": 98.8,
+          "2021-22 Trued Up": 98.8,
+          "2022-23 Truing Up Petition": 72.7
+        }
+      ],
+      "totals": {
+        "Total": {
+          "2020-21 Truing Up Petition": 128.93,
+          "2020-21 Trued Up": 116.17,
+          "2021-22 Truing Up Petition": 123.76,
+          "2021-22 Trued Up": 106.67,
+          "2022-23 Truing Up Petition": 81.66
+        }
+      }
+    },
+    {
+      "table_number": "Table 34",
+      "title": "Weighted Average Interest for the year 2022-23",
+      "component": "interest",
+      "headers": [
+        "No",
+        "Bank",
+        "Period of year",
+        "Rate %",
+        "Days",
+        "Weighted Rate"
+      ],
+      "rows": [
+        {
+          "No": 1,
+          "Bank": "South India Bank",
+          "Period of year": "01-04-2022 to 01-06-2022",
+          "Rate %": 8.25,
+          "Days": 62,
+          "Weighted Rate": 511.5
+        },
+        {
+          "No": 2,
+          "Bank": "South India Bank",
+          "Period of year": "02-06-2022 to 01-12-2022",
+          "Rate %": 8.2,
+          "Days": 183,
+          "Weighted Rate": 1500.6
+        },
+        {
+          "No": 3,
+          "Bank": "South India Bank",
+          "Period of year": "02-12-2022 to 31-03-2023",
+          "Rate %": 8.95,
+          "Days": 120,
+          "Weighted Rate": 1074.0
+        },
+        {
+          "No": 4,
+          "Bank": "Federal Bank",
+          "Period of year": "01-04-2022 to 15-09-2022",
+          "Rate %": 8.3,
+          "Days": 168,
+          "Weighted Rate": 1394.4
+        },
+        {
+          "No": 5,
+          "Bank": "Federal Bank",
+          "Period of year": "16-09-2022 to 31-03-2023",
+          "Rate %": 8.7,
+          "Days": 197,
+          "Weighted Rate": 1713.9
+        }
+      ],
+      "totals": {
+        "Total": {
+          "No": 6,
+          "Bank": null,
+          "Period of year": null,
+          "Rate %": null,
+          "Days": 730,
+          "Weighted Rate": 6194.4
+        },
+        "Weighted Average Interest Rate (%)": {
+          "No": null,
+          "Bank": null,
+          "Period of year": "6194.4/730 =",
+          "Rate %": null,
+          "Days": null,
+          "Weighted Rate": 8.49
+        }
+      }
+    },
+    {
+      "table_number": "Table 35",
+      "title": "Interest on normative loan claimed for the year 2022-23",
+      "component": "interest",
+      "headers": [
+        "Particulars",
+        "Rs lakh"
+      ],
+      "rows": [
+        {
+          "Particulars": "Gross Loan -Opening",
+          "Rs lakh": 370.26
+        },
+        {
+          "Particulars": "Cumulative repayments of Loans up to previous year",
+          "Rs lakh": 370.26
+        },
+        {
+          "Particulars": "Net loan-Opening",
+          "Rs lakh": 203.91
+        },
+        {
+          "Particulars": "Add: Drawal (s) during the Year",
+          "Rs lakh": null
+        },
+        {
+          "Particulars": "Less: Repayment (s) of Loans during the year",
+          "Rs lakh": 196.64
+        }
+      ],
+      "totals": {
+        "Net loan - Closing": {
+          "Rs lakh": 7.27
+        },
+        "Average Net Loan": {
+          "Rs lakh": 105.59
+        },
+        "Interest on Loan": {
+          "Rs lakh": 8.96
+        },
+        "Weighted average Rate of Interest on Loans": {
+          "Rs lakh": 8.49
+        }
+      }
+    },
+    {
+      "table_number": "Table 36",
+      "title": "Revised Interest charges on normative loan (Rs. lakh)",
+      "component": "interest",
+      "headers": [
+        "No.",
+        "Particulars",
+        "2019-20",
+        "2020-21",
+        "2021-22",
+        "2022-23"
+      ],
+      "rows": [
+        {
+          "No.": 1,
+          "Particulars": "Opening Normative loan",
+          "2019-20": 313.22,
+          "2020-21": 309.88,
+          "2021-22": 213.29,
+          "2022-23": 137.79
+        },
+        {
+          "No.": 2,
+          "Particulars": "Add. Asset addition Particulars for the year",
+          "2019-20": 90.83,
+          "2020-21": null,
+          "2021-22": null,
+          "2022-23": null
+        },
+        {
+          "No.": 3,
+          "Particulars": "Less: Depreciation for the year",
+          "2019-20": 94.17,
+          "2020-21": 96.59,
+          "2021-22": 75.5,
+          "2022-23": 75.43
+        },
+        {
+          "No.": 4,
+          "Particulars": "Closing Normative Loan",
+          "2019-20": 309.88,
+          "2020-21": 213.29,
+          "2021-22": 137.79,
+          "2022-23": 62.36
+        },
+        {
+          "No.": 5,
+          "Particulars": "Average Loan",
+          "2019-20": 311.55,
+          "2020-21": 261.59,
+          "2021-22": 175.54,
+          "2022-23": 100.08
+        },
+        {
+          "No.": 6,
+          "Particulars": "Rate of Interest (%)",
+          "2019-20": 10.08,
+          "2020-21": 9.11,
+          "2021-22": 8.28,
+          "2022-23": 8.49
+        }
+      ],
+      "totals": {
+        "Interest charges allowable for Asset additions (5*6)": {
+          "No.": 7,
+          "Particulars": null,
+          "2019-20": 31.4,
+          "2020-21": 23.83,
+          "2021-22": 14.53,
+          "2022-23": 8.5
+        }
+      }
+    },
+    {
+      "table_number": "Table 37",
+      "title": "Approved and revised Interest on normative loan (Rs. lakh)",
+      "component": "interest",
+      "headers": [
+        "Year",
+        "Interest on normative loan approved",
+        "Revise calculation",
+        "Adjustments to interest on normative loan"
+      ],
+      "rows": [
+        {
+          "Year": "2019-20",
+          "Interest on normative loan approved": 28.96,
+          "Revise calculation": 31.4,
+          "Adjustments to interest on normative loan": 2.44
+        },
+        {
+          "Year": "2020-21",
+          "Interest on normative loan approved": 17.32,
+          "Revise calculation": 23.83,
+          "Adjustments to interest on normative loan": 6.51
+        },
+        {
+          "Year": "2021-22",
+          "Interest on normative loan approved": 7.87,
+          "Revise calculation": 14.53,
+          "Adjustments to interest on normative loan": 6.66
+        }
+      ],
+      "totals": {
+        "Total": {
+          "Interest on normative loan approved": 69.76,
+          "Revise calculation": 69.76,
+          "Adjustments to interest on normative loan": 15.61
+        }
+      }
+    },
+    {
+      "table_number": "Table 38",
+      "title": "Return on NFA claimed for 2022-23",
+      "component": "return_on_nfa",
+      "headers": [
+        "Particulars",
+        "(Rs Lakh)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Net Fixed Assets net of Consumer Contribution & Grants (at the beginning of the year)",
+          "(Rs Lakh)": 1574.46
+        },
+        {
+          "Particulars": "Rate of return",
+          "(Rs Lakh)": 5.5
+        }
+      ],
+      "totals": {
+        "Total return on net fixed assets": {
+          "(Rs Lakh)": 86.6
+        }
+      }
+    },
+    {
+      "table_number": "Table 39",
+      "title": "Revised Return on NFA (Rs. In lakh)",
+      "component": "return_on_nfa",
+      "headers": [
+        "Particulars",
+        "2019-20",
+        "2020-21",
+        "2021-22",
+        "2022-23"
+      ],
+      "rows": [
+        {
+          "Particulars": "NFA (Net of consumer contributions and grants at the beginning of the year)",
+          "2019-20": 929.2,
+          "2020-21": 925.87,
+          "2021-22": 829.28,
+          "2022-23": 753.78
+        },
+        {
+          "Particulars": "Less: NFA considered for normative loan",
+          "2019-20": 311.55,
+          "2020-21": 261.59,
+          "2021-22": 175.54,
+          "2022-23": 100.08
+        },
+        {
+          "Particulars": "Net NFA for RoNFA",
+          "2019-20": 617.65,
+          "2020-21": 664.28,
+          "2021-22": 653.74,
+          "2022-23": 653.7
+        },
+        {
+          "Particulars": "Rate of return (%)",
+          "2019-20": 3.0,
+          "2020-21": 3.0,
+          "2021-22": 3.0,
+          "2022-23": 5.5
+        }
+      ],
+      "totals": {
+        "Total return on NFA": {
+          "2019-20": 18.53,
+          "2020-21": 19.93,
+          "2021-22": 19.61,
+          "2022-23": 35.95
+        }
+      }
+    },
+    {
+      "table_number": "Table 40",
+      "title": "Approved and revised RoNFA (Rs. lakh)",
+      "component": "return_on_nfa",
+      "headers": [
+        "Year",
+        "RONFA approved",
+        "Revise calculation",
+        "Adjustments to RoNFA"
+      ],
+      "rows": [
+        {
+          "Year": "2019-20",
+          "RONFA approved": 27.88,
+          "Revise calculation": 18.53,
+          "Adjustments to RoNFA": 9.35
+        },
+        {
+          "Year": "2020-21",
+          "RONFA approved": 23.35,
+          "Revise calculation": 19.93,
+          "Adjustments to RoNFA": 3.42
+        },
+        {
+          "Year": "2021-22",
+          "RONFA approved": 21.07,
+          "Revise calculation": 19.61,
+          "Adjustments to RoNFA": 1.46
+        }
+      ],
+      "totals": {
+        "Total": {
+          "RONFA approved": 72.3,
+          "Revise calculation": 58.07,
+          "Adjustments to RoNFA": 14.23
+        }
+      }
+    },
+    {
+      "table_number": "Table 41",
+      "title": "Revenue from sale of Power for the year 2022-23",
+      "component": "energy",
+      "headers": [
+        "Particulars",
+        "Number of consumers",
+        "Sale Lakh Units",
+        "% of total Unit sold",
+        "Revenue Rs lakh",
+        "Avg. realisation per KWh"
+      ],
+      "rows": [
+        {
+          "Particulars": "LT - IV B IT/ITES below 10kW",
+          "Number of consumers": 220,
+          "Sale Lakh Units": 10.93,
+          "% of total Unit sold": 3.57,
+          "Revenue Rs lakh": 74.6,
+          "Avg. realisation per KWh": 6.82
+        },
+        {
+          "Particulars": "LT \u2013 IV B IT/ITES above 10kW up to 20kW",
+          "Number of consumers": 74,
+          "Sale Lakh Units": 7.01,
+          "% of total Unit sold": 2.29,
+          "Revenue Rs lakh": 60.35,
+          "Avg. realisation per KWh": 8.61
+        },
+        {
+          "Particulars": "LT - IV B IT/ITES above 20kW",
+          "Number of consumers": 238,
+          "Sale Lakh Units": 249.31,
+          "% of total Unit sold": 81.43,
+          "Revenue Rs lakh": 2418.14,
+          "Avg. realisation per KWh": 9.7
+        },
+        {
+          "Particulars": "LT - VI (A) General",
+          "Number of consumers": 2,
+          "Sale Lakh Units": 0.39,
+          "% of total Unit sold": 0.13,
+          "Revenue Rs lakh": 3.18,
+          "Avg. realisation per KWh": 8.22
+        },
+        {
+          "Particulars": "LT VI (B) General",
+          "Number of consumers": 9,
+          "Sale Lakh Units": 0.59,
+          "% of total Unit sold": 0.19,
+          "Revenue Rs lakh": 5.61,
+          "Avg. realisation per KWh": 9.5
+        },
+        {
+          "Particulars": "LT VI (c) General (1ph or 3 ph)",
+          "Number of consumers": 33,
+          "Sale Lakh Units": 2.38,
+          "% of total Unit sold": 0.78,
+          "Revenue Rs lakh": 25.85,
+          "Avg. realisation per KWh": 10.85
+        },
+        {
+          "Particulars": "LT VI (F) General (1 ph)",
+          "Number of consumers": 51,
+          "Sale Lakh Units": 0.68,
+          "% of total Unit sold": 0.22,
+          "Revenue Rs lakh": 6.2,
+          "Avg. realisation per KWh": 9.07
+        },
+        {
+          "Particulars": "LT VII (A) Commercial (1-Ph)",
+          "Number of consumers": 50,
+          "Sale Lakh Units": 0.44,
+          "% of total Unit sold": 0.14,
+          "Revenue Rs lakh": 4.39,
+          "Avg. realisation per KWh": 10.06
+        },
+        {
+          "Particulars": "LT VI (F) General (3 ph)",
+          "Number of consumers": 125,
+          "Sale Lakh Units": 22.86,
+          "% of total Unit sold": 7.47,
+          "Revenue Rs lakh": 239.51,
+          "Avg. realisation per KWh": 10.48
+        },
+        {
+          "Particulars": "LT VII (A) Commercial (3-Ph)",
+          "Number of consumers": 57,
+          "Sale Lakh Units": 3.77,
+          "% of total Unit sold": 1.23,
+          "Revenue Rs lakh": 47.71,
+          "Avg. realisation per KWh": 12.64
+        },
+        {
+          "Particulars": "LT VII (B) Commercial",
+          "Number of consumers": 11,
+          "Sale Lakh Units": 0.02,
+          "% of total Unit sold": 0.01,
+          "Revenue Rs lakh": 0.19,
+          "Avg. realisation per KWh": 8.27
+        },
+        {
+          "Particulars": "LT IV A Industrial below 10 KW",
+          "Number of consumers": 6,
+          "Sale Lakh Units": 0.22,
+          "% of total Unit sold": 0.07,
+          "Revenue Rs lakh": 1.33,
+          "Avg. realisation per KWh": 6.16
+        },
+        {
+          "Particulars": "LT IV A Industrial above 10 KW below 20 KW",
+          "Number of consumers": 4,
+          "Sale Lakh Units": 0.38,
+          "% of total Unit sold": 0.12,
+          "Revenue Rs lakh": 2.64,
+          "Avg. realisation per KWh": 7.0
+        },
+        {
+          "Particulars": "LT IV A Industrial above 20 KW",
+          "Number of consumers": 7,
+          "Sale Lakh Units": 2.82,
+          "% of total Unit sold": 0.92,
+          "Revenue Rs lakh": 27.19,
+          "Avg. realisation per KWh": 9.63
+        },
+        {
+          "Particulars": "LT VI (G) General",
+          "Number of consumers": 1,
+          "Sale Lakh Units": 0.07,
+          "% of total Unit sold": 0.02,
+          "Revenue Rs lakh": 0.69,
+          "Avg. realisation per KWh": 10.49
+        },
+        {
+          "Particulars": "LT IX Display Lighting and Hording",
+          "Number of consumers": 2,
+          "Sale Lakh Units": 0.08,
+          "% of total Unit sold": 0.03,
+          "Revenue Rs lakh": 1.14,
+          "Avg. realisation per KWh": 14.45
+        },
+        {
+          "Particulars": "Self Consumption",
+          "Number of consumers": 2,
+          "Sale Lakh Units": 2.74,
+          "% of total Unit sold": 0.89,
+          "Revenue Rs lakh": 30.26,
+          "Avg. realisation per KWh": 11.05
+        },
+        {
+          "Particulars": "Street Lighting",
+          "Number of consumers": 18,
+          "Sale Lakh Units": 1.46,
+          "% of total Unit sold": 0.48,
+          "Revenue Rs lakh": 6.86,
+          "Avg. realisation per KWh": 4.71
+        }
+      ],
+      "totals": {
+        "Sub Total (LT)": {
+          "Number of consumers": 910,
+          "Sale Lakh Units": 306.15,
+          "% of total Unit sold": 100.0,
+          "Revenue Rs lakh": 2955.83,
+          "Avg. realisation per KWh": 9.65
+        },
+        "HT -I (B) IT & IT Services": {
+          "Number of consumers": 17,
+          "Sale Lakh Units": 313.82,
+          "% of total Unit sold": 93.07,
+          "Revenue Rs lakh": 2575.5,
+          "Avg. realisation per KWh": 8.21
+        },
+        "HT -II (A) General": {
+          "Number of consumers": 2,
+          "Sale Lakh Units": 13.98,
+          "% of total Unit sold": 4.15,
+          "Revenue Rs lakh": 116.11,
+          "Avg. realisation per KWh": 8.3
+        },
+        "HT II B": {
+          "Number of consumers": 3,
+          "Sale Lakh Units": 5.4,
+          "% of total Unit sold": 1.6,
+          "Revenue Rs lakh": 57.02,
+          "Avg. realisation per KWh": 10.56
+        },
+        "HT-IV Commercial": {
+          "Number of consumers": 1,
+          "Sale Lakh Units": 3.99,
+          "% of total Unit sold": 1.18,
+          "Revenue Rs lakh": 38.49,
+          "Avg. realisation per KWh": 9.66
+        },
+        "Sub Total (HT)": {
+          "Number of consumers": 23,
+          "Sale Lakh Units": 337.19,
+          "% of total Unit sold": 100.0,
+          "Revenue Rs lakh": 2787.13,
+          "Avg. realisation per KWh": 8.27
+        },
+        "Grand Total": {
+          "Number of consumers": 933,
+          "Sale Lakh Units": 643.34,
+          "% of total Unit sold": null,
+          "Revenue Rs lakh": 5742.96,
+          "Avg. realisation per KWh": 8.93
+        },
+        "Electricity Duty Recovery": {
+          "Number of consumers": null,
+          "Sale Lakh Units": null,
+          "% of total Unit sold": null,
+          "Revenue Rs lakh": 260.4,
+          "Avg. realisation per KWh": null
+        },
+        "Gross Revenue From Sale of Power": {
+          "Number of consumers": null,
+          "Sale Lakh Units": null,
+          "% of total Unit sold": null,
+          "Revenue Rs lakh": 6003.37,
+          "Avg. realisation per KWh": null
+        },
+        "Less: Electricity Duty Payable to Govt. plus commission (Contra Entry)": {
+          "Number of consumers": null,
+          "Sale Lakh Units": null,
+          "% of total Unit sold": null,
+          "Revenue Rs lakh": 253.25,
+          "Avg. realisation per KWh": null
+        },
+        "Net Revenue from Sale of Power": {
+          "Number of consumers": null,
+          "Sale Lakh Units": null,
+          "% of total Unit sold": null,
+          "Revenue Rs lakh": 5750.11,
+          "Avg. realisation per KWh": null
+        }
+      }
+    },
+    {
+      "table_number": "Table 42",
+      "title": "Comparison of Non-Tariff Income (Rs.lakh)",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "2021-22 Truing Up Petition",
+        "2022-23 Truing Up Petition"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on investments, FD, Call Deposits & bank balances",
+          "2021-22 Truing Up Petition": 48.9,
+          "2022-23 Truing Up Petition": 41.02
+        },
+        {
+          "Particulars": "Miscellaneous receipts",
+          "2021-22 Truing Up Petition": 2.83,
+          "2022-23 Truing Up Petition": 7.36
+        },
+        {
+          "Particulars": "Commission for collection of electricity duty",
+          "2021-22 Truing Up Petition": 1.93,
+          "2022-23 Truing Up Petition": 2.47
+        },
+        {
+          "Particulars": "Revenue from late payment surcharge",
+          "2021-22 Truing Up Petition": 30.01,
+          "2022-23 Truing Up Petition": 27.24
+        }
+      ],
+      "totals": {
+        "Total": {
+          "2021-22 Truing Up Petition": 83.67,
+          "2022-23 Truing Up Petition": 78.09
+        }
+      }
+    },
+    {
+      "table_number": "Table 43",
+      "title": "Trued Up Income and Expenditure for the Year 2022-23 (Rs.lakh)",
+      "component": "other",
+      "headers": [
+        "Particulars",
+        "ARR & ERC Approved",
+        "Petition for truing up",
+        "Trued Up"
+      ],
+      "rows": [
+        {
+          "Particulars": "Cost of power purchase/ generation",
+          "ARR & ERC Approved": 4652.67,
+          "Petition for truing up": 4652.88,
+          "Trued Up": 4606.04
+        },
+        {
+          "Particulars": "Employee Expenses",
+          "ARR & ERC Approved": 27.14,
+          "Petition for truing up": 54.54,
+          "Trued Up": 27.82
+        },
+        {
+          "Particulars": "Administration and General",
+          "ARR & ERC Approved": 36.09,
+          "Petition for truing up": 92.05,
+          "Trued Up": 36.99
+        },
+        {
+          "Particulars": "Repairs and Maintenance",
+          "ARR & ERC Approved": 317.37,
+          "Petition for truing up": 447.65,
+          "Trued Up": 402.43
+        },
+        {
+          "Particulars": "Depreciation",
+          "ARR & ERC Approved": 142.6,
+          "Petition for truing up": 162.45,
+          "Trued Up": 75.43
+        },
+        {
+          "Particulars": "Prior period item (Excess depreciation allowed)",
+          "ARR & ERC Approved": null,
+          "Petition for truing up": null,
+          "Trued Up": -162.56
+        },
+        {
+          "Particulars": "Interest on long term loans",
+          "ARR & ERC Approved": 7.87,
+          "Petition for truing up": 8.96,
+          "Trued Up": 8.5
+        },
+        {
+          "Particulars": "Interest on consumer deposits",
+          "ARR & ERC Approved": 63.91,
+          "Petition for truing up": 72.7,
+          "Trued Up": 72.7
+        },
+        {
+          "Particulars": "Prior period item (adjustments of interest on normative loan)",
+          "ARR & ERC Approved": null,
+          "Petition for truing up": null,
+          "Trued Up": 15.61
+        },
+        {
+          "Particulars": "Return on Net Fixed Assets",
+          "ARR & ERC Approved": 21.07,
+          "Petition for truing up": 86.6,
+          "Trued Up": 35.95
+        },
+        {
+          "Particulars": "Prior period item (Excess RONFA allowed)",
+          "ARR & ERC Approved": null,
+          "Petition for truing up": null,
+          "Trued Up": -14.23
+        }
+      ],
+      "totals": {
+        "Total Expenditure/ARR": {
+          "ARR & ERC Approved": 5268.72,
+          "Petition for truing up": 5577.83,
+          "Trued Up": 5104.68
+        },
+        "Revenue from sale of power": {
+          "ARR & ERC Approved": 5751.09,
+          "Petition for truing up": 5750.11,
+          "Trued Up": 5750.11
+        },
+        "Non-tariff income": {
+          "ARR & ERC Approved": 159.35,
+          "Petition for truing up": 78.09,
+          "Trued Up": 167.38
+        },
+        "Total Revenue / ERC": {
+          "ARR & ERC Approved": 5910.44,
+          "Petition for truing up": 5828.2,
+          "Trued Up": 5917.49
+        },
+        "Net Revenue Surplus/(Deficit)": {
+          "ARR & ERC Approved": 641.72,
+          "Petition for truing up": 250.37,
+          "Trued Up": 812.81
+        }
+      }
+    }
+  ],
+  "kserc_decisions": {
+    "power_purchase": {
+      "claimed_amount": 4652.88,
+      "approved_amount": 4606.04,
+      "adjustment_amount": 46.84,
+      "kserc_reasoning": "As mentioned in previous paragraphs, as per the Tariff Regulations 2021, if the actual distribution loss is higher than the approved level of distribution loss, then the quantum of power purchased corresponding to the excess distribution loss shall be disallowed at the average cost of power purchase. Accordingly, the power purchase cost based on the approved distribution loss of 3.45% for the year 2022-23 is as shown below.",
+      "key_observations": [
+        "Actual distribution loss (In lakh units): 29.73",
+        "Approved distribution loss (In lakh units): 22.99",
+        "Excess distribution loss (lakh units) (1-2): 6.74",
+        "Average Power Purchase Cost (Rs. per unit): 6.95",
+        "Excess power purchase cost to be disallowed (Rs. lakh) (4) * (3): 46.84"
+      ],
+      "methodology_applied": "Tariff Regulations 2021, distribution loss disallowance (Regulation 73(3))"
+    },
+    "employee_cost": {
+      "claimed_amount": 54.54,
+      "approved_amount": 27.82,
+      "adjustment_amount": 26.72,
+      "kserc_reasoning": "Considering the above, the Commission hereby approves the employee cost of Rs. 27.82 lakh for the year 2022-23 as per the norm after adjusting actual inflation.",
+      "key_observations": [
+        "Actual employee cost claimed by the licensee is Rs. 54.54 lakh as against the approved norms of Rs. 27.14 lakh.",
+        "The actual employee is higher compared to the norms.",
+        "Major items booked under Employee Cost are Consolidated pay, salaries, dearness allowances, HRA, other allowance etc."
+      ],
+      "methodology_applied": "As per the norm after adjusting actual inflation (Annexure-7 of Tariff Regulations, 2021, and actual inflation rate of 7.06%)"
+    },
+    "repair_maintenance": {
+      "claimed_amount": 447.65,
+      "approved_amount": 402.43,
+      "adjustment_amount": 45.22,
+      "kserc_reasoning": "The commission noted that as per the provision 80 (3) of the regulations, 'Any one time operation and maintenance expenditure of a special nature not in the form of routine repair and maintenance, if any, if required and is undertaken by the distribution licensee, expenses for such maintenance may be allowed by the commission after prudence check, considering the circumstances, details and justification furnished by the Distribution business/licensee for incurring such an expenditure, to the satisfaction of the commission'. This provision allows onetime expenses incurred, not in the nature of regular R&M expenses. Considering this, the Commission hereby approves the one-time repair and maintenance charges of Rs. 35.60 lakh together with the cost of material and spares amounting to Rs.11.16 lakh purchase for the same in addition to the norms as claimed by the licensee. The Commission also notes that the new campus at Pallippuram Technocity was commissioned in 2019-20 whereas the norms for O&M expenses were fixed based on trued up figures of 2018-19. As such, the O&M expenses for the Pallippuram Technocity are not reflected in the norm. The licensee submitted that Rs.30.38 lakh has been spent towards R&M expenses of Pallippuram Technocity. The Commission considers this and is of the opinion to allow these expenses over and above the norm. Therefore the Commission approves Rs.30.38 lakh as R&M expenses for Technocity in addition to the norms. The Commission examined the arguments of the licensee regarding the normative amount approved in the regulations, 2021. The commission had considered the revised R&M based on actual escalation rate for the year 2022-23. Accordingly, the Commission hereby approves Rs. 402.43 lakh (Rs. 35.60 lakh + Rs. 11.16 lakh + Rs.30.38 lakh + Rs. 325.29 lakh) as R&M expense for the year 2022-23.",
+      "key_observations": [
+        "Claimed Rs. 447.65 lakh against normative Rs. 317.37 lakh.",
+        "Licensee states R&M carried out by licensed electrical contractors through transparent competitive bidding.",
+        "Overall increase of 10.57% compared to previous year, including new distribution area under Phase-IV in Pallippuram (Rs. 30.38 lakh).",
+        "One-time repair and maintenance charges of Rs. 35.60 lakh approved.",
+        "Cost of material and spares of Rs. 11.16 lakh approved.",
+        "R&M expenses for Technocity of Rs. 30.38 lakh approved over and above the norm."
+      ],
+      "methodology_applied": "Provision 80 (3) of the regulations for one-time expenses; revised R&M based on actual escalation rate for the year 2022-23."
+    },
+    "admin_general": {
+      "claimed_amount": 92.05,
+      "approved_amount": 36.99,
+      "adjustment_amount": 55.06,
+      "kserc_reasoning": "The Commission examined the submission of the licensee and observed that, the licensee has booked Rs. 36.98 lakh towards Electricity Duty for the year 2022-23. The Commission in the previous Orders had stated that duty under Section 3 cannot be passed on to the consumers in view of the statutory provisions of the Kerala Electricity Duty Act, 1963. Hence the same is disallowed. Considering the methodology in approving the operation and maintenance expenses based on the actual escalation for the year, the commission hereby approves the amount of Rs. 36.99 lakh as A&G expenses for the year 2022-23",
+      "key_observations": [
+        "Claimed Rs. 92.05 lakh against approved norm Rs. 36.09 lakh.",
+        "Includes Rs. 36.98 lakh towards Electricity Duty, which is disallowed.",
+        "Major expenses include Electricity charges (Rs. 12.10 lakh), Fees to Electrical Inspectorate (Rs. 14.80 lakh), conveyance charges (Rs. 5.52 lakh).",
+        "40% of electricity charges for administrative offices apportioned to distribution business."
+      ],
+      "methodology_applied": "Disallowance of Electricity Duty under Section 3 of Kerala Electricity Duty Act, 1963; approval based on actual escalation for the year."
+    },
+    "depreciation": {
+      "claimed_amount": 162.45,
+      "approved_amount": 75.43,
+      "adjustment_amount": 87.02,
+      "kserc_reasoning": "Accordingly, the Commission hereby approves depreciation of Rs.94.17 lakh for the year 2019-20, Rs. 96.59 for the year 2020-21, Rs. 75.50 lakh for the year 2021-22 and Rs. 75.43 lakh for the year 2022-23 as per the revised calculation as shown above. Accordingly, the Commission hereby claws back Rs. 162.56 lakh as excess amount of depreciation provisionally approved in previous years.",
+      "key_observations": [
+        "Licensee claimed Rs. 162.45 lakh.",
+        "No depreciation claimed for assets from Government grants and consumer contributions.",
+        "No asset capitalization during the year 2022-23.",
+        "Assets worth Rs. 1.73 lakh withdrawn from assets."
+      ],
+      "methodology_applied": "Revised calculation based on detailed asset information and disallowance for assets created by utilizing regulatory surplus."
+    },
+    "interest_long_term": {
+      "claimed_amount": 8.96,
+      "approved_amount": 8.5,
+      "adjustment_amount": 0.46,
+      "kserc_reasoning": "As per the above table the Commission hereby approves Rs. 8.50 lakh as interest on normative loan for the year 2022-23 and allows an extra amount of Rs. 15.61 lakh as adjustments against interest on normative loan allowed in the past years. Comparison of approved and revised calculation of interest on normative loan is given below:",
+      "key_observations": [
+        "Licensee claimed Rs. 8.96 lakh interest on normative loan.",
+        "Weighted average interest rate for 2022-23 is 8.49%."
+      ],
+      "methodology_applied": "Revised calculation of normative loan and interest charges, including adjustments for past years."
+    },
+    "interest_consumer_deposits": {
+      "claimed_amount": 72.7,
+      "approved_amount": 72.7,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "The interest on security deposits paid to the consumers for the year 2022-23 as claimed by the licensee amounts to Rs.72.70 lakh as against the ARR&ERC approved amount of Rs. 63.91 lakh. The Commission hereby approves the actual amount of Rs. 72.70 lakh paid by the licensee as interest on security deposits for the year 2022-23.",
+      "key_observations": [
+        "ARR&ERC approved amount was Rs. 63.91 lakh."
+      ],
+      "methodology_applied": "Approved as claimed based on actual amount paid."
+    },
+    "return_on_nfa": {
+      "claimed_amount": 86.6,
+      "approved_amount": 35.95,
+      "adjustment_amount": 50.65,
+      "kserc_reasoning": "As per the above table the Commission hereby approves Rs. 35.95 lakh as RoNFA for the year 2022-23 and claws back Rs. 14.23 lakh as excess amount of RoNFA allowed in the past years. Comparison of approved and revised calculation of RoNFA is given below:",
+      "key_observations": [
+        "Licensee claimed Rs. 86.60 lakh at 5.50% on NFA of Rs. 1574.46 lakh.",
+        "Assets created by utilizing regulatory surplus are not eligible for RoNFA."
+      ],
+      "methodology_applied": "Revised calculation based on decisions on capital investments and depreciation, and clawback of excess RoNFA from previous years."
+    },
+    "other_debits": {
+      "claimed_amount": 0.0,
+      "approved_amount": 0.0,
+      "adjustment_amount": 0.0,
+      "kserc_reasoning": "The petitioner states that the working capital requirement has increased to Rs. 1007.87 lakh due to higher sales, compared to Rs. 765.44 lakh and Rs. 752.75 lakh in the previous two years. The consumer deposit in cash is Rs. 1790.88 lakh, which was sufficient to cover the working capital requirement. Therefore, there were no additional borrowings required for working capital. Hence no interest on working capital is claimed by the licensee.",
+      "key_observations": [
+        "Licensee did not claim interest on working capital."
+      ],
+      "methodology_applied": "Approved as claimed (no claim)."
+    }
+  },
+  "energy_decision": {
+    "actual_loss_pct": 4.42,
+    "target_loss_pct": 3.45,
+    "penalty_or_gain": 46.84,
+    "kserc_reasoning": "Accordingly, as per the provisions of the Tariff Regulations, distribution loss is a controllable performance parameter. As per regulation 73(3) of the Tariff Regulations, 2021, if actual distribution loss is higher than the approved level, the quantum of power purchased corresponding to the excess distribution loss shall be disallowed at the average power purchase cost. The Commission hereby decides to limit the distribution loss to the approved level of 3.45% for the purpose of truing up. The licensee is directed to take effective measures to limit the distribution loss at the approved level.",
+    "excess_demand_action": "The quantum of power purchased corresponding to the excess distribution loss for that financial year shall be disallowed at the average power purchase cost."
+  },
+  "capital_structure_verified": {
+    "gfa_claimed": null,
+    "gfa_approved": null,
+    "additions_claimed": 158.27,
+    "additions_approved": 158.27,
+    "kserc_reasoning": "Considering the submissions made by the licensee, the Commission approves the capital investments made by the licensee. The Commission allows to meet the own fund requirements (excluding grant received from government) of Rs. 322.11 lakh (Rs.323.84 lakh - Rs.1.73 lakh) from the approved regulatory surplus of Rs.2267.07 lakh as on 31-03-2020 vide truing up order for the year 2019-20 dated 16-02-2022 (OP No.48/2021). The Commission has been allowing all reasonable and prudent expenses including RoE/ Return on net fixed assets to Technopark over the years for carrying out its electricity distribution activities. The accrued regulatory surplus approved and allowed to be retained with the Licensee is the amount arrived at after allowing all the prudent expenses including statutory returns. Accordingly, the licensee shall not be eligible for depreciation, RoE/RoNFA and other financing costs on the assets created by utilising such surplus as it would result in double payment by the consumers."
+  },
+  "final_summary": {
+    "total_claimed": 5577.83,
+    "total_approved": 5104.68,
+    "total_disallowed": 473.15,
+    "revenue_gap_surplus": 812.81
+  },
+  "_meta": {
+    "licensee": "Technopark",
+    "fy": "2022-23",
+    "order_ref": "OP 84/2023",
+    "method": "native_pdf_upload",
+    "tables_found": 44
+  }
+}

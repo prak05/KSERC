@@ -47,7 +47,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
     }
 
     return (
-        <div className="glass-card animate-slide-up" style={{ overflow: 'hidden', borderColor: 'rgba(100, 180, 255, 0.25)' }}>
+        <div className="card animate-slide-up" style={{ overflow: 'hidden', borderColor: 'rgba(100, 180, 255, 0.25)' }}>
             {/* Header — always visible */}
             <button
                 onClick={() => setExpanded(e => !e)}
@@ -71,7 +71,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                     </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    {saved && <span className="neon-tag tag-approved" style={{ fontSize: '9px' }}>✓ SAVED</span>}
+                    {saved && <span className="badge-compliant" style={{ fontSize: '9px' }}>✓ SAVED</span>}
                     <span style={{
                         color: 'var(--text-tertiary)', fontSize: '14px',
                         transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'none',
@@ -92,7 +92,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                             type="date"
                             value={hearingDate}
                             onChange={e => setHearingDate(e.target.value)}
-                            className="neon-input"
+                            className="input-field"
                             style={{ width: 220, fontFamily: 'var(--font-mono)', fontSize: '0.85rem', padding: '8px 12px' }}
                         />
                     </div>
@@ -105,7 +105,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                             </label>
                             <button
                                 onClick={addSubmission}
-                                className="ghost-btn"
+                                className="btn-secondary"
                                 style={{ fontSize: '0.65rem', padding: '4px 12px' }}
                             >
                                 + Add Point
@@ -121,7 +121,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                                         value={sub}
                                         onChange={e => updateSubmission(i, e.target.value)}
                                         rows={2}
-                                        className="neon-input"
+                                        className="input-field"
                                         placeholder="Enter what the licensee submitted during the hearing..."
                                         style={{
                                             flex: 1, resize: 'vertical',
@@ -155,7 +155,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                             value={respondentPosition}
                             onChange={e => setRespondentPosition(e.target.value)}
                             rows={3}
-                            className="neon-input"
+                            className="input-field"
                             placeholder="Enter the respondent's (KSEB Ltd) submissions and verification..."
                             style={{
                                 width: '100%', resize: 'vertical',
@@ -174,7 +174,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                             value={commissionObservations}
                             onChange={e => setCommissionObservations(e.target.value)}
                             rows={3}
-                            className="neon-input"
+                            className="input-field"
                             placeholder="Enter the Commission's observations and findings..."
                             style={{
                                 width: '100%', resize: 'vertical',
@@ -194,7 +194,7 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                         <button
                             onClick={handleSave}
                             disabled={saving}
-                            className="laser-btn"
+                            className="btn-primary"
                             style={{ fontSize: '0.7rem', padding: '8px 22px', opacity: saving ? 0.5 : 1 }}
                         >
                             {saving ? '⏳ Saving…' : '💾 Save Hearing Details'}

@@ -1,0 +1,1325 @@
+{
+  "tables_found": [
+    {
+      "table_number": "Table 1",
+      "title": "Summary of Truing Up Petition & Audited Accounts 2024-25",
+      "component": "general_financial_summary",
+      "page_number": 6,
+      "headers": [
+        "Particulars",
+        "FY25 Audited",
+        "FY25 ARR-ERC Approved",
+        "FY24 Audited",
+        "Variance with FY25 ARR-ERC Approved",
+        "Variance with FY24 Audited",
+        "Remarks"
+      ],
+      "rows": [
+        {
+          "Particulars": "Revenue from sale of power",
+          "FY25 Audited": 3707.46,
+          "FY25 ARR-ERC Approved": 3272.65,
+          "FY24 Audited": 3730.68,
+          "Variance with FY25 ARR-ERC Approved": 434.81,
+          "Variance with FY24 Audited": -23.22,
+          "Remarks": "Para 5a"
+        },
+        {
+          "Particulars": "Other income",
+          "FY25 Audited": 36.55,
+          "FY25 ARR-ERC Approved": 69.22,
+          "FY24 Audited": 66.74,
+          "Variance with FY25 ARR-ERC Approved": -32.67,
+          "Variance with FY24 Audited": -30.19,
+          "Remarks": "Para 5b"
+        },
+        {
+          "Particulars": "Total income",
+          "FY25 Audited": 3744.01,
+          "FY25 ARR-ERC Approved": 3341.87,
+          "FY24 Audited": 3797.42,
+          "Variance with FY25 ARR-ERC Approved": 402.14,
+          "Variance with FY24 Audited": -53.41,
+          "Remarks": null
+        },
+        {
+          "Particulars": "Power purchase cost",
+          "FY25 Audited": 3434.48,
+          "FY25 ARR-ERC Approved": 3125.79,
+          "FY24 Audited": 3376.3,
+          "Variance with FY25 ARR-ERC Approved": 308.69,
+          "Variance with FY24 Audited": 58.18,
+          "Remarks": "Para 5c"
+        },
+        {
+          "Particulars": "O&M Expenses",
+          "FY25 Audited": 332.0,
+          "FY25 ARR-ERC Approved": 243.72,
+          "FY24 Audited": 284.96,
+          "Variance with FY25 ARR-ERC Approved": 88.28,
+          "Variance with FY24 Audited": 47.04,
+          "Remarks": "Para 5d"
+        },
+        {
+          "Particulars": "Depreciation",
+          "FY25 Audited": 14.5,
+          "FY25 ARR-ERC Approved": 17.28,
+          "FY24 Audited": 15.28,
+          "Variance with FY25 ARR-ERC Approved": -2.78,
+          "Variance with FY24 Audited": -0.78,
+          "Remarks": "Para 5e"
+        },
+        {
+          "Particulars": "Interest & Finance charges",
+          "FY25 Audited": 41.72,
+          "FY25 ARR-ERC Approved": 52.72,
+          "FY24 Audited": 22.85,
+          "Variance with FY25 ARR-ERC Approved": -11.0,
+          "Variance with FY24 Audited": 18.87,
+          "Remarks": "Para 5f"
+        },
+        {
+          "Particulars": "Inspection charges",
+          "FY25 Audited": 0.33,
+          "FY25 ARR-ERC Approved": 1.31,
+          "FY24 Audited": 1.29,
+          "Variance with FY25 ARR-ERC Approved": -0.98,
+          "Variance with FY24 Audited": -0.96,
+          "Remarks": "Para 5g"
+        },
+        {
+          "Particulars": "Duty-III",
+          "FY25 Audited": 24.89,
+          "FY25 ARR-ERC Approved": null,
+          "FY24 Audited": 14.82,
+          "Variance with FY25 ARR-ERC Approved": 24.89,
+          "Variance with FY24 Audited": 10.07,
+          "Remarks": "Para 5g"
+        },
+        {
+          "Particulars": "Provision for doubtful debts",
+          "FY25 Audited": 7.14,
+          "FY25 ARR-ERC Approved": null,
+          "FY24 Audited": 2.42,
+          "Variance with FY25 ARR-ERC Approved": 7.14,
+          "Variance with FY24 Audited": 4.72,
+          "Remarks": "Para 5g"
+        },
+        {
+          "Particulars": "Return on Equity",
+          "FY25 Audited": null,
+          "FY25 ARR-ERC Approved": 7.03,
+          "FY24 Audited": null,
+          "Variance with FY25 ARR-ERC Approved": -7.03,
+          "Variance with FY24 Audited": null,
+          "Remarks": "Para 5h"
+        },
+        {
+          "Particulars": "Aggregate Revenue Requirement",
+          "FY25 Audited": 3855.06,
+          "FY25 ARR-ERC Approved": 3447.85,
+          "FY24 Audited": 3717.92,
+          "Variance with FY25 ARR-ERC Approved": 407.21,
+          "Variance with FY24 Audited": 137.14,
+          "Remarks": null
+        },
+        {
+          "Particulars": "Revenue Surplus/ (Gap) before taxation",
+          "FY25 Audited": -111.05,
+          "FY25 ARR-ERC Approved": -105.98,
+          "FY24 Audited": 79.5,
+          "Variance with FY25 ARR-ERC Approved": -5.07,
+          "Variance with FY24 Audited": -190.55,
+          "Remarks": null
+        }
+      ]
+    },
+    {
+      "table_number": "Table 2",
+      "title": "Other income breakdown",
+      "component": "other_income",
+      "page_number": 7,
+      "headers": [
+        "Particulars",
+        "FY24 Audited",
+        "FY24 Trued Up",
+        "FY25 ARR-ERC Approved",
+        "FY 25 Audited",
+        "FY25 Truing Up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on deposit with KSEBL",
+          "FY24 Audited": 17.36,
+          "FY24 Trued Up": 17.36,
+          "FY25 ARR-ERC Approved": 14.84,
+          "FY 25 Audited": 18.74,
+          "FY25 Truing Up Claim": 18.74
+        },
+        {
+          "Particulars": "Miscellaneous receipts",
+          "FY24 Audited": null,
+          "FY24 Trued Up": 4.87,
+          "FY25 ARR-ERC Approved": 2.0,
+          "FY 25 Audited": 17.81,
+          "FY25 Truing Up Claim": 17.81
+        },
+        {
+          "Particulars": "Revenue from other operations",
+          "FY24 Audited": 49.38,
+          "FY24 Trued Up": 9.12,
+          "FY25 ARR-ERC Approved": 8.43,
+          "FY 25 Audited": null,
+          "FY25 Truing Up Claim": null
+        },
+        {
+          "Particulars": "Interest on accumulated surplus",
+          "FY24 Audited": null,
+          "FY24 Trued Up": 77.46,
+          "FY25 ARR-ERC Approved": 43.95,
+          "FY 25 Audited": null,
+          "FY25 Truing Up Claim": null
+        },
+        {
+          "Particulars": "Total as per Approved/Audited Accounts",
+          "FY24 Audited": 66.74,
+          "FY24 Trued Up": 108.81,
+          "FY25 ARR-ERC Approved": 69.22,
+          "FY 25 Audited": 36.55,
+          "FY25 Truing Up Claim": 36.55
+        },
+        {
+          "Particulars": "Regulatory adjustments: Add: Interest on accumulated surplus",
+          "FY24 Audited": null,
+          "FY24 Trued Up": null,
+          "FY25 ARR-ERC Approved": null,
+          "FY 25 Audited": null,
+          "FY25 Truing Up Claim": 87.52
+        },
+        {
+          "Particulars": "Actuals amount after Regulatory Adjustments",
+          "FY24 Audited": 66.74,
+          "FY24 Trued Up": 108.81,
+          "FY25 ARR-ERC Approved": 69.22,
+          "FY 25 Audited": 36.55,
+          "FY25 Truing Up Claim": 124.07
+        }
+      ]
+    },
+    {
+      "table_number": "Table 3",
+      "title": "Computation of interest on Accumulated surplus",
+      "component": "other_income",
+      "page_number": 8,
+      "headers": [
+        "Particulars",
+        "Rs/Lakhs"
+      ],
+      "rows": [
+        {
+          "Particulars": "Regulatory Surplus as at 31st March 2024 (Refer Note below: After rectification of apparent error in the Truing Up Order OP 50/2024)",
+          "Rs/Lakhs": 1287.09
+        },
+        {
+          "Particulars": "Interest at 6.80% (As per retail deposit rate with SBI for tenure of 1 year during FY25)",
+          "Rs/Lakhs": 87.52
+        }
+      ]
+    },
+    {
+      "table_number": "Table 4",
+      "title": "Power Purchase Cost - The particulars of power purchase cost are as under:",
+      "component": "power_purchase",
+      "page_number": 8,
+      "headers": [
+        "Particulars",
+        "FY24 Audited",
+        "FY24 Trued Up",
+        "FY25 ARR-ERC Approved",
+        "FY25 Audited"
+      ],
+      "rows": [
+        {
+          "Particulars": "Gross sale units - lakh units",
+          "FY24 Audited": 511.95,
+          "FY24 Trued Up": 511.95,
+          "FY25 ARR-ERC Approved": 448.71,
+          "FY25 Audited": 494.15
+        },
+        {
+          "Particulars": "Less: Captive power fed into grid- lakh units",
+          "FY24 Audited": 4.0,
+          "FY24 Trued Up": 4.0,
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Audited": 3.05
+        },
+        {
+          "Particulars": "Net sale units - lakh units",
+          "FY24 Audited": 507.95,
+          "FY24 Trued Up": 507.95,
+          "FY25 ARR-ERC Approved": 448.71,
+          "FY25 Audited": 491.1
+        },
+        {
+          "Particulars": "Add: Distribution Loss- lakh units",
+          "FY24 Audited": 58.99,
+          "FY24 Trued Up": 58.99,
+          "FY25 ARR-ERC Approved": 54.71,
+          "FY25 Audited": 57.73
+        },
+        {
+          "Particulars": "Purchased Units- lakh units",
+          "FY24 Audited": 566.94,
+          "FY24 Trued Up": 566.94,
+          "FY25 ARR-ERC Approved": 503.42,
+          "FY25 Audited": 548.83
+        },
+        {
+          "Particulars": "Add: Feedback- lakh units",
+          "FY24 Audited": 54.59,
+          "FY24 Trued Up": 54.59,
+          "FY25 ARR-ERC Approved": 97.74,
+          "FY25 Audited": 57.5
+        },
+        {
+          "Particulars": "Gross Units- lakh units",
+          "FY24 Audited": 621.53,
+          "FY24 Trued Up": 621.53,
+          "FY25 ARR-ERC Approved": 601.16,
+          "FY25 Audited": 606.33
+        },
+        {
+          "Particulars": "Distribution Loss-%",
+          "FY24 Audited": 9.49,
+          "FY24 Trued Up": 9.49,
+          "FY25 ARR-ERC Approved": 9.1,
+          "FY25 Audited": 9.52
+        },
+        {
+          "Particulars": "Normal Demand Charge- Rs/Lakhs",
+          "FY24 Audited": 389.12,
+          "FY24 Trued Up": 389.12,
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Audited": 479.23
+        },
+        {
+          "Particulars": "Excess Demand Charge- Rs/Lakhs",
+          "FY24 Audited": 6.57,
+          "FY24 Trued Up": 6.57,
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Audited": 30.61
+        },
+        {
+          "Particulars": "Total Demand Charges-Rs/Lakhs",
+          "FY24 Audited": 395.69,
+          "FY24 Trued Up": 395.69,
+          "FY25 ARR-ERC Approved": 457.66,
+          "FY25 Audited": 509.84
+        },
+        {
+          "Particulars": "Energy Charge- Rs/Lakhs",
+          "FY24 Audited": 2980.61,
+          "FY24 Trued Up": 2980.61,
+          "FY25 ARR-ERC Approved": 2668.13,
+          "FY25 Audited": 2924.64
+        },
+        {
+          "Particulars": "Total Charges-Rs/Lakhs",
+          "FY24 Audited": 3376.3,
+          "FY24 Trued Up": 3376.3,
+          "FY25 ARR-ERC Approved": 3125.79,
+          "FY25 Audited": 3434.48
+        },
+        {
+          "Particulars": "Less: Adjustment for excess line loss",
+          "FY24 Audited": null,
+          "FY24 Trued Up": 5.78,
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Audited": null
+        },
+        {
+          "Particulars": "Net Charges-Rs/Lakhs",
+          "FY24 Audited": 3376.3,
+          "FY24 Trued Up": 3370.52,
+          "FY25 ARR-ERC Approved": 3125.79,
+          "FY25 Audited": 3434.48
+        },
+        {
+          "Particulars": "Rate per unit-Rs/kWh purchased",
+          "FY24 Audited": 5.96,
+          "FY24 Trued Up": 5.95,
+          "FY25 ARR-ERC Approved": 6.21,
+          "FY25 Audited": 6.26
+        }
+      ]
+    },
+    {
+      "table_number": "Table 5",
+      "title": "Regulatory adjustment for excess distribution loss",
+      "component": "power_purchase",
+      "page_number": 9,
+      "headers": [
+        "Particulars",
+        "Rs/Lakhs"
+      ],
+      "rows": [
+        {
+          "Particulars": "Power Purchase Cost as above",
+          "Rs/Lakhs": 3434.48
+        },
+        {
+          "Particulars": "Total units sold- in lakhs (A)",
+          "Rs/Lakhs": 491.1
+        },
+        {
+          "Particulars": "Total units purchased - in lakhs (B)",
+          "Rs/Lakhs": 548.83
+        },
+        {
+          "Particulars": "Feedback units- in lakhs (C)",
+          "Rs/Lakhs": 57.5
+        },
+        {
+          "Particulars": "Gross units- in lakhs (D=B+C)",
+          "Rs/Lakhs": 606.33
+        },
+        {
+          "Particulars": "Line loss units- in lakhs (E=B-A)",
+          "Rs/Lakhs": 57.73
+        },
+        {
+          "Particulars": "Line loss percent (F=E/D*100)",
+          "Rs/Lakhs": 9.52
+        },
+        {
+          "Particulars": "Approved line loss percent (G)",
+          "Rs/Lakhs": 9.1
+        },
+        {
+          "Particulars": "Approved line loss units- in lakhs (H=(B+C)*G)",
+          "Rs/Lakhs": 55.18
+        },
+        {
+          "Particulars": "Excess line loss- in lakhs units (I=E-H)",
+          "Rs/Lakhs": 2.55
+        },
+        {
+          "Particulars": "Average cost per unit \u2013 Rs (J)",
+          "Rs/Lakhs": 6.26
+        },
+        {
+          "Particulars": "Disallowed in power purchase cost (K=I*J)",
+          "Rs/Lakhs": 15.96
+        },
+        {
+          "Particulars": "Adjusted power purchase cost (Truing Up Claim)",
+          "Rs/Lakhs": 3418.52
+        }
+      ]
+    },
+    {
+      "table_number": "Table 6",
+      "title": "Operating and Maintenance costs",
+      "component": "o&m_expenses",
+      "page_number": 9,
+      "headers": [
+        "Particulars",
+        "FY24 Audited",
+        "FY24 Trued Up",
+        "FY25 Regulation Approved",
+        "FY25 Audited"
+      ],
+      "rows": [
+        {
+          "Particulars": "Repairs and Maintenance",
+          "FY24 Audited": 49.74,
+          "FY24 Trued Up": 44.53,
+          "FY25 Regulation Approved": 45.83,
+          "FY25 Audited": 51.17
+        },
+        {
+          "Particulars": "Employee cost",
+          "FY24 Audited": 216.32,
+          "FY24 Trued Up": 177.52,
+          "FY25 Regulation Approved": 182.75,
+          "FY25 Audited": 257.53
+        },
+        {
+          "Particulars": "Administration and general expenses",
+          "FY24 Audited": 18.9,
+          "FY24 Trued Up": 17.12,
+          "FY25 Regulation Approved": 15.14,
+          "FY25 Audited": 23.3
+        },
+        {
+          "Particulars": "Total",
+          "FY24 Audited": 284.96,
+          "FY24 Trued Up": 239.17,
+          "FY25 Regulation Approved": 243.72,
+          "FY25 Audited": 332.0
+        }
+      ]
+    },
+    {
+      "table_number": "Table 7",
+      "title": "Repair and Maintenance: The breakup of the expenditure is as follows:",
+      "component": "repair_maintenance",
+      "page_number": 10,
+      "headers": [
+        "Particulars",
+        "FY24 Audited",
+        "FY25 Audited",
+        "FY25 Truing Up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Plant & Machinery",
+          "FY24 Audited": 0.73,
+          "FY25 Audited": 0.93,
+          "FY25 Truing Up Claim": 0.93
+        },
+        {
+          "Particulars": "Buildings",
+          "FY24 Audited": 0.29,
+          "FY25 Audited": 0.35,
+          "FY25 Truing Up Claim": 0.35
+        },
+        {
+          "Particulars": "Lines & Cable Networks",
+          "FY24 Audited": 36.0,
+          "FY25 Audited": 38.64,
+          "FY25 Truing Up Claim": 38.64
+        },
+        {
+          "Particulars": "Vehicles",
+          "FY24 Audited": 4.16,
+          "FY25 Audited": 4.08,
+          "FY25 Truing Up Claim": 4.08
+        },
+        {
+          "Particulars": "LT Lines, upkeeps, etc.",
+          "FY24 Audited": 8.56,
+          "FY25 Audited": 7.17,
+          "FY25 Truing Up Claim": 7.17
+        },
+        {
+          "Particulars": "Total",
+          "FY24 Audited": 49.74,
+          "FY25 Audited": 51.17,
+          "FY25 Truing Up Claim": 51.17
+        }
+      ]
+    },
+    {
+      "table_number": "Table 8",
+      "title": "Employee costs: The employee costs relating to various categories of employees were as under:",
+      "component": "employee_cost",
+      "page_number": 10,
+      "headers": [
+        "Particulars",
+        "No (Actual 2023-24)",
+        "Rs/Lakhs (Actual 2023-24)",
+        "No (Actual 2024-25)",
+        "Rs/Lakhs (Actual 2024-25)"
+      ],
+      "rows": [
+        {
+          "Particulars": "Technical Officers",
+          "No (Actual 2023-24)": 3,
+          "Rs/Lakhs (Actual 2023-24)": 21.54,
+          "No (Actual 2024-25)": 3,
+          "Rs/Lakhs (Actual 2024-25)": 22.01
+        },
+        {
+          "Particulars": "Switching Station Operations",
+          "No (Actual 2023-24)": 3,
+          "Rs/Lakhs (Actual 2023-24)": 20.58,
+          "No (Actual 2024-25)": 3,
+          "Rs/Lakhs (Actual 2024-25)": 18.67
+        },
+        {
+          "Particulars": "Technical Staff",
+          "No (Actual 2023-24)": 40,
+          "Rs/Lakhs (Actual 2023-24)": 102.84,
+          "No (Actual 2024-25)": 40,
+          "Rs/Lakhs (Actual 2024-25)": 147.07
+        },
+        {
+          "Particulars": "Other Workers",
+          "No (Actual 2023-24)": 11,
+          "Rs/Lakhs (Actual 2023-24)": 29.07,
+          "No (Actual 2024-25)": 11,
+          "Rs/Lakhs (Actual 2024-25)": 30.18
+        },
+        {
+          "Particulars": "Non-Technical Staff",
+          "No (Actual 2023-24)": 3,
+          "Rs/Lakhs (Actual 2023-24)": 13.73,
+          "No (Actual 2024-25)": 3,
+          "Rs/Lakhs (Actual 2024-25)": 7.92
+        },
+        {
+          "Particulars": "Share of Management Staff Expenses",
+          "No (Actual 2023-24)": null,
+          "Rs/Lakhs (Actual 2023-24)": 27.27,
+          "No (Actual 2024-25)": null,
+          "Rs/Lakhs (Actual 2024-25)": 30.38
+        },
+        {
+          "Particulars": "Other Allowances, Medical & Welfare expense",
+          "No (Actual 2023-24)": null,
+          "Rs/Lakhs (Actual 2023-24)": 1.29,
+          "No (Actual 2024-25)": null,
+          "Rs/Lakhs (Actual 2024-25)": 1.3
+        },
+        {
+          "Particulars": "Total",
+          "No (Actual 2023-24)": 60,
+          "Rs/Lakhs (Actual 2023-24)": 216.32,
+          "No (Actual 2024-25)": 60,
+          "Rs/Lakhs (Actual 2024-25)": 257.53
+        }
+      ]
+    },
+    {
+      "table_number": "Table 9",
+      "title": "Reconciliation of employee expenses with previous year",
+      "component": "employee_cost",
+      "page_number": 11,
+      "headers": [
+        "Particulars",
+        "Amount in Rs. Lakhs"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee expenses as per audited accounts for FY24",
+          "Amount in Rs. Lakhs": 216.32
+        },
+        {
+          "Particulars": "Impact of arrears paid during previous year",
+          "Amount in Rs. Lakhs": -12.44
+        },
+        {
+          "Particulars": "Impact of change in allocation of expenses in audited accounts",
+          "Amount in Rs. Lakhs": 51.07
+        },
+        {
+          "Particulars": "Decrease in extra overtime",
+          "Amount in Rs. Lakhs": -0.43
+        },
+        {
+          "Particulars": "Increase in Other components",
+          "Amount in Rs. Lakhs": -0.11
+        },
+        {
+          "Particulars": "Increase in management staff proportionate expenses",
+          "Amount in Rs. Lakhs": 3.12
+        },
+        {
+          "Particulars": "Employee expenses as per audited accounts for FY25",
+          "Amount in Rs. Lakhs": 257.53
+        }
+      ]
+    },
+    {
+      "table_number": "Table 10",
+      "title": "Management staff salaries allocation to distribution operations",
+      "component": "employee_cost",
+      "page_number": 11,
+      "headers": [
+        "Particulars",
+        "Percentage of CTC Allocated to distribution operations"
+      ],
+      "rows": [
+        {
+          "Particulars": "Chief Financial Officer",
+          "Percentage of CTC Allocated to distribution operations": 10
+        },
+        {
+          "Particulars": "Manager- Finance",
+          "Percentage of CTC Allocated to distribution operations": 10
+        },
+        {
+          "Particulars": "Assistant Manager - MIS & Accounts",
+          "Percentage of CTC Allocated to distribution operations": 25
+        },
+        {
+          "Particulars": "Deputy General Manager- Workshop",
+          "Percentage of CTC Allocated to distribution operations": 25
+        },
+        {
+          "Particulars": "Consultant- Workshop",
+          "Percentage of CTC Allocated to distribution operations": 75
+        }
+      ]
+    },
+    {
+      "table_number": "Table 11",
+      "title": "Summary of employee costs and its treatment by the Hon'ble Commission over the years",
+      "component": "employee_cost",
+      "page_number": 12,
+      "headers": [
+        "Particulars",
+        "2020-21",
+        "2021-22",
+        "2022-23",
+        "2023-24"
+      ],
+      "rows": [
+        {
+          "Particulars": "Actual cost",
+          "2020-21": 166.07,
+          "2021-22": 172.1,
+          "2022-23": 179.8,
+          "2023-24": 216.32
+        },
+        {
+          "Particulars": "Normative",
+          "2020-21": 138.93,
+          "2021-22": 145.66,
+          "2022-23": 167.5,
+          "2023-24": 174.96
+        },
+        {
+          "Particulars": "Trued up",
+          "2020-21": 157.48,
+          "2021-22": 169.31,
+          "2022-23": 171.67,
+          "2023-24": 177.52
+        },
+        {
+          "Particulars": "Additional impact of wage revision",
+          "2020-21": 14.17,
+          "2021-22": 23.65,
+          "2022-23": 27.21,
+          "2023-24": null
+        },
+        {
+          "Particulars": "Remarks",
+          "2020-21": "Norms + wage revision allowed",
+          "2021-22": "Norms + wage revision allowed",
+          "2022-23": "Actual inflation allowed on base year 20-21",
+          "2023-24": "Actual inflation allowed on PY"
+        }
+      ]
+    },
+    {
+      "table_number": "Table 12",
+      "title": "Summary of employee expenses claimed for the year",
+      "component": "employee_cost",
+      "page_number": 12,
+      "headers": [
+        "Particulars",
+        "Value"
+      ],
+      "rows": [
+        {
+          "Particulars": "Employee expenses as per audited accounts for FY 25 including impact of wage revision Rs.20.91 lakhs",
+          "Value": 257.53
+        },
+        {
+          "Particulars": "Allocation of other business",
+          "Value": -51.07
+        },
+        {
+          "Particulars": "Expense on account of wage revision disallowed during FY24",
+          "Value": 27.21
+        },
+        {
+          "Particulars": "Total employee expense claimed",
+          "Value": 233.67
+        }
+      ]
+    },
+    {
+      "table_number": "Table 13",
+      "title": "Administration and general expenses: The breakup of the expenditure are as follows:",
+      "component": "admin_general",
+      "page_number": 13,
+      "headers": [
+        "Particulars",
+        "FY24 Audited",
+        "FY25 Audited",
+        "FY25 Truing Up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Rent, rates and taxes, telephone, postage",
+          "FY24 Audited": 0.32,
+          "FY25 Audited": 0.09,
+          "FY25 Truing Up Claim": 0.09
+        },
+        {
+          "Particulars": "Insurance",
+          "FY24 Audited": 0.44,
+          "FY25 Audited": 0.49,
+          "FY25 Truing Up Claim": 0.49
+        },
+        {
+          "Particulars": "Legal charges",
+          "FY24 Audited": 2.02,
+          "FY25 Audited": 4.44,
+          "FY25 Truing Up Claim": 4.44
+        },
+        {
+          "Particulars": "Audit fees",
+          "FY24 Audited": 3.9,
+          "FY25 Audited": 4.2,
+          "FY25 Truing Up Claim": 4.2
+        },
+        {
+          "Particulars": "Travelling, conveyance expenses",
+          "FY24 Audited": 1.19,
+          "FY25 Audited": 2.36,
+          "FY25 Truing Up Claim": 2.36
+        },
+        {
+          "Particulars": "Security arrangements",
+          "FY24 Audited": 2.79,
+          "FY25 Audited": 2.46,
+          "FY25 Truing Up Claim": 2.46
+        },
+        {
+          "Particulars": "Printing and stationery",
+          "FY24 Audited": 0.92,
+          "FY25 Audited": 1.34,
+          "FY25 Truing Up Claim": 1.34
+        },
+        {
+          "Particulars": "Electricity charges",
+          "FY24 Audited": 0.32,
+          "FY25 Audited": 0.35,
+          "FY25 Truing Up Claim": 0.35
+        },
+        {
+          "Particulars": "Licensee fee",
+          "FY24 Audited": 1.06,
+          "FY25 Audited": 1.12,
+          "FY25 Truing Up Claim": 1.12
+        },
+        {
+          "Particulars": "Miscellaneous expenses",
+          "FY24 Audited": 5.94,
+          "FY25 Audited": 6.45,
+          "FY25 Truing Up Claim": 6.45
+        },
+        {
+          "Particulars": "Total",
+          "FY24 Audited": 18.9,
+          "FY25 Audited": 23.3,
+          "FY25 Truing Up Claim": 23.3
+        }
+      ]
+    },
+    {
+      "table_number": "Table 14",
+      "title": "Depreciation calculation",
+      "component": "depreciation",
+      "page_number": 14,
+      "headers": [
+        "Asset Group",
+        "GFA as at 01.04.24",
+        "Asset Addition",
+        "Rate of depreciation",
+        "Depreciation"
+      ],
+      "rows": [
+        {
+          "Asset Group": "Asset over 13 years",
+          "GFA as at 01.04.24": null,
+          "Asset Addition": null,
+          "Rate of depreciation": null,
+          "Depreciation": null
+        },
+        {
+          "Asset Group": "Transformers",
+          "GFA as at 01.04.24": 205.92,
+          "Asset Addition": null,
+          "Rate of depreciation": 0.97,
+          "Depreciation": 2.0
+        },
+        {
+          "Asset Group": "Distribution lines",
+          "GFA as at 01.04.24": 40.16,
+          "Asset Addition": null,
+          "Rate of depreciation": 0.97,
+          "Depreciation": 0.39
+        },
+        {
+          "Asset Group": "Meters",
+          "GFA as at 01.04.24": 25.64,
+          "Asset Addition": null,
+          "Rate of depreciation": 0.97,
+          "Depreciation": 0.25
+        },
+        {
+          "Asset Group": "IT Equipment",
+          "GFA as at 01.04.24": 0.89,
+          "Asset Addition": null,
+          "Rate of depreciation": 0.97,
+          "Depreciation": 0.01
+        },
+        {
+          "Asset Group": "Others",
+          "GFA as at 01.04.24": 13.03,
+          "Asset Addition": null,
+          "Rate of depreciation": 0.35,
+          "Depreciation": 0.05
+        },
+        {
+          "Asset Group": "Sub-total",
+          "GFA as at 01.04.24": 285.64,
+          "Asset Addition": null,
+          "Rate of depreciation": null,
+          "Depreciation": 2.7
+        },
+        {
+          "Asset Group": "Asset below 13 years",
+          "GFA as at 01.04.24": null,
+          "Asset Addition": null,
+          "Rate of depreciation": null,
+          "Depreciation": null
+        },
+        {
+          "Asset Group": "Transformers",
+          "GFA as at 01.04.24": 89.58,
+          "Asset Addition": null,
+          "Rate of depreciation": 5.28,
+          "Depreciation": 4.73
+        },
+        {
+          "Asset Group": "Distribution lines",
+          "GFA as at 01.04.24": null,
+          "Asset Addition": null,
+          "Rate of depreciation": 5.28,
+          "Depreciation": null
+        },
+        {
+          "Asset Group": "Meters",
+          "GFA as at 01.04.24": 67.91,
+          "Asset Addition": null,
+          "Rate of depreciation": 9.0,
+          "Depreciation": 6.11
+        },
+        {
+          "Asset Group": "IT Equipment",
+          "GFA as at 01.04.24": 3.6,
+          "Asset Addition": 1.05,
+          "Rate of depreciation": 15.0,
+          "Depreciation": 0.7
+        },
+        {
+          "Asset Group": "Others",
+          "GFA as at 01.04.24": 4.76,
+          "Asset Addition": 0.47,
+          "Rate of depreciation": 6.33,
+          "Depreciation": 0.33
+        },
+        {
+          "Asset Group": "Sub-total",
+          "GFA as at 01.04.24": 165.85,
+          "Asset Addition": 1.52,
+          "Rate of depreciation": null,
+          "Depreciation": 11.87
+        },
+        {
+          "Asset Group": "Grand Total",
+          "GFA as at 01.04.24": 451.49,
+          "Asset Addition": 1.52,
+          "Rate of depreciation": null,
+          "Depreciation": 14.57
+        },
+        {
+          "Asset Group": "As per audited accounts",
+          "GFA as at 01.04.24": null,
+          "Asset Addition": null,
+          "Rate of depreciation": null,
+          "Depreciation": 14.5
+        },
+        {
+          "Asset Group": "Excess depreciation",
+          "GFA as at 01.04.24": null,
+          "Asset Addition": null,
+          "Rate of depreciation": null,
+          "Depreciation": 0.07
+        }
+      ]
+    },
+    {
+      "table_number": "Table 15",
+      "title": "Interest on Normative Loan",
+      "component": "interest_finance_charges",
+      "page_number": 14,
+      "headers": [
+        "Particulars",
+        "FY25 ARR-ERC Approved",
+        "FY25 Truing up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Net Normative Loan- 1st April 2024",
+          "FY25 ARR-ERC Approved": 185.49,
+          "FY25 Truing up Claim": 73.01
+        },
+        {
+          "Particulars": "Add: Net increase of assets during the year ended 31st March 2025",
+          "FY25 ARR-ERC Approved": 61.5,
+          "FY25 Truing up Claim": 1.52
+        },
+        {
+          "Particulars": "Less: Depreciation during the year ended 31st March 2025",
+          "FY25 ARR-ERC Approved": -17.86,
+          "FY25 Truing up Claim": -14.5
+        },
+        {
+          "Particulars": "Net Normative Loan- 31st March 2025",
+          "FY25 ARR-ERC Approved": 229.13,
+          "FY25 Truing up Claim": 60.03
+        },
+        {
+          "Particulars": "Average Normative Loan during the year",
+          "FY25 ARR-ERC Approved": 207.31,
+          "FY25 Truing up Claim": 66.52
+        },
+        {
+          "Particulars": "Average Base Rate of SBI during the year",
+          "FY25 ARR-ERC Approved": 7.3,
+          "FY25 Truing up Claim": 9.15
+        },
+        {
+          "Particulars": "Interest on Normative Loan for the year",
+          "FY25 ARR-ERC Approved": 18.02,
+          "FY25 Truing up Claim": 6.09
+        }
+      ]
+    },
+    {
+      "table_number": "Table 16",
+      "title": "Computation of the interest on working capital",
+      "component": "interest_finance_charges",
+      "page_number": 15,
+      "headers": [
+        "Particulars",
+        "FY25 ARR-ERC Approved",
+        "FY25 Truing up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "O & M Expenses- One month",
+          "FY25 ARR-ERC Approved": 20.31,
+          "FY25 Truing up Claim": 25.68
+        },
+        {
+          "Particulars": "Maintenance spares",
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Truing up Claim": null
+        },
+        {
+          "Particulars": "Receivables - 2 months",
+          "FY25 ARR-ERC Approved": 545.44,
+          "FY25 Truing up Claim": 617.91
+        },
+        {
+          "Particulars": "Less: Security Deposit from Customers collected in cash",
+          "FY25 ARR-ERC Approved": 272.72,
+          "FY25 Truing up Claim": 297.01
+        },
+        {
+          "Particulars": "Total Working Capital",
+          "FY25 ARR-ERC Approved": 293.03,
+          "FY25 Truing up Claim": 346.58
+        },
+        {
+          "Particulars": "Interest rate %",
+          "FY25 ARR-ERC Approved": 8.65,
+          "FY25 Truing up Claim": 11.15
+        },
+        {
+          "Particulars": "Interest on Working Capital",
+          "FY25 ARR-ERC Approved": 25.35,
+          "FY25 Truing up Claim": 38.64
+        }
+      ]
+    },
+    {
+      "table_number": "Table 17",
+      "title": "Total Interest and Finance costs for the year",
+      "component": "interest_finance_charges",
+      "page_number": 16,
+      "headers": [
+        "Particulars",
+        "FY25 ARR-ERC Approved",
+        "FY25 Truing up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Interest on Security Deposits from Customers",
+          "FY25 ARR-ERC Approved": 11.48,
+          "FY25 Truing up Claim": 18.93
+        },
+        {
+          "Particulars": "Bank Charges- On the Bank Guarantee to KSEB as per the direction of the Hon. Supreme Court of India",
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Truing up Claim": 4.23
+        },
+        {
+          "Particulars": "Other Bank Charges including on the Letter of Credit to secure cost of mostly power purchase from KSEBL",
+          "FY25 ARR-ERC Approved": 2.63,
+          "FY25 Truing up Claim": 3.3
+        },
+        {
+          "Particulars": "Total as per audited accounts",
+          "FY25 ARR-ERC Approved": 14.11,
+          "FY25 Truing up Claim": 26.46
+        },
+        {
+          "Particulars": "Interest on Normative Loan",
+          "FY25 ARR-ERC Approved": 13.26,
+          "FY25 Truing up Claim": 6.09
+        },
+        {
+          "Particulars": "Interest on Working capital",
+          "FY25 ARR-ERC Approved": 25.35,
+          "FY25 Truing up Claim": 38.64
+        },
+        {
+          "Particulars": "Total Regulatory adjustments",
+          "FY25 ARR-ERC Approved": 38.61,
+          "FY25 Truing up Claim": 44.73
+        },
+        {
+          "Particulars": "Total Interest and Finance charges",
+          "FY25 ARR-ERC Approved": 52.72,
+          "FY25 Truing up Claim": 71.19
+        }
+      ]
+    },
+    {
+      "table_number": "Table 18",
+      "title": "Return on net fixed assets",
+      "component": "return_on_equity",
+      "page_number": 16,
+      "headers": [
+        "Particulars",
+        "FY25 ARR-ERC Approved",
+        "FY25 Truing up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Gross fixed assets as at 1st April 2024",
+          "FY25 ARR-ERC Approved": 559.63,
+          "FY25 Truing up Claim": 453.06
+        },
+        {
+          "Particulars": "Less: Accumulated depreciation",
+          "FY25 ARR-ERC Approved": 239.59,
+          "FY25 Truing up Claim": 269.88
+        },
+        {
+          "Particulars": "Less: Consumer contribution",
+          "FY25 ARR-ERC Approved": 14.96,
+          "FY25 Truing up Claim": 7.89
+        },
+        {
+          "Particulars": "Less: GFA for which interest is allowed",
+          "FY25 ARR-ERC Approved": 177.32,
+          "FY25 Truing up Claim": 73.01
+        },
+        {
+          "Particulars": "Balance value of Net fixed assets at the beginning of the year",
+          "FY25 ARR-ERC Approved": 127.76,
+          "FY25 Truing up Claim": 102.28
+        },
+        {
+          "Particulars": "Rate of Return",
+          "FY25 ARR-ERC Approved": 5.5,
+          "FY25 Truing up Claim": 5.5
+        },
+        {
+          "Particulars": "Eligible Return",
+          "FY25 ARR-ERC Approved": 7.03,
+          "FY25 Truing up Claim": 5.63
+        }
+      ]
+    },
+    {
+      "table_number": "Table 19",
+      "title": "Adjusted Revenue Gap",
+      "component": "general_financial_summary",
+      "page_number": 17,
+      "headers": [
+        "Particulars",
+        "FY25 ARR-ERC Approved",
+        "FY25 Audited Accounts",
+        "FY25 Truing up Claim"
+      ],
+      "rows": [
+        {
+          "Particulars": "Revenue from sale of power (Para 5a above)",
+          "FY25 ARR-ERC Approved": 3272.65,
+          "FY25 Audited Accounts": 3707.46,
+          "FY25 Truing up Claim": 3707.46
+        },
+        {
+          "Particulars": "Other income (Para 5b above)",
+          "FY25 ARR-ERC Approved": 69.22,
+          "FY25 Audited Accounts": 36.55,
+          "FY25 Truing up Claim": 124.07
+        },
+        {
+          "Particulars": "Revenue from charges",
+          "FY25 ARR-ERC Approved": 3341.87,
+          "FY25 Audited Accounts": 3744.01,
+          "FY25 Truing up Claim": 3831.53
+        },
+        {
+          "Particulars": "Power purchase cost (Para 5c above)",
+          "FY25 ARR-ERC Approved": 3125.79,
+          "FY25 Audited Accounts": 3434.48,
+          "FY25 Truing up Claim": 3418.52
+        },
+        {
+          "Particulars": "O&M Expenses (Para 5d above)",
+          "FY25 ARR-ERC Approved": 243.72,
+          "FY25 Audited Accounts": 332.0,
+          "FY25 Truing up Claim": 308.14
+        },
+        {
+          "Particulars": "Depreciation",
+          "FY25 ARR-ERC Approved": 17.28,
+          "FY25 Audited Accounts": 14.5,
+          "FY25 Truing up Claim": 14.5
+        },
+        {
+          "Particulars": "Interest & Finance charges (Para 5e above)",
+          "FY25 ARR-ERC Approved": 52.72,
+          "FY25 Audited Accounts": 41.72,
+          "FY25 Truing up Claim": 71.19
+        },
+        {
+          "Particulars": "Inspection charges",
+          "FY25 ARR-ERC Approved": 1.31,
+          "FY25 Audited Accounts": 0.33,
+          "FY25 Truing up Claim": 0.33
+        },
+        {
+          "Particulars": "Duty-III",
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Audited Accounts": 24.89,
+          "FY25 Truing up Claim": 24.89
+        },
+        {
+          "Particulars": "Provision for doubtful debts",
+          "FY25 ARR-ERC Approved": null,
+          "FY25 Audited Accounts": 7.14,
+          "FY25 Truing up Claim": 7.14
+        },
+        {
+          "Particulars": "Return on Equity",
+          "FY25 ARR-ERC Approved": 7.03,
+          "FY25 Audited Accounts": null,
+          "FY25 Truing up Claim": 5.63
+        },
+        {
+          "Particulars": "Aggregate Revenue Requirement",
+          "FY25 ARR-ERC Approved": 3447.85,
+          "FY25 Audited Accounts": 3855.06,
+          "FY25 Truing up Claim": 3850.34
+        },
+        {
+          "Particulars": "Revenue Surplus/ (Gap) before taxation",
+          "FY25 ARR-ERC Approved": -105.98,
+          "FY25 Audited Accounts": -111.05,
+          "FY25 Truing up Claim": -18.81
+        }
+      ]
+    },
+    {
+      "table_number": "Table 20",
+      "title": "Capitalized amount breakup",
+      "component": "capital_structure",
+      "page_number": 17,
+      "headers": [
+        "Particulars",
+        "Rs/lakhs"
+      ],
+      "rows": [
+        {
+          "Particulars": "IT Equipment",
+          "Rs/lakhs": 1.05
+        },
+        {
+          "Particulars": "Others",
+          "Rs/lakhs": 0.47
+        },
+        {
+          "Particulars": "Total",
+          "Rs/lakhs": 1.52
+        }
+      ]
+    }
+  ],
+  "component_justifications": {
+    "general_financial_summary": "4. The comparison/particulars of the actual amounts with the approved ARR-ERC amounts for the current year and previous year audited amounts in the prescribed format is attached as Annexure B. 5. Clarifications on variances of Income and expenditure compared to the corresponding approved amounts are as under: 6. Taking into account the regulatory adjustments to the audited accounts as discussed above the adjusted revenue gap would be as under:",
+    "revenue_from_sale_of_power": "a. Revenue from Sale of Power- Electricity sold during the year was 491.10 lakh units at an average price of Rs.7.55 per unit against approved 448.71 lakh units at Rs.7.29 per unit and 507.95 lakh units at Rs.7.35 per unit in the previous year. Compared to previous year, the revenue from sale of power during the year is lower by Rs.23.22 lakhs (lower by Rs.123.76 lakhs on account of lower sales by 16.85 lakh units offset by Rs.100.54 lakhs on account of increase in average revenue by Rs.0.20 per unit). The increase in average revenue per unit is mainly on account of the increase in Retail Supply Tariff (RST) subsequent to tariff revisions since the previous year. The decrease in units sold is mainly on account of decrease in consumption by HT consumers, mainly seasonal tea factories, by 23 lakh units as the production in the area during the year was significantly lower compared to previous period offset by increase in consumption by 6 lakh units by LT consumers on account of increased commercial and domestic consumption in the region. As against the approved ARR-ERC, the sale during the year is higher by Rs. 434.81 lakhs (Rs.125.64 lakhs higher on account of increase in average revenue by Rs.0.26 per unit and Rs.309.17 lakhs on account of higher sales by 42.39 lakh units). The increase in per unit revenue is attributable to the difference in tariff based on which the ARR was drawn with the actual tariff in effect. For ARR-ERC Petition, a moderate increase of 1% was estimated to arrive at projected revenue in 2024-25. However, on account of higher HT IA consumption, mainly at seasonal tea factories which varies y-o-y, and faster than anticipated recovery in commercial segments from Covid period, the actual units sold is higher than ARR-ERC Petition and Approved units by 42.39 lakh units.",
+    "other_income": "b. Other income- Other income has been arrived at as under: Miscellaneous receipts of Rs.17.81 lakhs for the current year includes Rs.2.04 lakhs being collection charges for Duty IV collected for outside consumers, Rs.8.30 lakhs being interest received on delayed payments and Rs.7.44 lakhs being service charges recovered from consumers for various services. On the interest income on accumulated regulatory surplus, the Petitioner reiterates its earlier views that regulatory surplus does not generate any real cash surplus of corresponding amount in the hands of the Licensee for placement of funds. Regulatory surplus in the Petitioner's case have arisen on account of regulatory norms disallowing part of expenditure which is otherwise genuinely required for the operations and actually incurred by us. The amounts disallowed do not create any real surplus of funds in our hands which is available for placement as Bank Deposits or towards set off against any loan. To state a few instances, Duty III is a statutory payment and is actually incurred by a Licensee but this amount is not allowed to be charged in the regulatory accounts. The other example, which is true in our case, is interest due on Security Deposits placed with KSEBL. While this amount is accrued in our books year after year, KSEBL has never paid this amount to us. Thus, these amounts have enhanced our revenue surplus every year without any corresponding increase in availability of funds for placement as interest bearing deposits. Further, the same was not included in either Regulation 82 or D 2.4 relating to Other Income of the Tariff Regulation, 2018. The matter is the subject of petitions filed before the Hon. APTEL against earlier orders of the Hon'ble Commission. Further, Regulation 83 of the Tariff Regulation, 2021 now specifically includes interest income earned from Security deposits as well as normative interest income calculated based on accumulated regulatory surplus under the definition of Other income. This reiterates and confirms the Petitioners earlier contention. Hence, it is the humble submission of the Petitioner that, notional interest on accumulated surplus be accrued only from 2022-23, being the period from which the Tariff Regulation specifically includes such income under the purview of Other Income. The Hon'ble Commission has been approving notional interest on accumulated surplus on the SBI fixed term interest for a tenure of one year. Retail deposit Interest rate of State Bank of India for a tenure of one year is 6.80% on as on 1st April 2024 (Annexure D). Accordingly, interest on accumulated surplus has been computed at the interest of 6.80% p.a. as shown below. Note: In the Order for truing up of accounts for the 2023-24 dt. 27-03-2025, an apparent error crept-in in the calculation of accumulated surplus, wherein the carry forward regulatory surplus from the truing up order for the previous year (as at 31.03.2023) was taken as Rs.1,034.08 lakhs, same as that of the previous year truing up order, instead of the Rs.1,150.99 lakhs as per the previous year order (OP 78/2023). The copies of the relevant Orders and the computation thereon has been attached as Annexure E. The current year opening regulatory surplus has adjusted to rectify this error in the computation of interest on accumulated surplus.",
+    "power_purchase": "c. Power Purchase Cost- The particulars of power purchase cost are as under: During the year, the power consumption in the licensed distribution area is lower compared to previous year mainly on account of decrease in consumption in HT consumers. The increase in the per unit rate of power purchase is attributable to tariff revisions during the period. The distribution loss has marginally increased from 9.49% in the previous year to 9.52% in the current year, which is slightly higher than the ARR- ERC approved level of 9.10%. Regulatory adjustment for excess distribution loss is as follows:",
+    "o&m_expenses": "d. Operating and Maintenance costs- For the year a consolidated amount of Rs.243.72 lakhs was approved as per Regulation 80(1) of the Tariff Regulations, 2021. The actual amount being sought in the application is Rs.332.00 lakhs as under: Approved amounts of Operating and Maintenance costs as per the Tariff Regulation, 2021 were arrived at by taking an escalation of 4.454% for the years of the control period considering 2020-21 as the base year. The Regulation also provides for adopting escalation rates based on actual inflation indices be adopted for approving the O&M Expenses. The same approach was followed during the truing up of accounts for the year ended 31st March 2024. The escalation whilst covers the increase in expense on account of inflation, it totally disregards the level of activities involved in repairs, maintenance, administration and general expenses which are inherently subject to year-on-year fluctuations. Further, the approved amounts for FY21 which is used as the base for the control period have been arrived at after disallowing many expenses which were genuinely incurred and otherwise required for the operation of the electricity distribution business of the licensee. Along with the MPR Petition dated 19th May, 2025, the petitioner also submitted before the Hon'ble Commission a comparative analysis of O&M expenses, benchmarking with the guidelines issued by Central Electricity Authority, with other distribution licensees and as well as a detailed explanation as to why the current method of setting O&M norms is prejudicial to the interest of the Petitioner. The Petitioner humbly prays before the Hon'ble Commission to kindly consider our previous submissions and adopt a more prudent and equitable methodology for approving O&M expenses of the Petitioner.",
+    "repair_maintenance": "Repair and Maintenance: The breakup of the expenditure is as follows: Includes expenditure incurred by the Petitioner on the repair, maintenance and upkeep of fire extinguishers, electrical machinery and lighting installations. There is a marginal increase in expenditure by Rs.0.20 lakhs during the year. This is on account of increase in maintenance to electrical equipment. Includes expenditure incurred by the Petitioner towards repair and maintenance of civil structures like buildings including switching station, electrical department office and ancillary buildings. No material work was required to be undertaken during the current year or the previous year. Includes expenditure incurred by the Petitioner towards upkeep of network including transformer maintenance, service charges, transformer oil and other upkeep works like undergrowth cutting charges etc. There is an increase in expenditure by Rs.2.64 lakhs during the year. This is mainly on account of increase in transformer rewinding costs. Relates to expenditure incurred for the upkeep of the vehicles used in the electrical department. The variance with the previous year expenditure is not material. Includes expenditure incurred by the Petitioner towards the upkeep of the LT line including cost of replacement of LT posts, LT lines, upkeep works like overhead line standardization, etc. The variance with the previous year expenditure is mainly on account of reduction in line maintenance work due to lower breakdowns.",
+    "employee_cost": "Employee costs: The employee costs relating to various categories of employees were as under: Employee costs have increased by Rs.41.21 lakhs compared to the previous year and by Rs.74.78 lakhs compared to the amount approved by Hon'ble Commission Rs.182.75 lakhs. A reconciliation of the employee expenses with the previous year is as under: During the previous years, out of the 60 employees, for 25 of the 30 employees who are located at various estates spread over the Licensed Area, only 50% of their costs were charged to the distribution operations. This is an ad-hoc allocation on the basis that these employees also work for the non-electricity business of the Petitioner. As the same allocation cannot be observed objectively, the audited accounts are drawn without any allocation. However, the Petitioner represents that it deploys more workers equivalent to 50% allocated to other business of the Petitioner to support administrative work like meter reading etc. but never claimed these expenses in the truing up. The Petitioner also requests the Hon'ble Commission to reconsider the determination of employee strength. Nonetheless, the O&M costs including the full compliments of employee costs, without ad-hoc allocation continue to be within the normative levels allowed under the CEA Regulations and lower than comparative discoms in the State. Employee category-wise particulars of employee costs is attached in Annexure F. As can be seen from Annexure F, there are two types of overtime included in the Employee Costs: (1) Fixed Overtime- Fixed Overtime are paid to Staff and Non-Staff category of workers as per Industry-wise Staff settlement purely on their attending to duty and without having to work beyond the office hours at 1.75/1.50 hours per man-day. This amount of Fixed Overtime for the year ended 31st March 2025 was Rs.41.89 Lakhs. (2) Variable Overtime- Variable Overtime is paid for working over the normal working hours and on weekends, holidays. This is mainly required to restore line faults happening after working hours. There are instances where the repair work could not be completed during the normal working hours and therefore had to spill-over to overtime hours. The variable overtime for the year ended 31st March 2025 was Rs.20.24 lakhs which is lower than the previous year expenditure by Rs.0.43 lakhs. The Petitioner would like to appraise the Hon'ble Commission that such expenses are directly related to the frequency and severity of faults mainly during the torrential monsoon season. However, we continue to monitor and maintain close control on overtime payouts as suggested by the Hon'ble Commission. Management staff salaries have been allocated to the distribution operations consistently in line with previous years and are as under: All the employees other than members of management staff are members of employees' unions and their wage/salary structures are fixed through industry wide triennial wage settlements. As cited by the Petitioner in many previous instances, the wage rate in force used for setting norms as well as the percentage of increase envisaged during the control period pans out to be totally different during the control period. For instance, in addition to the normal DA increase every quarter on quarter, the worker wages and staff salaries were revised and made effective from 1st January 2023 wherein the worker basic wages were revised from Rs.308.21 to Rs.349.21 per day (13.30% approx.) and the average increase across all categories of staff was approx. 17.5% p.a. During the financial year 2023-24, the Licensee paid the wages at the increased rate along with arrears for the 3 months of the previous financial year thereby incurring an additional Rs.27.21 lakhs in employee costs. As the norms are not adjusted for this abrupt increase in wages, the Licensee will have a gap with the norms in the current year also. Historically, the Hon'ble Commission allowed the Petitioner's claim for additional employee cost on account of wage revision at the time of truing up of accounts. In the preceding control period, in financial years 2020-21 and 2021-22, the Hon'ble Commission allowed the Petitioner's additional employee costs of Rs.14.26 lakhs and Rs.23.65 lakhs respectively over the normative levels due to wage revision. During the current control period also, the Hon'ble Commission had noted in its ARR Order OP 28/2022 dt. 26.02.2024, in para 26, that any additional expenses relating to pay revision can be considered at the time of Truing up of Accounts after prudence check by the Hon'ble Commission. However, the Petitioner's claim of Rs.27.21 lakhs on account of wage revision for the financial year 2023-24 was not allowed by the Hon'ble Commission. The additional impact of wage revision during the current financial year has been determined and amounts to Rs.20.91 lakhs. The Petitioner humbly prays before the Hon'ble to kindly consider and allow its claim for uncontrollable expenditure of cumulative increase in employee costs amounting to Rs.48.12 (Rs.27.21 for 2023-24 and Rs.20.91 for 2024-25) on account of wage revision after its prudence check as done historically.",
+    "admin_general": "Administration and general expenses: The breakup of the expenditure are as follows: Expenditure includes fees paid to the Hon'ble Commission for various petitions/filings of the Petitioner and various taxes paid. Proportionate expenditure of insurance costs towards securing the assets in the electricity business. Mainly includes expenditure incurred by the Petitioner towards legal/professional fees for various litigations related to electricity business at various forums. Current year expenses include Rs.2.00 Lakhs towards Statutory audit fee and Rs.2.15 lakhs being audit fee for energy audit. Previous year expenditure also includes Rs.2.14 lakhs towards electricity audit and Rs.1.50 lakhs towards statutory audit fee. Includes expenses incurred for travel and accommodation related to the electricity business, vehicle hire charges, repairs etc. Includes expenditure incurred towards security personnel at various establishments related to the electricity business. Variance is not material. Includes expenditure incurred towards office and other stationery items. Increase is on account of increase in printing cost. Includes electricity charges for establishments in electricity distribution business. Variance is not material. Mainly includes bata paid to staff/workers per the terms of their employment as reimbursement of cost of conveyance/food incurred by them as part of execution of their duties.",
+    "depreciation": "e. Depreciation- Depreciation has been computed as per requirements of Regulation 27 at the rates specified in Annexure 1 to the Tariff Regulation, 2021. For assets over 13 years, as suggested by the Commission, depreciation has been allowed at lower rates. During the previous year, for the first time, the Hon'ble Commission ordered the asset addition of Rs. 11.80 lakhs to be met from the regulatory surplus and subject to final orders from the Hon'ble Supreme Court on the matters on accumulated surplus. Whilst the Petitioner is agreeable to the stand in-principle, it humbly submits before the Hon'ble Commission to kindly consider the additions as normal asset additions via borrowed funds and allow the Petitioner depreciation, return on NFA and other financial costs subject to final outcome from the Hon'ble Supreme Court of India. Accordingly, the Petitioner has not made any adjustments to its claim on depreciation. The Depreciation has been computed at the rates specified in the Regulation. The variance as compared to the books is on account of rounding off adjustments. Considering this and the materiality of the amount involved, the Hon'ble Commission may allow the charge of Rs.14.50 lakhs as given in the audited accounts. Details of fixed assets are given in Annexure G.",
+    "interest_finance_charges": "f. Interest and Finance charges- Details of actual/claimed interest and finance charges and as approved by the Hon. Commission in the ARR-ERC Order are as under: Interest on normative loan is calculated as per Regulation 29 of Tariff Regulation, 2021 on the average normative loan during the year at the base rate (EBLR) declared by State Bank of India as applicable on the first day of April of the financial year for a tenure of one year. (https://sbi.bank.in/web/interest-rates/eblr-historical-data) ** SBI EBLR as at 1st April 2024: 9.15% *Adjusted for capital addition as explained in para 5e above (Rs.61.21 lakhs as per order + Rs.11.80 lakhs capitalization from surplus) As per Regulation 72 of the Kerala Electricity Supply Code, 2014 (\"Supply Code\") licensee shall pay to the consumer interest on security deposit at the bank rate prevailing on the first April of that year and it shall be paid annually with effect from date of deposit. The bank rate as on 1st April 2024 was 6.75% p.a. (Annexure H). Accordingly, interest is provided on Security Deposit collected in cash from Consumers at the rate of 6.75% p.a., amounting to Rs.18.93 lakhs (Deposit collected in cash Rs.297.01 lakhs) against approved interest of Rs.11.48 lakhs (at 4.25% p.a. and deposit of Rs.270.02 lakhs) and previous year trued up interest of Rs.15.07 lakhs (at 6.75% p.a. and deposit of Rs.223.27 lakhs). Interest is only claimed where the security deposit available in cash. The Petitioner would like to draw attention to the fact that whilst the requirement of the Supply Code is for the licensee to pay consumer interest on security deposit furnished by him on pro-rata, basis the date of deposit, the Hon'ble Commission has only allowed the interest on security deposit from consumers on the opening balance of such deposit. The Petitioner has always complied with the requirements of the Supply Code and paid interest on pro-rata basis but only been allowed to claim interest on opening balance of security deposit. Accordingly, the interest for new consumers as well as for security deposit enhancements during the year clearly stands disallowed over the years. The Petitioner requests the Hon'ble Commission to reconsider and clarify its stance on the matter for clearing the ambiguity with the Supply Code. Interest and finance charges also include bank charges amounting to Rs.7.53 lakhs out of which Rs.3.30 lakhs relates to the Letter of Credit issued in favour of KSEBL to secure monthly power purchase bills and the balance Rs.4.23 lakhs towards Bank Guarantee provided to KSEBL as per the directions of the Hon. Supreme Court of India in civil appeal 2144/2011. Interest on Working Capital is computed as per Regulation 32 of Tariff Regulation, 2021 at a rate equal to 2% higher than the base rate (EBLR) as on the first day of April of the financial year. g. Other debits- Other debits include Duty-III charges, periodic inspection charges and provision for doubtful debts. An amount of Rs. 15.01 lakhs were sought in the ARR-ERC petition being Rs. 13.70 lakhs for Duty III charges and Rs. 1.31 lakh being periodical inspection charge but Duty III was not allowed by the Hon'ble Commission on the ground that same cannot be passed on to the consumer. However, the amounts so disallowed do not translate into any actual surplus of funds available with the Licensee that could be invested in interest-bearing deposits or utilised to offset existing borrowings. Consequently, no real interest-earning benefit accrues to the Licensee. The disallowance therefore results in an undue financial burden by inflating the regulatory surplus and subsequently subjecting such notional surplus to interest computation, effectively causing a double financial impact. Actual expense incurred during the year consists of Duty-III charges Rs. 24.89 lakhs levied at Rs.0.06 per kwh sold outside which has been revised to Rs.0.10 per kwh wef July 2024, Rs. 0.33 lakhs being periodical inspection charges and Provision for doubtful debts Rs. 7.14 lakhs.",
+    "return_on_equity": "h. Return on net fixed assets- The details of return on net fixed assets claimed and as approved in ARR-ERC are as under:",
+    "capital_structure": "9. The amount capitalized during the year was Rs.1.52 lakhs consisting of the following:"
+  },
+  "energy_data": {
+    "energy_input_mu": 60.633,
+    "energy_sold_mu": 49.415,
+    "energy_wheeled_mu": 0,
+    "actual_distribution_loss_pct": 9.52,
+    "max_demand_kva": 0,
+    "contract_demand_kva": 0,
+    "excess_demand_charges": 30.61
+  },
+  "capital_structure": {
+    "equity": 0,
+    "loan_outstanding": 0,
+    "grants": 0,
+    "consumer_contribution": 7.89,
+    "opening_gfa": 453.06,
+    "additions_gfa": 1.52,
+    "closing_gfa": 0,
+    "opening_nfa": 102.28,
+    "closing_nfa": 0,
+    "accumulated_depreciation": 269.88
+  },
+  "escalation_factors": {
+    "cpi_annual_increase_pct": 0,
+    "wpi_annual_increase_pct": 0,
+    "weighted_avg_70_30_pct": 0,
+    "four_year_average_pct": 0
+  },
+  "loan_details": [
+    {
+      "lender": "Normative Loan",
+      "outstanding_amount": 66.52,
+      "interest_rate_pct": 9.15,
+      "interest_amount": 6.09
+    }
+  ],
+  "consumer_deposit_details": {
+    "opening_balance": 0,
+    "additions": 0,
+    "refunds": 0,
+    "closing_balance": 0,
+    "interest_rate_pct": 6.75,
+    "interest_amount": 18.93
+  },
+  "extraction_metadata": {
+    "method": "native_pdf_upload",
+    "total_tables_found": 20,
+    "licensee": "KDHP",
+    "financial_year": "2024-25"
+  }
+}

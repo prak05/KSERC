@@ -3,7 +3,7 @@ import CourtHearingEditor from './CourtHearingEditor'
 
 function SummaryCard({ label, value, unit, glowColor, icon }) {
     return (
-        <div className="glass-card" style={{
+        <div className="card" style={{
             padding: '22px 24px', position: 'relative', overflow: 'hidden',
         }}>
             <div style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, background: glowColor || 'var(--accent)', borderRadius: '50%', filter: 'blur(60px)', opacity: 0.08 }} />
@@ -22,12 +22,12 @@ function SummaryCard({ label, value, unit, glowColor, icon }) {
 
 function StatusBadge({ status }) {
     const configs = {
-        approved: { cls: 'tag-approved', label: '✓ APPROVED' },
-        reduced: { cls: 'tag-reduced', label: '↓ REDUCED' },
-        increased: { cls: 'tag-modified', label: '↑ INCREASED' },
+        approved: { cls: 'badge-compliant', label: '✓ APPROVED' },
+        reduced: { cls: 'badge-deviation', label: '↓ REDUCED' },
+        increased: { cls: 'badge-pending', label: '↑ INCREASED' },
     }
     const c = configs[status] || { cls: 'tag-neutral', label: status?.toUpperCase() || '-' }
-    return <span className={`neon-tag ${c.cls}`}>{c.label}</span>
+    return <span className={` ${c.cls}`}>{c.label}</span>
 }
 
 function JustificationCard({ component, index, editMode, onValueChange, onJustificationChange }) {
@@ -38,7 +38,7 @@ function JustificationCard({ component, index, editMode, onValueChange, onJustif
     const accentColor = component.status === 'reduced' ? 'var(--red)' : component.status === 'increased' ? 'var(--blue)' : 'var(--green)'
 
     return (
-        <div className="glass-card animate-slide-up" style={{ animationDelay: `${index * 50}ms`, borderLeftWidth: 2, borderLeftColor: accentColor }}>
+        <div className="card animate-slide-up" style={{ animationDelay: `${index * 50}ms`, borderLeftWidth: 2, borderLeftColor: accentColor }}>
             <button onClick={() => setExpanded(!expanded)}
                 style={{
                     width: '100%', padding: '16px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -58,7 +58,7 @@ function JustificationCard({ component, index, editMode, onValueChange, onJustif
                                     ? <input type="number" step="any" value={displayApproved}
                                         onClick={e => e.stopPropagation()}
                                         onChange={e => { e.stopPropagation(); onValueChange(component.key, parseFloat(e.target.value) || 0) }}
-                                        className="neon-input" style={{ width: 90, fontSize: '10px', padding: '3px 6px', fontFamily: 'var(--font-mono)' }} />
+                                        className="input-field" style={{ width: 90, fontSize: '10px', padding: '3px 6px', fontFamily: 'var(--font-mono)' }} />
                                     : `₹${displayApproved.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
                                 }
                             </strong></span>
@@ -97,7 +97,7 @@ function JustificationCard({ component, index, editMode, onValueChange, onJustif
                         <p className="mono-wide" style={{ fontSize: '8px', marginBottom: 8 }}>⚖️ Commission's Observation</p>
                         {editMode ? (
                             <textarea value={displayJustification} onChange={e => onJustificationChange(component.key, e.target.value)}
-                                rows={4} className="neon-input" style={{ width: '100%', resize: 'vertical', fontFamily: 'var(--font-body)', fontSize: '0.8rem', lineHeight: 1.6 }} />
+                                rows={4} className="input-field" style={{ width: '100%', resize: 'vertical', fontFamily: 'var(--font-body)', fontSize: '0.8rem', lineHeight: 1.6 }} />
                         ) : (
                             <p style={{ fontSize: '0.8rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)' }}>{displayJustification}</p>
                         )}
@@ -156,24 +156,24 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
                 <div>
                     <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', letterSpacing: '-0.05em', marginBottom: 10 }}>Audit Report</h2>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                        <span className="neon-tag tag-neutral">{data.licensee_name}</span>
-                        <span className="neon-tag tag-neutral">FY {data.financial_year}</span>
-                        <span className="neon-tag tag-neutral">{new Date(data.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        <span className="tag-neutral">{data.licensee_name}</span>
+                        <span className="tag-neutral">FY {data.financial_year}</span>
+                        <span className="tag-neutral">{new Date(data.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                    <button onClick={onNewAnalysis} className="ghost-btn">← New Analysis</button>
+                    <button onClick={onNewAnalysis} className="btn-secondary">← New Analysis</button>
                     <button onClick={() => { setEditMode(e => !e); setSaveStatus(null) }}
-                        className={`ghost-btn ${editMode ? 'ghost-btn-accent' : ''}`}
+                        className={`btn-secondary ${editMode ? '' : ''}`}
                         style={editMode ? { color: 'var(--accent)', borderColor: 'var(--border-accent)' } : {}}>
                         {editMode ? '🖊️ Editing ON' : '🖊️ Edit'}
                     </button>
                     {onDraftOrder && (
-                        <button onClick={onDraftOrder} className="ghost-btn" style={{ borderColor: 'rgba(0,255,136,0.3)' }}>
+                        <button onClick={onDraftOrder} className="btn-secondary" style={{ borderColor: 'rgba(0,255,136,0.3)' }}>
                             📄 Draft Order
                         </button>
                     )}
-                    <button onClick={handleDownload} className="laser-btn" style={{ fontSize: '0.7rem', padding: '10px 20px' }}>
+                    <button onClick={handleDownload} className="btn-primary" style={{ fontSize: '0.7rem', padding: '10px 20px' }}>
                         📥 Download PDF
                     </button>
                 </div>
@@ -181,15 +181,15 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
 
             {/* Edit banner */}
             {editMode && (
-                <div className="glass-card" style={{ borderColor: 'var(--border-accent)', padding: '14px 22px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                <div className="card" style={{ borderColor: 'var(--border-accent)', padding: '14px 22px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
                     <p className="mono" style={{ color: 'var(--accent)' }}>🖊️ EDIT MODE — Modify values & justifications</p>
-                    <button onClick={handleSaveEdits} disabled={saving} className="laser-btn" style={{ fontSize: '0.65rem', padding: '8px 18px', opacity: saving ? 0.5 : 1 }}>
+                    <button onClick={handleSaveEdits} disabled={saving} className="btn-primary" style={{ fontSize: '0.65rem', padding: '8px 18px', opacity: saving ? 0.5 : 1 }}>
                         {saving ? '⏳ Saving…' : '💾 Save & Re-generate'}
                     </button>
                 </div>
             )}
             {saveStatus && (
-                <div className="glass-card" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '12px 18px' }}>
+                <div className="card" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '12px 18px' }}>
                     <p className="mono" style={{ color: 'var(--green)' }}>🟢 {saveStatus}</p>
                 </div>
             )}
@@ -204,7 +204,7 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
 
             {/* Distribution Loss */}
             {data.claimed_distribution_loss_pct > 0 && (
-                <div className="glass-card" style={{
+                <div className="card" style={{
                     borderColor: data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5) ? 'rgba(255,136,68,0.3)' : 'rgba(0,255,136,0.3)',
                     padding: '14px 22px', display: 'flex', alignItems: 'center', gap: 12,
                 }}>
@@ -225,12 +225,12 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
             />
 
             {/* Comparison Table */}
-            <div className="glass-card" style={{ overflow: 'hidden' }}>
+            <div className="card" style={{ overflow: 'hidden' }}>
                 <div style={{ background: 'rgba(191, 255, 0, 0.05)', borderBottom: '1px solid var(--border)', padding: '14px 22px', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span className="mono-wide" style={{ color: 'var(--accent)' }}>🔬 Component Analysis</span>
                 </div>
                 <div style={{ overflowX: 'auto' }}>
-                    <table className="neon-table">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th style={{ width: 50 }}>Sl.</th>
@@ -257,7 +257,7 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
                                         {editMode
                                             ? <input type="number" step="any" value={c._editApproved ?? c.approved}
                                                 onChange={e => handleValueChange(c.key, parseFloat(e.target.value) || 0)}
-                                                className="neon-input" style={{ width: 90, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', padding: '4px 6px' }} />
+                                                className="input-field" style={{ width: 90, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', padding: '4px 6px' }} />
                                             : (c._editApproved ?? c.approved).toLocaleString('en-IN', { minimumFractionDigits: 2 })
                                         }
                                     </td>
@@ -292,7 +292,7 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
                 const priorItems = components?.filter(c => c.key?.startsWith('prior_period_') && c.approved > 0) || []
                 if (priorItems.length === 0) return null
                 return (
-                    <div className="glass-card animate-slide-up" style={{ overflow: 'hidden', borderColor: 'rgba(180, 130, 255, 0.3)', borderWidth: 1.5 }}>
+                    <div className="card animate-slide-up" style={{ overflow: 'hidden', borderColor: 'rgba(180, 130, 255, 0.3)', borderWidth: 1.5 }}>
                         <div style={{
                             background: 'linear-gradient(135deg, rgba(180,130,255,0.08), rgba(120,80,255,0.04))',
                             borderBottom: '1px solid rgba(180,130,255,0.2)',
@@ -351,7 +351,7 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
 
             {/* Disallowances */}
             {data.disallowances?.length > 0 && (
-                <div className="glass-card" style={{ overflow: 'hidden', borderColor: 'rgba(255,68,68,0.3)' }}>
+                <div className="card" style={{ overflow: 'hidden', borderColor: 'rgba(255,68,68,0.3)' }}>
                     <div style={{ background: 'var(--red-dim)', borderBottom: '1px solid rgba(255,68,68,0.2)', padding: '14px 22px' }}>
                         <span className="mono-wide" style={{ color: 'var(--red)' }}>🚫 Disallowances</span>
                     </div>
@@ -360,7 +360,7 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
                             <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '14px 18px' }}>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                                     <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--red)', textTransform: 'none', lineHeight: 1.3 }}>{d.item}</h4>
-                                    <span className="neon-tag tag-reduced" style={{ fontSize: '10px' }}>
+                                    <span className="badge-deviation" style={{ fontSize: '10px' }}>
                                         -₹{d.amount_cut?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}L
                                     </span>
                                 </div>
@@ -375,14 +375,14 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
 
             {/* Audit Log */}
             {auditLog.length > 0 && (
-                <div className="glass-card" style={{ borderColor: 'var(--border-accent)', padding: '18px 22px' }}>
+                <div className="card" style={{ borderColor: 'var(--border-accent)', padding: '18px 22px' }}>
                     <p className="mono-wide" style={{ color: 'var(--accent)', marginBottom: 12, fontSize: '9px' }}>📋 Override Log</p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {auditLog.map((entry, i) => (
                             <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                                 <span style={{ fontWeight: 500, fontSize: '0.8rem' }}>{entry.name}</span>
                                 {entry.changed && <span className="mono" style={{ color: 'var(--accent)' }}>₹{entry.oldAmt.toFixed(2)} → ₹{entry.newAmt.toFixed(2)}</span>}
-                                <span className="neon-tag tag-neutral" style={{ fontSize: '8px' }}>Human Override</span>
+                                <span className="tag-neutral" style={{ fontSize: '8px' }}>Human Override</span>
                             </div>
                         ))}
                     </div>

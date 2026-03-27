@@ -1302,28 +1302,32 @@ def extract_petition_data(state: dict) -> dict:
     # ── Step 0: Document AI Form Parser (fastest, most accurate) ───
     # Try Document AI first — it extracts structured tables directly
     # without needing to render pages as images.
-    try:
-        from src.agents.document_ai_extractor import extract_petition_tables
-        logger.info("[DocAI] Attempting Document AI Form Parser extraction...")
-        docai_text, docai_tables = extract_petition_tables(
-            pdf_path, licensee_name=licensee_name, financial_year=target_fy,
-        )
-        if docai_tables:
-            logger.info(f"[DocAI] Got {len(docai_tables)} tables, scanning for ARR data...")
-            found = _scan_arr_table(docai_tables, claimed_expenses, claimed_revenues, target_fy)
-            if found and not all(v == 0.0 for v in claimed_expenses.values()):
-                extraction_method = "document_ai"
-                dist_loss = _extract_distribution_loss(docai_tables, docai_text)
-                logger.info(f"[DocAI] ✓ Extraction success via Document AI! "
-                            f"Total expenses: {sum(claimed_expenses.values()):.2f}")
+    licensee_name = state.get("licensee_name", "").upper()
+    if "KDHP" not in licensee_name and "KANNAN" not in licensee_name:
+        try:
+            from src.agents.document_ai_extractor import extract_petition_tables
+            logger.info("[DocAI] Attempting Document AI Form Parser extraction...")
+            docai_text, docai_tables = extract_petition_tables(
+                pdf_path, licensee_name=licensee_name, financial_year=target_fy,
+            )
+            if docai_tables:
+                logger.info(f"[DocAI] Got {len(docai_tables)} tables, scanning for ARR data...")
+                found = _scan_arr_table(docai_tables, claimed_expenses, claimed_revenues, target_fy)
+                if found and not all(v == 0.0 for v in claimed_expenses.values()):
+                    extraction_method = "document_ai"
+                    dist_loss = _extract_distribution_loss(docai_tables, docai_text)
+                    logger.info(f"[DocAI] ✓ Extraction success via Document AI! "
+                                f"Total expenses: {sum(claimed_expenses.values()):.2f}")
+                else:
+                    logger.warning("[DocAI] Tables found but ARR scan returned zeros, "
+                                   "falling through to Gemini Vision")
             else:
-                logger.warning("[DocAI] Tables found but ARR scan returned zeros, "
-                               "falling through to Gemini Vision")
-        else:
-            logger.warning("[DocAI] No tables returned, falling through to Gemini Vision")
-    except Exception as e:
-        logger.warning(f"[DocAI] Document AI extraction failed: {e}, "
-                       "falling through to Gemini Vision")
+                logger.warning("[DocAI] No tables returned, falling through to Gemini Vision")
+        except Exception as e:
+            logger.warning(f"[DocAI] Document AI extraction failed: {e}, "
+                           "falling through to Gemini Vision")
+    else:
+        logger.info("[DocAI] Bypassing Document AI for KDHP to enforce explicit Gemini prompt overrides.")
 
     # ── Step 1: Native PDF Upload to Gemini ─────────────────────────
     # Uses generate_with_pdf() for a single API call — much faster than
@@ -1348,11 +1352,11 @@ def extract_petition_data(state: dict) -> dict:
                     dynamic_prefix = (
                         f"\n\n*** CRITICAL OVERRIDE FOR THIS SPECIFIC PETITION ***\n"
                         f"This is a KDHP petition for FY {target_fy}.\n"
-                        f"The EXACT column to extract from is: '{fy_short} Audited'\n"
-                        f"DO NOT extract from any other column (not '{fy_short} ARR-ERC Approved', "
-                        f"not 'FY{int(fy_short[2:])-1} Audited', not 'Variance').\n"
-                        f"For the O&M sub-table, also use the '{fy_short} Audited' column (first data column).\n"
-                        f"For the Non-Tariff Income sub-table (Table 30), use the '{target_fy} Truing Up Petition' column (last column).\n"
+                        f"The EXACT column to extract from is: 'Truing Up Claim' (2024/25).\n"
+                        f"DO NOT USE 'Actual Audited' column (col 5 = e.g. PPC 3434.48). Use 'Truing Up Claim' (col 6 = e.g. PPC 3418.52).\n"
+                        f"For ALL rows: Previous Year=col4(DO NOT USE), Actual Audited=col5(DO NOT USE), Truing Up Claim=col6(USE THIS).\n"
+                        f"For Employee Expenses: Truing Up Claim NOT Actual Audited.\n"
+                        f"For Non-Tariff Income sub-table (Table 30), use the '{target_fy} Truing Up Petition' column (last column).\n"
                         f"*** END OVERRIDE ***\n\n"
                     )
 
@@ -1463,10 +1467,56 @@ def extract_petition_data(state: dict) -> dict:
                 interest_wc = claimed_expenses.get("interest_working_capital", 0.0)
                 interest_cd = claimed_expenses.get("interest_consumer_deposits", 0.0)
                 total_interest = interest_lt + interest_wc + interest_cd
+
+                # ── PyMuPDF cross-validation for combined interest ──────
+                # Gemini often reads "Actual Audited" (63.66) instead of
+                # "Truing Up Claim" (71.19) for row D 3.7.  Use PyMuPDF
+                # to read the summary table and grab the correct column.
+                try:
+                    import fitz as _fitz_int
+                    for _annex_path in all_pdf_paths:
+                        if "annex" in str(_annex_path).lower() or "audit" in str(_annex_path).lower():
+                            _doc_int = _fitz_int.open(_annex_path)
+                            for _pi in range(min(len(_doc_int), 12)):
+                                _txt = _doc_int[_pi].get_text()
+                                if "Interest on Working Capital" in _txt and "D 3.7" in _txt:
+                                    _lines = _txt.split("\n")
+                                    for _li, _line in enumerate(_lines):
+                                        if "D 3.7" in _line:
+                                            # The numbers after D 3.7 are:
+                                            # prev_year, actual_audited, truing_up_claim, arr_petition, arr_approved
+                                            _nums_after = []
+                                            for _nli in range(_li + 1, min(_li + 8, len(_lines))):
+                                                _cleaned = _lines[_nli].strip().replace(",", "")
+                                                try:
+                                                    _nums_after.append(float(_cleaned))
+                                                except ValueError:
+                                                    if _nums_after:
+                                                        break
+                                            if len(_nums_after) >= 3:
+                                                # Values: [0]=PrevYear(22.85), [1]=ActualAudited(41.72),
+                                                #         [2]=TruingUpClaim(71.19), [3]=ARRPetition, [4]=ARRApproved
+                                                pdf_interest = _nums_after[2]  # Truing Up Claim column (col 6)
+                                                logger.info(f"  [KDHP PyMuPDF] Interest D 3.7 values found: {_nums_after}")
+                                                logger.info(f"  [KDHP PyMuPDF] Using Truing Up Claim interest: {pdf_interest}")
+                                                if pdf_interest > 0 and abs(pdf_interest - total_interest) > 1.0:
+                                                    logger.warning(
+                                                        f"  [KDHP Interest Fix] Gemini combined={total_interest:.2f} "
+                                                        f"vs PyMuPDF TruingUpClaim={pdf_interest:.2f}. Using PyMuPDF value."
+                                                    )
+                                                    total_interest = pdf_interest
+                                            break
+                                    break
+                            _doc_int.close()
+                            break
+                except Exception as _e_int:
+                    logger.warning(f"  [KDHP Interest PyMuPDF] Fallback failed: {_e_int}")
+
                 if total_interest > 0:
                     claimed_expenses["interest_long_term"] = round(total_interest, 2)
                     claimed_expenses["interest_working_capital"] = 0.0
                     claimed_expenses["interest_consumer_deposits"] = 0.0
+                    claimed_expenses["carrying_cost"] = 0.0
                     logger.info(f"  [KDHP PostProcess] Combined interest -> interest_long_term={total_interest}")
 
                 # ── Deterministic PPC cross-validation ──
