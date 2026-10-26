@@ -1,0 +1,203 @@
+I am Prakhar Sharma B.Tech Student at RIET  Kerala. 
+
+
+0-Context:
+My college got a work order to create an application for a state govt. organization called KSERC to make project to lessen the man power to generate a truing up process report by automating the process so that the man-power there can work more efficiently and generate a nice report (truing-up) with human intervention to be less but present at the final approval. 
+the work order
+"KERALA STATE ELECTRICITY REGULATORY COMMISSION
+KPFC BHAVANAM, C.V. RAMAN PILLAL ROAD, VELLAYAMBALAM,
+THIRUVANANTHAPURAM, KERALA, PIN 695 010
+Phone: 0471 273 5544, FAX 0471 273 5599,
+Website:www.erckerala.org E-mail: kserc@erckerala.org
+
+WORK ORDER
+
+No. KSERC/CSO/03-05
+Dated 28th January 2026
+
+Principal,
+Rajadhani Institute of Engineering and Technology,
+Rajadhani Hills,
+Nagaroor, Attingal,
+Thiruvananthapuram-695102
+9495431623, principal@riet.edu.in
+
+Sub: Work Order for Development of an AI-Based Tool for Truing Up of Accounts of Distribution Licensees for the year 2024-25.
+
+Ref: i. Our letter No KSERC/CSO/03 dated 15/12/2025
+ii. Your EOI dated 19/12/2025
+
+Background
+
+The Kerala State Electricity Regulatory Commission (KSERC) had invited Expressions of Interest (EoI) from engineering / management institutions for the development of an Artificial Intelligence (AI) based tool to assist the Commission in the process of truing-up of accounts of distribution licensees for the year 2024-25. Based on the EoI submitted by your institution and the presentation made before the Commission on 14th January 2026, your institution has been selected.
+
+Scope of Work
+
+The scope of work under this assignment shall broadly include, but not limited to, the following:
+
+A. Design and development of an AI-based analytical tool in respect of the distribution licensees listed below:
+i. Kanan Devan Hills Plantations Company Pvt Ltd.
+ii. Electronics Technology Parks – Kerala, Technopark.
+iii. Infoparks Kerala.
+iv. Cochin Special Economic Zone Authority.
+
+B. The analytical tool developed should be capable of:
+i. Analysing historical and current truing up data of small distribution licensees;
+ii. Identifying trends, deviations, and inconsistencies in accounts;
+iii. Assisting in validation of cost elements, revenue gaps, and prudence checks;
+iv. Generating analytical reports for the Commission.
+v. Development of appropriate data models, algorithms, and dashboards suitable for regulatory analysis.
+vi. Documentation of the user manuals.
+vii. Demonstration, testing, and validation of the tool using sample / actual data (as may be provided by the Commission).
+viii. Incorporation of feedback from the Commission during the development phase.
+
+Nature of Assignment
+
+This assignment shall be undertaken by your institution as part of its Institutional Social Responsibility (ISR) initiative. No financial remuneration shall be payable by the Commission for this assignment, unless otherwise decided separately by the Commission.
+
+Timeline
+
+The assignment shall commence from the date of issue of this Work Order. The indicative timeline for completion of the assignment is 8 weeks. This may be reviewed and modified with mutual consent.
+
+Data and Confidentiality
+
+Any data shared by the Commission for the purpose of this assignment shall be used strictly for the stated objective only.
+
+The institution shall ensure confidentiality of data and shall not disclose or share the same with any third party without prior written approval of the Commission.
+
+Appropriate data security measures shall be put in place by the institution.
+
+Intellectual Property Rights
+
+Unless otherwise decided by the Commission, the intellectual property rights (IPR) of the AI tool developed under this assignment shall vest with the Kerala State Electricity Regulatory Commission. The institution may be permitted to use the work for academic and research purposes with prior approval of the Commission.
+
+Coordination and Review
+
+The Commission shall nominate a Point of Contact (PoC) for coordination and periodic review of the progress of the assignment. The institution shall designate a faculty coordinator and project team for the same.
+
+Acceptance of Work Order
+
+The institution is requested to convey its acceptance of this Work Order and the terms and conditions stated herein within 3 days from the date of receipt of this order as per the format attached.
+
+Memorandum of Understanding (MOU)
+
+In the event of accepting the work order, the institution has to sign a Memorandum of Understanding (MOU) with the Commission within 10 days of receipt of this order, on a Kerala stamp paper worth Rs 200/-.
+
+General
+
+The Commission reserves the right to modify the scope of work, review progress, or terminate the assignment in the event of non-performance or non-compliance with the terms of this Work Order.
+
+By Order of the Commission
+
+Secretary
+Kerala State Electricity Regulatory Commission
+
+CC: Consultant (Tech I)
+CC: Consultant (Fin)
+CC: Consultant (Sys Admn)
+
+CC: CA to Chairman
+CC: CA to Member (Tech)
+"
+Ignore the timline u have to generate this project today as a prototype to provide the output to the KSERC so that they give us a funding.
+
+
+Goal:
+Truing up:This is important.
+
+In electricity regulation:
+
+Licensee estimates cost & revenue in advance
+
+Commission approves tariff based on estimate
+
+After the year ends → Actual data comes
+
+Commission compares:
+
+Approved Estimate vs Actual
+
+The difference is called:
+
+Revenue Gap / Surplus
+
+That adjustment is called:
+
+Truing-Up
+
+
+Solution:
+
+1-A regulatory analysis software that:
+
+    1.1-Takes financial + operational data of distribution companies
+
+   1.2-Checks whether their claimed expenses and revenues are correct
+   
+   1.3-Detects inconsistencies or inflated numbers
+   1.4-Helps KSERC validate and approve final revenue requirement
+   1.5-So this is NOT just a dashboard.
+Hence, it’s an intelligent financial validation system.
+
+
+2-Now comes our part where we  have to build a project which will contain the following things:
+
+
+   2.1-From the Scope section we exactly have to:
+
+   2.1️⃣ Analyze Data
+
+      2.1.1-Historical truing-up data
+
+      2.1.2Current year data
+
+      2.1.3Financial statements
+
+      2.1.4-Revenue and cost components
+
+2.2️⃣ Identify
+
+   2.2.1Trends (cost increasing unusually?)
+
+   2.2.2Deviations (sudden spike in power purchase cost?)
+
+   2.2.3Inconsistencies (mismatch between energy input vs revenue?)
+
+2.3️⃣ Validate
+
+   2.3.1-Cost elements
+
+   2.3.2Revenue gap
+
+   2.3.4Prudence checks
+
+2.4️⃣ Generate
+
+   2 .4.1Analytical reports
+
+   2.4.2Regulatory dashboards
+
+   2 .4.3AI-based insights
+
+
+
+backend logic:
+0- I would like the language for it be python which is simple nice and easy to understand, for my knowledge for each line you write in the code should have comments as to what is it having or what is it doing
+1-my knowledge:
+
+1.1-What u have to resaerch is what all cases happened in the past meaning historical data where u find extremes of every situation that ever took place meaning largest revenue gap(minimum and maximum) surplus(maximum and minimum) rejection(of maximum amount asked ) approvals(of more than aprroved amount eg. asked was 10 cr but after kserc gave 20cr or more or vice a versa for the same).
+
+1.2-Suggest a best method for my software to have a brain to approve the logics for the documents uploaded, it may be langchain , rag or any  new and lightweight process to note record and reason with uploaded document like a KSERC employ and generate  approval like KSERC based on there past approvals and logics they considered to approve. 
+
+1.3-Find out everything that kserc does to make this and a method to generate a project solid enough to be replaced by the staff of kserc and generate the output as exactly KSERC wants.
+
+
+
+GUI and Overall pitch deck app:
+1- I need the app to be clutter free simple(as the KSERC folks are more from a mature age-group), user friendly, gui with only the content that KSERC really want without any fancy stuff. 
+2-It should be interactive and nicely done to overcome what KSERC exatly wanted from the "0-Context" section, it should deviate hallucinate from the real focus content and provide dot to dot things we need to create the app.
+3-Backend they don't require to see so the front end they would look, and for it what ever data they need to generate the brain they will give(WARNING:That is only after after they approve the data, till then we will make the brain based on the publically uploaded data).
+4-Based on the generated truing up order by my KSERC document, i want to have a nice  summarizer maybe any good free tier api key.
+5-Schematics that may KSERC need to see how the app came to the conclusions that ended up in the final document.
+6-every content present in the app should work as it is supposed to be no kind of a hallucination or placeholder should be present.
+

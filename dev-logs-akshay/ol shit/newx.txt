@@ -1,0 +1,296 @@
+
+An errand is a short trip taken to complete a specific, necessary task. While "chores" usually refer to work done inside the home (like laundry or cleaning), errands almost always require you to leave the house to get something done. 
+Reddit
+Reddit
+ +3
+Personal Errands: Over 362 Royalty-Free Licensable Stock ...
+Errand Running Service - Ride & Seek NWA Errand Runners
+Common Types of Errands
+Shopping: Picking up groceries, hardware supplies, or pharmacy prescriptions.
+Logistics: Dropping off a package at the post office or taking clothes to the dry cleaners.
+Financials: Going to the bank to deposit money or paying bills in person.
+Maintenance: Getting gas for the car or going through a car wash.
+Personal: Scheduling or attending a quick appointment, or delivering a message to someone. 
+Cambridge Dictionary
+Cambridge Dictionary
+ +6
+Key Phrases & Idioms
+"Running errands": The most common way to describe doing a series of these tasks in one trip.
+"Fool’s errand": A task that is useless or impossible to achieve (e.g., "Trying to predict the stock market is a fool's errand").
+"Errand of mercy": A trip specifically taken to help someone in need, such as delivering food to a sick neighbor. 
+Wikipedia
+Wikipedia
+ +5
+For more precise definitions, you can consult the Cambridge Dictionary or Merriam-Webster. 
+Are you looking for a checklist to help organize your day, or do you need help defining a specific type of task?
+AI can make mistakes, so double-check responses
+
+
+
+
+undefined
+undefined
+undefined
+16 sites
+What does "running errands" actually mean? : r/AskAnAmerican - Reddit
+Small tasks, often combined. * AskMrScience. • 1y ago. The easiest way to conceptualize this might be "Doing chores that require y...
+
+Reddit
+
+ERRAND Definition & Meaning - Merriam-Webster
+Kids Definition. errand. noun. er·​rand ˈer-ənd. : a short trip taken to do or get something especially for someone else. also : t...
+
+Merriam-Webster
+ERRAND | English meaning - Cambridge Dictionary
+Meaning of errand in English. ... a task that involves going somewhere either to take a message or to take or collect something: d...
+
+Cambridge Dictionary
+Show all
+Trivandrum District Cluster Level Hackathon: Health and Biotech
+Venue: Mohandas College of Engineering and Technology 
+Date: 25/02/2026
+generate a team name using errands we are cse students
+For the Trivandrum District Cluster Level Hackathon: Health and Biotech at Mohandas College of Engineering and Technology (MCET), here are team name ideas that blend the concept of "errands" with Computer Science (CSE) and Health/Biotech:
+Punny & Technical (The "Errand" Focus)
+The Errand Handlers: A play on "exception handlers" in coding; suggests you are the ones who manage the tasks of healthcare efficiently.
+Bio-Errand Execs: Short for "executables," focusing on the execution of biotech solutions.
+Cache-n-Carry Errands: A nod to computer caching and the "quick trip" nature of errands.
+Errand.exe: Simple, direct, and identifies you immediately as a CSE-based team.
+Stack Errands: Combining the concept of a "data stack" with a list of tasks to be completed.
+Biotech & Health Oriented
+Cellular Errands: Refers to the "errands" molecules run inside a cell, perfect for a biotech theme.
+Neural Errands: Blending AI (neural networks) with the idea of data "running errands" across a system.
+The Gene Joggers: A lighter take on the physical movement often associated with running errands.
+Vitals Messenger: Playing on the idea of errands as delivering messages or items, applied to health monitoring.
+For CSE Students (Functional/Logic-Based)
+MainLoop Errands: Suggesting your solution is the central, repeating "loop" that handles all healthcare tasks.
+The Async Runners: "Async" (asynchronous) coding meets the "running" part of running errands.
+Priority Queue Errands: In CSE, a priority queue determines which "errand" or task gets done first—highly relevant for emergency healthcare.
+Recursive Errands: For a team that builds solutions that can scale or repeat themselves.
+Venue & Event Details
+Event: Trivandrum District Cluster Level Hackathon
+Date: 25 February 2026
+Venue: Mohandas College of Engineering and Technology (MCET), Nedumangad
+Would you like these names to be more humorous or more professional for your pitch?
+
+
+
+
+undefined
+undefined
+undefined
+3 sites
+Mohandas College of Engineering and Technology
+1 Apr 2021 — About Us. Mohandas College of Engineering and Technology is situated in Nedumangad in Kerala State of India and was established in...
+
+Mohandas College of Engineering and Technology
+
+Mohandas College of Engineering &Technology ... - LinkedIn
+Mohandas College of Engineering &Technology, Nedumangad, Thiruvananthapuram. Employees, Location, Alumni | LinkedIn. By clicking C...
+
+LinkedIn India
+
+REMINDER‼️ Ideathon Prelims IEDC Trivandrum cluster ...
+12 Feb 2026 — REMINDER‼️ Ideathon Prelims. IEDC Trivandrum cluster organising District-level Hackathon, 2026 ✨ Join us for the Ideathon Prelims,
+
+Instagram
+we are building a kind of rag based journals for the students and doctors which will hold there content they can write new notes in it kind of doodling or text upload handwritten notes pdf images txt docx pdfs
+Building a RAG-based journal for medical students and doctors is a highly effective way to manage the "data chaos" of modern healthcare. By integrating retrieval-augmented generation (RAG) with personal notes, doodles, and diverse file uploads, you are creating a "thinking partner" that grounds AI responses in a user’s specific, verified knowledge base. 
+www.indium.tech
+www.indium.tech
+ +2
+Core Project Value
+Traceable Knowledge: Unlike general LLMs, your system will provide answers grounded in the user's uploaded medical literature, clinical guidelines, and personal observations, reducing AI "hallucinations".
+Multimodal Input Support: Handling PDFs, images, handwritten notes (OCR), and doodles allows for a comprehensive personal profile, which is critical for precision medicine and clinical decision-making.
+Enhanced Well-being: Digital journaling has been shown to reduce stress, improve resilience, and boost memory for both medical aspirants and practitioners. 
+www.indium.tech
+www.indium.tech
+ +5
+Recommended Features for Your RAG Pipeline
+Multimodal Embedding: Use vision-language models to interpret medical images (like X-rays or prescription photos) and handwritten doodles alongside text.
+Contextual Intent Recognition: Design the system to distinguish between a student’s "study query" and a doctor’s "clinical reasoning" query.
+Evidence-Based Retrieval: Ground your RAG in trusted sources like PubMed, SNOMED CT for medical terms, and institutional protocols.
+Privacy Guard Layers: Since you are handling sensitive medical data, implement robust de-identification and secure local data storage to comply with standards like HIPAA. 
+National Institutes of Health (.gov)
+National Institutes of Health (.gov)
+ +5
+Potential Team Names (Refined)
+JournalDoc.ai: Professional and clear for a medical journal tool.
+RAG-to-Rounds: Connects the tech (RAG) to the daily life of a doctor (hospital rounds).
+MediScribe AI: Highlights the focus on writing, note-taking, and AI.
+VectorVitals: Combines the core CSE technology (vector databases) with health metrics.
+For similar existing tools, you might look at how NotebookLM handles source-grounded note-taking or how Medscape provides clinical reference material. 
+Medium
+Medium
+ +1
+Are you focusing more on the educational side for students or the clinical support side for practicing doctors?
+
+
+
+
+undefined
+undefined
+undefined
+11 sites
+Agentic RAG in Healthcare - Indium Software
+10 Jul 2025 — Agentic RAG in Healthcare: The Future of Context-Aware Clinical Decision Support * The Rise of Agentic RAG in Healthcare AI. * Wha...
+
+www.indium.tech
+
+Enterprise Guide to RAG in Healthcare Systems - Appinventiv
+18 Feb 2026 — Key takeaways: * RAG helps clinicians make better decisions by connecting AI responses to trusted clinical data sources. * Healthc...
+
+Appinventiv
+
+Retrieval-Augmented Generation (RAG) in Healthcare - MDPI
+11 Sept 2025 — * Research Methodology. * Background and Fundamentals. * Related Work. * Applications. * Evaluation Framework: Metrics and Benchma...
+
+MDPI
+
+Show all
+generate a problem statement for the program
+For your CSE project at the Trivandrum District Cluster Level Hackathon, a strong problem statement must bridge the gap between medical "data chaos" and your RAG-based technical solution.
+The Problem Statement
+"Medical students and practitioners currently face a 'Paradox of Knowledge': while they have unprecedented access to digital information, the sheer volume—often referred to as 'Note Bloat'—leads to cognitive overload and information fatigue. Critical insights are often fragmented across disparate formats, including handwritten clinical notes, annotated PDFs, medical doodles, and complex docx files. 
+National Institutes of Health (NIH) | (.gov)
+National Institutes of Health (NIH) | (.gov)
+ +4
+Traditional search methods fail to provide contextual retrieval from these varied personal sources, forcing doctors to spend nearly twice as much time on documentation as on patient interaction. This fragmentation results in 8.3% illegibility in critical handwritten records and a 30% risk of missing vital test results, ultimately compromising patient safety and accelerating professional burnout." 
+National Institutes of Health (NIH) | (.gov)
+National Institutes of Health (NIH) | (.gov)
+ +3
+Key Pain Points to Highlight in Your Pitch
+Multimodal Fragmentation: Students and doctors use "doodles" and handwritten notes for better retention, but these become "dark data" that cannot be searched or indexed by standard digital tools.
+The Search Burden: 94% of physicians agree that getting the right clinical data at the right time is the biggest barrier to their work.
+Information Overload: 63% of doctors report that the current volume of data increases stress levels, leading to "guideline fatigue" and impaired decision-making.
+Educational Gap: Medical students struggle with a massive academic workload and often lack a centralized, AI-powered "thinking partner" to synthesize their personal study materials into actionable knowledge. 
+Athenahealth
+Athenahealth
+ +7
+Why Your RAG Solution is the "Errand" Runner
+Your project solves this by automating the "errand" of information retrieval. Instead of a user manually hunting through physical folders or multiple PDF windows, your RAG-based journal acts as an intelligent intermediary that:
+Ingests multimodal data (OCR for handwriting, PDF parsing).
+Indexes it into a searchable vector space.
+Retrieves precise, grounded answers specifically from the user's own documented experiences and notes. 
+Journal of Medical Internet Research
+Journal of Medical Internet Research
+ +4
+These articles discuss the problem of "note bloat" and data overload in healthcare, alongside the difficulties in implementing retrieval-augmented generation (RAG) for medical AI:
+Right info, right time: curing "note bloat" & EHR data overload
+Jun 28, 2024 — Right info, right time: curing "note bloat" & EHR data overload * Information overload in healthcare is an issue. Roughly 1000 phy...
+
+Athenahealth
+
+Enhancing medical AI with retrieval-augmented generation
+Apr 21, 2025 — Several challenges were encountered while working on RAG in studies: * Knowledge deficiencies and outdated information. RAG models...
+
+National Institutes of Health (.gov)
+The real problem with handwritten IPD notes
+Feb 20, 2026 — Time and Financial Loss: Paper notes do not stay on the clipboard forever because they eventually require conversion into bills, i...
+
+digitalipd.in
+
+Illegible Medical Handwriting and Medical Errors - IRJET
+Dec 15, 2025 — 1.3 DOCUMENTATION BURDEN AND TEXT FATIGUE. The increasing documentation burden placed on clinicians has been widely reported acros...
+
+International Research Journal of Engineering and Technology (IRJET)
+Improving Large Language Model Applications in the Medical and ...
+Oct 21, 2025 — A key concern is the generation of inaccurate content, along with limited transparency regarding how responses are produced. Howev...
+
+Journal of Medical Internet Research
+Building a RAG System for Medical Information Retrieval
+Sep 9, 2025 — Building a RAG System for Medical Information Retrieval * Chunking documents into manageable pieces. * Generating embeddings and s...
+
+Medium
+
+Would you like me to refine this into a formal 2-minute pitch script for the judges?
+
+
+
+
+undefined
+undefined
+undefined
+15 sites
+Right info, right time: curing "note bloat" & EHR data overload
+28 Jun 2024 — Right info, right time: curing "note bloat" & EHR data overload * Information overload in healthcare is an issue. Roughly 1000 phy...
+
+Athenahealth
+
+Patient Safety Issues From Information Overload in Electronic ...
+The objective of this literature review is to better understand how information overload in EHR affects patient safety. * Methods.
+
+National Institutes of Health (NIH) | (.gov)
+The Paradox of Knowledge: Why Medical Students Know ...
+14 Apr 2025 — * Abstract. Medical education faces a paradox: despite unprecedented access to information, many students struggle to apply their ...
+
+National Institutes of Health (.gov)
+Show all
+two line problem statement
+
+Trivandrum District Cluster Level Hackathon: Health and Biotech
+Venue: Mohandas College of Engineering and Technology 
+Date: 25/02/2026
+Nodal Officer: Prof. Cibumol B. Babu
+Contact No.: +919446494938
+
+prakharsx05@gmail.com Switch account
+ 
+Not shared
+ 
+Draft saved
+* Indicates required question
+Name of the Institution:
+*
+Rajadhani Institute of Engineering and Technology
+Name of Nodal Officer:
+*
+Akshayraj mr
+Contact Number:
+*
+9947412072
+Email ID of Nodal Officer:
+*
+akshayraj@rietedu.in
+Nominated Team Name:
+*
+MediScribe AI
+Name of Team Leader:
+*
+Adithya Baiju
+Contact Number of Team Leader:
+*
++91 80892 83909
+Email ID of Team Leader:
+*
+abaiju085@gmail.com
+Number of Team Members:
+*
+Problem Statements:
+*
+Development of an alternative technology to check blockage of blood vessels (an alternative to conventional angiography).
+Development of chemical strip (non-electronic) for identification of high temperature exposure in transportation of medicines/vaccines/FMCG goods, to ensure its usability.
+Development of portable device (non-contact device) for measurement of eye pressure in glaucoma patients for usage at home.
+Rapid colorimetric and artificial intelligence-based methods for determining the microbial quality of raw milk, processed milk and milk products.
+Wearable sensor with Artificial Intelligence for prevention of falls in elderly people.
+Development of cost-effective myoelectric prosthesis.
+Online testing and monitoring of quality of medicines and consumables.
+Drug inventory and supply chain tracking system.
+Innovative gerontological care solutions: Designing the future of elderly care products.Software for speech language therapy clinical services.
+Software for speech language therapy clinical services.
+Health Data Information & Management System Mobile Application (HDIMS).
+Other:
+ 
+This is a required question
+Never submit passwords through Google Forms.
+This content is neither created nor endorsed by Google. - Contact form owner - Terms of Service - Privacy Policy
+Does this form look suspicious? Report
+
+Google Forms
+Since your project specifically aligns with the Health Data Information & Management System Mobile Application (HDIMS) track, here is a concise two-line problem statement for your form:
+Medical data remains fragmented across disparate formats like handwritten notes and PDFs, causing critical information loss and cognitive overload for clinicians. Our RAG-powered journal centralizes these multimodal inputs into an AI-driven management system to enable instant, grounded clinical retrieval.
+Would you like a short Technical Description to go along with this for the "Other" or "Description" section?
+
+
+
+

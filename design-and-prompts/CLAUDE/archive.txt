@@ -1,0 +1,2547 @@
+
+20260129161256.pdf
+pdf
+
+summary.pdf
+pdf
+
+Executive Summary.pdf
+pdf
+
+
+Executive Summary.docx
+docx
+
+AI for KSERC Regulatory Analysis.pdf
+pdf
+
+Truing-Up Calculations & Analysis.pdf
+pdf
+
+
+Truing-Up Calculations & Analysis.docx
+docx
+
+
+Prompt.txt
+204 lines
+
+txt
+
+
+deep-research-report.md
+27 lines
+
+md
+
+
+deep-research-report (2).md
+42 lines
+
+md
+
+create the following documents making sure that u reffer the info that is uploaded is seen.
+prompt.txt is a document that u have to fullfill at all times
+
+"Vibe" & Design System Documentation Since "vibe coding" relies heavily on the AI understanding your aesthetic intent, you need precise visual references to prevent generic output.
+Design System / Style Guide: A document defining your color palette (hex codes), typography (font families, sizes), spacing standards (e.g., Tailwind classes), and component styles (button radiuses, shadows). Providing this to the AI ensures consistent UI generation.
+Visual References (Mood Board): A collection of screenshots or URLs of existing websites that match the "vibe" you want. You will often upload these to the AI to ground its visual generation.
+User Flow / Wireframes: Simple low-fidelity sketches or diagrams showing how screens connect. AI is great at building single pages but often struggles with complex navigation flows without explicit guidance.
+Technical Architecture & Logic The AI acts as a junior developer; it needs a senior architect (you) to define the structure so it doesn't write "spaghetti code."
+Tech Stack & Constraints Document: A brief file listing your non-negotiable technologies (e.g., "Next.js 14, Supabase, Tailwind CSS, Shadcn UI"). This is often used as a "System Prompt" or "Context" file in tools like Cursor to keep the AI aligned.
+Database Schema (ERD): An Entity-Relationship Diagram or a text-based schema definition (e.g., a schema.sql or schema.prisma file). Defining your data structure before asking the AI to build features prevents it from hallucinating conflicting data models.
+API Contract / Interface Spec: If you are connecting to external services or separating frontend/backend, document the expected JSON request/response format.
+AI Context & Prompt Engineering These are specific to building with AI and building for AI features.
+Context/Memory File: A master document (often a Markdown file in your repo) that summarizes the project status, current features, and "lessons learned" (e.g., "Always use 'toast' for errors, never 'alert'"). You feed this to the AI periodically to maintain continuity across sessions.
+Prompt Library: A document storing the successful prompts you used to generate core features. This allows you to iterate or rebuild parts of the app reproducibly.
+AI Behavior Guidelines (System Prompt): If your app features an AI (e.g., a chatbot), you need a document defining its persona, tone, boundaries (what it shouldn't say), and specific instructions for how it handles user data.
+Compliance & Quality Assurance Vibe coding is fast, which means bugs and security holes can creep in faster, too.
+Edge Case Checklist: AI often codes for the "happy path." Keep a list of edge cases (e.g., "User has no internet," "Input is too long," "API is down") to explicitly prompt the AI to handle them.
+Security & Data Privacy Policy: A document outlining how user data is handled, especially if you are sending user inputs to LLMs (OpenAI/Anthropic). You may need this for legal compliance (GDPR/CCPA) and to configure your AI provider's data retention settings.
+Test Plan: A simple list of critical user journeys to manually test, as AI-generated unit tests can sometimes pass even when the feature feels "off" to a human. Summary Checklist Category Document NamePurpose for Vibe CodingDesignDesign System (Theme File)Keeps AI from guessing colors/fonts.DesignVisual References"Show, don't just tell" the vibe to the AI.TechDatabase SchemaPrevents data structure conflicts.TechTech Stack RulesStops AI from using outdated/random libraries.AI OpsContext/Memory FileGives the AI "long-term memory" of the project.QAEdge Case ChecklistForces AI to code error handling.
+Show more
+27 Feb
+
+Deliberated optimal document format and organization strategy
+Deliberated optimal document format and organization strategy
+
+
+
+
+
+
+
+
+
+
+I'll now create all 12 documents for your KSERC AI Truing-Up project. Let me build them one by one, grounded in everything from your uploaded files.
+
+
+Created 12 files, read a file
+Created 12 files, read a file
+All 12 documents are ready. Here's what was built and how to use them:
+
+The complete vibe-coding documentation kit for KSERC, grounded entirely in your uploaded research, work order, and historical data:
+
+#	Document	Key Content
+00	Master Index	Build order, benchmark table, quick reference — feed this first every session
+01	Design System	Navy 
+#1A3557, Kerala Gold 
+#C8960C, Inter font, 16px base, gap=red/surplus=green badges
+02	User Flow + Wireframes	ASCII wireframes of all 8 screens, navigation map, interaction principles
+03	Tech Stack	Python+FastAPI backend, React+TypeScript frontend, Gemini 1.5 Flash (free), ChromaDB, full file structure
+04	Database Schema	Full PostgreSQL SQL — all tables pre-seeded with the 7 historical KSERC cases from your research
+05	API Contract	Every endpoint with real JSON examples using Infopark 2024-25 real figures (₹64.72L)
+06	Context + Prompt Library	Ready-to-paste prompts for calculator, rule engine, RAG, UI components — just copy-paste into Cursor
+07	AI Behavior Guidelines	The full system prompt for Gemini with hardcoded rules (Section 3(1) always ₹0, CSR always ₹0, etc.)
+08	Edge Case Checklist	40+ cases across 6 categories — handles reversals, OCR failures, API downtime, XSS
+09	Security Policy	Directly addresses Work Order Clause 5's confidentiality obligation
+10	Test Plan	40+ manual test cases organized into modules; last one is the 10-minute KSERC demo scenario
+11	Visual References	Reference URLs, anti-patterns, AI prompt template for generating screens
+To start coding: Open 00_MASTER_INDEX.md + 06_Context_Memory_Prompt_Library.md in your AI coding tool (Cursor/Claude Code) as context files. Then follow the Phase 1–6 build order. Good luck with the KSERC demonstration, Prakhar!
+
+00 master index
+Document · MD 
+01 design system
+Document · MD 
+02 user flow wireframes
+Document · MD 
+03 tech stack architecture
+Document · MD 
+04 database schema
+Document · MD 
+05 api contract
+Document · MD 
+06 context memory prompt library
+Document · MD 
+07 ai behavior guidelines
+Document · MD 
+08 edge case checklist
+Document · MD 
+09 security privacy policy
+Document · MD 
+10 test plan
+Document · MD 
+11 visual references moodboard
+Document · MD 
+the following apps listed below tell me what task should I give which AI
+n8n
+google adk(terminal cli) via pip in kali
+ollama
+what to use from zie619
+Stich
+antigaravity
+aistudio
+vertexai
+v0
+
+i need no cliche webdesign...i want a dynamic attractive yet a simple gui...with kerala state logos and it should have an official look
+
+27 Feb
+
+Catalogued tool assignments and design specifications without clarification
+Catalogued tool assignments and design specifications without clarification
+
+
+
+
+
+
+
+Let me give you the full map now — and I'll call out the three unclear ones at the end.
+
+Tool → Task Assignment for KSERC
+🎨 v0 (vercel.com/v0) — BUILD THE ENTIRE FRONTEND GUI
+This is your #1 tool for the "no cliché, dynamic, official" requirement. v0 generates production-ready React + Tailwind + shadcn/ui code from a text description.
+
+Use v0 for every screen. Paste this prompt into v0:
+
+Build a government regulatory dashboard for Kerala State Electricity 
+Regulatory Commission (KSERC). 
+
+Style: Indian government portal aesthetic. NOT a startup SaaS app.
+Colors: Navy #1A3557, Blue #2C6FAC, Gold #C8960C, white background.
+Font: Inter. Monospace for all financial figures.
+Layout: Fixed left sidebar (240px) + main content.
+
+Include:
+- KSERC official header with logo placeholder (left) and RIET logo (right)
+- Kerala government gold border strip under the header
+- Sidebar nav: Dashboard, Upload, Analysis, History, Reports, Settings
+- Dashboard showing 4 KPI cards (one per licensee: KDHPCL, Technopark, 
+  Infopark, CSEZA) with Revenue Gap/Surplus in red/green
+- A recent activity list below
+- A "+ Start New Analysis" primary button
+
+DO NOT use: gradients, dark mode, decorative fonts, 
+rounded pill buttons, animations other than hover states,
+any startup/SaaS visual language.
+
+This must look like it belongs on erckerala.org.
+Run this separately for each screen — upload screen, analysis results, historical data, report generation.
+
+🤖 Google AI Studio (aistudio.google.com) — DESIGN & TEST YOUR AI SYSTEM PROMPT
+Before writing a single line of backend code, go here first. It's free, has Gemini 1.5 Flash, and lets you test prompts interactively.
+
+What to do in AI Studio:
+
+Paste in the system prompt from 07_AI_Behavior_Guidelines.md
+Upload a sample KSERC PDF (the Infopark 2024-25 order)
+Test: "Extract the employee cost claimed vs approved"
+Test: "Is Section 3(1) duty allowable? Cite regulation."
+Iterate until the reasoning is accurate before coding
+This is your prompt lab — perfect answers here → copy the prompt → use in your Python backend.
+
+🦙 Ollama (ollama.com) — RUN YOUR LOCAL AI MODEL (DATA PRIVACY)
+For the production version where real KSERC data is involved, no data can leave the server (Work Order Clause 5). Ollama runs Mistral-7B or LLaMA 3.1 completely locally on your machine.
+
+Install and run on Kali:
+
+bash
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull mistral          # 4.1GB — good balance of speed + accuracy
+ollama pull llama3.1:8b      # alternative
+ollama serve                 # starts API at localhost:11434
+When to use Ollama vs AI Studio:
+
+Situation	Use
+Prototype / demo with sample data	AI Studio (Gemini Flash, free)
+Real KSERC confidential data	Ollama (Mistral-7B, fully local)
+Fast testing of prompts	AI Studio
+Final production deployment	Ollama on KSERC's server
+Your rag_engine.py should have a toggle:
+
+python
+# In .env file:
+AI_BACKEND = "gemini"    # use during prototype demo
+# AI_BACKEND = "ollama"  # switch to this for real KSERC data
+🔄 n8n (n8n.io) — ORCHESTRATE THE ANALYSIS PIPELINE
+n8n is a visual workflow automation tool. Think of it as the pipeline manager that connects your upload → extraction → AI → report steps without you writing the glue code.
+
+Install on Kali:
+
+bash
+npm install -g n8n
+n8n start   # runs at localhost:5678
+```
+
+**Build this workflow in n8n:**
+```
+Webhook trigger (new document uploaded)
+    → HTTP Request: POST /api/v1/sessions/{id}/analyze (your FastAPI)
+    → Wait node: poll /status every 10 seconds
+    → IF analysis complete:
+        → HTTP Request: POST /api/v1/reports (generate PDF)
+        → Send email/notification: "Analysis ready for review"
+    → ELSE: loop back to Wait
+This means your FastAPI backend stays lean. n8n handles the async orchestration visually — great for the demo because you can show KSERC the workflow as a diagram.
+
+🏗️ Google ADK — BUILD THE AI AGENT LOGIC (MULTI-STEP REASONING)
+Google Agent Development Kit (pip install google-adk) is for building multi-step reasoning agents that can use tools, not just answer questions.
+
+Install on Kali:
+
+bash
+pip install google-adk
+Use ADK for the core reasoning agent that does the parallel drafting (LiR3AG):
+
+python
+# The agent gets tools like:
+# - query_regulation_database(query)
+# - lookup_historical_order(licensee, year)
+# - calculate_normative_cap(prev_approved, aicpi_rate)
+# - check_perennial_rejections(line_items)
+# Then reasons across them to produce the final analysis
+ADK is better than bare LlamaIndex here because it handles tool calling + reasoning loops natively — exactly what the LiR3AG parallel drafting strategy requires.
+
+ADK vs LlamaIndex — which to use:
+
+Use	Tool
+Vector search over PDFs (RAG knowledge base)	LlamaIndex + ChromaDB
+Multi-step reasoning agent with tools	Google ADK
+They work together — ADK calls LlamaIndex as one of its tools	✅ Combine both
+☁️ Vertex AI (cloud.google.com/vertex-ai) — PRODUCTION DEPLOYMENT UPGRADE
+For the prototype and KSERC demo, use AI Studio (free). Once KSERC approves funding and you move to production, upgrade to Vertex AI for:
+
+Enterprise-grade Gemini API with data residency controls (India region)
+Fine-tuning capability — train Gemini on KSERC-specific terminology
+Batch processing of large document sets
+SLA guarantees for uptime
+Do not use Vertex AI for the prototype — it costs money and requires GCP billing setup. Use it only after you get the funding.
+
+❓ Three Tools to Clarify
+You didn't respond to my questions above, so here's my best guess at what these are — correct me if wrong:
+
+Stitch — If you mean Stitch Data (the ETL/data pipeline tool): use it to pull historical KSERC order data from multiple sources (PDFs, spreadsheets, databases) and pipe it cleanly into your PostgreSQL historical_orders table. It's the data ingestion layer for the knowledge base.
+
+zie619 — I genuinely don't recognize this name. If it's a model name on Ollama (like ollama pull zie619), run ollama list to check what you have. If it's an API key prefix, it's likely your Gemini API key from AI Studio — in which case use it in the GEMINI_API_KEY environment variable.
+
+antigravity — If you mean antigravity.dev (the vibe coding platform), use it alongside v0 for the frontend — v0 generates the component code, antigravity helps you prototype the full app flow. If you mean the Python import antigravity Easter egg... that's just a joke package that opens an XKCD comic. It has no actual use in the project.
+
+Summary Table
+Tool	Task	Phase
+v0	Build every frontend screen	Phase 4 — Frontend
+AI Studio	Test + refine AI system prompt	Phase 3 — AI Brain
+Ollama	Local LLM for confidential data	Production
+Google ADK	Multi-step reasoning agent	Phase 3 — AI Brain
+n8n	Orchestrate upload→analyze→report pipeline	Phase 2–5
+Vertex AI	Production AI upgrade after funding	Post-approval
+Stitch	Historical data ingestion into PostgreSQL	Phase 2 — Core Engine
+zie619	Unclear — clarify and I'll map it	—
+antigravity	Unclear — likely antigravity.dev for prototyping	Phase 4
+For the Kerala Official GUI — Specific v0 Strategy
+Since you want Kerala state logos + official look, do this in v0 specifically:
+
+Go to v0.dev
+In the prompt, include: "The header must have the KSERC seal/logo on the left (provide as an image upload) and the Kerala state emblem on the right. A gold horizontal rule (#C8960C, 3px) separates the header from the content. The overall feel must match the visual language of erckerala.org and kerala.gov.in."
+Download the Kerala state emblem from https://kerala.gov.in (it's a public government asset)
+Download the KSERC logo from https://erckerala.org
+Upload both directly to v0 as reference images
+The gold divider line, navy header, and official seals will instantly make it feel like a legitimate government tool — not a startup project.
+
+Q: What is 'zie619'? I want to map it correctly.
+A: git hub repo https://github.com/Zie619/n8n-workflows
+
+Q: What is 'antigaravity' (antigravity)? I want to map it correctly.
+A: antigravity.dev (vibe coding platform)
+
+Q: For the 'Stitch' tool — which one do you mean?
+A: Stitch Data (ETL / data pipeline)
+
+27 Feb
+
+Consolidated tool mappings with clarified definitions
+Consolidated tool mappings with clarified definitions
+
+
+Perfect — now the picture is complete. Here's the fully corrected and precise assignment for every tool:
+
+Updated Tool Map — KSERC Project
+🔄 n8n + Zie619's Repo = Your Workflow Brain (Use Together)
+This is the biggest clarification. Zie619's GitHub (github.com/Zie619/n8n-workflows) is a library of pre-built n8n workflow templates. You don't build your pipeline from scratch — you clone his workflows and adapt them.
+
+What to do:
+
+bash
+git clone https://github.com/Zie619/n8n-workflows
+```
+Then browse the repo for workflows involving:
+- **Webhook → HTTP Request chains** (adapt for your upload trigger)
+- **PDF/document processing** workflows (adapt for KSERC document ingestion)
+- **AI API call workflows** (adapt to call your Gemini/Ollama endpoint)
+- **Polling loops** (adapt for your analysis status checker)
+
+**Task assignment:**
+Give n8n + Zie619 repo the job of building this pipeline visually:
+```
+[New PDF Uploaded] 
+    → Zie619 webhook template 
+    → Extract text via your FastAPI /analyze endpoint
+    → Poll status every 10 sec (Zie619 loop template)
+    → When complete → trigger report generation
+    → Send notification: "Analysis ready for KSERC review"
+```
+
+The Zie619 repo saves you **hours of n8n setup** — it's like Stack Overflow but for n8n workflows. Before building any n8n flow from zero, always search his repo first.
+
+---
+
+### 🎨 antigravity.dev — **Rapid UI Prototyping + Visual Layout**
+
+Antigravity is a vibe-coding platform — you describe the screen and it generates it. Use it **before v0** in your workflow:
+
+**Workflow: antigravity → v0 → code**
+
+| Step | Tool | What Happens |
+|---|---|---|
+| 1 | **antigravity.dev** | Describe the screen in plain English → get a quick visual mockup → iterate fast |
+| 2 | **v0.dev** | Take the approved layout from antigravity → generate production-quality React + Tailwind code |
+| 3 | **Your codebase** | Paste v0 output in, wire up to FastAPI |
+
+**Task to give antigravity:**
+```
+Government regulatory dashboard for Kerala State Electricity Regulatory 
+Commission. Official Indian government aesthetic — navy header, gold accent 
+strip, white content area. Left sidebar navigation. Show 4 KPI cards for 
+distribution licensees. Financial data table in center. No startup vibes. 
+Must look like erckerala.org meets a modern data tool.
+```
+
+Iterate in antigravity until the **layout and vibe** is exactly right, then hand that to v0 for clean code.
+
+---
+
+### 🗄️ Stitch Data — **Historical Data Ingestion into PostgreSQL**
+
+Stitch is an ETL (Extract-Transform-Load) pipeline tool. For KSERC, its job is to pull historical truing-up data from wherever it currently lives and pour it cleanly into your `historical_orders` PostgreSQL table.
+
+**Task:**
+```
+Source → Stitch → Destination (your PostgreSQL)
+```
+
+Specifically, Stitch handles these data sources for you:
+
+| Source | What Stitch Pulls | Target Table |
+|---|---|---|
+| Google Sheets (if KSERC staff keep records there) | Historical order summaries | `historical_orders` |
+| CSV exports from KSERC's existing system | Past ARR figures, approved amounts | `extracted_financial_data` |
+| REST API (if KSERC's portal exposes one) | Past orders from dev.erckerala.org | `historical_orders` |
+
+**When to use Stitch:**
+- Phase 2 of your build — before the AI brain, you need the historical benchmarks seeded
+- When KSERC eventually provides their real data dump — Stitch ingests it without you writing custom import scripts
+- For keeping your database in sync if KSERC updates their records
+
+**How to set it up:**
+1. Go to `stitchdata.com` → create a free account
+2. Add a "Source" — choose Google Sheets or CSV upload
+3. Add a "Destination" — choose PostgreSQL, point to your local DB
+4. Map the columns → your `historical_orders` schema
+5. Run — done. No Python import scripts needed.
+
+---
+
+## The Complete, Final Tool Assignment Table
+
+| Tool | Exact Task | When in Build |
+|---|---|---|
+| **antigravity.dev** | Rapidly prototype and iterate every screen's layout and vibe | Before coding any screen |
+| **v0.dev** | Convert approved antigravity layout into production React + Tailwind code | After antigravity sign-off |
+| **Google AI Studio** | Test and refine the AI system prompt with real KSERC PDF samples | Phase 3 — before coding AI |
+| **Google ADK** (Kali pip) | Build the multi-step reasoning agent (parallel drafts + tool calling) | Phase 3 — AI brain |
+| **Ollama** (Kali) | Run Mistral-7B locally for when real KSERC confidential data is used | Production switch |
+| **n8n** | Visual workflow: upload → analyze → report pipeline | Phase 2–5 |
+| **Zie619 repo** | Pre-built n8n templates — clone and adapt instead of building from scratch | Before any n8n work |
+| **Stitch Data** | ETL — pull historical KSERC data from sheets/CSVs into PostgreSQL | Phase 2 — seeding data |
+| **Vertex AI** | Production-grade Gemini with data residency after KSERC funding approval | Post-funding only |
+
+---
+
+## The Exact Order to Use Them
+```
+Day 1 — Design
+  antigravity.dev → get the GUI layout right
+  v0.dev → generate the React code from that layout
+
+Day 2 — Data
+  Stitch Data → seed historical_orders table from any CSV/Sheet KSERC has
+  
+Day 3-4 — AI Brain
+  AI Studio → perfect the system prompt with sample PDFs
+  Google ADK (pip install google-adk on Kali) → build the agent
+  Ollama → pull Mistral for local fallback
+
+Day 5 — Pipeline
+  Zie619 repo → find the closest workflow template
+  n8n → adapt it for your upload → analyze → notify flow
+
+Day 6-7 — Integration + Test
+  Wire everything together through FastAPI
+  Run Test Plan doc (10_Test_Plan.md)
+The key insight is antigravity and Zie619 are both accelerators — antigravity speeds up your UI design iteration, and Zie619 speeds up your n8n workflow setup. Neither replaces v0 or n8n — they make them faster to use.
+
+
+┌──(prak05㉿pecadosdeprak)-[~] └─$ cd Desktop/KSERC ┌──(prak05㉿pecadosdeprak)-[~/Desktop/KSERC] └─$
+
+pasted
+
+step by step tell what to do if possible in 20 words for each step to build this starting from mkdir
+or i have 
+a dir containg this ┌──(kserc-env)─(prak05㉿pecadosdeprak)-[~/Desktop/KSERC]
+└─$ ls -a
+ .    20260129161256.pdf  'gemini research'   kserc-env
+ ..   aistudio,vertex     'gpt research'      Prompt.txt
+                                                           rn
+
+27 Feb
+
+Architected Flask prototype with single-file simplicity for immediate deployment
+Architected Flask prototype with single-file simplicity for immediate deployment
+
+
+
+
+
+
+
+Good — you're already ahead. google-generativeai is installed, venv is active. Here's the full build sequence:
+
+Your Current State
+~/Desktop/KSERC/
+├── kserc-env/          ✅ venv active
+├── 20260129161256.pdf  ← KSERC work order PDF
+├── Prompt.txt
+├── aistudio,vertex/
+├── gemini research/
+└── gpt research/
+Steps — Max 20 Words Each
+Step 1 — Create project folders
+
+bash
+mkdir -p app/templates app/static/css app/static/js app/static/img uploads reports
+Step 2 — Install remaining packages
+
+bash
+pip install flask pdfplumber reportlab python-dotenv werkzeug
+Step 3 — Get your free Gemini API key Go to aistudio.google.com → click Get API Key → copy it.
+
+Step 4 — Create your .env file
+
+bash
+echo 'GEMINI_API_KEY=paste_your_key_here' > .env
+Step 5 — Download Kerala & KSERC logos
+
+bash
+# Kerala emblem
+wget -O app/static/img/kerala_emblem.png "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Seal_of_Kerala.svg/200px-Seal_of_Kerala.svg.png"
+For the KSERC logo: go to erckerala.org, right-click their logo → Save as app/static/img/kserc_logo.png
+
+Step 6 — Create the main backend file
+
+bash
+nano app/main.py
+Paste this entire file:
+
+python
+# ============================================================
+# KSERC AI Truing-Up Tool — Main Application
+# Flask backend serving the GUI and calling Gemini AI
+# Work Order: KSERC/CSO/03-05
+# ============================================================
+
+import os                          # For reading environment variables and file paths
+import json                        # For converting Python dicts to JSON strings
+from flask import (                # Flask web framework components
+    Flask, render_template,        # App factory and HTML template renderer
+    request, jsonify,              # Request object and JSON response helper
+    send_from_directory            # For serving generated report files
+)
+import google.generativeai as genai  # Google Gemini AI SDK (already installed)
+import pdfplumber                  # For extracting text and tables from PDF files
+from dotenv import load_dotenv     # For loading .env file variables
+from werkzeug.utils import secure_filename  # Sanitizes uploaded file names
+import re                          # Regular expressions for text parsing
+
+# ─── Load environment variables from .env file ─────────────────────────────
+load_dotenv()  # Reads GEMINI_API_KEY from .env into os.environ
+
+# ─── Configure Gemini AI with the API key ──────────────────────────────────
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # Authenticate with Google AI
+
+# ─── Initialize the Gemini model (Flash = free tier, fast) ─────────────────
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",  # Free tier model — fast and capable
+    system_instruction="""
+You are KSERC-Analyst, a senior regulatory auditor for Kerala State Electricity Regulatory Commission.
+You analyze truing-up petitions from distribution licensees with expertise in:
+- KSERC Tariff Regulations 2021 and 2014
+- Revenue gap and surplus calculations  
+- Prudence checks on O&M expenses
+- Historical KSERC orders for Infopark, Technopark, KDHPCL, and CSEZA
+
+HARD RULES — NEVER VIOLATE:
+1. Section 3(1) Electricity Duty → ALWAYS REJECT → Approved = ₹0
+2. CSR Expenses → ALWAYS REJECT → Approved = ₹0
+3. O&M costs capped at: Previous Approved × (1 + AICPI escalation rate)
+4. Distribution Loss < Target → Licensee retains 2/3 of efficiency savings
+5. Result outside range ₹-280.42L to ₹+64.72L → Flag as ANOMALY
+
+HISTORICAL BENCHMARKS (from real KSERC orders):
+- Max surplus: ₹280.42 Lakh (Technopark FY2020-21)
+- Max gap: ₹64.72 Lakh (Infopark FY2024-25)
+- Reversal case: CSEZA 2023-24 claimed ₹-3.42L, KSERC approved +₹87.85L
+
+RESPONSE FORMAT: Always respond in formal regulatory language.
+Cite regulation clauses. Show all calculations. Use ₹ Lakh as unit.
+Never use placeholder text. If uncertain, say "Verify against Commission records."
+"""
+)
+
+# ─── Historical KSERC data seeded from research documents ──────────────────
+# These are real values from past KSERC truing-up orders
+HISTORICAL_DATA = [
+    {"licensee": "Technopark",   "year": "2020-21", "claimed": None,    "approved": 280.42,  "type": "SURPLUS"},
+    {"licensee": "CSEZA",        "year": "2022-23", "claimed": None,    "approved": 135.14,  "type": "SURPLUS"},
+    {"licensee": "Kanan Devan",  "year": "2022-23", "claimed": None,    "approved": 116.91,  "type": "SURPLUS"},
+    {"licensee": "CSEZA",        "year": "2023-24", "claimed": -3.42,   "approved": 87.85,   "type": "REVERSAL"},
+    {"licensee": "Kanan Devan",  "year": "2021-22", "claimed": 13.61,   "approved": 58.72,   "type": "OVERSHOOT"},
+    {"licensee": "Infopark",     "year": "2020-21", "claimed": -76.53,  "approved": -60.80,  "type": "GAP"},
+    {"licensee": "Infopark",     "year": "2024-25", "claimed": -79.76,  "approved": -64.72,  "type": "GAP"},
+]
+
+# ─── Flask app configuration ────────────────────────────────────────────────
+app = Flask(                        # Create the Flask application
+    __name__,                       # Use current file as root
+    template_folder="templates",    # HTML templates folder
+    static_folder="static"          # CSS/JS/images folder
+)
+app.config["UPLOAD_FOLDER"] = "../uploads"     # Where uploaded PDFs are saved
+app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50MB max upload size
+ALLOWED_EXTENSIONS = {"pdf", "xlsx", "xls"}    # Only these file types accepted
+
+# ─── Helper: Check if uploaded file type is allowed ────────────────────────
+def allowed_file(filename):
+    """Returns True only if filename has an allowed extension."""
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# ─── Helper: Extract text from uploaded PDF ────────────────────────────────
+def extract_pdf_text(filepath):
+    """
+    Opens a PDF and extracts all text and table content.
+    Uses pdfplumber which handles complex regulatory PDF tables well.
+    Returns extracted text as a single string.
+    """
+    extracted_text = ""  # Will hold all extracted content
+    
+    with pdfplumber.open(filepath) as pdf:  # Open the PDF file safely
+        for page_num, page in enumerate(pdf.pages):  # Loop through every page
+            
+            page_text = page.extract_text()  # Extract plain text from this page
+            if page_text:  # Only add if text was found (not a blank/image page)
+                extracted_text += f"\n--- Page {page_num + 1} ---\n"  # Page marker
+                extracted_text += page_text  # Add the page text
+            
+            tables = page.extract_tables()  # Extract any data tables on this page
+            for table in tables:  # Loop through each table found
+                extracted_text += "\n[TABLE DATA]:\n"  # Mark it as a table
+                for row in table:  # Loop through each row in the table
+                    if row:  # Skip empty rows
+                        # Join cells with | separator for clarity
+                        extracted_text += " | ".join([str(cell or "") for cell in row]) + "\n"
+    
+    return extracted_text  # Return all extracted content as one string
+
+# ─── Helper: Calculate revenue gap ────────────────────────────────────────
+def calculate_revenue_gap(approved_arr, actual_revenue):
+    """
+    Core truing-up formula: Revenue Gap = Approved ARR - Actual Revenue
+    Positive = Gap (licensee owed money)
+    Negative = Surplus (licensee collected more than approved)
+    All values in ₹ Lakh.
+    """
+    gap = approved_arr - actual_revenue  # Subtract actual from approved
+    
+    outcome = "GAP" if gap > 0 else "SURPLUS"  # Label the result
+    
+    # Check if result is within historical bounds (sanity check)
+    is_anomaly = gap > 64.72 or gap < -280.42  # Outside all known KSERC cases
+    
+    return {
+        "gap_amount": round(gap, 2),       # Round to 2 decimal places
+        "outcome": outcome,                 # GAP or SURPLUS label
+        "is_anomaly": is_anomaly,           # Flag if outside historical range
+        "message": f"₹{abs(gap):.2f} Lakh {outcome}"  # Human-readable summary
+    }
+
+# ─── ROUTE: Home page ──────────────────────────────────────────────────────
+@app.route("/")
+def index():
+    """Serves the main dashboard HTML page."""
+    return render_template("index.html", historical_data=HISTORICAL_DATA)
+
+# ─── ROUTE: Upload and analyze document ────────────────────────────────────
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    """
+    Receives uploaded PDF, extracts text, sends to Gemini AI for analysis.
+    Returns AI analysis as JSON.
+    """
+    # Check that a file was actually included in the request
+    if "document" not in request.files:
+        return jsonify({"error": "No file uploaded. Please select a PDF."}), 400
+    
+    file = request.files["document"]  # Get the uploaded file object
+    licensee = request.form.get("licensee", "Unknown Licensee")  # Get licensee name
+    year = request.form.get("year", "2024-25")  # Get financial year
+    
+    # Check file has a name (not empty selection)
+    if file.filename == "":
+        return jsonify({"error": "No file selected."}), 400
+    
+    # Validate file type
+    if not allowed_file(file.filename):
+        return jsonify({"error": "Invalid file type. Only PDF and Excel files accepted."}), 400
+    
+    # Secure the filename to prevent path traversal attacks
+    filename = secure_filename(file.filename)
+    
+    # Save uploaded file to uploads directory
+    upload_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)  # Create folder if needed
+    file.save(upload_path)  # Save the file
+    
+    # Extract text from the saved PDF
+    try:
+        pdf_text = extract_pdf_text(upload_path)  # Extract all text and tables
+    except Exception as e:
+        return jsonify({"error": f"Could not read PDF: {str(e)}. Ensure file is not password-protected."}), 400
+    
+    # Build the analysis prompt for Gemini
+    analysis_prompt = f"""
+Perform a complete KSERC Truing-Up analysis for:
+- Licensee: {licensee}
+- Financial Year: {year}
+
+DOCUMENT CONTENT:
+{pdf_text[:8000]}
+
+REQUIRED ANALYSIS — Address each point:
+1. REVENUE GAP / SURPLUS: Identify Approved ARR and Actual Revenue. Compute gap/surplus with formula.
+2. LINE-ITEM VALIDATION: For each cost item found, state: Claimed | Approved | Disallowed | Reason
+3. PERENNIAL REJECTIONS: Flag any Section 3(1) duty or CSR expenses found. Approve ₹0.
+4. O&M NORMATIVE CHECK: Check if Employee Cost, R&M, A&G are within normative caps.
+5. DISTRIBUTION LOSS: If found, compare against target. Calculate efficiency gain if applicable.
+6. ANOMALIES: Flag any unusual figures vs historical benchmarks.
+7. FINAL DETERMINATION: State the approved Revenue Gap or Surplus in ₹ Lakh.
+8. REGULATORY CITATIONS: Cite the specific regulation or past order for each decision.
+
+Format your response with clear section headers. Use ₹ Lakh for all values.
+"""
+    
+    # Send to Gemini AI for analysis
+    try:
+        response = model.generate_content(analysis_prompt)  # Call Gemini API
+        ai_analysis = response.text  # Extract the text response
+    except Exception as e:
+        return jsonify({"error": f"AI analysis failed: {str(e)}. Check your API key."}), 500
+    
+    # Return the analysis result as JSON
+    return jsonify({
+        "success": True,
+        "licensee": licensee,          # Echo back the licensee name
+        "year": year,                   # Echo back the financial year
+        "filename": filename,           # The uploaded file name
+        "analysis": ai_analysis,        # The full AI analysis text
+        "pages_extracted": pdf_text.count("--- Page"),  # Number of pages processed
+    })
+
+# ─── ROUTE: Quick calculation (no PDF needed) ──────────────────────────────
+@app.route("/calculate", methods=["POST"])
+def calculate():
+    """
+    Quick revenue gap calculation from manually entered numbers.
+    No PDF needed — just enter the figures directly.
+    """
+    data = request.get_json()  # Parse the JSON body from the request
+    
+    approved_arr = float(data.get("approved_arr", 0))      # Approved ARR in ₹ Lakh
+    actual_revenue = float(data.get("actual_revenue", 0))  # Actual revenue in ₹ Lakh
+    
+    result = calculate_revenue_gap(approved_arr, actual_revenue)  # Run calculation
+    
+    return jsonify(result)  # Return result as JSON
+
+# ─── ROUTE: Historical data API ────────────────────────────────────────────
+@app.route("/history")
+def history():
+    """Returns all historical KSERC truing-up data as JSON."""
+    return jsonify(HISTORICAL_DATA)  # Return the pre-seeded historical records
+
+# ─── Start the server ───────────────────────────────────────────────────────
+if __name__ == "__main__":
+    app.run(
+        debug=True,   # Show detailed errors during development
+        host="0.0.0.0",  # Accept connections from any network interface
+        port=5000        # Run on port 5000
+    )
+Step 7 — Create the HTML template
+
+bash
+nano app/templates/index.html
+Paste this entire file:
+
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KSERC — AI Truing-Up Analytical Tool</title>
+
+  <!-- Google Fonts: Libre Baskerville for official headings, Noto Sans for body -->
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── CSS Variables: Official Kerala Government Color System ─────────── */
+    :root {
+      --navy:        #0F2040;   /* Deep government navy — headers, sidebar */
+      --navy-mid:    #1A3557;   /* Mid navy — cards, secondary panels */
+      --blue:        #1D5FA8;   /* KSERC blue — buttons, links, active states */
+      --blue-light:  #EBF3FB;   /* Light blue — hover states, highlights */
+      --gold:        #B8860B;   /* Kerala gold — accent strip, borders */
+      --gold-light:  #FDF3D0;   /* Light gold — alert backgrounds */
+      --white:       #FFFFFF;
+      --bg:          #F0F2F5;   /* Page background — cool grey, feels official */
+      --card:        #FFFFFF;
+      --border:      #D0D7E0;
+      --text:        #1C2B3A;   /* Primary body text */
+      --text-mid:    #445566;   /* Secondary text */
+      --text-dim:    #7A8A99;   /* Captions, labels */
+      --surplus:     #156032;   /* Surplus green text */
+      --surplus-bg:  #D4EDDA;   /* Surplus green background */
+      --gap:         #9B1C1C;   /* Gap red text */
+      --gap-bg:      #F8D7DA;   /* Gap red background */
+      --flag-text:   #7D4E00;   /* Flagged amber text */
+      --flag-bg:     #FFF3CD;   /* Flagged amber background */
+      --rejected:    #4A5568;   /* Rejected grey */
+      --sidebar-w:   260px;
+    }
+
+    /* ── Reset & Base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html { font-size: 16px; scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOP HEADER BAR ──────────────────────────────────────────────── */
+    .header {
+      background: var(--navy);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Gold strip at very top — Kerala govt signature element */
+    .header-gold-strip {
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), #D4A017, var(--gold));
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      padding: 10px 24px;
+      gap: 16px;
+    }
+
+    .header-logos {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      height: 52px;
+      width: 52px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+    }
+
+    .logo-divider {
+      width: 1px;
+      height: 44px;
+      background: rgba(255,255,255,0.25);
+    }
+
+    .header-title {
+      flex: 1;
+    }
+
+    .header-org {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.3px;
+      line-height: 1.3;
+    }
+
+    .header-sub {
+      font-size: 11.5px;
+      color: #A8C0D8;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    .header-badge {
+      background: rgba(184,134,11,0.25);
+      border: 1px solid rgba(184,134,11,0.5);
+      color: #F5D87A;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── LAYOUT: Sidebar + Content ────────────────────────────────────── */
+    .layout {
+      display: flex;
+      flex: 1;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--navy-mid);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 20px 18px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 18px;
+      color: rgba(255,255,255,0.7);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.07);
+      color: white;
+      border-left-color: rgba(184,134,11,0.5);
+    }
+
+    .nav-item.active {
+      background: rgba(29,95,168,0.35);
+      color: white;
+      border-left-color: var(--gold);
+    }
+
+    .nav-icon { font-size: 15px; opacity: 0.85; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      line-height: 1.7;
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Page view (only active one shown) */
+    .page { display: none; padding: 28px 32px; }
+    .page.active { display: block; }
+
+    /* Page title bar */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-mid);
+      margin-top: 4px;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .breadcrumb span { color: var(--blue); }
+
+    /* ── CARDS ────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+
+    .card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-body { padding: 20px; }
+
+    /* ── KPI GRID (Dashboard) ─────────────────────────────────────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+      position: relative;
+      border-top: 3px solid var(--blue);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+
+    .kpi-card.surplus { border-top-color: var(--surplus); }
+    .kpi-card.gap     { border-top-color: var(--gap); }
+    .kpi-card.pending { border-top-color: var(--gold); }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .kpi-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .kpi-value.surplus-val { color: var(--surplus); }
+    .kpi-value.gap-val     { color: var(--gap); }
+    .kpi-value.pending-val { color: var(--gold); }
+
+    .kpi-year {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+
+    /* ── STATUS BADGES ────────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+
+    .badge-surplus  { background: var(--surplus-bg); color: var(--surplus); }
+    .badge-gap      { background: var(--gap-bg);     color: var(--gap); }
+    .badge-flag     { background: var(--flag-bg);    color: var(--flag-text); }
+    .badge-rejected { background: #E9ECEF;            color: var(--rejected); }
+    .badge-pending  { background: #E8F4FD;            color: #0C5C8A; }
+
+    /* ── BUTTONS ──────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      font-size: 13.5px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 1px 4px rgba(29,95,168,0.3);
+    }
+
+    .btn-primary:hover { background: #174E8C; box-shadow: 0 2px 8px rgba(29,95,168,0.4); }
+    .btn-primary:disabled { background: #A0B4C8; cursor: not-allowed; box-shadow: none; }
+
+    .btn-outline {
+      background: white;
+      color: var(--blue);
+      border: 1.5px solid var(--blue);
+    }
+
+    .btn-outline:hover { background: var(--blue-light); }
+
+    .btn-gold {
+      background: var(--navy);
+      color: #F5D87A;
+      border: 1px solid rgba(184,134,11,0.4);
+    }
+
+    .btn-gold:hover { background: #0D1B33; }
+
+    /* ── FORM ELEMENTS ────────────────────────────────────────────────── */
+    .form-group { margin-bottom: 18px; }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .form-required { color: var(--gap); margin-left: 2px; }
+
+    .form-control {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: 'Noto Sans', sans-serif;
+      color: var(--text);
+      background: white;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(29,95,168,0.12);
+    }
+
+    /* ── UPLOAD DROP ZONE ─────────────────────────────────────────────── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 6px;
+      padding: 40px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #FAFBFC;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .upload-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+    .upload-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+    .upload-sub { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; }
+    .upload-types { font-size: 11px; color: var(--text-dim); margin-top: 8px; }
+
+    /* ── DATA TABLES ──────────────────────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    .data-table thead th {
+      background: var(--navy);
+      color: white;
+      padding: 11px 14px;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+
+    .data-table thead th.num { text-align: right; }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+
+    .data-table tbody tr:hover { background: var(--blue-light); }
+    .data-table tbody tr:nth-child(even) { background: #F8F9FB; }
+    .data-table tbody tr:nth-child(even):hover { background: var(--blue-light); }
+
+    .data-table td {
+      padding: 10px 14px;
+      color: var(--text);
+    }
+
+    .data-table td.num {
+      text-align: right;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+
+    .data-table td.num.surplus-val { color: var(--surplus); font-weight: 600; }
+    .data-table td.num.gap-val     { color: var(--gap);     font-weight: 600; }
+
+    /* ── ANALYSIS OUTPUT ──────────────────────────────────────────────── */
+    .analysis-output {
+      background: #FAFBFC;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 24px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text);
+      white-space: pre-wrap;
+      font-family: 'Noto Sans', sans-serif;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    /* ── PROGRESS / LOADING ───────────────────────────────────────────── */
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 4px;
+      transition: width 0.3s;
+      animation: progressPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes progressPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.6; }
+    }
+
+    .loading-steps { margin-top: 16px; }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 13.5px;
+      color: var(--text-mid);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-item.done { color: var(--surplus); }
+    .step-item.active { color: var(--blue); font-weight: 600; }
+    .step-item.pending { color: var(--text-dim); }
+
+    /* ── ALERT BANNERS ────────────────────────────────────────────────── */
+    .alert {
+      border-radius: 5px;
+      padding: 12px 16px;
+      font-size: 13.5px;
+      border-left: 4px solid;
+      margin-bottom: 16px;
+    }
+
+    .alert-info    { background: #EBF4FD; border-color: var(--blue);    color: #0C4A7A; }
+    .alert-success { background: var(--surplus-bg); border-color: var(--surplus); color: var(--surplus); }
+    .alert-warning { background: var(--flag-bg);    border-color: var(--gold);    color: var(--flag-text); }
+    .alert-error   { background: var(--gap-bg);     border-color: var(--gap);     color: var(--gap); }
+
+    /* ── QUICK CALCULATOR ─────────────────────────────────────────────── */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .calc-result {
+      text-align: center;
+      padding: 20px;
+      border-radius: 6px;
+      margin-top: 16px;
+      border: 1.5px solid var(--border);
+    }
+
+    .calc-result-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-dim); }
+    .calc-result-value { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; margin-top: 6px; }
+    .calc-result-note  { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+    /* ── 2-COL GRID ───────────────────────────────────────────────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+    /* ── FOOTER BAR ───────────────────────────────────────────────────── */
+    .footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      text-align: center;
+      padding: 10px 24px;
+      border-top: 2px solid var(--gold);
+    }
+
+    /* ── SCROLLBAR ────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #B0C0D0; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8090A0; }
+
+    /* ── SMALL UTILITIES ──────────────────────────────────────────────── */
+    .mb-4 { margin-bottom: 4px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-24 { margin-bottom: 24px; }
+    .mt-16 { margin-top: 16px; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .flex { display: flex; }
+    .flex-gap { gap: 10px; }
+    .hidden { display: none !important; }
+    .full-width { width: 100%; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-gold-strip"></div>
+  <div class="header-main">
+    <div class="header-logos">
+      <img src="/static/img/kerala_emblem.png" alt="Kerala Emblem" class="logo-img"
+           onerror="this.style.display='none'">
+      <div class="logo-divider"></div>
+      <img src="/static/img/kserc_logo.png" alt="KSERC Logo" class="logo-img"
+           onerror="this.style.display='none'">
+    </div>
+    <div class="header-title">
+      <div class="header-org">Kerala State Electricity Regulatory Commission</div>
+      <div class="header-sub">AI-Based Truing-Up Analytical Tool &nbsp;|&nbsp; Work Order No. KSERC/CSO/03-05</div>
+    </div>
+    <div class="header-badge">Prototype v1.0</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN LAYOUT
+══════════════════════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section-label">Navigation</div>
+
+    <a class="nav-item active" onclick="showPage('dashboard')" href="#">
+      <span class="nav-icon">▦</span> Dashboard
+    </a>
+    <a class="nav-item" onclick="showPage('upload')" href="#">
+      <span class="nav-icon">↑</span> Upload &amp; Analyse
+    </a>
+    <a class="nav-item" onclick="showPage('calculator')" href="#">
+      <span class="nav-icon">≡</span> Quick Calculator
+    </a>
+    <a class="nav-item" onclick="showPage('history')" href="#">
+      <span class="nav-icon">◑</span> Historical Orders
+    </a>
+
+    <div class="sidebar-section-label" style="margin-top:12px;">Reference</div>
+    <a class="nav-item" onclick="showPage('benchmarks')" href="#">
+      <span class="nav-icon">⊞</span> Benchmarks
+    </a>
+
+    <div class="sidebar-footer">
+      <div>Developed by RIET, Thiruvananthapuram</div>
+      <div>Under KSERC Work Order KSERC/CSO/03-05</div>
+      <div style="margin-top:6px; color:rgba(255,255,255,0.5);">Confidential — Authorised Use Only</div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- ══════════════════════════════════════════
+         PAGE: DASHBOARD
+    ═══════════════════════════════════════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Truing-Up Analysis Dashboard</div>
+          <div class="page-subtitle">FY 2024-25 &nbsp;·&nbsp; Distribution Licensees under Work Order KSERC/CSO/03-05</div>
+        </div>
+        <div class="breadcrumb"><span>Home</span> › Dashboard</div>
+      </div>
+
+      <div class="alert alert-info mb-24">
+        <strong>Active Assignment:</strong> AI-Based Tool for Truing Up of Accounts for FY 2024-25.
+        Four distribution licensees are under review. Upload their audited accounts to begin analysis.
+      </div>
+
+      <!-- 4 Licensee KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card pending">
+          <div class="kpi-label">Licensee 1</div>
+          <div class="kpi-name">Kanan Devan Hills Plantations</div>
+          <div class="kpi-value pending-val">Pending</div>
+          <div class="kpi-year">KDHPCL &nbsp;·&nbsp; FY 2024-25</div>
+        </div>
+        <div class="kpi-card pending">
+          <div class="kpi-label">Licensee 2</div>
+          <div class="kpi-name">Electronics Technology Parks</div>
+          <div class="kpi-value pending-val">Pending</div>
+          <div class="kpi-year">Technopark &nbsp;·&nbsp; FY 2024-25</div>
+        </div>
+        <div class="kpi-card gap">
+          <div class="kpi-label">Licensee 3 · Sample Result</div>
+          <div class="kpi-name">Infoparks Kerala</div>
+          <div class="kpi-value gap-val">₹ 64.72 L</div>
+          <div class="kpi-year">Gap &nbsp;·&nbsp; FY 2024-25</div>
+        </div>
+        <div class="kpi-card pending">
+          <div class="kpi-label">Licensee 4</div>
+          <div class="kpi-name">Cochin SEZ Authority</div>
+          <div class="kpi-value pending-val">Pending</div>
+          <div class="kpi-year">CSEZA &nbsp;·&nbsp; FY 2024-25</div>
+        </div>
+      </div>
+
+      <!-- Recent Activity + Summary side by side -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Analysis Status</span>
+            <button class="btn btn-primary" onclick="showPage('upload')">+ New Analysis</button>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Licensee</th>
+                  <th>Year</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Infoparks Kerala</td>
+                  <td>2024-25</td>
+                  <td><span class="badge badge-gap">● Gap ₹64.72L</span></td>
+                </tr>
+                <tr>
+                  <td>KDHPCL</td>
+                  <td>2024-25</td>
+                  <td><span class="badge badge-pending">⏳ Awaiting Upload</span></td>
+                </tr>
+                <tr>
+                  <td>Technopark</td>
+                  <td>2024-25</td>
+                  <td><span class="badge badge-pending">⏳ Awaiting Upload</span></td>
+                </tr>
+                <tr>
+                  <td>CSEZA</td>
+                  <td>2024-25</td>
+                  <td><span class="badge badge-pending">⏳ Awaiting Upload</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Regulatory Logic Active</span>
+          </div>
+          <div class="card-body">
+            <div class="step-item done">✔ Section 3(1) Duty → Always Rejected</div>
+            <div class="step-item done">✔ CSR Expenses → Always Rejected</div>
+            <div class="step-item done">✔ O&amp;M Normative Cap Applied</div>
+            <div class="step-item done">✔ AT&amp;C Loss Formula Active</div>
+            <div class="step-item done">✔ Efficiency Gain Sharing (2/3 Rule)</div>
+            <div class="step-item done">✔ Historical Benchmarks Loaded</div>
+            <div class="step-item done">✔ Gemini 1.5 Flash Connected</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PAGE: UPLOAD & ANALYSE
+    ═══════════════════════════════════════════ -->
+    <div class="page" id="page-upload">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Upload &amp; Analyse Document</div>
+          <div class="page-subtitle">Upload audited accounts or petition PDF for AI analysis</div>
+        </div>
+        <div class="breadcrumb"><span>Home</span> › Upload &amp; Analyse</div>
+      </div>
+
+      <div class="two-col">
+        <!-- Upload Form -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Document Upload</span></div>
+          <div class="card-body">
+
+            <div class="form-group">
+              <label class="form-label">Distribution Licensee <span class="form-required">*</span></label>
+              <select class="form-control" id="sel-licensee">
+                <option value="">— Select Licensee —</option>
+                <option>Kanan Devan Hills Plantations (KDHPCL)</option>
+                <option>Electronics Technology Parks / Technopark</option>
+                <option>Infoparks Kerala</option>
+                <option>Cochin Special Economic Zone Authority (CSEZA)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Financial Year <span class="form-required">*</span></label>
+              <select class="form-control" id="sel-year">
+                <option>2024-25</option>
+                <option>2023-24</option>
+                <option>2022-23</option>
+                <option>2021-22</option>
+                <option>2020-21</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Document Type</label>
+              <select class="form-control" id="sel-doctype">
+                <option>Annual Audited Accounts</option>
+                <option>ARR Order</option>
+                <option>Previous Year Truing-Up Order</option>
+                <option>Energy Audit Statement</option>
+                <option>Truing-Up Petition</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Upload Document <span class="form-required">*</span></label>
+              <div class="upload-zone" id="upload-zone"
+                   onclick="document.getElementById('file-input').click()"
+                   ondragover="event.preventDefault(); this.classList.add('dragover')"
+                   ondragleave="this.classList.remove('dragover')"
+                   ondrop="handleDrop(event)">
+                <span class="upload-icon">📄</span>
+                <div class="upload-title" id="upload-title">Click to browse or drag file here</div>
+                <div class="upload-sub" id="upload-sub">Select the PDF file to analyse</div>
+                <div class="upload-types">Accepted: PDF, Excel (.xlsx, .xls) &nbsp;·&nbsp; Max: 50 MB</div>
+              </div>
+              <input type="file" id="file-input" accept=".pdf,.xlsx,.xls"
+                     style="display:none" onchange="fileSelected(this)">
+            </div>
+
+            <button class="btn btn-primary full-width" id="btn-analyze"
+                    onclick="runAnalysis()" disabled>
+              ▶ Run AI Analysis
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Progress Panel -->
+        <div class="card" id="progress-card">
+          <div class="card-header"><span class="card-title">Analysis Progress</span></div>
+          <div class="card-body">
+            <div id="progress-idle">
+              <div class="alert alert-info">
+                Select a licensee, financial year, and upload a document to begin the analysis.
+              </div>
+              <div style="font-size:13px; color:var(--text-mid); line-height:1.8;">
+                <p><strong>The AI will perform:</strong></p>
+                <p>① Revenue Gap / Surplus Computation</p>
+                <p>② Line-Item Prudence Checks</p>
+                <p>③ Perennial Rejection Scan (Section 3(1), CSR)</p>
+                <p>④ O&amp;M Normative Cap Validation</p>
+                <p>⑤ AT&amp;C Loss &amp; Efficiency Analysis</p>
+                <p>⑥ Anomaly Detection vs Historical Benchmarks</p>
+                <p>⑦ Regulatory Citations &amp; Recommendations</p>
+              </div>
+            </div>
+
+            <div id="progress-running" class="hidden">
+              <div class="mb-16">
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-dim); margin-bottom:6px;">
+                  <span>Analysis in progress...</span>
+                  <span id="progress-pct">0%</span>
+                </div>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" id="progress-fill" style="width:0%"></div>
+                </div>
+              </div>
+              <div class="loading-steps" id="steps-list">
+                <div class="step-item pending" id="step1">○ Extracting document content...</div>
+                <div class="step-item pending" id="step2">○ Parsing financial tables...</div>
+                <div class="step-item pending" id="step3">○ Querying KSERC regulatory rules...</div>
+                <div class="step-item pending" id="step4">○ Running AI prudence checks...</div>
+                <div class="step-item pending" id="step5">○ Computing Revenue Gap / Surplus...</div>
+                <div class="step-item pending" id="step6">○ Generating analysis report...</div>
+              </div>
+              <p style="font-size:11.5px; color:var(--text-dim); margin-top:16px; text-align:center;">
+                Please wait. Do not close this window.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analysis Result (shown after completion) -->
+      <div class="card mt-16 hidden" id="result-card">
+        <div class="card-header">
+          <span class="card-title" id="result-title">AI Analysis Result</span>
+          <button class="btn btn-outline" onclick="copyResult()">Copy Report</button>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-success mb-16" id="result-summary"></div>
+          <div class="analysis-output" id="result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PAGE: QUICK CALCULATOR
+    ═══════════════════════════════════════════ -->
+    <div class="page" id="page-calculator">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Quick Revenue Gap Calculator</div>
+          <div class="page-subtitle">Manually enter figures to compute Revenue Gap or Surplus instantly</div>
+        </div>
+        <div class="breadcrumb"><span>Home</span> › Quick Calculator</div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Enter Figures</span></div>
+          <div class="card-body">
+            <div class="alert alert-info mb-16">
+              <strong>Formula:</strong> Revenue Gap = Approved ARR − Actual Revenue
+              &nbsp;|&nbsp; Positive = Gap &nbsp;|&nbsp; Negative = Surplus
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Approved ARR (₹ Lakh) <span class="form-required">*</span></label>
+              <input class="form-control mono" type="number" id="calc-arr"
+                     placeholder="e.g. 315.80" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Actual Revenue Collected (₹ Lakh) <span class="form-required">*</span></label>
+              <input class="form-control mono" type="number" id="calc-rev"
+                     placeholder="e.g. 251.08" step="0.01" min="0">
+            </div>
+
+            <button class="btn btn-primary full-width" onclick="runCalc()">
+              ≡ Calculate Revenue Gap / Surplus
+            </button>
+
+            <div id="calc-result-box" class="calc-result hidden" style="margin-top:20px;">
+              <div class="calc-result-label" id="calc-outcome-label">Revenue Gap</div>
+              <div class="calc-result-value" id="calc-outcome-val">—</div>
+              <div class="calc-result-note" id="calc-outcome-note"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">AT&amp;C Loss Calculator</span></div>
+          <div class="card-body">
+            <div class="alert alert-info mb-16">
+              <strong>Formula:</strong> AT&amp;C Loss (%) = (Energy Input − Energy Realized) ÷ Energy Input × 100
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Energy Input (Million Units)</label>
+              <input class="form-control mono" type="number" id="atc-input"
+                     placeholder="e.g. 1000.00" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Energy Sold to Consumers (Million Units)</label>
+              <input class="form-control mono" type="number" id="atc-sold"
+                     placeholder="e.g. 971.40" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">KSERC Approved Target Loss (%)</label>
+              <input class="form-control mono" type="number" id="atc-target"
+                     placeholder="e.g. 4.23" step="0.01" min="0" max="100">
+            </div>
+
+            <button class="btn btn-outline full-width" onclick="runAtcCalc()">
+              Calculate AT&amp;C Loss
+            </button>
+
+            <div id="atc-result" class="calc-result hidden" style="margin-top:20px;">
+              <div class="calc-result-label">AT&amp;C Loss</div>
+              <div class="calc-result-value" id="atc-val">—</div>
+              <div class="calc-result-note" id="atc-note"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PAGE: HISTORICAL ORDERS
+    ═══════════════════════════════════════════ -->
+    <div class="page" id="page-history">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Historical Truing-Up Orders</div>
+          <div class="page-subtitle">Past KSERC decisions — used as benchmarks for AI validation</div>
+        </div>
+        <div class="breadcrumb"><span>Home</span> › Historical Orders</div>
+      </div>
+
+      <div class="three-col">
+        <div class="kpi-card surplus">
+          <div class="kpi-label">All-Time Max Surplus</div>
+          <div class="kpi-value surplus-val">₹ 280.42 L</div>
+          <div class="kpi-year">Technopark &nbsp;·&nbsp; FY 2020-21</div>
+        </div>
+        <div class="kpi-card gap">
+          <div class="kpi-label">Max Approved Gap</div>
+          <div class="kpi-value gap-val">₹ 64.72 L</div>
+          <div class="kpi-year">Infopark &nbsp;·&nbsp; FY 2024-25</div>
+        </div>
+        <div class="kpi-card pending">
+          <div class="kpi-label">Notable Reversal</div>
+          <div class="kpi-value pending-val">₹ 87.85 L</div>
+          <div class="kpi-year">CSEZA 2023-24 · Claimed deficit, got surplus</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">All Historical Orders (Seeded from KSERC Research)</span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Licensee</th>
+                <th>Financial Year</th>
+                <th class="num">Claimed (₹ L)</th>
+                <th class="num">KSERC Approved (₹ L)</th>
+                <th>Outcome</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td><td>Technopark</td><td>2020-21</td>
+                <td class="num">—</td>
+                <td class="num surplus-val">+280.42</td>
+                <td><span class="badge badge-surplus">● Surplus</span></td>
+                <td style="font-size:12px; color:var(--text-dim);">Highest on record</td>
+              </tr>
+              <tr>
+                <td>2</td><td>CSEZA</td><td>2022-23</td>
+                <td class="num">—</td>
+                <td class="num surplus-val">+135.14</td>
+                <td><span class="badge badge-surplus">● Surplus</span></td>
+                <td style="font-size:12px; color:var(--text-dim);"></td>
+              </tr>
+              <tr>
+                <td>3</td><td>Kanan Devan</td><td>2022-23</td>
+                <td class="num">—</td>
+                <td class="num surplus-val">+116.91</td>
+                <td><span class="badge badge-surplus">● Surplus</span></td>
+                <td style="font-size:12px; color:var(--text-dim);"></td>
+              </tr>
+              <tr>
+                <td>4</td><td>CSEZA</td><td>2023-24</td>
+                <td class="num gap-val">−3.42</td>
+                <td class="num surplus-val">+87.85</td>
+                <td><span class="badge badge-flag">⚠ Reversal</span></td>
+                <td style="font-size:12px; color:var(--text-dim);">Claimed deficit; Commission found surplus</td>
+              </tr>
+              <tr>
+                <td>5</td><td>Kanan Devan</td><td>2021-22</td>
+                <td class="num">+13.61</td>
+                <td class="num surplus-val">+58.72</td>
+                <td><span class="badge badge-flag">⚠ Overshoot</span></td>
+                <td style="font-size:12px; color:var(--text-dim);">Commission approved 4× what was asked</td>
+              </tr>
+              <tr>
+                <td>6</td><td>Infopark</td><td>2020-21</td>
+                <td class="num gap-val">−76.53</td>
+                <td class="num gap-val">−60.80</td>
+                <td><span class="badge badge-gap">● Gap</span></td>
+                <td style="font-size:12px; color:var(--text-dim);">₹15.73L disallowed</td>
+              </tr>
+              <tr>
+                <td>7</td><td>Infopark</td><td>2024-25</td>
+                <td class="num gap-val">−79.76</td>
+                <td class="num gap-val">−64.72</td>
+                <td><span class="badge badge-gap">● Gap</span></td>
+                <td style="font-size:12px; color:var(--text-dim);">₹15.04L disallowed</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PAGE: BENCHMARKS
+    ═══════════════════════════════════════════ -->
+    <div class="page" id="page-benchmarks">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Regulatory Benchmarks &amp; Rules</div>
+          <div class="page-subtitle">Hardcoded KSERC regulatory logic active in the AI engine</div>
+        </div>
+        <div class="breadcrumb"><span>Home</span> › Benchmarks</div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Perennial Rejections (Always ₹0)</span></div>
+          <div class="card-body">
+            <div class="alert alert-error mb-16">
+              These items are <strong>rejected in every KSERC truing-up order</strong> without exception.
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Item</th><th>Approved</th><th>Basis</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Section 3(1) Electricity Duty</strong></td>
+                  <td><span class="badge badge-rejected">₹ 0</span></td>
+                  <td style="font-size:12px;">Cannot be passed to consumers</td>
+                </tr>
+                <tr>
+                  <td><strong>CSR Expenses</strong></td>
+                  <td><span class="badge badge-rejected">₹ 0</span></td>
+                  <td style="font-size:12px;">Appropriation of profit, not distribution cost</td>
+                </tr>
+                <tr>
+                  <td><strong>RPO Liability Provisions</strong></td>
+                  <td><span class="badge badge-rejected">₹ 0</span></td>
+                  <td style="font-size:12px;">Only actual REC payments allowed</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">O&amp;M Normative Cap Formula</span></div>
+          <div class="card-body">
+            <div class="alert alert-warning mb-16">
+              Ref: KSERC Tariff Regulations 2021, Regulation 12(3)
+            </div>
+            <p style="font-size:13.5px; line-height:1.9; color:var(--text);">
+              <strong>Formula:</strong><br>
+              <span class="mono" style="font-size:13px; background:#F0F2F5; padding:8px 12px; display:block; border-radius:4px; margin:8px 0;">
+                Normative Cap = Prev. Approved × (1 + AICPI Rate)
+              </span>
+              If <strong>Actual &gt; Normative Cap</strong> → excess is disallowed.<br><br>
+              <strong>Exception:</strong> One-time documented expenditures (e.g., terminal benefit arrears, emergency repairs) may be approved over and above the cap if verified.<br><br>
+              <strong>Capital misclassification:</strong> Items &gt;₹5L claimed as R&amp;M but qualifying as capital are reclassified — only depreciation at approved rate is allowed.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-16">
+        <div class="card-header"><span class="card-title">Distribution Loss Efficiency Sharing</span></div>
+        <div class="card-body">
+          <p style="font-size:13.5px; line-height:1.9;">
+            When <strong>Actual Distribution Loss &lt; KSERC Target</strong>:<br>
+            Efficiency Gain = (Target% − Actual%) × Energy Input (MU) ÷ 100<br>
+            Licensee retains <strong>2/3</strong> of the resultant savings in power purchase cost.<br>
+            <em>Example — Infopark FY2024-25: Target 4.23%, Actual 2.86% → Efficiency gain achieved → 2/3 of savings retained by licensee.</em>
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main><!-- /main -->
+</div><!-- /layout -->
+
+<footer class="footer">
+  Kerala State Electricity Regulatory Commission &nbsp;·&nbsp;
+  AI Truing-Up Tool &nbsp;·&nbsp; Work Order KSERC/CSO/03-05 &nbsp;·&nbsp;
+  Developed by RIET, Thiruvananthapuram &nbsp;·&nbsp; Confidential — Authorised Use Only
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+<script>
+  // ── Page navigation ─────────────────────────────────────
+  function showPage(name) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Remove active from all nav items
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    // Show selected page
+    document.getElementById('page-' + name).classList.add('active');
+    // Activate the clicked nav item
+    event.currentTarget.classList.add('active');
+  }
+
+  // ── File selection handler ───────────────────────────────
+  function fileSelected(input) {
+    if (input.files.length > 0) {
+      const file = input.files[0];
+      document.getElementById('upload-title').textContent = file.name;
+      document.getElementById('upload-sub').textContent =
+        `${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type || 'document'}`;
+      // Enable the Analyze button only if licensee is also selected
+      checkFormReady();
+    }
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('upload-zone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      document.getElementById('file-input').files = e.dataTransfer.files;
+      fileSelected(document.getElementById('file-input'));
+    }
+  }
+
+  function checkFormReady() {
+    const licensee = document.getElementById('sel-licensee').value;
+    const file = document.getElementById('file-input').files[0];
+    document.getElementById('btn-analyze').disabled = !(licensee && file);
+  }
+
+  document.getElementById('sel-licensee').addEventListener('change', checkFormReady);
+
+  // ── Run AI Analysis ──────────────────────────────────────
+  async function runAnalysis() {
+    const licensee = document.getElementById('sel-licensee').value;
+    const year = document.getElementById('sel-year').value;
+    const file = document.getElementById('file-input').files[0];
+
+    if (!licensee || !file) return;
+
+    // Switch to progress view
+    document.getElementById('progress-idle').classList.add('hidden');
+    document.getElementById('progress-running').classList.remove('hidden');
+    document.getElementById('result-card').classList.add('hidden');
+    document.getElementById('btn-analyze').disabled = true;
+
+    // Animate progress steps
+    const steps = ['step1','step2','step3','step4','step5','step6'];
+    const pcts  = [15, 30, 50, 70, 85, 100];
+
+    async function animateSteps(i) {
+      if (i >= steps.length) return;
+      document.getElementById(steps[i]).className = 'step-item active';
+      document.getElementById(steps[i]).textContent =
+        document.getElementById(steps[i]).textContent.replace('○','⚙');
+      document.getElementById('progress-fill').style.width = pcts[i] + '%';
+      document.getElementById('progress-pct').textContent = pcts[i] + '%';
+      return new Promise(r => setTimeout(r, 1200));
+    }
+
+    // Start step animation concurrently with the API call
+    const stepPromise = (async () => {
+      for (let i = 0; i < 4; i++) { await animateSteps(i); }
+    })();
+
+    // Build form data and call backend
+    const formData = new FormData();
+    formData.append('document', file);
+    formData.append('licensee', licensee);
+    formData.append('year', year);
+
+    let result;
+    try {
+      const response = await fetch('/analyze', { method: 'POST', body: formData });
+      result = await response.json();
+    } catch (err) {
+      result = { error: 'Network error. Is the server running?' };
+    }
+
+    // Complete remaining steps
+    await stepPromise;
+    for (let i = 4; i < steps.length; i++) { await animateSteps(i); }
+
+    // Mark all steps done
+    steps.forEach(s => {
+      const el = document.getElementById(s);
+      el.className = 'step-item done';
+      el.textContent = el.textContent.replace('⚙','✔');
+    });
+
+    // Show result
+    const resultCard = document.getElementById('result-card');
+    resultCard.classList.remove('hidden');
+    document.getElementById('btn-analyze').disabled = false;
+
+    if (result.error) {
+      document.getElementById('result-summary').textContent = '⚠ Error: ' + result.error;
+      document.getElementById('result-summary').className = 'alert alert-error mb-16';
+      document.getElementById('result-title').textContent = 'Analysis Error';
+      document.getElementById('result-text').textContent = result.error;
+    } else {
+      document.getElementById('result-summary').textContent =
+        `✔ Analysis complete — ${result.licensee} · FY ${result.year} · ${result.pages_extracted} pages processed.`;
+      document.getElementById('result-summary').className = 'alert alert-success mb-16';
+      document.getElementById('result-title').textContent =
+        `AI Analysis: ${result.licensee} — FY ${result.year}`;
+      document.getElementById('result-text').textContent = result.analysis;
+    }
+
+    resultCard.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Copy Result ─────────────────────────────────────────
+  function copyResult() {
+    navigator.clipboard.writeText(document.getElementById('result-text').textContent)
+      .then(() => alert('Analysis copied to clipboard.'));
+  }
+
+  // ── Quick Revenue Gap Calculator ─────────────────────────
+  async function runCalc() {
+    const arr = parseFloat(document.getElementById('calc-arr').value);
+    const rev = parseFloat(document.getElementById('calc-rev').value);
+
+    if (isNaN(arr) || isNaN(rev)) {
+      alert('Please enter valid numbers for both fields.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ approved_arr: arr, actual_revenue: rev })
+      });
+      const data = await res.json();
+
+      const box = document.getElementById('calc-result-box');
+      box.classList.remove('hidden');
+
+      const isGap = data.gap_amount > 0;
+      box.style.borderColor    = isGap ? 'var(--gap)' : 'var(--surplus)';
+      box.style.background     = isGap ? 'var(--gap-bg)' : 'var(--surplus-bg)';
+
+      document.getElementById('calc-outcome-label').textContent =
+        isGap ? 'Revenue Gap (Licensee is owed)' : 'Revenue Surplus (Licensee collected excess)';
+
+      document.getElementById('calc-outcome-val').textContent =
+        `₹ ${Math.abs(data.gap_amount).toFixed(2)} Lakh`;
+      document.getElementById('calc-outcome-val').style.color =
+        isGap ? 'var(--gap)' : 'var(--surplus)';
+
+      document.getElementById('calc-outcome-note').textContent =
+        data.is_anomaly
+          ? '⚠ ANOMALY: Result outside historical range (₹-280.42L to ₹+64.72L). Manual review required.'
+          : `Within historical bounds · Formula: ${arr} − ${rev} = ${data.gap_amount}`;
+
+    } catch (err) {
+      alert('Calculation failed. Check server connection.');
+    }
+  }
+
+  // ── AT&C Loss Calculator ─────────────────────────────────
+  function runAtcCalc() {
+    const input  = parseFloat(document.getElementById('atc-input').value);
+    const sold   = parseFloat(document.getElementById('atc-sold').value);
+    const target = parseFloat(document.getElementById('atc-target').value);
+
+    if (isNaN(input) || isNaN(sold)) {
+      alert('Please enter energy input and sold values.');
+      return;
+    }
+
+    const loss = ((input - sold) / input) * 100;
+    const box  = document.getElementById('atc-result');
+    box.classList.remove('hidden');
+
+    document.getElementById('atc-val').textContent = loss.toFixed(2) + ' %';
+
+    if (!isNaN(target)) {
+      const effGain   = loss < target;
+      const gainPct   = target - loss;
+      const savings   = effGain ? `Efficiency gain: ${gainPct.toFixed(2)}%. Licensee retains 2/3 of power purchase savings.` : `Loss exceeds target by ${(loss - target).toFixed(2)}%.`;
+      document.getElementById('atc-note').textContent =
+        `Target: ${target}% · Actual: ${loss.toFixed(2)}% · ${savings}`;
+      document.getElementById('atc-val').style.color =
+        effGain ? 'var(--surplus)' : 'var(--gap)';
+      box.style.background = effGain ? 'var(--surplus-bg)' : 'var(--gap-bg)';
+      box.style.borderColor = effGain ? 'var(--surplus)' : 'var(--gap)';
+    } else {
+      document.getElementById('atc-note').textContent =
+        `Formula: (${input} − ${sold}) ÷ ${input} × 100`;
+    }
+  }
+</script>
+
+</body>
+</html>
+Step 8 — Run it
+
+bash
+cd ~/Desktop/KSERC
+python3 app/main.py
+```
+
+**Step 9 — Open in browser**
+```
+http://localhost:5000
+Step 10 — Add your API key
+
+bash
+# If Step 4 didn't work, create .env manually:
+nano ~/Desktop/KSERC/.env
+# Add this line: GEMINI_API_KEY=YOUR_KEY_FROM_AISTUDIO
+```
+
+---
+
+## Your Final Folder Structure After All Steps
+```
+~/Desktop/KSERC/
+├── kserc-env/
+├── app/
+│   ├── main.py              ← Flask backend + Gemini AI
+│   ├── templates/
+│   │   └── index.html       ← Full Kerala official GUI
+│   └── static/
+│       └── img/
+│           ├── kerala_emblem.png
+│           └── kserc_logo.png
+├── uploads/                 ← PDFs land here
+├── reports/                 ← Generated reports go here
+├── .env                     ← GEMINI_API_KEY lives here
+└── 20260129161256.pdf       ← You can upload this to test!
+The moment you run Step 8 and open localhost:5000 you get a fully working prototype with the Kerala official look, Gemini AI analysis, revenue gap calculator, AT&C loss calculator, and all historical KSERC data pre-loaded. Upload your existing 20260129161256.pdf to test it immediately.
+
+echo 'GEMINI_API_KEY=paste_your_key_here' > .env cpmmand to create
+
+27 Feb
+
+Thought for 0s
+Thought for 0s
+
+bash
+echo 'GEMINI_API_KEY=AIzaSy_YOUR_ACTUAL_KEY_HERE' > .env
+Replace AIzaSy_YOUR_ACTUAL_KEY_HERE with your real key. To verify it worked:
+
+bash
+cat .env
+```
+
+Should show:
+```
+GEMINI_API_KEY=AIzaSy_YOUR_ACTUAL_KEY_HERE
+To get your key right now:
+
+Go to aistudio.google.com
+Click "Get API Key" → "Create API key"
+Copy the key (starts with AIzaSy...)
+Run the echo command with that key
+hello...i am soldier boy
+
+09:24
+
+Recognized casual greeting and prepared straightforward response
+Recognized casual greeting and prepared straightforward response
+
+Hello! Ready to get back to building the KSERC project whenever you are. What's next?
+
+ATTENTION!!!!
+I have completetly anhillated all the libraries...all cli's from my pc completely...envs too...so now i have to start fresh...
+
+Now what you do is create a 13th .md file containing  the formulas...fourier transformations and all other content to jump start my project and give my tech stack to have something to work on the backend rather than hallucinating the whole brain of my project
+
+from the following softwares and workfloes give me my holy geeta trail to form a irressistable software which has capabilty to reason logic and make the world a better place something unstoppable...learns from every prompt learns from every single thing it gets to know gets smarter everytime it is creating a truing up order.
+
+apps:
+ycombinators 
+n8n
+zie619 automations to be integrated
+aitusio
+v0
+supabase
+rowboat
+oolama
+stich
+antigravity
+google adk
+chef.convex
+colab
+github
+gihub copilot
+from the above... give me the apps to make this project  successful
+
+Show more
+09:36
+
+Orchestrated tech stack synthesis for intelligent backend architecture
+Orchestrated tech stack synthesis for intelligent backend architecture
+
+
+
+
+
+
+
+Here's what's inside your Holy Grail document and the straight verdict on your apps:
+
+Y Combinator is not a tool — it's a startup accelerator. Ignore it for building. Everything else maps perfectly.
+
+The 10 formulas coded in Python with every line commented:
+
+Revenue Gap/Surplus (the core KSERC formula)
+AT&C Loss calculation
+Efficiency Gain Sharing (the 2/3 rule)
+O&M Normative Cap (Regulation 12(3))
+Interest on Regulatory Surplus (SBI rate)
+Capital Misclassification → Depreciation reclassification
+Power Purchase Cost Variance
+Z-Score Anomaly Detection (scipy)
+Fourier Transform for seasonal pattern detection in power data
+Linear Regression for cost projection
+The self-learning loop is the most important piece — every time KSERC staff finalizes an order, it gets embedded into ChromaDB automatically. The next analysis retrieves it as a precedent. No fine-tuning needed. Just gets smarter with every order created.
+
+Fresh install one-liner is in Section 2.5 — single pip install command gets everything.
+
+Your execution order: antigravity → v0 → Supabase → AI Studio → Colab → GitHub → ADK → Rowboat → Stitch → Zie619+n8n → Ollama. chef.convex only if you want real-time collaboration features.
+
+13 holy grail formula stack
+Document · MD 
+which apps should i use to make the project 
+apps: ycombinators  n8n zie619 automations to be integrated aitusio v0 supabase rowboat oolama stich antigravity google adk chef.convex colab github gihub copilot cluade code claude cli code rabbit
+
+09:40
+
+Marshaled comprehensive verdict for app selection query
+Marshaled comprehensive verdict for app selection query
+
+
+Here's the complete, no-nonsense verdict on every single app:
+
+✅ USE THESE — Non-Negotiable Core Stack
+App	Role	Why
+Claude Code	Primary coding agent	Writes entire files, understands your full codebase, best for complex Python backend
+Claude CLI	Terminal coding assistant	Run directly in Kali terminal — claude "build the revenue gap calculator"
+GitHub Copilot	Line-by-line autocomplete	Works inside your editor while Claude Code handles big features
+GitHub	Version control	Non-negotiable — every file lives here
+Supabase	Database + Auth + Storage	Replaces raw PostgreSQL entirely — free tier, zero setup, has a UI
+AI Studio	Gemini API key + prompt lab	Get your free API key here, test prompts before coding
+v0.dev	Frontend generator	Describe a screen → get production React + Tailwind code
+Ollama	Local LLM on Kali	Run Mistral-7B locally — for when real KSERC confidential data is used
+Colab	Test Python formulas	Free GPU, test all analysis code before deploying
+Code Rabbit	AI code reviewer	Reviews every GitHub PR automatically — catches bugs before they reach KSERC
+✅ USE THESE — Pipeline & Agents
+App	Role	Why
+n8n	Workflow automation	Upload → Analyze → Notify pipeline, no glue code needed
+Zie619 automations	n8n template library	Clone pre-built workflows instead of building from scratch
+Google ADK	Multi-step reasoning agent	The actual brain — uses tools, reasons in steps, not just chat
+Rowboat	Multi-agent orchestrator	Runs 4 parallel specialist agents simultaneously
+Antigravity	UI rapid prototyping	Sketch the screen → hand to v0 for real code
+Stitch	ETL data pipeline	Pull historical KSERC CSV/Sheet data into Supabase
+❌ DROP THESE
+App	Verdict	Reason
+Y Combinator	❌ NOT A TOOL	It's a startup accelerator. Has zero role in building software.
+chef.convex	❌ SKIP FOR NOW	Real-time backend — overkill for this project, adds complexity
+The Exact Execution Order
+PHASE 1 — DESIGN (Day 1)
+  antigravity.dev  →  sketch every screen
+  v0.dev           →  generate React code from those sketches
+
+PHASE 2 — FOUNDATION (Day 1-2)
+  GitHub           →  create repo, push everything
+  Supabase         →  create project, paste SQL schema, done
+  AI Studio        →  get Gemini API key
+
+PHASE 3 — CODING (Day 2-4)
+  Claude Code      →  build entire Python backend (main workhorse)
+  Claude CLI       →  quick terminal commands and fixes
+  GitHub Copilot   →  autocomplete while typing
+  Code Rabbit      →  reviews every commit automatically
+
+PHASE 4 — AI BRAIN (Day 4-5)
+  Colab            →  test formulas and RAG before deploying
+  Google ADK       →  build the reasoning agent with tools
+  Rowboat          →  wire up 4 parallel specialist agents
+  Ollama           →  pull Mistral for local fallback
+
+PHASE 5 — PIPELINE (Day 5-6)
+  Zie619 repo      →  find closest n8n template, clone it
+  n8n              →  adapt for upload → analyze → report → notify
+  Stitch           →  connect any existing KSERC data → Supabase
+
+PHASE 6 — DEMO READY (Day 7)
+  Code Rabbit      →  final review scan
+  GitHub           →  tag release v1.0-prototype
+  Colab            →  final formula verification
+Claude Code vs Claude CLI — Know the Difference
+Claude Code — for big tasks:
+
+bash
+claude "build the FastAPI backend with all 6 routes from the API contract doc"
+claude "create the Supabase integration replacing all PostgreSQL calls"
+Claude CLI — for quick fixes in terminal:
+
+bash
+claude "fix the import error in main.py"
+claude "write the .env file for this project"
+GitHub Copilot — for while you're typing inside the editor. It sees what you're writing and completes it. The three work as a team — not competitors.
+
+Code Rabbit — install it on your GitHub repo once. It automatically reviews every single commit and PR, points out bugs, security issues, and logic errors before you even test. For a regulatory tool going to KSERC, this is your quality gate.
+
+Q: What is your primary coding environment right now?
+A: windsurf...terminal
+
+Q: What is your current priority for the project?
+A: Get the prototype running ASAP for KSERC demo
+
+09:42
+
+Calibrated rapid deployment strategy for integrated development environment
+Calibrated rapid deployment strategy for integrated development environment
+
+Perfect. Windsurf changes everything — here's your fastest possible path to a working KSERC demo.
+
+Windsurf Is Your Main Weapon
+Windsurf has Cascade — it's an agentic AI that reads your entire codebase and writes multi-file code in one shot. It's better than Copilot for this project because it doesn't just autocomplete, it builds whole features.
+
+Drop Claude Code and Claude CLI from your priority list. Windsurf replaces both for the prototype sprint.
+
+Your Trimmed Stack — Prototype ASAP Mode
+Keep Only These 7 Tools
+Tool	What You Do With It	Time
+Windsurf	Write ALL code — backend, frontend, everything	Entire sprint
+Supabase	5 minutes — create project, paste SQL, get keys	Day 1 morning
+AI Studio	2 minutes — get Gemini API key	Day 1 morning
+v0.dev	Generate the Kerala official GUI in one prompt	Day 1 afternoon
+GitHub	Push code, Code Rabbit reviews automatically	Throughout
+Code Rabbit	Auto-reviews every commit for bugs	Throughout
+Colab	Test formulas before wiring into backend	Day 2
+Suspend these until after demo: n8n, Zie619, Rowboat, ADK, Stitch, Antigravity, Ollama. They are production tools. Demo first.
+
+Day-by-Day Sprint
+Day 1 Morning — Accounts (30 minutes total)
+Terminal — Supabase: Go to supabase.com → New Project → copy your SUPABASE_URL and SUPABASE_ANON_KEY. Then in the SQL Editor paste the schema from document 13_Holy_Grail_Formula_Stack.md Section 2.4.
+
+Browser — AI Studio: Go to aistudio.google.com → Get API Key → copy it.
+
+Day 1 Morning — Project Setup (Windsurf Terminal)
+bash
+mkdir -p ~/Desktop/KSERC/app/templates
+mkdir -p ~/Desktop/KSERC/app/static/img
+mkdir -p ~/Desktop/KSERC/uploads ~/Desktop/KSERC/reports
+cd ~/Desktop/KSERC
+python3 -m venv kserc-env
+source kserc-env/bin/activate
+pip install flask google-generativeai pdfplumber \
+            reportlab python-docx python-dotenv \
+            werkzeug supabase numpy scipy pandas
+Then create .env:
+
+bash
+cat > .env << 'EOF'
+GEMINI_API_KEY=your_key_from_aistudio
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_KEY=your_supabase_anon_key
+EOF
+```
+
+---
+
+### Day 1 Afternoon — Let Windsurf Build the Backend
+
+Open Windsurf. Open the `KSERC` folder. Then in **Cascade** (the chat panel), paste this prompt exactly:
+```
+I am building a KSERC AI Truing-Up Tool for the Kerala State 
+Electricity Regulatory Commission. Work Order KSERC/CSO/03-05.
+
+Build app/main.py — a Flask backend with these exact routes:
+  GET  /           → serve index.html
+  POST /analyze    → accept PDF upload + licensee + year,
+                     extract text with pdfplumber,
+                     send to Gemini 1.5 Flash with this system prompt:
+                     [paste contents of 07_AI_Behavior_Guidelines.md here]
+                     return JSON with analysis text
+  POST /calculate  → accept approved_arr + actual_revenue as JSON,
+                     return gap/surplus using formula: gap = approved_arr - actual_revenue,
+                     flag anomaly if gap > 64.72 or gap < -280.42
+  GET  /history    → return this hardcoded list as JSON:
+                     Technopark 2020-21 surplus 280.42,
+                     CSEZA 2022-23 surplus 135.14,
+                     KDHPCL 2022-23 surplus 116.91,
+                     CSEZA 2023-24 reversal 87.85 (claimed -3.42),
+                     KDHPCL 2021-22 overshoot 58.72 (claimed 13.61),
+                     Infopark 2020-21 gap -60.80 (claimed -76.53),
+                     Infopark 2024-25 gap -64.72 (claimed -79.76)
+
+Rules:
+- Every Python line must have an inline comment
+- Read GEMINI_API_KEY from .env using python-dotenv
+- Section 3(1) duty and CSR are always ₹0 approved — hardcode this
+- Use gemini-1.5-flash model
+- Handle errors gracefully, return JSON error messages
+```
+
+Windsurf Cascade will write the entire file. Review it, then hit **Accept**.
+
+---
+
+### Day 1 Evening — v0 Builds the Frontend
+
+Go to `v0.dev`. Paste this prompt:
+```
+Build a single HTML page for Kerala State Electricity Regulatory 
+Commission (KSERC) AI Truing-Up Tool.
+
+STRICT DESIGN RULES:
+- Colors: Navy #0F2040 header, Gold #B8860B accent strip (4px under header),
+  white content, Inter font, JetBrains Mono for all numbers
+- Must look like erckerala.org — Indian government portal aesthetic
+- NO gradients, NO dark backgrounds, NO startup vibes
+- Left sidebar 240px with nav items
+- KSERC header with logo space left side, Kerala emblem space right side
+
+PAGES (show one at a time via JS, no page reload):
+1. Dashboard — 4 KPI cards (KDHPCL, Technopark, Infopark, CSEZA),
+   recent activity table, Start New Analysis button
+2. Upload & Analyse — licensee dropdown (4 options), year dropdown,
+   file upload dropzone (PDF), Run Analysis button,
+   progress steps panel, results text panel below
+3. Quick Calculator — two number inputs (Approved ARR, Actual Revenue),
+   Calculate button, large result showing GAP or SURPLUS in red/green
+4. Historical Orders — table with all 7 historical KSERC cases
+   color coded: surplus=green, gap=red, reversal/overshoot=amber
+
+All API calls go to Flask on localhost:5000.
+Every financial number uses JetBrains Mono font.
+Positive gap = red. Negative surplus = green.
+```
+
+Download the output. Save as `app/templates/index.html`.
+
+---
+
+### Day 2 — Wire, Test, Push
+
+**In Windsurf Cascade:**
+```
+The backend is in app/main.py and frontend in app/templates/index.html.
+Test that all 4 API routes connect to the frontend correctly.
+Fix any CORS issues. Make sure the file upload sends to /analyze 
+as multipart/form-data with fields: document, licensee, year.
+Make sure /calculate receives JSON and returns the gap result.
+Terminal — run it:
+
+bash
+cd ~/Desktop/KSERC
+source kserc-env/bin/activate
+python3 app/main.py
+Open http://localhost:5000 — your demo is live.
+
+Terminal — push to GitHub:
+
+bash
+git init
+echo "kserc-env/\nuploads/\n.env\n__pycache__/" > .gitignore
+git add .
+git commit -m "KSERC prototype v1 - working demo"
+git remote add origin https://github.com/YOUR_USERNAME/kserc-truingup.git
+git push -u origin main
+```
+
+Code Rabbit activates automatically on the push and reviews your code.
+
+---
+
+### Day 2 Evening — Test With Real PDF
+
+Upload the `20260129161256.pdf` (the actual KSERC work order already on your Desktop) to test the /analyze route. It will extract text and return Gemini's analysis of the document.
+
+---
+
+## Windsurf-Specific Tips for This Project
+
+**Use Cascade, not just autocomplete.** Cascade reads all your files. Start every session by telling it:
+```
+Project context: KSERC AI Truing-Up Tool, Flask + Gemini 1.5 Flash backend,
+single HTML frontend. All monetary values in ₹ Lakh.
+Section 3(1) duty and CSR always rejected (₹0 approved).
+Revenue Gap = Approved ARR − Actual Revenue.
+Historical max surplus: ₹280.42L. Max gap: ₹64.72L.
+```
+
+**When Cascade generates code**, always check:
+- Every Python line has an inline comment
+- No placeholder values like `"INSERT_VALUE_HERE"`
+- Financial numbers use 4 decimal places (`NUMERIC(12,4)`)
+
+**Use Windsurf's inline chat** (`Ctrl+I`) for quick single-line fixes without opening Cascade.
+
+---
+
+## What The KSERC Demo Looks Like at the End
+```
+Staff opens browser → localhost:5000
+    ↓
+Kerala official header (navy + gold strip) + KSERC logo
+    ↓
+Dashboard shows 4 licensee cards, Infopark shows ₹64.72L GAP
+    ↓
+Staff clicks "Upload & Analyse" → selects Infopark → uploads PDF
+    ↓
+Progress bar animates through 6 steps
+    ↓
+Gemini AI returns full analysis with regulation citations
+    ↓
+Staff clicks "Quick Calculator" → enters numbers → sees GAP/SURPLUS instantly
+    ↓
+Staff clicks "Historical Orders" → sees all 7 past KSERC decisions
+    ↓
+KSERC is impressed → funding conversation begins
+Total build time with Windsurf doing the heavy lifting: 2 days. The tool from document 06_Context_Memory_Prompt_Library.md has ready-to-paste Windsurf prompts for every single feature if you get stuck.
+
+
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+

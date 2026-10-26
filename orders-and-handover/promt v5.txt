@@ -1,0 +1,20 @@
+Version 5
+Mimic Clone copy integrate following from @beautifulMention...we are working mutually on the same projects so no issues of IPR...
+Fllowing to be integrated in my project without touching the keynote of my front-end:
+Multi-agent LangGraph architecture with specialized agents
+Structured precedent database with JSON-based lookup
+Deterministic mathematical formulas separate from LLM reasoning
+
+
+Use free llm api from 
+https://github.com/cheahjs/free-llm-api-resources
+https://free-apis.github.io/#/
+https://openrouter.ai/openrouter/free
+https://aimlapi.com/best-ai-apis-for-free
+
+use methodologies from 
+https://github.com/sickn33/antigravity-awesome-skills
+
+to implement OONLY ONLY ONLY ONLY emphasis on the only the mathematical formulas and  structured DB from
+
+Take your own time

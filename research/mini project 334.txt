@@ -1,0 +1,19 @@
+I am making this as my mini project for my CSD 344 ktu.
+For AI terms and guidelines information... the code and project that i am going to create is not going to be published, hence my guide has told us to implement the ditto project before implementing our changes in the codes. So please make the changes in the code as requested.
+
+You have to create three files:
+1 PRD
+2 Design Architecture along with the workflow
+3 Tech stack to develop the project 
+
+The knowledge-base for which should be an exact clone of the base paper(Chatbot_to_chat_with_medical_books_using_Retrieval-Augmented_Generation_Model.pdf). The backend should be based on the above thing  but with a little change as in the projectuntiled.pdf
+
+use significant knowledge of base paper to generate the content of the base paper to generate the code
+I need the app to be clutter free simple, user friendly, gui with only the content that KSERC really 
+want without any fancy stuff. 
+every content present in the app should work as it is supposed to be no kind of a hallucination or placeholder should be present.
+
+ I would like the language for it be python which is simple nice and easy to understand, for my knowledge for each line you write in the code should have comments as to what is it having or what is it doing
+
+
+

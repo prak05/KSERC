@@ -1,0 +1,94 @@
+KERALA STATE ELECTRICITY REGULATORY COMMISSION
+KPFC BHAVANAM, C.V. RAMAN PILLAL ROAD, VELLAYAMBALAM,
+THIRUVANANTHAPURAM, KERALA, PIN 695 010
+Phone: 0471 273 5544, FAX 0471 273 5599,
+Website:www.erckerala.org E-mail: kserc@erckerala.org
+
+WORK ORDER
+
+No. KSERC/CSO/03-05
+Dated 28th January 2026
+
+Principal,
+Rajadhani Institute of Engineering and Technology,
+Rajadhani Hills,
+Nagaroor, Attingal,
+Thiruvananthapuram-695102
+9495431623, principal@riet.edu.in
+
+Sub: Work Order for Development of an AI-Based Tool for Truing Up of Accounts of Distribution Licensees for the year 2024-25.
+
+Ref: i. Our letter No KSERC/CSO/03 dated 15/12/2025
+ii. Your EOI dated 19/12/2025
+
+Background
+
+The Kerala State Electricity Regulatory Commission (KSERC) had invited Expressions of Interest (EoI) from engineering / management institutions for the development of an Artificial Intelligence (AI) based tool to assist the Commission in the process of truing-up of accounts of distribution licensees for the year 2024-25. Based on the EoI submitted by your institution and the presentation made before the Commission on 14th January 2026, your institution has been selected.
+
+Scope of Work
+
+The scope of work under this assignment shall broadly include, but not limited to, the following:
+
+A. Design and development of an AI-based analytical tool in respect of the distribution licensees listed below:
+i. Kanan Devan Hills Plantations Company Pvt Ltd.
+ii. Electronics Technology Parks – Kerala, Technopark.
+iii. Infoparks Kerala.
+iv. Cochin Special Economic Zone Authority.
+
+B. The analytical tool developed should be capable of:
+i. Analysing historical and current truing up data of small distribution licensees;
+ii. Identifying trends, deviations, and inconsistencies in accounts;
+iii. Assisting in validation of cost elements, revenue gaps, and prudence checks;
+iv. Generating analytical reports for the Commission.
+v. Development of appropriate data models, algorithms, and dashboards suitable for regulatory analysis.
+vi. Documentation of the user manuals.
+vii. Demonstration, testing, and validation of the tool using sample / actual data (as may be provided by the Commission).
+viii. Incorporation of feedback from the Commission during the development phase.
+
+Nature of Assignment
+
+This assignment shall be undertaken by your institution as part of its Institutional Social Responsibility (ISR) initiative. No financial remuneration shall be payable by the Commission for this assignment, unless otherwise decided separately by the Commission.
+
+Timeline
+
+The assignment shall commence from the date of issue of this Work Order. The indicative timeline for completion of the assignment is 8 weeks. This may be reviewed and modified with mutual consent.
+
+Data and Confidentiality
+
+Any data shared by the Commission for the purpose of this assignment shall be used strictly for the stated objective only.
+
+The institution shall ensure confidentiality of data and shall not disclose or share the same with any third party without prior written approval of the Commission.
+
+Appropriate data security measures shall be put in place by the institution.
+
+Intellectual Property Rights
+
+Unless otherwise decided by the Commission, the intellectual property rights (IPR) of the AI tool developed under this assignment shall vest with the Kerala State Electricity Regulatory Commission. The institution may be permitted to use the work for academic and research purposes with prior approval of the Commission.
+
+Coordination and Review
+
+The Commission shall nominate a Point of Contact (PoC) for coordination and periodic review of the progress of the assignment. The institution shall designate a faculty coordinator and project team for the same.
+
+Acceptance of Work Order
+
+The institution is requested to convey its acceptance of this Work Order and the terms and conditions stated herein within 3 days from the date of receipt of this order as per the format attached.
+
+Memorandum of Understanding (MOU)
+
+In the event of accepting the work order, the institution has to sign a Memorandum of Understanding (MOU) with the Commission within 10 days of receipt of this order, on a Kerala stamp paper worth Rs 200/-.
+
+General
+
+The Commission reserves the right to modify the scope of work, review progress, or terminate the assignment in the event of non-performance or non-compliance with the terms of this Work Order.
+
+By Order of the Commission
+
+Secretary
+Kerala State Electricity Regulatory Commission
+
+CC: Consultant (Tech I)
+CC: Consultant (Fin)
+CC: Consultant (Sys Admn)
+
+CC: CA to Chairman
+CC: CA to Member (Tech)

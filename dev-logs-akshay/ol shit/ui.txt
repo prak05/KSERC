@@ -1,0 +1,13 @@
+app name: KSERC Saarthi
+
+Functions: 3 Layers basically 
+Bottom is the rag trained on the regulations base din which the my ai will takes descisions based on previous regulations, trued up orders that will have the details of most diverse cases till date. 
+
+Middle layer will contain the 4 llm models as in the ARA_Backend_Architecture.pdf,ARA_Regulatory_Intelligence.pdf,ARA_Smart_Regulatory_AI.pdf at path /home/prak05/GITHUB/KSERC/Material. They should work as told in the pdf.
+
+UI should have all the schematics as now but instead I want to make it such that we get a final pdf as a output containing what particular expense has been aprroved. Therefore whatever format is suitable to be uploaded u tell which is easy to handle.... and make ui such that we post arr and truing up order in the ui and connecting to the rag this system gives us an verdict like an KSERC offcial but finally human intervention is required.
+
+
+how to build a rag model u decide and give the output
+how to generate four particular four llms your task
+make it look like we put some elbow grease in it...  

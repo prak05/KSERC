@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSERC AI Truing-Up Tool - NBA Accreditation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0052a3 0%, #1e3a8a 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .presentation-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .page {
+            background: white;
+            width: 8.5in;
+            height: 11in;
+            margin: 20px auto;
+            padding: 20px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid #333;
+            page-break-after: always;
+            position: relative;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px dashed #999;
+            pointer-events: none;
+        }
+
+        .page-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* RIET Logo Header */
+        .logo-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #0052a3;
+        }
+
+        .logo-header img {
+            max-width: 100%;
+            height: auto;
+            max-height: 90px;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0052a3;
+            margin-bottom: 3px;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .section {
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0052a3;
+            margin-bottom: 6px;
+            border-left: 4px solid #0052a3;
+            padding-left: 10px;
+        }
+
+        .section-content {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .highlight-line {
+            background: #fff3cd;
+            padding: 8px 12px;
+            border-left: 4px solid #ffc107;
+            margin: 8px 0;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .col-item {
+            background: #f5f5f5;
+            padding: 8px;
+            border-left: 3px solid #0052a3;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .col-item-title {
+            font-weight: 600;
+            color: #0052a3;
+            margin-bottom: 3px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+            font-size: 12px;
+        }
+
+        .feature-list li {
+            padding: 3px 0;
+            padding-left: 18px;
+            position: relative;
+            color: #555;
+        }
+
+        .feature-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #0052a3;
+            font-weight: 700;
+        }
+
+        .faq-section {
+            margin-top: 10px;
+        }
+
+        .faq-item {
+            margin-bottom: 8px;
+            padding: 8px;
+            background: #f5f5f5;
+            border-left: 3px solid #1e3a8a;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 11px;
+        }
+
+        .faq-item:hover {
+            background: #efefef;
+            padding-left: 12px;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0;
+        }
+
+        .faq-answer {
+            font-size: 10px;
+            color: #666;
+            margin-top: 4px;
+            display: none;
+            padding-top: 4px;
+            border-top: 1px solid #ddd;
+            line-height: 1.4;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        .two-col-wide {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .col {
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .col strong {
+            color: #0052a3;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            gap: 10px;
+            padding: 12px 20px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-prev {
+            background: #999;
+            color: white;
+        }
+
+        .btn-prev:hover {
+            background: #777;
+        }
+
+        .btn-next {
+            background: #0052a3;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #003d7a;
+        }
+
+        .page-counter {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .print-btn {
+            background: #0d7a3a;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .print-btn:hover {
+            background: #0a5a2a;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+            .nav-container {
+                display: none;
+            }
+        }
+
+        .table-compact {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin: 6px 0;
+        }
+
+        .table-compact th {
+            background: #0052a3;
+            color: white;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .table-compact td {
+            border: 1px solid #ddd;
+            padding: 4px 5px;
+        }
+
+        .table-compact tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .footer-text {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- PAGE 1 -->
+        <div class="page active">
+            <div class="page-content">
+                <div class="logo-header">
+                    <img src="riet-logo.jpg" alt="RIET Logo" style="width: 100%; height: auto; max-height: 90px;">
+                </div>
+
+                <div class="page-title">KSERC AI Truing-Up Tool</div>
+                <div class="page-subtitle">An AI-Driven Innovation for Regulatory Excellence</div>
+
+                <div class="content">
+                    <div class="section">
+                        <div class="section-title">🎯 What We Built</div>
+                        <div class="section-content">
+                            An intelligent system that automates Kerala's electricity tariff-setting process (truing-up). It combines AI-powered document analysis with KSERC's regulatory framework to process complex financial petitions in <strong>2-4 weeks instead of 6-12 months</strong>.
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">⏳ The Challenge We Solve</div>
+                        <div class="two-col">
+                            <div class="col-item">
+                                <div class="col-item-title">Manual & Slow</div>
+                                Truing-up took 6-12 months. Officers manually reviewed 500+ page petitions.
+                            </div>
+                            <div class="col-item">
+                                <div class="col-item-title">Complex Rules</div>
+                                KSERC regulations (12+ rules, multiple exceptions) applied inconsistently.
+                            </div>
+                        </div>
+                        <div class="two-col">
+                            <div class="col-item">
+                                <div class="col-item-title">Data Entry Errors</div>
+                                Thousands of cost items manually copied from PDFs. High error risk.
+                            </div>
+                            <div class="col-item">
+                                <div class="col-item-title">Lack of Transparency</div>
+                                Limited audit trail. Decisions not fully documented or explainable.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🔄 How It Works (3 Steps)</div>
+                        <div class="section-content">
+                            <strong style="color: #0052a3;">1. Extract:</strong> Upload PDF → AI automatically extracts cost heads, revenue, and financials<br>
+                            <strong style="color: #0052a3;">2. Analyze:</strong> AI applies all KSERC regulations & flags deviations with reasoning<br>
+                            <strong style="color: #0052a3;">3. Review & Report:</strong> Officers review, override if needed, then generate formal orders
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">✨ Key Features</div>
+                        <ul class="feature-list">
+                            <li><strong>Automated PDF Extraction</strong> – No manual data entry</li>
+                            <li><strong>Smart Prudence Checks</strong> – All regulations applied instantly</li>
+                            <li><strong>Human Override</strong> – Officers maintain full control</li>
+                            <li><strong>Auto Report Generation</strong> – Formal KSERC orders (PDF/DOCX)</li>
+                            <li><strong>Full Audit Trail</strong> – Complete transparency & accountability</li>
+                            <li><strong>Secure Storage</strong> – Supabase + encryption, local-first option</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-line">
+                        <strong>Impact:</strong> 6-12 month process → 2-4 weeks | 100% regulatory compliance | Full transparency for citizens & courts
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2 -->
+        <div class="page">
+            <div class="page-content">
+                <div class="logo-header">
+                    <img src="riet-logo.jpg" alt="RIET Logo" style="width: 100%; height: auto; max-height: 90px;">
+                </div>
+
+                <div class="page-title">Current Implementation & FAQ</div>
+                <div class="page-subtitle">Live Deployment & Common Questions</div>
+
+                <div class="content">
+                    <div class="section">
+                        <div class="section-title">✅ Live Deployment Status</div>
+                        <p style="font-size: 12px; color: #555; margin-bottom: 6px;"><strong>Currently processing FY 2024-25 truing-up petitions</strong></p>
+                        <table class="table-compact">
+                            <tr>
+                                <th>Licensee</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                            <tr>
+                                <td>KDHPCL</td>
+                                <td>Plantation</td>
+                                <td style="color: #0d7a3a;">✓ Active</td>
+                            </tr>
+                            <tr>
+                                <td>Technopark</td>
+                                <td>IT Park</td>
+                                <td style="color: #0d7a3a;">✓ Active</td>
+                            </tr>
+                            <tr>
+                                <td>Infopark Kerala</td>
+                                <td>IT Park</td>
+                                <td style="color: #0d7a3a;">✓ Active</td>
+                            </tr>
+                            <tr>
+                                <td>CSEZA</td>
+                                <td>Special Economic Zone</td>
+                                <td style="color: #0d7a3a;">✓ Active</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">💻 Technology Stack</div>
+                        <div class="two-col-wide">
+                            <div class="col">
+                                <strong>Frontend</strong>
+                                Next.js + React + TypeScript
+                            </div>
+                            <div class="col">
+                                <strong>AI</strong>
+                                Claude API + Gemini + Groq fallback
+                            </div>
+                            <div class="col">
+                                <strong>Database</strong>
+                                Supabase (PostgreSQL) + local storage
+                            </div>
+                            <div class="col">
+                                <strong>Deployment</strong>
+                                Vercel + GitHub + self-hosted option
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-section">
+                        <div class="section-title">❓ Common Questions</div>
+
+                        <div class="faq-item" onclick="toggleFAQ(this)">
+                            <div class="faq-question">Can the AI make mistakes?</div>
+                            <div class="faq-answer">
+                                Yes. That's why it's "AI-assisted, human-verified." Every AI decision is flagged for officer review. Officers can override with documented reasoning. Full audit trail maintained.
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFAQ(this)">
+                            <div class="faq-question">Is our data safe?</div>
+                            <div class="faq-answer">
+                                All data encrypted in Supabase. PDFs not permanently stored—only extracted data retained. Full audit logs. Option for on-premise deployment with zero external dependencies.
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFAQ(this)">
+                            <div class="faq-question">How are KSERC regulations applied?</div>
+                            <div class="faq-answer">
+                                Hardcoded rules: Electricity duty = ₹0, CSR/RPO = ₹0, O&M capped per Reg 12(3), 2/3 revenue efficiency share, AT&C loss benchmarks. When regulations change, we update the rules.
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFAQ(this)">
+                            <div class="faq-question">What if PDF extraction fails?</div>
+                            <div class="faq-answer">
+                                Fallback chain: Claude → Gemini → Groq → GitHub Models → OpenRouter. If all fail, system alerts officer. Manual data entry option available with "manually verified" marking.
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFAQ(this)">
+                            <div class="faq-question">Can officers override AI decisions?</div>
+                            <div class="faq-answer">
+                                Yes. Simple "Modify Value" click. New amount with reasoning required. Timestamped, attributed to officer, reversible, full audit trail preserved.
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFAQ(this)">
+                            <div class="faq-question">How different from spreadsheets?</div>
+                            <div class="faq-answer">
+                                Spreadsheets need manual copy-paste. Our tool auto-reads PDFs, understands context, provides reasoning, maintains audit trail, generates documents instantly, and scales to all licensees simultaneously.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-line" style="margin-top: 10px;">
+                        <div class="footer-text">
+                            <strong>Built by RIET for KSERC</strong> | Work Order KSERC/CSO/03-05<br>
+                            GitHub: github.com/prak05/kserc-truing-up | Contact: prakhar@yugality.dev
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div class="nav-container">
+            <button class="btn-prev" onclick="previousPage()">← Previous</button>
+            <span class="page-counter">
+                Page <span id="current-page">1</span> of <span id="total-pages">2</span>
+            </span>
+            <button class="btn-next" onclick="nextPage()">Next →</button>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+    </div>
+
+    <script>
+        const totalPages = document.querySelectorAll('.page').length;
+        document.getElementById('total-pages').textContent = totalPages;
+        let currentPage = 1;
+
+        function showPage(n) {
+            const pages = document.querySelectorAll('.page');
+            if (n > totalPages) currentPage = totalPages;
+            if (n < 1) currentPage = 1;
+            
+            pages.forEach(page => page.classList.remove('active'));
+            pages[currentPage - 1].classList.add('active');
+            
+            document.getElementById('current-page').textContent = currentPage;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextPage() {
+            currentPage++;
+            showPage(currentPage);
+        }
+
+        function previousPage() {
+            currentPage--;
+            showPage(currentPage);
+        }
+
+        function toggleFAQ(item) {
+            item.classList.toggle('open');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') previousPage();
+        });
+
+        showPage(1);
+    </script>
+</body>
+</html>
