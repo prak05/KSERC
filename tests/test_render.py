@@ -17,7 +17,7 @@ from builder.render import build_html
 @pytest.fixture
 def infopark_order_json():
     """Build order JSON from Infopark results."""
-    p = Path(__file__).resolve().parent.parent / "results_infopark_2024_25.json"
+    p = Path(__file__).resolve().parent.parent / "data" / "samples" / "results_infopark_2024_25.json"
     if not p.exists():
         pytest.skip(f"Missing test fixture: {p.name}")
     with open(p, "r", encoding="utf-8") as f:

@@ -4,13 +4,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError as
 from langgraph.graph import StateGraph, START, END
 
 from src.agents.chief_auditor import auditor
-from src.gemini_client import generate
-from src.config import GEMINI_MODEL
+from src.llm_client import generate
+from src.config import LLM_MODEL
 
 logger = logging.getLogger("truing_up_graph")
 
 COMPONENT_TIMEOUT = 180   # 3 min per component (includes retry waits)
-MAX_WORKERS       = 2    # only 2 parallel Gemini calls to avoid 429 rate limits
+MAX_WORKERS       = 2    # only 2 parallel the model calls to avoid 429 rate limits
 
 
 def extract_narrative(petition_text: str, component: str) -> str:
@@ -31,7 +31,7 @@ PETITION (excerpt):
     # Let any exception propagate — don't suppress failures
     result = generate(
         prompt,
-        model=GEMINI_MODEL,
+        model=LLM_MODEL,
         temperature=0.0,
         response_mime_type="text/plain",
     )
@@ -88,7 +88,7 @@ def process_one_component(
 
             # Step 2: RAG legal context
             _log(f"Querying legal precedents for '{component}'…")
-            from src.rag.file_search_store import query_regulations
+            from src.rag.regulation_store import query_regulations
             legal_context = query_regulations(f"{base_query}. Precedent for: {licensee_narrative[:300]}")
 
             # Step 3: Chief Auditor decision

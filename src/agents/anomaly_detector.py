@@ -6,7 +6,7 @@ Purpose : Flags suspicious patterns in extracted petition data BEFORE
           the rule-based auditor runs, giving it context for edge cases.
 
 WHAT IT DOES:
-  Gemini is given the complete extracted financial data and asked to
+  the model is given the complete extracted financial data and asked to
   reason about year-over-year changes, internal consistency, and
   regulatory red flags. It produces structured anomaly flags with
   severity levels that get stored in state["anomaly_flags"].
@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 import logging
 from typing import Any, Dict, List
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger("kserc.anomaly_detector")
 
@@ -125,7 +125,7 @@ def detect_anomalies(state: Dict[str, Any]) -> Dict[str, Any]:
     capital_structure = detailed.get("capital_structure", {})
 
     try:
-        from src.gemini_client import generate
+        from src.llm_client import generate
 
         prompt = _USER_PROMPT.format(
             licensee=licensee,
@@ -139,7 +139,7 @@ def detect_anomalies(state: Dict[str, Any]) -> Dict[str, Any]:
 
         raw = generate(
             prompt=prompt,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.1,
             response_mime_type="application/json",
             system_instruction=_SYSTEM_PROMPT,

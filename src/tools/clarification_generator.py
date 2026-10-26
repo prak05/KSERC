@@ -22,7 +22,7 @@ import logging
 from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger("kserc.clarification_generator")
 
@@ -75,7 +75,7 @@ def generate_clarification_letter(
     clarification_items: List[Dict[str, Any]],
 ) -> Optional[str]:
     """
-    Generate a KSERC-style clarification letter using Gemini.
+    Generate a KSERC-style clarification letter using the model.
 
     Parameters
     ----------
@@ -119,7 +119,7 @@ def generate_clarification_letter(
     )
 
     try:
-        from src.gemini_client import generate
+        from src.llm_client import generate
 
         prompt = _USER_PROMPT.format(
             licensee=licensee_name,
@@ -130,7 +130,7 @@ def generate_clarification_letter(
 
         letter_text = generate(
             prompt=prompt,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.3,  # slight creativity for natural letter writing
             response_mime_type="text/plain",
             system_instruction=_SYSTEM_PROMPT,
@@ -161,7 +161,7 @@ def _fallback_letter(
     petition_number: str,
     items: List[Dict[str, Any]],
 ) -> str:
-    """Simple template-based fallback when Gemini is unavailable."""
+    """Simple template-based fallback when the model is unavailable."""
     lines = [
         f"KERALA STATE ELECTRICITY REGULATORY COMMISSION",
         f"",

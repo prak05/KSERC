@@ -16,7 +16,7 @@ Component G : Notional interest on accumulated surplus (→ income, NOT expense)
 
 Pipeline:
     1. classify_all_uploaded_files()  — multi-class file categorisation
-    2. load_prior_year_data()         — 10 values from Firestore
+    2. load_prior_year_data()         — 10 values from document store
     3. scan_documents()               — 4-pass targeted extraction
     4. calculate_all_components()     — sequential A→G with provisional handling
     5. run_cross_verification()       — 6 checks
@@ -40,7 +40,7 @@ from src.tools.normative_math import (
     calculate_notional_surplus_interest,
     classify_bank_charge,
 )
-from src.tools.firestore_tracker import (
+from src.tools.history_tracker import (
     load_interest_prior_data,
     save_interest_finance_data,
 )
@@ -157,10 +157,10 @@ def _is_likely_scanned(text: str, expected_pages: int = 10) -> bool:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Step 1–3: Document Scanning (Stubbed for Gemini Integration)
+# Step 1–3: Document Scanning (Stubbed for the model Integration)
 # ─────────────────────────────────────────────────────────────────────────────
 # These functions structure the 4-pass scanning but delegate actual extraction
-# to Gemini/Vision API which requires the AI model to be available at runtime.
+# to the model/Vision API which requires the AI model to be available at runtime.
 # The logic below defines WHAT to search for and WHERE, using classifications.
 
 def _get_files_for_class(
@@ -639,7 +639,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     if eblr_rate == 0.0 or retail_td_rate == 0.0:
         logger.warning("SBI rates not provided — interest calculations may be zero")
 
-    # ── Step 1: Load prior year data from Firestore ──────────────────
+    # ── Step 1: Load prior year data from document store ──────────────────
     prior_data = load_interest_prior_data(licensee, fy)
     logger.info(f"Prior data loaded: {prior_data.get('source', 'unknown')}, "
                 f"missing: {prior_data.get('missing_fields', [])}")
@@ -679,7 +679,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
         if approved_rev_sale > 0:
             logger.info(f"WC: Using total_approved_revenue as fallback: {approved_rev_sale}")
     if approved_rev_sale == 0.0:
-        # Fallback 3: prior year from Firestore
+        # Fallback 3: prior year from document store
         approved_rev_sale = prior_data.get("approved_revenue_previous_year", 0.0)
         if approved_rev_sale > 0:
             logger.info(f"WC: Using prior_data approved_revenue_previous_year: {approved_rev_sale}")
@@ -695,7 +695,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     # Component B: Normative loan interest
     qualifying_additions = float(claimed.get("capital_additions", 0.0) or 0.0)
 
-    # Fallback: use petition-extracted normative loan data if Firestore has none
+    # Fallback: use petition-extracted normative loan data if document store has none
     norm_loan_opening = prior_data.get("normative_loan_closing_balance", 0.0)
     # HIGHEST PRIORITY: user-supplied override from frontend
     user_norm_loan = float(state.get("norm_loan_opening_override", 0.0) or 0.0)
@@ -744,7 +744,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     logger.info(f"Component C: {components['C']['interest_rs_lakhs']}")
 
     # Component D: Security deposit interest
-    # Use Firestore prior data first, then fall back to petition extraction
+    # Use document store prior data first, then fall back to petition extraction
     sd_opening = prior_data.get("security_deposit_closing_balance", 0.0)
     if sd_opening == 0.0:
         sd_opening = float(state.get("consumer_security_deposit_balance", 0.0) or 0.0)
@@ -786,7 +786,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     logger.info(f"Component F: {comp_f_amount}")
 
     # Component G: Notional surplus interest (INCOME, not expense)
-    surplus_additions_this_year = 0.0  # From Firestore / extraction
+    surplus_additions_this_year = 0.0  # From document store / extraction
     licensee_claimed_surplus_income = float(claimed.get("interest_income_surplus", 0.0) or 0.0)
     components["G"] = calculate_component_g(
         prior_data=prior_data,
@@ -809,7 +809,7 @@ def process_interest_finance(state: Dict[str, Any]) -> Dict[str, Any]:
     # ── Step 5: Assemble output ──────────────────────────────────────
     result = assemble_output(components, cross_checks)
 
-    # ── Step 6: Save to Firestore ────────────────────────────────────
+    # ── Step 6: Save to document store ────────────────────────────────────
     save_interest_finance_data(
         licensee=licensee,
         fy=fy,

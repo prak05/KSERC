@@ -1,109 +1,54 @@
 import { useState } from 'react'
 import CourtHearingEditor from './CourtHearingEditor'
+import { Chevron, Notice, PageHead, StatusPill } from './ui'
+import { fmt, signed } from './format'
 
-function SummaryCard({ label, value, unit, glowColor, icon }) {
-    return (
-        <div className="card" style={{
-            padding: '22px 24px', position: 'relative', overflow: 'hidden',
-        }}>
-            <div style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, background: glowColor || 'var(--accent)', borderRadius: '50%', filter: 'blur(60px)', opacity: 0.08 }} />
-            <p className="mono-wide" style={{ marginBottom: 10, position: 'relative' }}>{label}</p>
-            <p style={{
-                fontFamily: 'var(--font-mono)', fontSize: '1.6rem', fontWeight: 700, color: 'var(--text)',
-                fontVariantNumeric: 'tabular-nums', position: 'relative',
-            }}>
-                {icon && <span style={{ marginRight: 6, fontSize: '1.1rem' }}>{icon}</span>}
-                ₹{typeof value === 'number' ? value.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : value}
-            </p>
-            <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 6 }}>{unit}</p>
-        </div>
-    )
-}
+const tone = (v) => (v < 0 ? 'bad' : v > 0 ? 'ok' : 'faint')
 
-function StatusBadge({ status }) {
-    const configs = {
-        approved: { cls: 'badge-compliant', label: '✓ APPROVED' },
-        reduced: { cls: 'badge-deviation', label: '↓ REDUCED' },
-        increased: { cls: 'badge-pending', label: '↑ INCREASED' },
-    }
-    const c = configs[status] || { cls: 'tag-neutral', label: status?.toUpperCase() || '-' }
-    return <span className={` ${c.cls}`}>{c.label}</span>
-}
-
-function JustificationCard({ component, index, editMode, onValueChange, onJustificationChange }) {
-    const [expanded, setExpanded] = useState(false)
-    const displayApproved = component._editApproved ?? component.approved
-    const displayJustification = component._editJustification ?? component.justification
-
-    const accentColor = component.status === 'reduced' ? 'var(--red)' : component.status === 'increased' ? 'var(--blue)' : 'var(--green)'
+function Justification({ component, index, editMode, onValueChange, onJustificationChange }) {
+    const [open, setOpen] = useState(false)
+    const approved = component._editApproved ?? component.approved
+    const text = component._editJustification ?? component.justification
 
     return (
-        <div className="card animate-slide-up" style={{ animationDelay: `${index * 50}ms`, borderLeftWidth: 2, borderLeftColor: accentColor }}>
-            <button onClick={() => setExpanded(!expanded)}
-                style={{
-                    width: '100%', padding: '16px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
-                }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <span className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '10px' }}>{String(index + 1).padStart(2, '0')}</span>
-                    <div>
-                        <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.03em', textTransform: 'none', lineHeight: 1.3, color: 'var(--text)' }}>
-                            {component.name}
-                        </h4>
-                        <div className="mono" style={{ marginTop: 4, display: 'flex', gap: 8, alignItems: 'center', fontSize: '10px' }}>
-                            <span>Claimed: <strong style={{ color: 'var(--text)' }}>₹{component.claimed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
-                            <span style={{ color: 'var(--text-tertiary)' }}>→</span>
-                            <span>Approved: <strong style={{ color: accentColor }}>
+        <div>
+            <button className="disclosure" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+                <Chevron open={open} />
+                <span className="idx">{String(index + 1).padStart(2, '0')}</span>
+                <span style={{ flex: 1, fontWeight: 500 }}>{component.name}</span>
+                <span className="num muted">{fmt(component.claimed)}</span>
+                <span className="faint">→</span>
+                <span className="num" style={{ minWidth: 96, textAlign: 'right' }}>{fmt(approved)}</span>
+                <StatusPill status={component.status} />
+            </button>
+            <div className={`collapse ${open ? 'is-open' : ''}`}>
+                <div>
+                    <div style={{ padding: '4px 16px 18px 52px' }} className="stack">
+                        <div className="metrics">
+                            <div className="metric"><span className="label">MYT norm</span><span className="num">{fmt(component.proposed_myt || 0)}</span></div>
+                            <div className="metric"><span className="label">Claimed</span><span className="num">{fmt(component.claimed)}</span></div>
+                            <div className="metric">
+                                <span className="label">Approved</span>
                                 {editMode
-                                    ? <input type="number" step="any" value={displayApproved}
-                                        onClick={e => e.stopPropagation()}
-                                        onChange={e => { e.stopPropagation(); onValueChange(component.key, parseFloat(e.target.value) || 0) }}
-                                        className="input-field" style={{ width: 90, fontSize: '10px', padding: '3px 6px', fontFamily: 'var(--font-mono)' }} />
-                                    : `₹${displayApproved.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-                                }
-                            </strong></span>
+                                    ? <input type="number" step="any" className="input input-sm num" style={{ marginTop: 4 }} value={approved}
+                                        onChange={e => onValueChange(component.key, parseFloat(e.target.value) || 0)} />
+                                    : <span className="num">{fmt(approved)}</span>}
+                            </div>
+                            <div className="metric">
+                                <span className="label">Variance</span>
+                                <span className={`num ${tone(component.variance)}`}>{signed(component.variance)}
+                                    <span className="faint" style={{ fontSize: 11 }}> ({component.variance_pct > 0 ? '+' : ''}{component.variance_pct}%)</span></span>
+                            </div>
+                        </div>
+                        <div>
+                            <span className="label" style={{ display: 'block', marginBottom: 8 }}>Commission's observation</span>
+                            {editMode
+                                ? <textarea className="textarea" rows={4} value={text} onChange={e => onJustificationChange(component.key, e.target.value)} />
+                                : <p className="muted" style={{ lineHeight: 1.75, maxWidth: '86ch' }}>{text}</p>}
                         </div>
                     </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <StatusBadge status={component.status} />
-                    <span style={{ color: 'var(--text-tertiary)', fontSize: '12px', transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'none' }}>▾</span>
-                </div>
-            </button>
-
-            {expanded && (
-                <div style={{ padding: '0 22px 22px', borderTop: '1px solid var(--border)' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, margin: '16px 0' }}>
-                        {[
-                            { label: 'MYT Norm', val: component.proposed_myt || 0 },
-                            { label: 'Claimed', val: component.claimed },
-                            { label: 'Approved', val: displayApproved, color: 'var(--green)' },
-                            { label: 'Variance', val: component.variance, prefix: component.variance > 0 ? '+' : '', color: component.variance < 0 ? 'var(--red)' : component.variance > 0 ? 'var(--blue)' : 'var(--text-tertiary)' },
-                        ].map((m, i) => (
-                            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '12px 14px', textAlign: 'center' }}>
-                                <p className="mono-wide" style={{ fontSize: '8px', marginBottom: 6 }}>{m.label}</p>
-                                <p style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: m.color || 'var(--text)', fontSize: '0.95rem', fontVariantNumeric: 'tabular-nums' }}>
-                                    ₹{(m.prefix || '')}{m.val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                </p>
-                                {m.label === 'Variance' && (
-                                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 2, fontSize: '9px' }}>
-                                        ({component.variance_pct > 0 ? '+' : ''}{component.variance_pct}%)
-                                    </p>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '16px 18px' }}>
-                        <p className="mono-wide" style={{ fontSize: '8px', marginBottom: 8 }}>⚖️ Commission's Observation</p>
-                        {editMode ? (
-                            <textarea value={displayJustification} onChange={e => onJustificationChange(component.key, e.target.value)}
-                                rows={4} className="input-field" style={{ width: '100%', resize: 'vertical', fontFamily: 'var(--font-body)', fontSize: '0.8rem', lineHeight: 1.6 }} />
-                        ) : (
-                            <p style={{ fontSize: '0.8rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)' }}>{displayJustification}</p>
-                        )}
-                    </div>
-                </div>
-            )}
+            </div>
         </div>
     )
 }
@@ -117,19 +62,15 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
     const [auditLog, setAuditLog] = useState([])
 
     const handleDownload = () => window.open(`/api/download/${data.analysis_id}`, '_blank')
+    const handleDocx = () => window.open(`/api/export-docx/${data.analysis_id}`, '_blank')
 
-    const handleValueChange = (key, value) => {
-        setComponents(comps => comps.map(c => c.key === key ? { ...c, _editApproved: value } : c))
-    }
-
-    const handleJustificationChange = (key, text) => {
-        setComponents(comps => comps.map(c => c.key === key ? { ...c, _editJustification: text } : c))
-    }
+    const handleValueChange = (key, value) => setComponents(cs => cs.map(c => c.key === key ? { ...c, _editApproved: value } : c))
+    const handleJustificationChange = (key, text) => setComponents(cs => cs.map(c => c.key === key ? { ...c, _editJustification: text } : c))
 
     const handleSaveEdits = async () => {
         setSaving(true); setSaveStatus(null)
         const changed = components.filter(c => c._editApproved !== undefined || c._editJustification !== undefined)
-        if (changed.length === 0) { setSaving(false); setSaveStatus('No changes.'); return }
+        if (changed.length === 0) { setSaving(false); setSaveStatus('No changes to save.'); return }
         const newLog = []
         for (const comp of changed) {
             const newAmt = comp._editApproved ?? comp.approved
@@ -140,252 +81,157 @@ export default function ResultsDashboard({ data, onNewAnalysis, onDraftOrder }) 
                     body: JSON.stringify({ analysis_id: data.analysis_id, component_key: comp.key, new_approved_amount: newAmt, justification: newJ, user_id: 'human_auditor' }),
                 })
                 newLog.push({ name: comp.name, oldAmt: comp.approved, newAmt, changed: comp._editApproved !== undefined })
-            } catch { setSaveStatus('Error saving ' + comp.name) }
+            } catch { setSaveStatus('Could not save ' + comp.name) }
         }
         setAuditLog(prev => [...newLog, ...prev])
-        setSaveStatus(`${changed.length} component(s) saved. Downloading PDF…`)
+        setSaveStatus(`${changed.length} component${changed.length > 1 ? 's' : ''} saved. Regenerating the report…`)
         setSaving(false); setEditMode(false)
         setTimeout(() => window.open(`/api/download/${data.analysis_id}`, '_blank'), 800)
     }
 
+    const priorItems = components.filter(c => c.key?.startsWith('prior_period_') && c.approved > 0)
+    const lossOver = data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5)
+    const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
+
     return (
-        <section className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+        <section className="stack view">
+            <PageHead eyebrow={`Audit report · ${data.licensee_name} · FY ${data.financial_year}${dateStr ? ' · ' + dateStr : ''}`} title="Truing-up decision">
+                <button className="btn btn-ghost" onClick={onNewAnalysis}>New analysis</button>
+                <button className={`btn ${editMode ? 'is-on' : ''}`} onClick={() => { setEditMode(e => !e); setSaveStatus(null) }}>
+                    {editMode ? 'Editing' : 'Edit values'}
+                </button>
+                {onDraftOrder && <button className="btn" onClick={onDraftOrder}>Draft order</button>}
+                <button className="btn" onClick={handleDocx}>Export DOCX</button>
+                <button className="btn btn-accent" onClick={handleDownload}>Download PDF</button>
+            </PageHead>
 
-            {/* Header */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, borderBottom: '1px solid var(--border)', paddingBottom: 20 }}>
-                <div>
-                    <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', letterSpacing: '-0.05em', marginBottom: 10 }}>Audit Report</h2>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                        <span className="tag-neutral">{data.licensee_name}</span>
-                        <span className="tag-neutral">FY {data.financial_year}</span>
-                        <span className="tag-neutral">{new Date(data.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                    <button onClick={onNewAnalysis} className="btn-secondary">← New Analysis</button>
-                    <button onClick={() => { setEditMode(e => !e); setSaveStatus(null) }}
-                        className={`btn-secondary ${editMode ? '' : ''}`}
-                        style={editMode ? { color: 'var(--accent)', borderColor: 'var(--border-accent)' } : {}}>
-                        {editMode ? '🖊️ Editing ON' : '🖊️ Edit'}
-                    </button>
-                    {onDraftOrder && (
-                        <button onClick={onDraftOrder} className="btn-secondary" style={{ borderColor: 'rgba(0,255,136,0.3)' }}>
-                            📄 Draft Order
-                        </button>
-                    )}
-                    <button onClick={handleDownload} className="btn-primary" style={{ fontSize: '0.7rem', padding: '10px 20px' }}>
-                        📥 Download PDF
-                    </button>
-                </div>
-            </div>
-
-            {/* Edit banner */}
             {editMode && (
-                <div className="card" style={{ borderColor: 'var(--border-accent)', padding: '14px 22px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                    <p className="mono" style={{ color: 'var(--accent)' }}>🖊️ EDIT MODE — Modify values & justifications</p>
-                    <button onClick={handleSaveEdits} disabled={saving} className="btn-primary" style={{ fontSize: '0.65rem', padding: '8px 18px', opacity: saving ? 0.5 : 1 }}>
-                        {saving ? '⏳ Saving…' : '💾 Save & Re-generate'}
-                    </button>
+                <div className="notice notice-info">
+                    <span style={{ flex: 1 }}>Edit mode — change approved amounts and observations, then save to regenerate the report.</span>
+                    <button className="btn btn-accent btn-sm" disabled={saving} onClick={handleSaveEdits}>{saving ? 'Saving…' : 'Save & regenerate'}</button>
                 </div>
             )}
-            {saveStatus && (
-                <div className="card" style={{ borderColor: 'rgba(0,255,136,0.3)', padding: '12px 18px' }}>
-                    <p className="mono" style={{ color: 'var(--green)' }}>🟢 {saveStatus}</p>
-                </div>
-            )}
+            {saveStatus && <Notice tone="ok" onClose={() => setSaveStatus(null)}>{saveStatus}</Notice>}
 
-            {/* Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
-                <SummaryCard label="Total Claimed" value={data.total_claimed_expenditure} unit="Rs. Lakhs" />
-                <SummaryCard label="Total Approved" value={data.total_approved_expenditure} unit="Rs. Lakhs" icon="✓" glowColor="var(--green)" />
-                <SummaryCard label="Total Revenue" value={data.total_approved_revenue} unit="Rs. Lakhs" glowColor="var(--blue)" />
-                <SummaryCard label={isSurplus ? 'Revenue Surplus' : 'Revenue Gap'} value={Math.abs(data.final_revenue_gap_surplus)} unit="Rs. Lakhs" icon={isSurplus ? '🟩' : '🟥'} glowColor={isSurplus ? 'var(--green)' : 'var(--red)'} />
+            <div className="stats enter-panel">
+                <div className="stat"><span className="label">Total claimed</span><div className="stat-value">{fmt(data.total_claimed_expenditure)}</div><div className="stat-unit">Rs. Lakhs</div></div>
+                <div className="stat"><span className="label">Total approved</span><div className="stat-value">{fmt(data.total_approved_expenditure)}</div><div className="stat-unit">Rs. Lakhs</div></div>
+                <div className="stat"><span className="label">Approved revenue</span><div className="stat-value">{fmt(data.total_approved_revenue)}</div><div className="stat-unit">Rs. Lakhs</div></div>
+                <div className="stat">
+                    <span className="label">{isSurplus ? 'Revenue surplus' : 'Revenue gap'}</span>
+                    <div className={`stat-value ${isSurplus ? 'ok' : 'bad'}`}>{fmt(Math.abs(data.final_revenue_gap_surplus))}</div>
+                    <div className="stat-unit">Rs. Lakhs</div>
+                </div>
             </div>
 
-            {/* Distribution Loss */}
             {data.claimed_distribution_loss_pct > 0 && (
-                <div className="card" style={{
-                    borderColor: data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5) ? 'rgba(255,136,68,0.3)' : 'rgba(0,255,136,0.3)',
-                    padding: '14px 22px', display: 'flex', alignItems: 'center', gap: 12,
-                }}>
-                    <span style={{ fontSize: '1.2rem' }}>{data.claimed_distribution_loss_pct > (data.target_distribution_loss_pct || 5) ? '⚠️' : '✅'}</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
-                        Distribution Loss: <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontVariantNumeric: 'tabular-nums' }}>{data.claimed_distribution_loss_pct}%</span>
-                        {data.target_distribution_loss_pct > 0 && (
-                            <span className="mono" style={{ marginLeft: 10 }}>(Target: {data.target_distribution_loss_pct}%)</span>
-                        )}
+                <div className={`notice ${lossOver ? '' : 'notice-ok'}`} style={lossOver ? { borderColor: 'rgba(217,164,65,.3)' } : undefined}>
+                    <span>Distribution loss <span className="num">{data.claimed_distribution_loss_pct}%</span>
+                        {data.target_distribution_loss_pct > 0 && <span className="faint"> · target <span className="num">{data.target_distribution_loss_pct}%</span></span>}
+                        <span className={lossOver ? 'warn' : 'ok'}> · {lossOver ? 'above target' : 'within target'}</span>
                     </span>
                 </div>
             )}
 
-            {/* Court Hearing Details */}
-            <CourtHearingEditor
-                analysisId={data.analysis_id}
-                existingData={data.court_hearing}
-            />
-
-            {/* Comparison Table */}
-            <div className="card" style={{ overflow: 'hidden' }}>
-                <div style={{ background: 'rgba(191, 255, 0, 0.05)', borderBottom: '1px solid var(--border)', padding: '14px 22px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span className="mono-wide" style={{ color: 'var(--accent)' }}>🔬 Component Analysis</span>
-                </div>
-                <div style={{ overflowX: 'auto' }}>
-                    <table className="data-table">
+            <div className="card enter-panel-2">
+                <div className="card-head"><span className="h3">Component analysis</span><span className="spacer" /><span className="label">Rs. Lakhs</span></div>
+                <div className="table-wrap">
+                    <table className="table">
                         <thead>
                             <tr>
-                                <th style={{ width: 50 }}>Sl.</th>
-                                <th>Particulars</th>
-                                <th style={{ textAlign: 'right' }}>MYT Norm</th>
-                                <th style={{ textAlign: 'right' }}>Claimed</th>
-                                <th style={{ textAlign: 'right' }}>Approved</th>
-                                <th style={{ textAlign: 'right' }}>Variance</th>
-                                <th style={{ textAlign: 'center' }}>Status</th>
+                                <th style={{ width: 48 }}>#</th><th>Particulars</th>
+                                <th className="r">MYT norm</th><th className="r">Claimed</th><th className="r">Approved</th><th className="r">Variance</th><th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {components?.map((c, i) => (
+                            {components.map((c, i) => (
                                 <tr key={c.key}>
-                                    <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>{String(i + 1).padStart(2, '0')}</td>
+                                    <td className="idx">{String(i + 1).padStart(2, '0')}</td>
                                     <td style={{ fontWeight: 500 }}>{c.name}</td>
-                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                                        {c.proposed_myt ? c.proposed_myt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '—'}
-                                    </td>
-                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
-                                        {c.claimed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                    </td>
-                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--green)' }}>
+                                    <td className="r num muted">{c.proposed_myt ? fmt(c.proposed_myt) : '—'}</td>
+                                    <td className="r num">{fmt(c.claimed)}</td>
+                                    <td className="r num" style={{ fontWeight: 600 }}>
                                         {editMode
-                                            ? <input type="number" step="any" value={c._editApproved ?? c.approved}
-                                                onChange={e => handleValueChange(c.key, parseFloat(e.target.value) || 0)}
-                                                className="input-field" style={{ width: 90, textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', padding: '4px 6px' }} />
-                                            : (c._editApproved ?? c.approved).toLocaleString('en-IN', { minimumFractionDigits: 2 })
-                                        }
+                                            ? <input type="number" step="any" className="input input-sm num" style={{ width: 110 }} value={c._editApproved ?? c.approved}
+                                                onChange={e => handleValueChange(c.key, parseFloat(e.target.value) || 0)} />
+                                            : fmt(c._editApproved ?? c.approved)}
                                     </td>
-                                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: c.variance < 0 ? 'var(--red)' : c.variance > 0 ? 'var(--blue)' : 'var(--text-tertiary)' }}>
-                                        {c.variance > 0 ? '+' : ''}{c.variance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                    </td>
-                                    <td style={{ textAlign: 'center' }}><StatusBadge status={c.status} /></td>
+                                    <td className={`r num ${tone(c.variance)}`}>{signed(c.variance)}</td>
+                                    <td><StatusPill status={c.status} /></td>
                                 </tr>
                             ))}
-                            <tr style={{ background: 'rgba(191,255,0,0.05)' }}>
-                                <td></td>
-                                <td className="mono-wide" style={{ color: 'var(--accent)' }}>Total Expenditure</td>
-                                <td></td>
-                                <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                                    {data.total_claimed_expenditure?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            <tr className="total">
+                                <td /><td>Total expenditure</td><td />
+                                <td className="r num">{fmt(data.total_claimed_expenditure)}</td>
+                                <td className="r num">{fmt(data.total_approved_expenditure)}</td>
+                                <td className={`r num ${tone(data.total_approved_expenditure - data.total_claimed_expenditure)}`}>
+                                    {signed(data.total_approved_expenditure - data.total_claimed_expenditure)}
                                 </td>
-                                <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent)', fontSize: '0.9rem' }}>
-                                    {data.total_approved_expenditure?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                </td>
-                                <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>
-                                    {(data.total_approved_expenditure - data.total_claimed_expenditure)?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                </td>
-                                <td></td>
+                                <td />
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            {/* Prior Period Costs — shown only if petition has prior period items */}
-            {(() => {
-                const priorItems = components?.filter(c => c.key?.startsWith('prior_period_') && c.approved > 0) || []
-                if (priorItems.length === 0) return null
-                return (
-                    <div className="card animate-slide-up" style={{ overflow: 'hidden', borderColor: 'rgba(180, 130, 255, 0.3)', borderWidth: 1.5 }}>
-                        <div style={{
-                            background: 'linear-gradient(135deg, rgba(180,130,255,0.08), rgba(120,80,255,0.04))',
-                            borderBottom: '1px solid rgba(180,130,255,0.2)',
-                            padding: '16px 22px',
-                            display: 'flex', alignItems: 'center', gap: 10,
-                        }}>
-                            <span style={{ fontSize: '1.2rem' }}>📋</span>
-                            <div>
-                                <span className="mono-wide" style={{ color: '#b482ff', fontSize: '10px' }}>
-                                    PRIOR PERIOD COSTS
-                                </span>
-                                <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: 2 }}>
-                                    Costs from previous periods found in the petition (e.g., wage revision arrears)
-                                </p>
-                            </div>
-                        </div>
-                        <div style={{ padding: '16px 22px' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
-                                {priorItems.map((item, i) => (
-                                    <div key={i} style={{
-                                        background: 'rgba(180,130,255,0.04)',
-                                        border: '1px solid rgba(180,130,255,0.15)',
-                                        borderRadius: 'var(--radius-sm)',
-                                        padding: '16px 18px',
-                                    }}>
-                                        <p className="mono-wide" style={{ fontSize: '8px', marginBottom: 8, color: '#b482ff' }}>
-                                            {item.name}
-                                        </p>
-                                        <p style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '1.1rem', color: '#b482ff', fontVariantNumeric: 'tabular-nums' }}>
-                                            ₹{item.approved.toLocaleString('en-IN', { minimumFractionDigits: 2 })}L
-                                        </p>
-                                        <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 6, fontSize: '9px' }}>
-                                            {item.status === 'approved' ? '✓ Approved' : item.status === 'increased' ? '↑ Added by Commission' : item.status}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+            {priorItems.length > 0 && (
+                <div className="card">
+                    <div className="card-head"><span className="h3">Prior period costs</span><span className="faint" style={{ fontSize: 12 }}>Arrears from earlier periods found in the petition</span></div>
+                    <div className="table-wrap">
+                        <table className="table"><tbody>
+                            {priorItems.map(item => (
+                                <tr key={item.key}><td>{item.name}</td><td className="r num">{fmt(item.approved)}</td><td style={{ width: 140 }}><StatusPill status={item.status} /></td></tr>
+                            ))}
+                        </tbody></table>
                     </div>
-                )
-            })()}
+                </div>
+            )}
 
-            {/* Justifications */}
-            <div>
-                <h3 style={{ fontSize: '1.3rem', letterSpacing: '-0.04em', marginBottom: 4 }}>Justifications</h3>
-                <p className="mono" style={{ color: 'var(--text-tertiary)', marginBottom: 16 }}>
-                    {editMode ? '> EDIT MODE ACTIVE' : '> EXPAND TO VIEW OBSERVATIONS'}
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {components?.map((c, i) => (
-                        <JustificationCard key={c.key} component={c} index={i} editMode={editMode}
+            <CourtHearingEditor analysisId={data.analysis_id} existingData={data.court_hearing} />
+
+            <div className="card">
+                <div className="card-head">
+                    <span className="h3">Justifications</span>
+                    <span className="spacer" />
+                    <span className="label">{editMode ? 'Edit mode' : 'Expand a component for the observation'}</span>
+                </div>
+                <div className="divide">
+                    {components.map((c, i) => (
+                        <Justification key={c.key} component={c} index={i} editMode={editMode}
                             onValueChange={handleValueChange} onJustificationChange={handleJustificationChange} />
                     ))}
                 </div>
             </div>
 
-            {/* Disallowances */}
             {data.disallowances?.length > 0 && (
-                <div className="card" style={{ overflow: 'hidden', borderColor: 'rgba(255,68,68,0.3)' }}>
-                    <div style={{ background: 'var(--red-dim)', borderBottom: '1px solid rgba(255,68,68,0.2)', padding: '14px 22px' }}>
-                        <span className="mono-wide" style={{ color: 'var(--red)' }}>🚫 Disallowances</span>
-                    </div>
-                    <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div className="card">
+                    <div className="card-head"><span className="h3">Disallowances</span><span className="pill pill-bad">{data.disallowances.length}</span></div>
+                    <div className="divide">
                         {data.disallowances.map((d, i) => (
-                            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '14px 18px' }}>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                                    <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--red)', textTransform: 'none', lineHeight: 1.3 }}>{d.item}</h4>
-                                    <span className="badge-deviation" style={{ fontSize: '10px' }}>
-                                        -₹{d.amount_cut?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}L
-                                    </span>
+                            <div key={i} className="card-body">
+                                <div className="row" style={{ marginBottom: 6 }}>
+                                    <span style={{ fontWeight: 500, flex: 1 }}>{d.item}</span>
+                                    <span className="num bad">−{fmt(d.amount_cut)}</span>
                                 </div>
-                                <p style={{ fontSize: '0.8rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)' }}>
-                                    <strong style={{ color: 'var(--text)' }}>Decision: </strong>{d.justification}
-                                </p>
+                                <p className="muted" style={{ lineHeight: 1.7, maxWidth: '90ch' }}>{d.justification}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             )}
 
-            {/* Audit Log */}
             {auditLog.length > 0 && (
-                <div className="card" style={{ borderColor: 'var(--border-accent)', padding: '18px 22px' }}>
-                    <p className="mono-wide" style={{ color: 'var(--accent)', marginBottom: 12, fontSize: '9px' }}>📋 Override Log</p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                        {auditLog.map((entry, i) => (
-                            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                                <span style={{ fontWeight: 500, fontSize: '0.8rem' }}>{entry.name}</span>
-                                {entry.changed && <span className="mono" style={{ color: 'var(--accent)' }}>₹{entry.oldAmt.toFixed(2)} → ₹{entry.newAmt.toFixed(2)}</span>}
-                                <span className="tag-neutral" style={{ fontSize: '8px' }}>Human Override</span>
-                            </div>
+                <div className="card">
+                    <div className="card-head"><span className="h3">Override log</span></div>
+                    <div className="table-wrap"><table className="table"><tbody>
+                        {auditLog.map((e, i) => (
+                            <tr key={i}>
+                                <td>{e.name}</td>
+                                <td className="r num">{e.changed ? `${fmt(e.oldAmt)} → ${fmt(e.newAmt)}` : 'Observation edited'}</td>
+                                <td style={{ width: 150 }}><span className="pill pill-accent">Human override</span></td>
+                            </tr>
                         ))}
-                    </div>
+                    </tbody></table></div>
                 </div>
             )}
         </section>

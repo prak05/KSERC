@@ -1,5 +1,5 @@
 """
-Extract 2023-24 Trued-Up Order data from KSERC PDFs → Firestore.
+Extract 2023-24 Trued-Up Order data from KSERC PDFs → document store.
 
 Usage:
     python scripts/extract_trued_up_order.py
@@ -10,8 +10,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-from google import genai
-from google.genai import types
+from src.cloud import llm_types as types
+from src.llm_client import get_client
 
 from src.tools.db import save_precedent
 
@@ -267,10 +267,7 @@ def extract_one(licensee: str, pdf_path: str) -> dict:
     """Extract trued-up data from a single PDF."""
     logger.info(f"Extracting {licensee} from {Path(pdf_path).name}...")
     
-    client = genai.Client(
-        api_key=os.environ.get("GOOGLE_API_KEY"),
-        http_options={"api_version": "v1alpha"},
-    )
+    client = get_client()
     
     with open(pdf_path, "rb") as f:
         pdf_bytes = f.read()
@@ -278,7 +275,7 @@ def extract_one(licensee: str, pdf_path: str) -> dict:
     pdf_part = types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf")
     
     response = client.models.generate_content(
-        model=os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
+        model=None,
         contents=[pdf_part, PROMPT + "\n\nReturn a JSON object with these top-level keys: approved_expenses, approved_revenues, total_approved_expenditure, total_approved_revenue, revenue_gap_surplus, ag_line_items, rm_line_items, employee_line_items, employee_claimed_line_items, energy_sales_by_category, depreciation_asset_wise, distribution_loss_pct, energy_input_lakh_units, energy_sales_lakh_units, ronfa_details, claimed_expenses, ag_claimed_line_items, rm_claimed_line_items."],
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
@@ -309,9 +306,9 @@ def main():
         
         data = extract_one(licensee, pdf_path)
         
-        # Save to Firestore
+        # Save to document store
         save_precedent(licensee, FY, data)
-        logger.info(f"  ✓ Saved {licensee} FY {FY} to Firestore\n")
+        logger.info(f"  ✓ Saved {licensee} FY {FY} to document store\n")
     
     # Verify
     logger.info("=== Verification ===")
@@ -323,7 +320,7 @@ def main():
             logger.info(f"{licensee} FY {FY}: PPC={ae.get('power_purchase_cost', 0)}, "
                        f"Emp={ae.get('employee_cost', 0)}, A&G={ae.get('admin_general', 0)}")
         else:
-            logger.warning(f"{licensee} FY {FY}: NOT FOUND in Firestore!")
+            logger.warning(f"{licensee} FY {FY}: NOT FOUND in document store!")
 
 
 if __name__ == "__main__":

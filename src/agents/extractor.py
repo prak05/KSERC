@@ -1,12 +1,12 @@
 """
-KSERC SDL Truing Up — Gemini Vision Extraction Agent
+KSERC SDL Truing Up — vision model Extraction Agent
 =====================================================
 
 Converts KSERC petition PDFs into structured ARR data by:
 1. Rendering PDF pages as images using PyMuPDF
-2. Sending images to Gemini Vision (gemini-3-pro-preview) to read
+2. Sending images to vision model to read
    the ARR summary table (all values in Rs. Lakhs)
-3. Falling back to text-based PyMuPDF + row-scan if Gemini fails
+3. Falling back to text-based PyMuPDF + row-scan if the model fails
 
 Populates the LangGraph state with:
   - claimed_expenses   : dict of all ARR expense line items (Rs. Lakhs)
@@ -39,7 +39,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -78,10 +78,10 @@ def _empty_revenues() -> Dict[str, float]:
 
 
 # ══════════════════════════════════════════════════════════════════════════
-# Gemini Vision Prompt
+# vision model Prompt
 # ══════════════════════════════════════════════════════════════════════════
 
-GEMINI_VISION_PROMPT = """You are a highly trained KSERC financial data extraction specialist.
+LLM_VISION_PROMPT = """You are a highly trained KSERC financial data extraction specialist.
 Your task: extract the CLAIMED values from the Truing-Up Petition ARR summary table.
 
 STEP 1 — FIND THE CORRECT TABLE:
@@ -440,7 +440,7 @@ def _render_pdf_pages_as_images(
     """
     Render each page of a PDF as a PNG image (bytes).
     Returns list of PNG bytes, one per page (up to max_pages).
-    Uses 200 DPI — sharp enough for Gemini to read tables clearly.
+    Uses 200 DPI — sharp enough for the model to read tables clearly.
     """
     import fitz  # PyMuPDF
 
@@ -466,14 +466,14 @@ def _render_pdf_pages_as_images(
 
 def _find_arr_table_pages(images: List[bytes]) -> List[int]:
     """
-    Pass 1: Send all page images to Gemini with a lightweight prompt to
+    Pass 1: Send all page images to the model with a lightweight prompt to
     identify which pages contain the main ARR summary table.
     Returns list of 0-based page indices.
-    Falls back to [0..min(len(images),6)] if Gemini can't determine.
+    Falls back to [0..min(len(images),6)] if the model can't determine.
     """
     try:
-        from src.gemini_client import generate_with_parts
-        from google.genai import types
+        from src.llm_client import generate_with_parts
+        from src.cloud import llm_types as types
 
         PAGE_FINDER_PROMPT = """Look at these PDF pages carefully. Identify which pages contain the MAIN ARR (Aggregate Revenue Requirement) SUMMARY TABLE.
 
@@ -516,7 +516,7 @@ If you truly cannot find it, return {"arr_pages": []}."""
 
         raw = generate_with_parts(
             parts,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
         )
@@ -543,10 +543,10 @@ If you truly cannot find it, return {"arr_pages": []}."""
 
 
 # ══════════════════════════════════════════════════════════════════════════
-# Gemini Vision Extraction
+# vision model Extraction
 # ══════════════════════════════════════════════════════════════════════════
 
-def _extract_with_gemini_vision(
+def _extract_with_llm_vision(
     images: List[bytes],
     claimed_expenses: Dict[str, float],
     claimed_revenues: Dict[str, float],
@@ -554,16 +554,15 @@ def _extract_with_gemini_vision(
     financial_year: str = "",
 ) -> float:
     """
-    Send PDF page images to Gemini and extract ARR financial table.
-    Uses the google-genai SDK with the latest model.
+    Send PDF page images to the model and extract ARR financial table.
     Updates claimed_expenses and claimed_revenues in-place.
     Returns distribution_loss_pct.
     """
     try:
-        from src.gemini_client import get_client, generate_with_parts
-        from google.genai import types
+        from src.llm_client import get_client, generate_with_parts
+        from src.cloud import llm_types as types
     except ImportError:
-        logger.warning("google-genai not installed; skipping Gemini Vision.")
+        logger.warning("LLM client unavailable; skipping vision extraction.")
         return 0.0
 
     # Build content parts: prompt + dynamic KDHP column instruction + all page images
@@ -587,12 +586,12 @@ def _extract_with_gemini_vision(
                 f"*** END OVERRIDE ***\n\n"
             )
     
-    parts = [types.Part.from_text(text=dynamic_prefix + GEMINI_VISION_PROMPT)]
+    parts = [types.Part.from_text(text=dynamic_prefix + LLM_VISION_PROMPT)]
     for i, png_bytes in enumerate(images):
         parts.append(types.Part.from_bytes(data=png_bytes, mime_type="image/png"))
 
     try:
-        logger.info(f"Sending {len(images)} page images to Gemini Vision...")
+        logger.info(f"Sending {len(images)} page images to vision model...")
         
         system_instruction = (
             "You are an expert KSERC financial data extractor. "
@@ -605,15 +604,15 @@ def _extract_with_gemini_vision(
         )
         
         max_retries = 2
-        gemini_expenses = {}
-        gemini_revenues = {}
+        llm_expenses = {}
+        llm_revenues = {}
         data = {}
 
         for attempt in range(max_retries):
             from src.models.schemas import ExtractionResult
             raw = generate_with_parts(
                 parts,
-                model=GEMINI_MODEL,
+                model=LLM_MODEL,
                 temperature=0.0,
                 response_mime_type="application/json",
                 response_schema=ExtractionResult,
@@ -630,16 +629,16 @@ def _extract_with_gemini_vision(
             try:
                 data = json.loads(raw)
             except json.JSONDecodeError as e:
-                logger.error(f"Gemini Vision returned non-JSON: {e}\nRaw: {raw[:500]}")
+                logger.error(f"vision model returned non-JSON: {e}\nRaw: {raw[:500]}")
                 if attempt == max_retries - 1:
                     return 0.0
                 continue
 
-            gemini_expenses = data.get("claimed_expenses", {})
-            gemini_revenues = data.get("claimed_revenues", {})
+            llm_expenses = data.get("claimed_expenses", {})
+            llm_revenues = data.get("claimed_revenues", {})
 
             # Checksum validation
-            calc_exp = sum(float(str(v).replace(',', '')) for v in gemini_expenses.values() if v)
+            calc_exp = sum(float(str(v).replace(',', '')) for v in llm_expenses.values() if v)
             target_exp = float(str(data.get("total_expenditure", 0.0)).replace(',', ''))
             
             if target_exp > 0 and abs(calc_exp - target_exp) > 2.0:
@@ -651,43 +650,43 @@ def _extract_with_gemini_vision(
             else:
                 logger.info(f"  [Attempt {attempt+1}] Checksum Passed! Calculated exp: {calc_exp:.2f} == Table total: {target_exp:.2f}")
 
-            logger.info(f"Gemini Vision raw response (first 500 chars): {raw[:500]}")
+            logger.info(f"vision model raw response (first 500 chars): {raw[:500]}")
             break
 
         # Merge into state dicts
         updates_exp = 0
         for key in claimed_expenses:
-            val = gemini_expenses.get(key, 0.0)
+            val = llm_expenses.get(key, 0.0)
             if val is not None:
                 try:
                     fval = float(str(val).replace(",", ""))
                     if fval != 0.0:
                         claimed_expenses[key] = fval
                         updates_exp += 1
-                        logger.info(f"  [GeminiVision] expenses.{key}: {fval}")
+                        logger.info(f"  [VisionVision] expenses.{key}: {fval}")
                 except (ValueError, TypeError):
                     pass
 
         updates_rev = 0
         for key in claimed_revenues:
-            val = gemini_revenues.get(key, 0.0)
+            val = llm_revenues.get(key, 0.0)
             if val is not None:
                 try:
                     fval = float(str(val).replace(",", ""))
                     if fval != 0.0:
                         claimed_revenues[key] = fval
                         updates_rev += 1
-                        logger.info(f"  [GeminiVision] revenues.{key}: {fval}")
+                        logger.info(f"  [VisionVision] revenues.{key}: {fval}")
                 except (ValueError, TypeError):
                     pass
 
-        logger.info(f"Gemini Vision: updated {updates_exp} exp fields, {updates_rev} rev fields")
+        logger.info(f"vision model: updated {updates_exp} exp fields, {updates_rev} rev fields")
 
         dist_loss = float(data.get("distribution_loss_pct", 0.0))
-        logger.info(f"  [GeminiVision] distribution_loss_pct: {dist_loss}%")
+        logger.info(f"  [VisionVision] distribution_loss_pct: {dist_loss}%")
 
         bee_fee = float(data.get("bee_energy_audit_fee", 0.0) or 0.0)
-        logger.info(f"  [GeminiVision] bee_energy_audit_fee: {bee_fee}L")
+        logger.info(f"  [VisionVision] bee_energy_audit_fee: {bee_fee}L")
         claimed_expenses["__bee_energy_audit_fee__"] = bee_fee
 
         # Distribution loss unit values (already in Lakh units — no conversion)
@@ -696,23 +695,23 @@ def _extract_with_gemini_vision(
         appc = float(data.get("appc_rs_per_unit", 0.0) or 0.0)
         if actual_loss_lakh > 0:
             claimed_expenses["__actual_loss_lakh_units__"] = actual_loss_lakh
-            logger.info(f"  [GeminiVision] actual_loss_lakh_units: {actual_loss_lakh}")
+            logger.info(f"  [VisionVision] actual_loss_lakh_units: {actual_loss_lakh}")
         if approved_loss_lakh > 0:
             claimed_expenses["__approved_loss_lakh_units__"] = approved_loss_lakh
-            logger.info(f"  [GeminiVision] approved_loss_lakh_units: {approved_loss_lakh}")
+            logger.info(f"  [VisionVision] approved_loss_lakh_units: {approved_loss_lakh}")
         if appc > 0:
             claimed_expenses["__appc_rs_per_unit__"] = appc
-            logger.info(f"  [GeminiVision] appc_rs_per_unit: {appc}")
+            logger.info(f"  [VisionVision] appc_rs_per_unit: {appc}")
 
         # IWC sub-components (Working Capital table)
         sec_dep = float(data.get("consumer_security_deposit_balance", 0.0) or 0.0)
         maint_spares = float(data.get("maintenance_spares_wc", 0.0) or 0.0)
         if sec_dep > 0:
             claimed_expenses["__consumer_security_deposit_balance__"] = sec_dep
-            logger.info(f"  [GeminiVision] consumer_security_deposit_balance: {sec_dep}")
+            logger.info(f"  [VisionVision] consumer_security_deposit_balance: {sec_dep}")
         if maint_spares > 0:
             claimed_expenses["__maintenance_spares_wc__"] = maint_spares
-            logger.info(f"  [GeminiVision] maintenance_spares_wc: {maint_spares}")
+            logger.info(f"  [VisionVision] maintenance_spares_wc: {maint_spares}")
 
         # RoNFA computation fields
         for ronfa_key in ["ronfa_gross_fixed_assets", "ronfa_accumulated_depreciation",
@@ -722,12 +721,12 @@ def _extract_with_gemini_vision(
             ronfa_val = float(data.get(ronfa_key, 0.0) or 0.0)
             if ronfa_val > 0:
                 claimed_expenses[f"__{ronfa_key}__"] = ronfa_val
-                logger.info(f"  [GeminiVision] {ronfa_key}: {ronfa_val}")
+                logger.info(f"  [VisionVision] {ronfa_key}: {ronfa_val}")
 
         return dist_loss
 
     except Exception as e:
-        logger.error(f"Gemini Vision extraction failed: {e}")
+        logger.error(f"vision model extraction failed: {e}")
 
     return 0.0
 
@@ -1223,8 +1222,8 @@ def extract_petition_data(state: dict) -> dict:
     LangGraph node: extract ARR financial data from a KSERC petition PDF.
 
     Strategy (in order):
-    1. Render PDF pages as images → Gemini Vision reads the ARR table
-    2. If Gemini Vision fails/returns zeros → PyMuPDF text + row-scan fallback
+    1. Render PDF pages as images → vision model reads the ARR table
+    2. If vision model fails/returns zeros → PyMuPDF text + row-scan fallback
 
     All monetary values are in Rs. Lakhs.
 
@@ -1248,7 +1247,7 @@ def extract_petition_data(state: dict) -> dict:
     target_fy = state.get("financial_year", "")
     
     # ── Extraction Result Caching ──────────────────────────────────────
-    # Gemini Vision is non-deterministic — each API call can return different
+    # vision model is non-deterministic — each API call can return different
     # values for the same PDF. To ensure consistent results between terminal
     # tests and frontend, cache extraction results by PDF file hash.
     all_pdf_paths = [pdf_path] + state.get("annexure_pdf_paths", [])
@@ -1299,45 +1298,45 @@ def extract_petition_data(state: dict) -> dict:
     logger.info(f"Target FY for column detection: {target_fy or 'unknown'}")
     checksum_passed = False
 
-    # ── Step 0: Document AI Form Parser (fastest, most accurate) ───
-    # Try Document AI first — it extracts structured tables directly
+    # ── Step 0: Textract Form Parser (fastest, most accurate) ───
+    # Try Textract first — it extracts structured tables directly
     # without needing to render pages as images.
     licensee_name = state.get("licensee_name", "").upper()
     if "KDHP" not in licensee_name and "KANNAN" not in licensee_name:
         try:
-            from src.agents.document_ai_extractor import extract_petition_tables
-            logger.info("[DocAI] Attempting Document AI Form Parser extraction...")
+            from src.agents.table_extractor import extract_petition_tables
+            logger.info("[Textract] Attempting Textract Form Parser extraction...")
             docai_text, docai_tables = extract_petition_tables(
                 pdf_path, licensee_name=licensee_name, financial_year=target_fy,
             )
             if docai_tables:
-                logger.info(f"[DocAI] Got {len(docai_tables)} tables, scanning for ARR data...")
+                logger.info(f"[Textract] Got {len(docai_tables)} tables, scanning for ARR data...")
                 found = _scan_arr_table(docai_tables, claimed_expenses, claimed_revenues, target_fy)
                 if found and not all(v == 0.0 for v in claimed_expenses.values()):
-                    extraction_method = "document_ai"
+                    extraction_method = "textract"
                     dist_loss = _extract_distribution_loss(docai_tables, docai_text)
-                    logger.info(f"[DocAI] ✓ Extraction success via Document AI! "
+                    logger.info(f"[Textract] ✓ Extraction success via Textract! "
                                 f"Total expenses: {sum(claimed_expenses.values()):.2f}")
                 else:
-                    logger.warning("[DocAI] Tables found but ARR scan returned zeros, "
-                                   "falling through to Gemini Vision")
+                    logger.warning("[Textract] Tables found but ARR scan returned zeros, "
+                                   "falling through to vision model")
             else:
-                logger.warning("[DocAI] No tables returned, falling through to Gemini Vision")
+                logger.warning("[Textract] No tables returned, falling through to vision model")
         except Exception as e:
-            logger.warning(f"[DocAI] Document AI extraction failed: {e}, "
-                           "falling through to Gemini Vision")
+            logger.warning(f"[Textract] Textract extraction failed: {e}, "
+                           "falling through to vision model")
     else:
-        logger.info("[DocAI] Bypassing Document AI for KDHP to enforce explicit Gemini prompt overrides.")
+        logger.info("[Textract] Bypassing Textract for KDHP to enforce explicit the model prompt overrides.")
 
-    # ── Step 1: Native PDF Upload to Gemini ─────────────────────────
+    # ── Step 1: Native PDF Upload to the model ─────────────────────────
     # Uses generate_with_pdf() for a single API call — much faster than
     # rendering pages as images and sending in batches.
-    # (Skip if Document AI already succeeded)
+    # (Skip if Textract already succeeded)
     licensee_name = state.get("licensee_name", "").upper()
 
-    if extraction_method != "document_ai":
+    if extraction_method != "textract":
         try:
-            from src.gemini_client import generate_with_pdf
+            from src.llm_client import generate_with_pdf
             from src.models.schemas import ExtractionResult
 
             # Build dynamic KDHP column instruction
@@ -1370,13 +1369,13 @@ def extract_petition_data(state: dict) -> dict:
                 "All values are in Rs. Lakhs. Precision is strictly required."
             )
 
-            prompt = dynamic_prefix + GEMINI_VISION_PROMPT
+            prompt = dynamic_prefix + LLM_VISION_PROMPT
 
             logger.info(f"[NATIVE PDF] Uploading {len(all_pdf_paths)} petition PDF(s) for ARR extraction...")
             raw = generate_with_pdf(
                 pdf_path=all_pdf_paths if len(all_pdf_paths) > 1 else pdf_path,
                 prompt=prompt,
-                model=GEMINI_MODEL,
+                model=LLM_MODEL,
                 temperature=0.0,
                 system_instruction=system_instruction,
                 response_mime_type="application/json",
@@ -1392,20 +1391,20 @@ def extract_petition_data(state: dict) -> dict:
             extraction_method = "native_pdf_upload"
 
             # Parse expenses
-            gemini_expenses = data.get("claimed_expenses", {})
+            llm_expenses = data.get("claimed_expenses", {})
             for key in claimed_expenses:
-                if key in gemini_expenses:
-                    claimed_expenses[key] = float(gemini_expenses[key])
+                if key in llm_expenses:
+                    claimed_expenses[key] = float(llm_expenses[key])
 
             # Parse revenues
-            gemini_revenues = data.get("claimed_revenues", {})
+            llm_revenues = data.get("claimed_revenues", {})
             for key in claimed_revenues:
-                if key in gemini_revenues:
-                    claimed_revenues[key] = float(gemini_revenues[key])
+                if key in llm_revenues:
+                    claimed_revenues[key] = float(llm_revenues[key])
 
             dist_loss = float(data.get("distribution_loss_pct", 0.0))
             
-            # Extract energy and loss values from Gemini's structured output
+            # Extract energy and loss values from the model's structured output
             actual_loss_lakh_units      = float(data.get("actual_loss_lakh_units", 0.0) or 0.0)
             approved_loss_lakh_units    = float(data.get("approved_loss_lakh_units", 0.0) or 0.0)
             energy_input_lakh_units     = float(data.get("energy_input_lakh_units", 0.0) or 0.0)
@@ -1469,7 +1468,7 @@ def extract_petition_data(state: dict) -> dict:
                 total_interest = interest_lt + interest_wc + interest_cd
 
                 # ── PyMuPDF cross-validation for combined interest ──────
-                # Gemini often reads "Actual Audited" (63.66) instead of
+                # the model often reads "Actual Audited" (63.66) instead of
                 # "Truing Up Claim" (71.19) for row D 3.7.  Use PyMuPDF
                 # to read the summary table and grab the correct column.
                 try:
@@ -1501,7 +1500,7 @@ def extract_petition_data(state: dict) -> dict:
                                                 logger.info(f"  [KDHP PyMuPDF] Using Truing Up Claim interest: {pdf_interest}")
                                                 if pdf_interest > 0 and abs(pdf_interest - total_interest) > 1.0:
                                                     logger.warning(
-                                                        f"  [KDHP Interest Fix] Gemini combined={total_interest:.2f} "
+                                                        f"  [KDHP Interest Fix] the model combined={total_interest:.2f} "
                                                         f"vs PyMuPDF TruingUpClaim={pdf_interest:.2f}. Using PyMuPDF value."
                                                     )
                                                     total_interest = pdf_interest
@@ -1520,24 +1519,24 @@ def extract_petition_data(state: dict) -> dict:
                     logger.info(f"  [KDHP PostProcess] Combined interest -> interest_long_term={total_interest}")
 
                 # ── Deterministic PPC cross-validation ──
-                # Gemini sometimes extracts "Net Charges" (after line loss adjustment)
+                # the model sometimes extracts "Net Charges" (after line loss adjustment)
                 # instead of "Total Charges" (the real total PPC before adjustment).
                 # Cross-check using APPC × energy_input, and if lower, do a focused
                 # re-extraction to get the exact "Total Charges" value.
-                gemini_ppc = claimed_expenses.get("power_purchase_cost", 0.0)
+                llm_ppc = claimed_expenses.get("power_purchase_cost", 0.0)
                 ep = energy_purchased_lakh_units if energy_purchased_lakh_units > 0 else energy_input_lakh_units
-                logger.info(f"  [KDHP PPC Debug] gemini_ppc={gemini_ppc}, appc={appc_rs_per_unit}, ep={ep}")
+                logger.info(f"  [KDHP PPC Debug] llm_ppc={llm_ppc}, appc={appc_rs_per_unit}, ep={ep}")
 
                 if appc_rs_per_unit > 0 and ep > 0:
                     computed_ppc = round(appc_rs_per_unit * ep, 2)
-                    # If Gemini PPC is lower than computed by 1-100L, it likely used Net Charges
-                    if gemini_ppc < computed_ppc and 1.0 < abs(gemini_ppc - computed_ppc) < 100.0:
-                        logger.warning(f"  [KDHP PPC] Gemini={gemini_ppc} < Computed={computed_ppc}. Attempting focused re-extraction...")
+                    # If the model PPC is lower than computed by 1-100L, it likely used Net Charges
+                    if llm_ppc < computed_ppc and 1.0 < abs(llm_ppc - computed_ppc) < 100.0:
+                        logger.warning(f"  [KDHP PPC] the model={llm_ppc} < Computed={computed_ppc}. Attempting focused re-extraction...")
                         try:
-                            # Focused re-extraction: ask Gemini specifically for Total Charges
-                            from src.gemini_client import generate_with_parts as _gwp
+                            # Focused re-extraction: ask the model specifically for Total Charges
+                            from src.llm_client import generate_with_parts as _gwp
                             import fitz as _fitz
-                            from google.genai import types as _types
+                            from src.cloud import llm_types as _types
                             _doc = _fitz.open(pdf_path)
                             _parts = []
                             for _pg in range(min(len(_doc), 18)):
@@ -1560,7 +1559,7 @@ def extract_petition_data(state: dict) -> dict:
                                 _total_charges = float(_nums[0])
                                 if 3000 < _total_charges < 5000:  # Sanity check
                                     claimed_expenses["power_purchase_cost"] = _total_charges
-                                    logger.info(f"  [KDHP PPC Fix] Deep extraction: Total Charges = {_total_charges} (overriding {gemini_ppc})")
+                                    logger.info(f"  [KDHP PPC Fix] Deep extraction: Total Charges = {_total_charges} (overriding {llm_ppc})")
                                 else:
                                     claimed_expenses["power_purchase_cost"] = computed_ppc
                                     logger.info(f"  [KDHP PPC Fix] Deep extraction gave {_total_charges} (out of range), using computed={computed_ppc}")
@@ -1570,8 +1569,8 @@ def extract_petition_data(state: dict) -> dict:
                         except Exception as _e:
                             claimed_expenses["power_purchase_cost"] = computed_ppc
                             logger.warning(f"  [KDHP PPC Fix] Deep extraction error: {_e}, using computed={computed_ppc}")
-                    elif gemini_ppc > 0 and abs(gemini_ppc - computed_ppc) <= 1.0:
-                        logger.info(f"  [KDHP PPC Check] Gemini={gemini_ppc} matches computed={computed_ppc} -- no override needed")
+                    elif llm_ppc > 0 and abs(llm_ppc - computed_ppc) <= 1.0:
+                        logger.info(f"  [KDHP PPC Check] the model={llm_ppc} matches computed={computed_ppc} -- no override needed")
 
                 nti = claimed_revenues.get("non_tariff_income", 0.0)
                 other_rev = claimed_revenues.get("other_revenue", 0.0)
@@ -1586,7 +1585,7 @@ def extract_petition_data(state: dict) -> dict:
     bee_fee = 0.0  # resolved in either branch below
 
     if all_exp_zero:
-        logger.warning("Gemini Vision returned all-zero expenses — falling back to PyMuPDF row-scan")
+        logger.warning("vision model returned all-zero expenses — falling back to PyMuPDF row-scan")
         extraction_method = "pymupdf_rowscan"
 
         # Step 3a: PyMuPDF text + table extraction
@@ -1612,7 +1611,7 @@ def extract_petition_data(state: dict) -> dict:
         # Step 3e: Asset register
         asset_register = _extract_asset_register(tables)
     else:
-        # Gemini succeeded — extract remaining data via PyMuPDF text for non-financial fields
+        # the model succeeded — extract remaining data via PyMuPDF text for non-financial fields
         try:
             full_text, tables = _extract_text_and_tables_pymupdf(pdf_path)
         except Exception:
@@ -1621,16 +1620,16 @@ def extract_petition_data(state: dict) -> dict:
         if dist_loss == 0.0:
             dist_loss = _extract_distribution_loss(tables, full_text)
 
-        # BEE energy audit fee — Gemini Vision may have stored it via __bee_energy_audit_fee__
-        # but also run the regex on full_text to catch cases where Gemini missed it
-        gemini_bee = float(claimed_expenses.pop("__bee_energy_audit_fee__", 0.0) or 0.0)
+        # BEE energy audit fee — vision model may have stored it via __bee_energy_audit_fee__
+        # but also run the regex on full_text to catch cases where the model missed it
+        llm_bee = float(claimed_expenses.pop("__bee_energy_audit_fee__", 0.0) or 0.0)
         regex_bee  = _extract_bee_fee_from_text(full_text)
-        bee_fee    = gemini_bee if gemini_bee > 0.0 else regex_bee
+        bee_fee    = llm_bee if llm_bee > 0.0 else regex_bee
         if bee_fee > 0.0:
-            logger.info(f"BEE fee resolved: Rs.{bee_fee:.2f}L (source: {'gemini' if gemini_bee > 0.0 else 'regex'})")
+            logger.info(f"BEE fee resolved: Rs.{bee_fee:.2f}L (source: {'llm' if llm_bee > 0.0 else 'regex'})")
 
-        # Priority 1: from claimed_expenses hidden keys (older Gemini prompt style)
-        # Priority 2: from top-level JSON keys (newer Gemini prompt style — lines 1282-1286 above)
+        # Priority 1: from claimed_expenses hidden keys (older the model prompt style)
+        # Priority 2: from top-level JSON keys (newer the model prompt style — lines 1282-1286 above)
         # Keep whichever source gave a non-zero value.
         hidden_actual   = float(claimed_expenses.pop("__actual_loss_lakh_units__", 0.0) or 0.0)
         hidden_approved = float(claimed_expenses.pop("__approved_loss_lakh_units__", 0.0) or 0.0)
@@ -1641,7 +1640,7 @@ def extract_petition_data(state: dict) -> dict:
         appc_rs_per_unit         = hidden_appc     if hidden_appc     > 0 else appc_rs_per_unit
 
         if actual_loss_lakh_units == 0.0 or approved_loss_lakh_units == 0.0:
-            # Gemini didn't get them — try regex on full petition text
+            # the model didn't get them — try regex on full petition text
             regex_actual, regex_approved, regex_appc = _extract_loss_units_from_text(full_text)
             if actual_loss_lakh_units == 0.0:
                 actual_loss_lakh_units = regex_actual
@@ -1651,7 +1650,7 @@ def extract_petition_data(state: dict) -> dict:
                 appc_rs_per_unit = regex_appc
 
         if actual_loss_lakh_units > 0:
-            src = "gemini" if claimed_expenses.get("__actual_loss_lakh_units__") else "regex"
+            src = "llm" if claimed_expenses.get("__actual_loss_lakh_units__") else "regex"
             logger.info(
                 f"Loss units resolved ({src}): actual={actual_loss_lakh_units} L units, "
                 f"approved={approved_loss_lakh_units} L units, APPC={appc_rs_per_unit} Rs/unit"
@@ -1659,9 +1658,9 @@ def extract_petition_data(state: dict) -> dict:
 
 
         # ── KDHP Cross-Validation: PyMuPDF deterministic override ──────────
-        # Gemini Vision is non-deterministic — each call can read different columns.
+        # vision model is non-deterministic — each call can read different columns.
         # PyMuPDF row-scan is deterministic (same input → same output every time).
-        # For KDHP, run PyMuPDF and use its values to OVERRIDE Gemini's.
+        # For KDHP, run PyMuPDF and use its values to OVERRIDE the model's.
         if "KDHP" in licensee_name or "KANNAN" in licensee_name:
             logger.info("[KDHP CrossValidation] Running deterministic PyMuPDF row-scan for cross-validation...")
             pymupdf_expenses = _empty_expenses()
@@ -1669,31 +1668,31 @@ def extract_petition_data(state: dict) -> dict:
             pymupdf_found = _scan_arr_table(tables, pymupdf_expenses, pymupdf_revenues, target_fy=target_fy)
             
             if pymupdf_found:
-                logger.info("[KDHP CrossValidation] PyMuPDF row-scan found values. Comparing with Gemini:")
+                logger.info("[KDHP CrossValidation] PyMuPDF row-scan found values. Comparing with the model:")
                 overrides = 0
                 for key in pymupdf_expenses:
                     pymupdf_val = pymupdf_expenses[key]
-                    gemini_val = claimed_expenses.get(key, 0.0)
-                    if pymupdf_val > 0 and abs(pymupdf_val - gemini_val) > 0.5:
-                        logger.info(f"  [OVERRIDE] {key}: Gemini={gemini_val} → PyMuPDF={pymupdf_val}")
+                    llm_val = claimed_expenses.get(key, 0.0)
+                    if pymupdf_val > 0 and abs(pymupdf_val - llm_val) > 0.5:
+                        logger.info(f"  [OVERRIDE] {key}: the model={llm_val} → PyMuPDF={pymupdf_val}")
                         claimed_expenses[key] = pymupdf_val
                         overrides += 1
                     elif pymupdf_val > 0:
-                        logger.info(f"  [MATCH] {key}: Gemini={gemini_val}, PyMuPDF={pymupdf_val}")
+                        logger.info(f"  [MATCH] {key}: the model={llm_val}, PyMuPDF={pymupdf_val}")
                 
                 # Also override revenue values
                 for key in pymupdf_revenues:
                     pymupdf_val = pymupdf_revenues[key]
-                    gemini_val = claimed_revenues.get(key, 0.0)
-                    if pymupdf_val > 0 and abs(pymupdf_val - gemini_val) > 0.5:
-                        logger.info(f"  [OVERRIDE] revenue.{key}: Gemini={gemini_val} → PyMuPDF={pymupdf_val}")
+                    llm_val = claimed_revenues.get(key, 0.0)
+                    if pymupdf_val > 0 and abs(pymupdf_val - llm_val) > 0.5:
+                        logger.info(f"  [OVERRIDE] revenue.{key}: the model={llm_val} → PyMuPDF={pymupdf_val}")
                         claimed_revenues[key] = pymupdf_val
                         overrides += 1
                 
-                extraction_method = "gemini_vision+pymupdf_crossval"
+                extraction_method = "llm_vision+pymupdf_crossval"
                 logger.info(f"[KDHP CrossValidation] Done. {overrides} values overridden by PyMuPDF.")
             else:
-                logger.warning("[KDHP CrossValidation] PyMuPDF row-scan found no values. Keeping Gemini results.")
+                logger.warning("[KDHP CrossValidation] PyMuPDF row-scan found no values. Keeping the model results.")
 
     # ── Step 4: Checksum validation ────────────────────────────────
     total_exp = sum(claimed_expenses.values())
@@ -1753,9 +1752,9 @@ def extract_petition_data(state: dict) -> dict:
             logger.warning(f"  ⚠ {w}")
     
     # ── PyMuPDF Energy Table Fallback ─────────────────────────────────
-    # If Gemini returned 0 for energy, scan the PDF tables directly with PyMuPDF
+    # If the model returned 0 for energy, scan the PDF tables directly with PyMuPDF
     if energy_sales_lakh_units == 0.0:
-        logger.info("[Energy PyMuPDF] Gemini returned 0 energy — scanning PDF tables...")
+        logger.info("[Energy PyMuPDF] the model returned 0 energy — scanning PDF tables...")
         try:
             import fitz
             doc = fitz.open(pdf_path)
@@ -1842,7 +1841,7 @@ def extract_petition_data(state: dict) -> dict:
     logger.info(f"claimed_expenses breakdown: {claimed_expenses}")
     logger.info(f"claimed_revenues breakdown: {claimed_revenues}")
 
-    # Extract IWC sub-components from hidden keys (populated by Gemini Vision)
+    # Extract IWC sub-components from hidden keys (populated by vision model)
     consumer_security_deposit_balance = float(claimed_expenses.pop("__consumer_security_deposit_balance__", 0.0) or 0.0)
     maintenance_spares_wc = float(claimed_expenses.pop("__maintenance_spares_wc__", 0.0) or 0.0)
     if consumer_security_deposit_balance > 0:
@@ -1868,7 +1867,7 @@ def extract_petition_data(state: dict) -> dict:
     # ── Targeted IWC Fallback ─────────────────────────────────────────────
     # If the main extraction didn't capture the security deposit (common for
     # multi-page petitions where the IWC table is on a later page), run a
-    # focused Gemini call specifically for the IWC Working Capital table.
+    # focused the model call specifically for the IWC Working Capital table.
     om_annual_for_iwc = 0.0
     normative_loan_opening = 0.0
     normative_loan_additional = 0.0
@@ -1883,8 +1882,8 @@ def extract_petition_data(state: dict) -> dict:
     if needs_iwc_fallback or needs_loan_fallback:
         logger.info(f"  Targeted fallback: IWC={needs_iwc_fallback}, Loan={needs_loan_fallback} — running extraction...")
         try:
-            from src.gemini_client import generate_with_parts
-            from google.genai import types as gtypes
+            from src.llm_client import generate_with_parts
+            from src.cloud import llm_types as gtypes
 
             fallback_prompt = (
                 "Extract the following financial data from this petition PDF. All values in Rs Lakhs.\n\n"
@@ -1906,7 +1905,7 @@ def extract_petition_data(state: dict) -> dict:
                 gtypes.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"),
             ]
             raw = generate_with_parts(
-                parts, model=GEMINI_MODEL,
+                parts, model=LLM_MODEL,
                 temperature=0.0, response_mime_type="application/json",
             )
             import re as re_mod

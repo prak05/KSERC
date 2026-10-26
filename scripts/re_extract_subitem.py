@@ -1,5 +1,5 @@
 """
-Re-extract 2023-24 Trued-Up Order sub-item data from KSERC PDFs → Firestore.
+Re-extract 2023-24 Trued-Up Order sub-item data from KSERC PDFs → document store.
 Focuses on:
   - R&M line items (approved by Commission)
   - A&G line items (approved by Commission) 
@@ -18,8 +18,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-from google import genai
-from google.genai import types
+from src.cloud import llm_types as types
+from src.llm_client import get_client
 
 from src.tools.db import get_precedent, save_precedent
 
@@ -201,10 +201,7 @@ def extract_subitems(licensee: str, pdf_path: str) -> dict:
     """Extract sub-item breakdowns from a single PDF."""
     logger.info(f"Extracting sub-items for {licensee} from {Path(pdf_path).name}...")
     
-    client = genai.Client(
-        api_key=os.environ.get("GOOGLE_API_KEY"),
-        http_options={"api_version": "v1alpha"},
-    )
+    client = get_client()
     
     with open(pdf_path, "rb") as f:
         pdf_bytes = f.read()
@@ -212,7 +209,7 @@ def extract_subitems(licensee: str, pdf_path: str) -> dict:
     pdf_part = types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf")
     
     response = client.models.generate_content(
-        model=os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
+        model=None,
         contents=[pdf_part, PROMPT],
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
@@ -268,7 +265,7 @@ def main():
             
             save_precedent(licensee, FY, merged)
         
-        logger.info(f"  ✓ Merged {licensee} FY {FY} to Firestore\n")
+        logger.info(f"  ✓ Merged {licensee} FY {FY} to document store\n")
     
     # Verify
     logger.info("=== Verification ===")
@@ -285,7 +282,7 @@ def main():
             if ag_nz:
                 logger.info(f"  AG: {ag_nz}")
         else:
-            logger.warning(f"{licensee} FY {FY}: NOT FOUND in Firestore!")
+            logger.warning(f"{licensee} FY {FY}: NOT FOUND in document store!")
 
 
 if __name__ == "__main__":

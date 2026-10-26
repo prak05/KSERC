@@ -1,439 +1,389 @@
-import React, { useState, useEffect } from 'react'
-import UploadForm from './components/UploadForm'
-import ResultsDashboard from './components/ResultsDashboard'
-import ReferenceDataPage from './components/ReferenceDataPage'
-import RegulationManager from './components/RegulationManager'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Calculator, Database, FileText, History, Landmark, LayoutList, LogOut, MessageSquare, Scale, Search, Upload } from 'lucide-react'
+import Analyst from './components/Analyst'
+import Benchmarks from './components/Benchmarks'
+import CaseHistory from './components/CaseHistory'
 import LoadingScreen from './components/LoadingScreen'
 import OrderDrafter from './components/OrderDrafter'
+import QuickCalculator from './components/QuickCalculator'
+import ReferenceDataPage from './components/ReferenceDataPage'
+import RegulationManager from './components/RegulationManager'
+import ResultsDashboard from './components/ResultsDashboard'
+import UploadForm from './components/UploadForm'
+import { Check, Cta, Notice } from './components/ui'
+import { fmt } from './components/format'
 
 class ErrorBoundary extends React.Component {
-    constructor(props) { super(props); this.state = { hasError: false, error: null } }
-    static getDerivedStateFromError(error) { return { hasError: true, error } }
+    constructor(props) { super(props); this.state = { error: null } }
+    static getDerivedStateFromError(error) { return { error } }
     render() {
-        if (this.state.hasError) return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 40, background: 'var(--bg)' }}>
-                <div className="card" style={{ padding: '50px 40px', maxWidth: 500, textAlign: 'center' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: 16 }}>🛑</div>
-                    <h3 style={{ fontSize: '1.2rem', letterSpacing: '-0.03em', marginBottom: 12 }}>System Error</h3>
-                    <p className="mono" style={{ color: 'var(--red)', marginBottom: 20 }}>{this.state.error?.message}</p>
-                    <button className="btn-primary" onClick={() => window.location.reload()}>Reload</button>
-                </div>
-            </div>
+        if (!this.state.error) return this.props.children
+        return (
+            <div className="page"><div className="card empty">
+                <p className="h3">Something went wrong</p>
+                <p className="mono bad" style={{ margin: '8px 0 18px' }}>{this.state.error.message}</p>
+                <button className="btn" onClick={() => window.location.reload()}>Reload</button>
+            </div></div>
         )
-        return this.props.children
     }
 }
 
+/* ── R&M one-time expenditure review (pipeline pauses on PENDING_RM_REVIEW) ── */
+const CLASS = {
+    CAPITAL_EXPENDITURE: ['pill-warn', 'Capital'],
+    ONE_TIME_RM: ['pill-ok', 'One-time'],
+    ROUTINE_RM: ['pill-bad', 'Routine'],
+}
 
-/* ── R&M Review Modal ─────────────────────────────────────────── */
-function RMReviewModal({ rmData, analysisId, onContinue, onCancel }) {
+function RMReviewModal({ rmData, analysisId, onContinue }) {
     const items = rmData?.rm_line_items || []
     const rmNorm = rmData?.rm_norm || 0
     const claimedRm = rmData?.claimed_rm || 0
-
-    // Initialize: items classified as ONE_TIME_RM are pre-selected
-    const [selected, setSelected] = useState(() => {
-        const s = {}
-        items.forEach((item, i) => {
-            s[i] = item.classification === 'ONE_TIME_RM'
-        })
-        return s
-    })
+    const [selected, setSelected] = useState(() => Object.fromEntries(items.map((it, i) => [i, it.classification === 'ONE_TIME_RM'])))
     const [submitting, setSubmitting] = useState(false)
+    const [error, setError] = useState(null)
 
     const selectedItems = items.filter((_, i) => selected[i])
     const oneTimeTotal = selectedItems.reduce((sum, it) => sum + (it.amount || 0), 0)
-    const approvedRm = rmNorm + oneTimeTotal
-
-    const classColors = {
-        'CAPITAL_EXPENDITURE': { bg: 'rgba(255, 168, 0, 0.15)', border: 'rgba(255, 168, 0, 0.4)', label: '⚠️ Capital', color: '#ffa800' },
-        'ONE_TIME_RM': { bg: 'rgba(0, 255, 136, 0.12)', border: 'rgba(0, 255, 136, 0.4)', label: '✅ One-Time', color: '#00ff88' },
-        'ROUTINE_RM': { bg: 'rgba(255, 68, 68, 0.12)', border: 'rgba(255, 68, 68, 0.4)', label: '🔴 Routine', color: '#ff4444' },
-    }
 
     const handleContinue = async () => {
-        setSubmitting(true)
+        setSubmitting(true); setError(null)
         try {
             const resp = await fetch('/api/rm-continue', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    analysis_id: analysisId,
-                    selected_items: selectedItems,
-                }),
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ analysis_id: analysisId, selected_items: selectedItems }),
             })
-            if (!resp.ok) throw new Error('Failed to continue')
+            if (!resp.ok) throw new Error('Could not resume the analysis')
             onContinue()
         } catch (e) {
-            console.error('R&M continue failed:', e)
-            setSubmitting(false)
+            setError(e.message); setSubmitting(false)
         }
     }
 
     return (
-        <div style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
-            background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: 24,
-        }}>
-            <div className="card" style={{
-                maxWidth: 800, width: '100%', maxHeight: '90vh', overflow: 'auto',
-                padding: '32px 36px', border: '1px solid rgba(0, 255, 136, 0.3)',
-            }}>
-                {/* Header */}
-                <div style={{ marginBottom: 24 }}>
-                    <h2 style={{ fontSize: '1.4rem', letterSpacing: '-0.03em', marginBottom: 8, color: 'var(--green)' }}>
-                        ⚡ R&M One-Time Expenditure Review
-                    </h2>
-                    <p className="mono" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
-                        The licensee claimed <strong style={{ color: '#fff' }}>Rs. {claimedRm.toFixed(2)}L</strong> for R&M,
-                        which exceeds the MYT norm of <strong style={{ color: '#fff' }}>Rs. {rmNorm.toFixed(2)}L</strong>.
-                        <br />Select which items should be allowed as <strong style={{ color: 'var(--green)' }}>one-time expenditure</strong> under Regulation 80(3).
+        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="rm-title">
+            <div className="modal">
+                <div className="card-body" style={{ padding: '22px 24px 16px' }}>
+                    <span className="label">Review required · Regulation 80(3)</span>
+                    <h2 id="rm-title" className="h1" style={{ fontSize: 22, margin: '8px 0 6px' }}>R&amp;M one-time expenditure</h2>
+                    <p className="muted">
+                        The licensee claimed <span className="num" style={{ color: 'var(--text)' }}>₹{fmt(claimedRm)} L</span> for R&amp;M against an MYT norm of{' '}
+                        <span className="num" style={{ color: 'var(--text)' }}>₹{fmt(rmNorm)} L</span>. Select the items to allow as one-time expenditure.
                     </p>
                 </div>
-
-                {/* Items list */}
-                <div style={{ marginBottom: 24 }}>
+                <div className="divide" style={{ borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}>
                     {items.map((item, i) => {
-                        const cls = classColors[item.classification] || classColors['ROUTINE_RM']
+                        const [cls, label] = CLASS[item.classification] || CLASS.ROUTINE_RM
                         return (
-                            <div key={i}
-                                onClick={() => setSelected(s => ({ ...s, [i]: !s[i] }))}
-                                style={{
-                                    display: 'flex', alignItems: 'center', gap: 12,
-                                    padding: '12px 16px', marginBottom: 8, borderRadius: 8,
-                                    background: selected[i] ? 'rgba(0, 255, 136, 0.08)' : 'rgba(255,255,255,0.03)',
-                                    border: `1px solid ${selected[i] ? 'rgba(0, 255, 136, 0.3)' : 'rgba(255,255,255,0.08)'}`,
-                                    cursor: 'pointer', transition: 'all 0.2s ease',
-                                }}>
-                                {/* Checkbox */}
-                                <div style={{
-                                    width: 20, height: 20, borderRadius: 4, flexShrink: 0,
-                                    border: `2px solid ${selected[i] ? 'var(--green)' : 'rgba(255,255,255,0.3)'}`,
-                                    background: selected[i] ? 'var(--green)' : 'transparent',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    transition: 'all 0.2s ease',
-                                }}>
-                                    {selected[i] && <span style={{ color: '#000', fontSize: 12, fontWeight: 700 }}>✓</span>}
-                                </div>
-
-                                {/* Description + Classification */}
+                            <div key={i} className="select-row" onClick={() => setSelected(s => ({ ...s, [i]: !s[i] }))}>
+                                <Check on={selected[i]} />
                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{ fontSize: '0.9rem', color: '#fff', marginBottom: 4 }}>
-                                        {item.description}
-                                    </div>
-                                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                                        <span className="mono" style={{
-                                            fontSize: '0.7rem', padding: '2px 8px', borderRadius: 4,
-                                            background: cls.bg, border: `1px solid ${cls.border}`, color: cls.color,
-                                        }}>
-                                            {cls.label}
-                                        </span>
-                                        {item.reason && (
-                                            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>
-                                                {item.reason}
-                                            </span>
-                                        )}
+                                    <div>{item.description}</div>
+                                    <div className="row" style={{ marginTop: 4 }}>
+                                        <span className={`pill ${cls}`}>{label}</span>
+                                        {item.reason && <span className="faint" style={{ fontSize: 12 }}>{item.reason}</span>}
                                     </div>
                                 </div>
-
-                                {/* Amount */}
-                                <div className="mono" style={{
-                                    fontSize: '0.9rem', fontWeight: 600,
-                                    color: selected[i] ? 'var(--green)' : 'rgba(255,255,255,0.5)',
-                                    flexShrink: 0,
-                                }}>
-                                    ₹{item.amount?.toFixed(2)}L
-                                </div>
+                                <span className={`num ${selected[i] ? '' : 'faint'}`}>₹{fmt(item.amount)} L</span>
                             </div>
                         )
                     })}
                 </div>
-
-                {/* Summary bar */}
-                <div style={{
-                    display: 'flex', gap: 24, padding: '16px 20px', borderRadius: 8,
-                    background: 'rgba(0, 255, 136, 0.05)', border: '1px solid rgba(0, 255, 136, 0.2)',
-                    marginBottom: 24, flexWrap: 'wrap',
-                }}>
-                    <div>
-                        <div className="mono" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', marginBottom: 2 }}>MYT Norm</div>
-                        <div className="mono" style={{ fontSize: '1rem', color: '#fff' }}>₹{rmNorm.toFixed(2)}L</div>
-                    </div>
-                    <div style={{ color: 'var(--green)', fontSize: '1.5rem', alignSelf: 'center' }}>+</div>
-                    <div>
-                        <div className="mono" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', marginBottom: 2 }}>One-Time ({selectedItems.length} items)</div>
-                        <div className="mono" style={{ fontSize: '1rem', color: 'var(--green)' }}>₹{oneTimeTotal.toFixed(2)}L</div>
-                    </div>
-                    <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '1.5rem', alignSelf: 'center' }}>=</div>
-                    <div>
-                        <div className="mono" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', marginBottom: 2 }}>Approved R&M</div>
-                        <div className="mono" style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 700 }}>₹{approvedRm.toFixed(2)}L</div>
-                    </div>
+                <div className="metrics" style={{ margin: 16, gridTemplateColumns: 'repeat(3, minmax(0,1fr))' }}>
+                    <div className="metric"><span className="label">MYT norm</span><span className="num">{fmt(rmNorm)}</span></div>
+                    <div className="metric"><span className="label">One-time · {selectedItems.length} item{selectedItems.length === 1 ? "" : "s"}</span><span className="num">{fmt(oneTimeTotal)}</span></div>
+                    <div className="metric"><span className="label">Approved R&amp;M</span><span className="num" style={{ fontWeight: 600 }}>{fmt(rmNorm + oneTimeTotal)}</span></div>
                 </div>
-
-                {/* Buttons */}
-                <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
-                    <button
-                        onClick={handleContinue}
-                        disabled={submitting}
-                        className="btn-primary"
-                        style={{ padding: '10px 28px', fontSize: '0.9rem' }}
-                    >
-                        {submitting ? '⏳ Continuing…' : `✅ Continue Analysis (${selectedItems.length} items selected)`}
-                    </button>
+                <div className="row" style={{ padding: '0 16px 16px' }}>
+                    {error && <span className="bad" style={{ fontSize: 12 }}>{error}</span>}
+                    <span className="spacer" />
+                    <Cta onClick={handleContinue} disabled={submitting}>{submitting ? 'Resuming…' : `Continue with ${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'}`}</Cta>
                 </div>
             </div>
         </div>
     )
 }
 
+/* ── Navigation ─────────────────────────────────────────────────────── */
+const NAV = [
+    { group: 'Workspace', items: [
+        { id: 'upload', label: 'Upload & analyse', icon: Upload, key: 'U' },
+        { id: 'results', label: 'Analysis results', icon: LayoutList, needsResult: true },
+        { id: 'drafter', label: 'Order drafter', icon: FileText, needsResult: true },
+        { id: 'history', label: 'Case history', icon: History, key: 'H' },
+    ] },
+    { group: 'Intelligence', items: [
+        { id: 'analyst', label: 'Analyst', icon: MessageSquare, key: 'A' },
+        { id: 'calculator', label: 'Quick calculator', icon: Calculator, key: 'C' },
+    ] },
+    { group: 'Reference', items: [
+        { id: 'regulations', label: 'Regulatory corpus', icon: Scale },
+        { id: 'reference', label: 'Reference data', icon: Database },
+        { id: 'benchmarks', label: 'Precedent & rules', icon: Landmark },
+    ] },
+]
+const ALL_NAV = NAV.flatMap(g => g.items)
+
+function viewFromHash() {
+    const id = window.location.hash.replace(/^#\/?/, '')
+    return ALL_NAV.some(n => n.id === id) ? id : 'upload'
+}
+
+function CommandPalette({ onClose, onSelect, hasResult }) {
+    const [q, setQ] = useState('')
+    const [active, setActive] = useState(0)
+    const inputRef = useRef(null)
+    const items = useMemo(() => ALL_NAV
+        .filter(i => !i.needsResult || hasResult)
+        .filter(i => i.label.toLowerCase().includes(q.toLowerCase())), [q, hasResult])
+
+    useEffect(() => { inputRef.current?.focus() }, [])
+
+    const onKey = (e) => {
+        if (e.key === 'ArrowDown') { e.preventDefault(); setActive(a => Math.min(a + 1, items.length - 1)) }
+        if (e.key === 'ArrowUp') { e.preventDefault(); setActive(a => Math.max(a - 1, 0)) }
+        if (e.key === 'Enter' && items[active]) onSelect(items[active].id)
+        if (e.key === 'Escape') onClose()
+    }
+
+    return (
+        <div className="overlay" onMouseDown={onClose}>
+            <div className="palette" onMouseDown={e => e.stopPropagation()} role="dialog" aria-label="Command palette">
+                <input ref={inputRef} value={q} placeholder="Go to…" onChange={e => { setQ(e.target.value); setActive(0) }} onKeyDown={onKey} />
+                <div className="palette-list">
+                    <div className="palette-section label">Navigate</div>
+                    {items.map((it, i) => {
+                        const Icon = it.icon
+                        return (
+                            <button key={it.id} className={`palette-item ${i === active ? 'is-active' : ''}`} onMouseEnter={() => setActive(i)} onClick={() => onSelect(it.id)}>
+                                <Icon strokeWidth={1.6} />{it.label}{it.key && <span className="kbd">G {it.key}</span>}
+                            </button>
+                        )
+                    })}
+                    {items.length === 0 && <div className="empty" style={{ padding: 24 }}>No matches</div>}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function Login({ onLogin }) {
+    return (
+        <div className="login">
+            <section className="login-art enter-frame">
+                <div className="brand" style={{ padding: 0 }}>
+                    <span className="brand-mark">KS</span>
+                    <span><span className="brand-name">KSERC</span><br /><span className="brand-sub">Kerala State Electricity Regulatory Commission</span></span>
+                </div>
+                <h1 className="display login-title enter-title">Truing-up,<br /><em>reviewed.</em></h1>
+                <div className="login-meta enter-panel">
+                    <div><b>AI truing-up analytical tool</b>FY 2024-25</div>
+                    <div><b>RIET Thiruvananthapuram</b>Work order KSERC/CSO/03-05</div>
+                </div>
+            </section>
+            <section className="login-panel">
+                <form className="login-form enter-panel" onSubmit={e => { e.preventDefault(); onLogin() }}>
+                    <span className="label">Staff sign-in</span>
+                    <h2 className="h1" style={{ fontSize: 22, marginBottom: 6 }}>Welcome back</h2>
+                    <label className="field"><span className="label">Username</span><input className="input" type="text" placeholder="staff@kserc.gov.in" autoComplete="username" /></label>
+                    <label className="field"><span className="label">Password</span><input className="input" type="password" placeholder="••••••••" autoComplete="current-password" /></label>
+                    <Cta type="submit" block>Sign in to the portal</Cta>
+                    <p className="hint">Authorised access only. Activity is recorded in the audit trail.</p>
+                </form>
+            </section>
+        </div>
+    )
+}
 
 export default function App() {
-    const [loggedIn, setLoggedIn] = useState(false)
-    const [view, setView] = useState('upload')
+    const [loggedIn, setLoggedInState] = useState(() => sessionStorage.getItem('kserc.session') === '1')
+    const [view, setViewState] = useState(() => viewFromHash())
     const [resultsData, setResultsData] = useState(null)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
     const [progressLogs, setProgressLogs] = useState([])
-    
-    // R&M review pause state
-    const [rmReview, setRmReview] = useState(null)  // { analysisId, rmData }
+    const [rmReview, setRmReview] = useState(null)
+    const [paletteOpen, setPaletteOpen] = useState(false)
+
+    const setLoggedIn = (on) => {
+        if (on) sessionStorage.setItem('kserc.session', '1'); else sessionStorage.removeItem('kserc.session')
+        setLoggedInState(on)
+    }
+    const setView = useCallback((id) => {
+        setViewState(id)
+        if (viewFromHash() !== id) window.history.pushState(null, '', `#/${id}`)
+    }, [])
+
+    useEffect(() => {
+        const onHash = () => setViewState(viewFromHash())
+        window.addEventListener('popstate', onHash)
+        return () => window.removeEventListener('popstate', onHash)
+    }, [])
+
+    const go = useCallback((id) => {
+        const item = ALL_NAV.find(n => n.id === id)
+        if (item?.needsResult && !resultsData) return
+        setView(id); setPaletteOpen(false)
+    }, [resultsData, setView])
+
+    useEffect(() => {
+        let pendingG = false
+        const onKey = (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setPaletteOpen(o => !o); return }
+            const tag = e.target.tagName
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return
+            if (e.key.toLowerCase() === 'g') { pendingG = true; setTimeout(() => { pendingG = false }, 800); return }
+            if (pendingG) {
+                const hit = ALL_NAV.find(n => n.key && n.key.toLowerCase() === e.key.toLowerCase())
+                if (hit) go(hit.id)
+                pendingG = false
+            }
+        }
+        window.addEventListener('keydown', onKey)
+        return () => window.removeEventListener('keydown', onKey)
+    }, [go])
+
+    const pushLog = (step, message) => setProgressLogs(prev => [...prev, { step, message, ts: Date.now() }])
+
+    const pollForCompletion = async (analysisId) => {
+        const maxAttempts = 240 // 20 minutes at 5 s
+        for (let attempts = 1; attempts <= maxAttempts; attempts++) {
+            await new Promise(r => setTimeout(r, 5000))
+            try {
+                const statusResp = await fetch(`/api/status/${analysisId}`)
+                if (!statusResp.ok) continue
+                const statusData = await statusResp.json()
+                if (statusData.progress?.length) {
+                    setProgressLogs(prev => {
+                        const seen = new Set(prev.map(p => p.message))
+                        const fresh = statusData.progress.filter(p => p.msg && !seen.has(p.msg)).map(p => ({ step: p.stage, message: p.msg, ts: Date.now() }))
+                        return [...prev, ...fresh]
+                    })
+                }
+                if (statusData.status === 'COMPLETED') {
+                    setResultsData(statusData.result); setView('results'); return
+                } else if (statusData.status === 'FAILED') {
+                    throw new Error(statusData.result?.error || 'Analysis failed')
+                } else if (statusData.status === 'PENDING_RM_REVIEW') {
+                    pushLog('review', 'R&M items extracted — waiting for your review')
+                    setRmReview({ analysisId, rmData: statusData.result })
+                    setLoading(false)
+                    return
+                }
+            } catch (pollErr) {
+                if (pollErr.message && !pollErr.message.includes('fetch')) throw pollErr
+            }
+        }
+        throw new Error('Analysis timed out after 20 minutes')
+    }
 
     const handleAnalyze = async (formData) => {
-        setLoading(true)
-        setError(null)
-        setProgressLogs([])
-        setResultsData(null)
-        setRmReview(null)
-
+        setLoading(true); setError(null); setProgressLogs([]); setResultsData(null); setRmReview(null)
         try {
-            // Step 1: Submit the analysis
             const resp = await fetch('/api/analyze', { method: 'POST', body: formData })
             if (!resp.ok) {
                 const errData = await resp.json().catch(() => ({}))
                 throw new Error(errData.detail || `Server error ${resp.status}`)
             }
-
             const { analysis_id } = await resp.json()
-            console.log('[KSERC] New analysis started:', analysis_id)
-            setProgressLogs(prev => [...prev, { step: 'submit', message: 'Analysis submitted, processing…', ts: Date.now() }])
-
-            // Step 2: Poll for completion (handles PENDING_RM_REVIEW pause)
+            pushLog('submit', 'Petition received — analysis queued')
             await pollForCompletion(analysis_id)
         } catch (err) {
-            console.error('Analyze request error:', err)
             setError(err.message || 'Analysis failed')
         } finally {
             setLoading(false)
         }
     }
 
-    const pollForCompletion = async (analysisId) => {
-        let attempts = 0
-        const maxAttempts = 240  // 20 minutes max (5s intervals)
-        while (attempts < maxAttempts) {
-            await new Promise(r => setTimeout(r, 5000))  // 5 second intervals
-            attempts++
-
-            try {
-                const statusResp = await fetch(`/api/status/${analysisId}`)
-                if (!statusResp.ok) continue
-                const statusData = await statusResp.json()
-
-                // Add progress logs if available
-                if (statusData.progress && statusData.progress.length > 0) {
-                    setProgressLogs(prev => {
-                        const existing = new Set(prev.map(p => p.message))
-                        const newLogs = statusData.progress
-                            .filter(p => p.msg && !existing.has(p.msg))
-                            .map(p => ({ step: p.stage, message: p.msg, ts: Date.now() }))
-                        return [...prev, ...newLogs]
-                    })
-                }
-
-                console.log(`[KSERC] Poll #${attempts}: status=${statusData.status}, progress=${statusData.progress?.length || 0} entries`)
-
-                if (statusData.status === 'COMPLETED') {
-                    console.log('[KSERC] Analysis completed, showing results')
-                    setResultsData(statusData.result)
-                    setView('results')
-                    return
-                } else if (statusData.status === 'FAILED') {
-                    throw new Error(statusData.result?.error || 'Analysis failed')
-                } else if (statusData.status === 'PENDING_RM_REVIEW') {
-                    console.log('[KSERC] Pipeline paused for R&M review')
-                    setProgressLogs(prev => [...prev, {
-                        step: 'rm_review',
-                        message: '⚡ R&M items extracted — waiting for your review…',
-                        ts: Date.now(),
-                    }])
-                    // Show R&M review modal
-                    setRmReview({ analysisId, rmData: statusData.result })
-                    setLoading(false)
-                    return  // Stop polling — will resume after user selects items
-                }
-            } catch (pollErr) {
-                if (pollErr.message && !pollErr.message.includes('fetch')) throw pollErr
-                // Network error during poll — retry
-            }
-        }
-
-        if (attempts >= maxAttempts) {
-            throw new Error('Analysis timed out after 20 minutes')
-        }
-    }
-
     const handleRMContinue = async () => {
-        // User has submitted R&M selections, resume polling
         const analysisId = rmReview.analysisId
-        setRmReview(null)
-        setLoading(true)
-        setProgressLogs(prev => [...prev, {
-            step: 'rm_review',
-            message: '✅ R&M selections applied. Resuming analysis…',
-            ts: Date.now(),
-        }])
-
+        setRmReview(null); setLoading(true)
+        pushLog('review', 'R&M selections applied — resuming')
         try {
             await pollForCompletion(analysisId)
         } catch (err) {
-            console.error('Resume polling error:', err)
-            setError(err.message || 'Analysis resume failed')
+            setError(err.message || 'Could not resume the analysis')
         } finally {
             setLoading(false)
         }
     }
 
-    if (!loggedIn) return (
-        <div className="login-overlay">
-            <div className="login-card">
-                <div className="lc-top">
-                    <div className="lc-logo-wrap">
-                        <div className="lc-logo" style={{ fontWeight: 800 }}>KSERC</div>
-                        <div style={{ width: 1, height: 38, background: 'rgba(255,255,255,.2)' }}></div>
-                        <div className="lc-logo" style={{ fontSize: 11 }}>RIET</div>
-                    </div>
-                    <div className="lc-h1">Kerala State Electricity Regulatory Commission</div>
-                    <div className="lc-h2">AI TRUING-UP ANALYTICAL TOOL — FY 2024-25</div>
-                </div>
-                <div className="lc-bdy">
-                    <label>Username</label>
-                    <input type="text" placeholder="staff@kserc.gov.in" />
-                    <label>Password</label>
-                    <input type="password" placeholder="••••••••" />
-                    <button 
-                        className="btn bp" 
-                        style={{ width: '100%', marginTop: 18, padding: 11, fontSize: 14 }} 
-                        onClick={() => setLoggedIn(true)}>
-                        Login to KSERC Portal
-                    </button>
-                </div>
-                <div className="lc-ft">Authorized access only &nbsp;·&nbsp; Work Order KSERC/CSO/03-05 &nbsp;·&nbsp; RIET Thiruvananthapuram</div>
-            </div>
-        </div>
-    )
+    if (!loggedIn) return <Login onLogin={() => setLoggedIn(true)} />
+
+    const shownView = ALL_NAV.find(n => n.id === view)?.needsResult && !resultsData ? 'upload' : view
+    const current = ALL_NAV.find(n => n.id === shownView)
+    const group = NAV.find(g => g.items.includes(current))?.group
 
     return (
         <ErrorBoundary>
-            <header className="top">
-                <div className="top-logo">KSERC</div>
-                <div className="top-title"><b>Kerala State Electricity Regulatory Commission</b><small>AI Truing-Up Analytical Tool</small></div>
-                <div className="top-sep"></div>
-                <span className="top-wo">Work Order KSERC/CSO/03-05 &nbsp;·&nbsp; RIET Thiruvananthapuram</span>
-                <div className="top-r">
-                    <div className="top-user"><div className="ava">PS</div><span id="top-name">staff@kserc.gov.in</span></div>
-                    <span className="btn-out" onClick={() => setLoggedIn(false)}>Logout</span>
+            <div className="shell enter-frame">
+                <aside className="sidebar">
+                    <div className="brand">
+                        <span className="brand-mark">KS</span>
+                        <span><span className="brand-name">KSERC</span><br /><span className="brand-sub">Truing-up · FY 2024-25</span></span>
+                    </div>
+                    {NAV.map(g => (
+                        <div key={g.group} className="nav-group">
+                            <span className="label">{g.group}</span>
+                            {g.items.map(it => {
+                                const Icon = it.icon
+                                return (
+                                    <button key={it.id} className={`nav-item ${shownView === it.id ? 'is-active' : ''}`}
+                                        disabled={it.needsResult && !resultsData} onClick={() => go(it.id)}>
+                                        <Icon strokeWidth={1.6} />{it.label}
+                                        {it.key && <span className="kbd">G {it.key}</span>}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    ))}
+                    <div className="sidebar-foot">
+                        Model · Claude on Amazon Bedrock<br />
+                        Work order KSERC/CSO/03-05<br />
+                        RIET Thiruvananthapuram
+                    </div>
+                </aside>
+
+                <div className="main">
+                    <header className="topbar">
+                        <div className="crumbs"><span>{group}</span><span>/</span><b>{current?.label}</b></div>
+                        <div className="topbar-right">
+                            <button className="cmd-trigger" onClick={() => setPaletteOpen(true)}>
+                                <Search size={13} strokeWidth={1.6} /><span>Search or jump to…</span><span className="kbd">⌘K</span>
+                            </button>
+                            <span className="avatar" title="staff@kserc.gov.in">KS</span>
+                            <button className="btn btn-ghost btn-sm" onClick={() => setLoggedIn(false)} title="Sign out"><LogOut size={13} strokeWidth={1.6} /></button>
+                        </div>
+                    </header>
+
+                    <main className="page">
+                        {shownView === 'upload' && !loading && !rmReview && (
+                            <div className="stack view">
+                                <UploadForm onSubmit={handleAnalyze} />
+                                {error && <Notice tone="bad" onClose={() => setError(null)}>{error}</Notice>}
+                            </div>
+                        )}
+                        {loading && <LoadingScreen progressLogs={progressLogs} />}
+                        {rmReview && <RMReviewModal rmData={rmReview.rmData} analysisId={rmReview.analysisId} onContinue={handleRMContinue} />}
+
+                        {view === 'results' && resultsData && !loading && (
+                            <ResultsDashboard key={resultsData.analysis_id} data={resultsData}
+                                onNewAnalysis={() => { setView('upload'); setResultsData(null); setError(null) }}
+                                onDraftOrder={() => setView('drafter')} />
+                        )}
+                        {view === 'drafter' && resultsData && !loading && (
+                            <OrderDrafter analysisId={resultsData.analysis_id} analysisData={resultsData} onBack={() => setView('results')} />
+                        )}
+                        {shownView === 'history' && !loading && <CaseHistory onOpen={(r) => { setResultsData(r); setView('results') }} />}
+                        {shownView === 'analyst' && !loading && <Analyst />}
+                        {shownView === 'calculator' && !loading && <QuickCalculator />}
+                        {shownView === 'reference' && !loading && <ReferenceDataPage />}
+                        {shownView === 'regulations' && !loading && <RegulationManager />}
+                        {shownView === 'benchmarks' && !loading && <Benchmarks />}
+                    </main>
                 </div>
-            </header>
-
-            <div className="wrap">
-                <nav className="side">
-                    <div className="sb-sec">
-                        <div className="sb-lbl">Main</div>
-                        <div className={`nav ${view === 'upload' ? 'on' : ''}`} onClick={() => setView('upload')}>
-                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4-4 4M12 4v12"/></svg>
-                            Upload & Analyse
-                        </div>
-                        <div className={`nav ${view === 'results' ? 'on' : ''}`} onClick={() => resultsData && setView('results')} style={{ opacity: resultsData ? 1 : 0.5, cursor: resultsData ? 'pointer' : 'not-allowed'}}>
-                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            Analysis Results
-                        </div>
-                        <div className={`nav ${view === 'drafter' ? 'on' : ''}`} onClick={() => resultsData && setView('drafter')} style={{ opacity: resultsData ? 1 : 0.5, cursor: resultsData ? 'pointer' : 'not-allowed'}}>
-                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Generate Report
-                        </div>
-                    </div>
-                    <div className="sb-sec">
-                        <div className="sb-lbl">Reference</div>
-                        <div className={`nav ${view === 'reference' ? 'on' : ''}`} onClick={() => setView('reference')}>
-                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
-                            Reference Data
-                        </div>
-                        <div className={`nav ${view === 'regulations' ? 'on' : ''}`} onClick={() => setView('regulations')}>
-                            <svg fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                            Regulatory Rules
-                        </div>
-                    </div>
-                    <div className="sb-bot">v0.1 · RIET ISR Project<br/>AI: Claude Sonnet 4 + Gemini<br/>Work Order: KSERC/CSO/03-05<br/>All data from uploaded documents</div>
-                </nav>
-
-                <main className="main">
-                    <div className="keynote-wrapper">
-                        <div style={{ padding: '32px', position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', maxWidth: 1600, margin: '0 auto', width: '100%', overflowY: 'auto' }}>
-                            {/* Upload view */}
-                            {view === 'upload' && !loading && !rmReview && (
-                                <div className="animate-slide-up" style={{flex: 1}}>
-                                    <UploadForm onSubmit={handleAnalyze} />
-                                    {error && (
-                                        <div className="card notice-box error" style={{ marginTop: 20, padding: '16px 24px' }}>
-                                            <p style={{ margin: 0 }}>🔴 {error}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Loading — full-screen overlay */}
-                            {loading && <LoadingScreen progressLogs={progressLogs} />}
-
-                            {/* R&M Review Modal — shown when pipeline pauses */}
-                            {rmReview && (
-                                <RMReviewModal
-                                    rmData={rmReview.rmData}
-                                    analysisId={rmReview.analysisId}
-                                    onContinue={handleRMContinue}
-                                    onCancel={() => setRmReview(null)}
-                                />
-                            )}
-
-                            {/* Results */}
-                            {view === 'results' && resultsData && !loading && (
-                                <ResultsDashboard
-                                    data={resultsData}
-                                    onNewAnalysis={() => { setView('upload'); setResultsData(null); setError(null) }}
-                                    onDraftOrder={() => setView('drafter')}
-                                />
-                            )}
-
-                            {/* Order Drafter */}
-                            {view === 'drafter' && resultsData && !loading && (
-                                <OrderDrafter
-                                    analysisId={resultsData.analysis_id}
-                                    analysisData={resultsData}
-                                    onBack={() => setView('results')}
-                                />
-                            )}
-
-                            {/* Reference Data */}
-                            {view === 'reference' && !loading && <ReferenceDataPage />}
-
-                            {/* Regulations */}
-                            {view === 'regulations' && !loading && <RegulationManager />}
-                        </div>
-                    </div>
-                </main>
             </div>
+            {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} onSelect={go} hasResult={!!resultsData} />}
         </ErrorBoundary>
     )
 }

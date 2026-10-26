@@ -241,8 +241,8 @@ class TestBankChargeClassification:
         assert result["classification"] == "LITIGATION_BG"
         assert result["allowable"] is False
 
-    def test_litigation_bg_by_firestore(self):
-        """Firestore says litigation active + description has 'guarantee' → disallowed."""
+    def test_litigation_bg_by_store(self):
+        """document store says litigation active + description has 'guarantee' → disallowed."""
         result = classify_bank_charge(
             "Bank guarantee renewal charges", 4.0,
             litigation_bg_active=True,

@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any, Dict, List, Optional
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -1166,7 +1166,7 @@ def _audit_norm_capped_component(
         and norm > 0
     ):
         try:
-            from src.gemini_client import generate
+            from src.llm_client import generate
             import json as _json
             petition_text = state.get("petition_text", "")
             text_snippet = petition_text[:8000] if petition_text else ""
@@ -1197,7 +1197,7 @@ def _audit_norm_capped_component(
                 )
                 raw_rm = generate(
                     prompt=_RM_PROMPT,
-                    model=GEMINI_MODEL,
+                    model=LLM_MODEL,
                     temperature=0.0,
                     response_mime_type="application/json",
                     max_output_tokens=2048,
@@ -1307,7 +1307,7 @@ def _audit_depreciation_reg27(
       4. Annexure 1 rate matching
       5. Final calculation
       6. AI reasoning for ambiguous cases
-      7. Firestore persistence
+      7. document store persistence
       8. Cross-verification (8 checks)
       9. Clarification queue
      10. Structured output
@@ -2424,7 +2424,7 @@ def audit_petition(state: dict) -> dict:
                     try:
                         rm_items = state.get("rm_line_items", [])
                         if not rm_items:
-                            from src.gemini_client import generate
+                            from src.llm_client import generate
                             import json as _json
                             petition_text = state.get("petition_text", "")
                             text_snippet = petition_text[:8000] if petition_text else ""
@@ -2454,7 +2454,7 @@ def audit_petition(state: dict) -> dict:
                                 )
                                 raw_rm = generate(
                                     prompt=_RM_PROMPT,
-                                    model=GEMINI_MODEL,
+                                    model=LLM_MODEL,
                                     temperature=0.0,
                                     response_mime_type="application/json",
                                     max_output_tokens=2048,
@@ -2463,7 +2463,7 @@ def audit_petition(state: dict) -> dict:
                                 if isinstance(rm_items, list) and len(rm_items) > 0:
                                     state["rm_line_items"] = rm_items
                                     logger.info(
-                                        f"  R&M: Gemini extracted {len(rm_items)} line items "
+                                        f"  R&M: the model extracted {len(rm_items)} line items "
                                         f"(total: {sum(i.get('amount', 0) for i in rm_items):.2f}L)"
                                     )
                         if rm_items:
@@ -2527,7 +2527,7 @@ def audit_petition(state: dict) -> dict:
                         f"added as separate line item"
                     )
 
-        # BEE Energy Audit fee — petition-specific actual expense, extracted by Gemini/regex
+        # BEE Energy Audit fee — petition-specific actual expense, extracted by the model/regex
         # MUST come from the petition itself — not from MYT norms (which are regulatory baselines).
         # If the petition doesn't mention it, fee is 0 (no adjustment).
         bee_fee_effective = float(state.get("bee_energy_audit_fee", 0.0) or 0.0)
@@ -2707,7 +2707,7 @@ def audit_petition(state: dict) -> dict:
         _audit_power_purchase(state, approved_expenses, disallowances, myt_norms)
 
         # BEE energy audit fee — three-tier priority:
-        # 1. Extractor (Gemini Vision or regex on petition text)
+        # 1. Extractor (vision model or regex on petition text)
         # 2. myt_baselines.json known values (fallback for image-based/scanned PDFs)
         # 3. 0.0 (not applicable for this licensee/year)
         bee_fee_from_state = float(state.get("bee_energy_audit_fee", 0.0) or 0.0)
@@ -2719,7 +2719,7 @@ def audit_petition(state: dict) -> dict:
         # Get detailed_tables for order-learning-driven decisions
         detailed_tables = state.get("detailed_tables", {})
 
-        # Extract wage revision data from state (populated by extractor/Gemini Vision)
+        # Extract wage revision data from state (populated by extractor/vision model)
         wage_revision_current = float(state.get("wage_revision_current_year", 0.0) or 0.0)
         wage_revision_prior = float(state.get("wage_revision_prior_period", 0.0) or 0.0)
         if wage_revision_current > 0.0 or wage_revision_prior > 0.0:
@@ -2779,19 +2779,19 @@ def audit_petition(state: dict) -> dict:
 
         # ── Auto-extract R&M line items if claimed > norm but no items exist ──
         # The extractor only captures the total R&M amount. When the total exceeds
-        # the MYT norm, we use Gemini to extract individual R&M line items from
+        # the MYT norm, we use the model to extract individual R&M line items from
         # the uploaded PDF so the classifier can identify genuine one-time expenses
         # that KSERC allows above the norm (Regulation 80(3)).
         if not rm_line_items and norm_rm > 0.0 and claimed_rm_for_check > norm_rm:
             logger.info(
                 f"R&M: claimed ({claimed_rm_for_check:.2f}L) > norm ({norm_rm:.2f}L) — "
-                f"attempting Gemini extraction of R&M line items"
+                f"attempting the model extraction of R&M line items"
             )
             try:
-                from src.gemini_client import generate
+                from src.llm_client import generate
                 import json as _json
 
-                # Get petition text for Gemini to analyse
+                # Get petition text for the model to analyse
                 petition_text = state.get("petition_text", "")
                 # Truncate to ~8000 chars to stay within token limits
                 text_snippet = petition_text[:8000] if petition_text else ""
@@ -2822,7 +2822,7 @@ def audit_petition(state: dict) -> dict:
 
                 raw = generate(
                     prompt=_RM_EXTRACT_PROMPT,
-                    model=GEMINI_MODEL,
+                    model=LLM_MODEL,
                     temperature=0.0,
                     response_mime_type="application/json",
                     max_output_tokens=2048,
@@ -2832,11 +2832,11 @@ def audit_petition(state: dict) -> dict:
                     rm_line_items = extracted_items
                     state["rm_line_items"] = rm_line_items
                     logger.info(
-                        f"R&M: Gemini extracted {len(rm_line_items)} line items "
+                        f"R&M: the model extracted {len(rm_line_items)} line items "
                         f"(total: {sum(i.get('amount', 0) for i in rm_line_items):.2f}L)"
                     )
                 else:
-                    logger.info("R&M: Gemini found no individual line items in petition")
+                    logger.info("R&M: the model found no individual line items in petition")
             except Exception as e:
                 logger.warning(f"R&M line item extraction failed ({e}) — using norm cap only")
 

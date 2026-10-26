@@ -16,7 +16,7 @@ from builder.json_builder import build_order_json
 @pytest.fixture
 def infopark_state():
     """Load Infopark results as test state."""
-    p = Path(__file__).resolve().parent.parent / "results_infopark_2024_25.json"
+    p = Path(__file__).resolve().parent.parent / "data" / "samples" / "results_infopark_2024_25.json"
     if not p.exists():
         pytest.skip(f"Missing test fixture: {p.name}")
     with open(p, "r", encoding="utf-8") as f:
@@ -26,7 +26,7 @@ def infopark_state():
 @pytest.fixture
 def kdhp_state():
     """Load KDHP results as test state."""
-    p = Path(__file__).resolve().parent.parent / "results_kdhpcl_2024_25.json"
+    p = Path(__file__).resolve().parent.parent / "data" / "samples" / "results_kdhpcl_2024_25.json"
     if not p.exists():
         pytest.skip(f"Missing test fixture: {p.name}")
     with open(p, "r", encoding="utf-8") as f:

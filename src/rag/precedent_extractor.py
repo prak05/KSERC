@@ -12,14 +12,16 @@ import logging
 import fitz  # PyMuPDF
 from pathlib import Path
 from dotenv import load_dotenv
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s")
+from src.cloud import settings
+
 logger = logging.getLogger("precedent_extractor")
 
 _BASE_DIR = Path(__file__).resolve().parents[2]
-DOCS_DIR = str(Path(os.getenv("DOCUMENTS_DIR", str(_BASE_DIR / ".." / "Documents"))).resolve())
+DOCS_DIR = str(settings.DOCUMENTS_DIR)
 OUTPUT_PATH = str(_BASE_DIR / "data" / "precedent_db" / "precedent_db.json")
 
 # Past truing-up orders to process
@@ -197,9 +199,7 @@ def _render_pdf_pages(pdf_path: str, max_pages: int = 35, dpi: int = 200):
 
 
 def extract_from_order(order_info: dict) -> dict:
-    """Extract structured data from a single truing-up order PDF using Gemini Vision."""
-    import vertexai
-    from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
+    """Extract structured data from a single truing-up order PDF using vision model."""
     import re
 
     filepath = os.path.join(DOCS_DIR, order_info["file"])
@@ -216,35 +216,18 @@ def extract_from_order(order_info: dict) -> dict:
     images = _render_pdf_pages(filepath)
     logger.info(f"Rendered {len(images)} pages")
 
-    # Set up Vertex AI
-    key_path = os.path.abspath("vertex_sa.json")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
-    vertexai.init(project="triple-cab-488111-f5", location="us-central1")
+    from src.cloud.llm_types import Part
+    from src.llm_client import generate_with_parts
 
-    # Build parts
-    parts = [Part.from_text(text=EXTRACTION_PROMPT)]
+    parts = [Part.from_text(EXTRACTION_PROMPT)]
     for png_bytes in images:
-        parts.append(Part.from_data(data=png_bytes, mime_type="image/png"))
-
-    model = GenerativeModel(
-        GEMINI_MODEL,
-        system_instruction=(
-            "You are an expert KSERC financial data analyst. "
-            "Extract exact numbers from the truing-up order. All amounts in Rs. Lakhs. "
-            "Return ONLY valid JSON. No markdown."
-        )
-    )
+        parts.append(Part.from_bytes(png_bytes, "image/png"))
+    system = ("You are an expert KSERC financial data analyst. "
+              "Extract exact numbers from the truing-up order. All amounts in Rs. Lakhs. "
+              "Return ONLY valid JSON. No markdown.")
 
     try:
-        response = model.generate_content(
-            contents=parts,
-            generation_config=GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.0,
-            )
-        )
-
-        raw = response.text.strip()
+        raw = generate_with_parts(parts, system_instruction=system).strip()
         if raw.startswith("```"):
             raw = re.sub(r"^```[a-z]*\n?", "", raw)
             raw = re.sub(r"\n?```$", "", raw)

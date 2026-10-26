@@ -76,7 +76,7 @@ class TruingUpState(TypedDict):
     # Output from rm_classifier.process_rm_petition()
     # Keys: line_items, financial_summary, clarifications_to_send, total_approved_rm
 
-    # ── Anomaly Detection (Gemini flags after extraction) ─────────────
+    # ── Anomaly Detection (the model flags after extraction) ─────────────
     anomaly_flags: List[Dict[str, Any]]
     # Each dict: {"component": str, "severity": HIGH/MEDIUM/LOW,
     #             "flag": str, "suggested_action": str}
@@ -123,7 +123,7 @@ class TruingUpState(TypedDict):
     interest_finance_result: Dict[str, Any]
     # Full engine output: per-component results, totals, cross-verification
     interest_prior_year_data: Dict[str, Any]
-    # 10 values loaded from Firestore for prior-year balances
+    # 10 values loaded from document store for prior-year balances
     interest_cross_verification: List[Dict[str, Any]]
     # 6 cross-check results, each with: check_name, passed, detail
 

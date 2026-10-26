@@ -2,9 +2,9 @@
 KSERC SDL Truing Up — PDF Order Generator (Drafter Agent)
 ===========================================================
 
-Uses Gemini 2.5 Pro with the ACTUAL reference OP 82 2023 PDF as a template,
+Uses the model 2.5 Pro with the ACTUAL reference OP 82 2023 PDF as a template,
 plus the petition PDF as context, to generate a comprehensive 25-30 page
-Truing Up Order.  Gemini outputs CLEAN HTML directly (not markdown),
+Truing Up Order.  the model outputs CLEAN HTML directly (not markdown),
 which is then rendered to PDF using xhtml2pdf.
 """
 
@@ -29,14 +29,14 @@ try:
 except ImportError:
     HAS_PLAYWRIGHT = False
 
-from src.gemini_client import generate_with_pdf, get_client, get_api_key_client
-from src.config import GEMINI_MODEL
+from src.llm_client import generate_with_pdf, get_client
+from src.config import LLM_MODEL
 
 logger = logging.getLogger(__name__)
 
 # Path to the reference KSERC order that serves as the exact template
 _BASE_DIR = Path(__file__).resolve().parents[2]
-_DOCUMENTS_DIR = Path(os.getenv("DOCUMENTS_DIR", str(_BASE_DIR / ".." / "Documents"))).resolve()
+from src.cloud.settings import DOCUMENTS_DIR as _DOCUMENTS_DIR
 REFERENCE_ORDER_PDF = _DOCUMENTS_DIR / "Infopark True-Up 2022-23 (OP 82 2023).pdf"
 
 # ── CSS that faithfully replicates the KSERC official order style ──────────
@@ -260,20 +260,17 @@ KSERC_CSS = """
 
 
 
-def _generate_document_with_gemini(state: dict) -> str:
+def _generate_document_with_llm(state: dict) -> str:
     """
-    Use Gemini 2.5 Pro with THREE-PART generation:
+    Use the model 2.5 Pro with THREE-PART generation:
     Part A: Header + Introduction + Hearing + Energy Sales (~10 pages)
     Part B: Distribution Loss + Power Purchase + O&M Expenses (~12 pages)
     Part C: Depreciation + Interest + Revenue + ARR Summary + Orders + Signature (~10 pages)
     Total target: 30+ pages, matching the reference order OP 82/2023.
     """
-    from google.genai import types
+    from src.cloud import llm_types as types
 
-    # Prefer API key client (avoids Vertex AI rate limits)
-    # Falls back to Vertex AI client if no API key
-    client = get_api_key_client() or get_client()
-    logger.info(f"Drafter using client: {'API key' if get_api_key_client() else 'Vertex AI'}")
+    client = get_client()
     licensee = state.get("licensee_name", "Licensee")
     fy = state.get("financial_year", "2024-25")
 
@@ -340,7 +337,7 @@ def _generate_document_with_gemini(state: dict) -> str:
         myt_order_ref = ""
         myt_control_period = ""
 
-    # ── Load historical trued-up data from Firestore ────────────────────────
+    # ── Load historical trued-up data from document store ────────────────────────
     historical_data = {}
     try:
         from src.tools.db import get_all_precedents
@@ -356,7 +353,7 @@ def _generate_document_with_gemini(state: dict) -> str:
 
     # ── 4-column data block: MYT ARR | Claimed | Approved | Variance ──────────
     # This is the AUTHORITATIVE source for all table values and justification numbers.
-    # Gemini MUST use these exact numbers — NEVER hallucinate from the reference PDF.
+    # the model MUST use these exact numbers — NEVER hallucinate from the reference PDF.
     data_block  = "=== AUTHORITATIVE FINANCIAL DATA — USE THESE EXACT NUMBERS (Rs. Lakhs) ===\n"
     data_block += "\nCRITICAL: Column 'MYT ARR Approved' is the Commission's approved ceiling for this year.\n"
     data_block += "          Column 'For Truing Up (Claimed)' is what the licensee claimed in the petition.\n"
@@ -421,9 +418,9 @@ def _generate_document_with_gemini(state: dict) -> str:
     gap_label   = "Surplus" if revenue_gap >= 0 else "Gap"
     data_block += f"Revenue {gap_label}            : {abs(revenue_gap):.2f} lakh\n"
 
-    # ── TABLE 31 EXACT VALUES (Gemini MUST use these exact numbers) ─────────
+    # ── TABLE 31 EXACT VALUES (the model MUST use these exact numbers) ─────────
     data_block += "\n=== TABLE 31 - TRUED UP INCOME & EXPENDITURE (USE THESE EXACT VALUES) ===\n"
-    data_block += "Gemini: You MUST use these exact values for the Trued Up column in Table 31.\n"
+    data_block += "the model: You MUST use these exact values for the Trued Up column in Table 31.\n"
     data_block += "Do NOT calculate or derive these values yourself. Copy them exactly.\n\n"
     data_block += f"EXPENDITURE ROWS (Trued Up = Approved):\n"
     _int_done2 = False
@@ -590,7 +587,7 @@ def _generate_document_with_gemini(state: dict) -> str:
             hist_exp = hist_data.get("approved_expenses", {})
             if hist_exp:
                 data_block += f"  Approved Expenses:\n"
-                # Key fallback map: exp_keys name -> possible Firestore key aliases
+                # Key fallback map: exp_keys name -> possible document store key aliases
                 _key_aliases = {
                     "employee_cost": ["employee_cost", "employee_expenses"],
                     "return_on_nfa": ["return_on_nfa", "return_on_net_fixed_assets"],
@@ -806,7 +803,7 @@ NEVER fabricate or invent sub-component values. Follow these rules strictly:
         max_output_tokens=65536,
     )
 
-    # Pre-load PDF bytes once (inline bytes for Vertex AI — no Files API needed)
+    # Pre-load PDF bytes once; they are sent inline with each drafting request
     ref_pdf_bytes = None
     if Path(REFERENCE_ORDER_PDF).exists():
         logger.info("Loading reference PDF into memory...")
@@ -856,7 +853,7 @@ NEVER fabricate or invent sub-component values. Follow these rules strictly:
                         logger.info(f"  Found annexure PDF via fallback: {m.name}")
         
         if not pet_pdf_bytes:
-            logger.warning("⚠️ PETITION PDF NOT FOUND — Gemini will NOT have access to actual petition data!")
+            logger.warning("⚠️ PETITION PDF NOT FOUND — the model will NOT have access to actual petition data!")
             logger.warning(f"  petition_path was: '{petition_path}'")
 
     def _build_pdf_parts():
@@ -875,7 +872,7 @@ NEVER fabricate or invent sub-component values. Follow these rules strictly:
         for attempt in range(1, max_retries + 1):
             try:
                 response = client.models.generate_content(
-                    model=GEMINI_MODEL,
+                    model=LLM_MODEL,
                     contents=parts_list,
                     config=config,
                 )
@@ -889,7 +886,7 @@ NEVER fabricate or invent sub-component values. Follow these rules strictly:
         return ""  # unreachable (raise above), but satisfies type checker
 
     # ==========================================================================
-    # READ THE REFERENCE ORDER TEXT to give Gemini exact section structure
+    # READ THE REFERENCE ORDER TEXT to give the model exact section structure
     # ==========================================================================
     import fitz as _fitz
     ref_text_summary = ""
@@ -1755,11 +1752,11 @@ This is the FINAL part — include the complete signature block at the very end.
 
 def _postprocess_html(raw_html: str) -> str:
     """
-    Clean up the Gemini HTML output before rendering to PDF.
+    Clean up the model HTML output before rendering to PDF.
     """
     html = raw_html
 
-    # 1. Strip code fences if Gemini wrapped in ```html ... ```
+    # 1. Strip code fences if the model wrapped in ```html ... ```
     html = re.sub(r'^```(?:html)?\s*\n?', '', html)
     html = re.sub(r'\n?```\s*$', '', html)
 
@@ -1786,14 +1783,14 @@ def _postprocess_html(raw_html: str) -> str:
     # 5. Fix markdown italic *text* → <i>text</i>  (single asterisks)
     html = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'<i>\1</i>', html)
 
-    # 6. Convert any leftover markdown tables that Gemini may produce
-    #    (this is a fallback — ideally Gemini produces clean HTML)
+    # 6. Convert any leftover markdown tables that the model may produce
+    #    (this is a fallback — ideally the model produces clean HTML)
     if '| :---' in html or '|:---' in html:
-        logger.warning("Gemini output contains markdown tables — attempting conversion")
+        logger.warning("the model output contains markdown tables — attempting conversion")
         html = _convert_markdown_tables_to_html(html)
 
     # 7. Compact header-table spacer rows — replace &nbsp; spacer rows with tiny ones
-    #    Gemini uses <tr><td colspan="3">&nbsp;</td></tr> which are too tall
+    #    the model uses <tr><td colspan="3">&nbsp;</td></tr> which are too tall
     html = re.sub(
         r'<tr>\s*<td\s+colspan="3">\s*&nbsp;\s*</td>\s*</tr>',
         '<tr class="spacer-row"><td colspan="3" style="padding:2px 0;line-height:0.3;font-size:4pt;">&nbsp;</td></tr>',
@@ -1817,7 +1814,7 @@ def _postprocess_html(raw_html: str) -> str:
 def _convert_markdown_tables_to_html(text: str) -> str:
     """
     Fallback: Convert any remaining markdown tables in the text to HTML tables.
-    This handles cases where Gemini still outputs | pipe | tables | despite instructions.
+    This handles cases where the model still outputs | pipe | tables | despite instructions.
     """
     lines = text.split('\n')
     result = []
@@ -1870,17 +1867,17 @@ def draft_order(state: dict) -> dict:
     """
     LangGraph node function.
 
-    Generates the final KSERC-format Truing-Up Order PDF using Gemini 2.5 Flash
+    Generates the final KSERC-format Truing-Up Order PDF using the model 2.5 Flash
     to produce rich HTML with detailed petition tables, then renders to PDF
     via Playwright headless Chromium.
     """
     licensee = state["licensee_name"]
     fy = state["financial_year"]
 
-    logger.info(f"Drafting order for {licensee} FY {fy} using Gemini drafter")
+    logger.info(f"Drafting order for {licensee} FY {fy} using the model drafter")
 
-    # 1. Generate comprehensive HTML via Gemini (reads petition PDF for detail tables)
-    raw_html = _generate_document_with_gemini(state)
+    # 1. Generate comprehensive HTML via the model (reads petition PDF for detail tables)
+    raw_html = _generate_document_with_llm(state)
     body_html = _postprocess_html(raw_html)
 
     # 2. Wrap in full HTML document with KSERC CSS
@@ -1897,7 +1894,7 @@ def draft_order(state: dict) -> dict:
 </body>
 </html>"""
 
-    logger.info("Generated HTML via Gemini. Length: %d chars", len(full_html))
+    logger.info("Generated HTML via the model. Length: %d chars", len(full_html))
 
     # Save rendered HTML for reference/debugging
     output_dir = Path(__file__).resolve().parents[2] / "output_orders"
@@ -1930,7 +1927,7 @@ def draft_order(state: dict) -> dict:
     html_uri = f"file:///{html_path.resolve().as_posix()}"
     try:
         if HAS_WEASYPRINT:
-            # WeasyPrint — works in Docker/Cloud Run without a browser
+            # WeasyPrint — works in Docker/ECS Fargate without a browser
             logger.info("Using WeasyPrint for PDF generation")
             html_doc = WeasyHTML(filename=str(html_path))
             html_doc.write_pdf(str(final_pdf_path))

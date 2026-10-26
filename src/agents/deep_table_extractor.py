@@ -3,7 +3,7 @@ KSERC SDL Truing Up — Deep Table Extractor
 ============================================
 
 Extracts ALL tables from a KSERC petition PDF — not just the main ARR summary.
-Sends ALL pages to Gemini Vision in batches and asks it to identify and extract
+Sends ALL pages to vision model in batches and asks it to identify and extract
 every table with its context, justification text, and structured data.
 
 Tables extracted include:
@@ -29,7 +29,7 @@ import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +147,7 @@ Extract ALL tables from the provided pages. Return ONLY valid JSON."""
 
 def _render_all_pages(pdf_path: str, max_pages: int = 40, dpi: int = 150) -> List[bytes]:
     """
-    Render ALL pages of the petition as PNG images for Gemini Vision.
+    Render ALL pages of the petition as PNG images for vision model.
     Uses 150 DPI (lower than ARR extraction's 200) to reduce token usage
     while maintaining table readability.
     """
@@ -169,7 +169,7 @@ def _render_all_pages(pdf_path: str, max_pages: int = 40, dpi: int = 150) -> Lis
 
 
 # ══════════════════════════════════════════════════════════════════════════
-# Core: Extract all tables from petition using Gemini Vision
+# Core: Extract all tables from petition using vision model
 # ══════════════════════════════════════════════════════════════════════════
 
 def extract_all_tables(
@@ -179,7 +179,7 @@ def extract_all_tables(
     max_pages: int = 40,
 ) -> Dict[str, Any]:
     """
-    Extract ALL tables from a KSERC petition PDF using Gemini Vision.
+    Extract ALL tables from a KSERC petition PDF using vision model.
     
     Sends pages in batches to handle large documents. Each batch covers
     ~10-15 pages. Results are merged across batches.
@@ -190,12 +190,12 @@ def extract_all_tables(
         consumer_deposit_details
     """
     try:
-        from src.gemini_client import generate_with_pdf
+        from src.llm_client import generate_with_pdf
     except ImportError:
-        logger.warning("google-genai not installed; deep table extraction skipped.")
+        logger.warning("LLM client unavailable; deep table extraction skipped.")
         return _empty_result()
 
-    # ── Check cache first (Firestore-backed, persists across deployments) ──
+    # ── Check cache first (document store-backed, persists across deployments) ──
     from src.tools.extraction_cache import (
         compute_pdf_hash, get_cached_deep_extraction, save_deep_extraction_cache
     )
@@ -227,14 +227,14 @@ def extract_all_tables(
         raw = generate_with_pdf(
             pdf_path=all_pdf_paths if len(all_pdf_paths) > 1 else all_pdf_paths[0],
             prompt=prompt,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=system_instruction,
         )
 
         if not raw:
-            logger.warning("[Deep Extract] Gemini returned empty response")
+            logger.warning("[Deep Extract] the model returned empty response")
             return {}
         raw = raw.strip()
         if raw.startswith("```"):
@@ -314,7 +314,7 @@ def extract_all_tables(
         f"  Loan entries: {len(data.get('loan_details', []))}"
     )
 
-    # ── Save to cache (Firestore-backed) ──────────────────────────────
+    # ── Save to cache (document store-backed) ──────────────────────────────
     if all_tables:
         pass  # DISABLED: never cache petition data — always fresh extract
         # save_deep_extraction_cache(pdf_hash, licensee_name, financial_year, result)
@@ -601,12 +601,12 @@ def extract_order_tables(
         capital_structure_verified, final_summary
     """
     try:
-        from src.gemini_client import generate_with_pdf
+        from src.llm_client import generate_with_pdf
     except ImportError:
-        logger.warning("google-genai not installed; order table extraction skipped.")
+        logger.warning("LLM client unavailable; order table extraction skipped.")
         return {}
 
-    # ── Check cache (Firestore-backed, persists across deployments) ──────
+    # ── Check cache (document store-backed, persists across deployments) ──────
     from src.tools.extraction_cache import (
         compute_pdf_hash as _hash, get_cached_order_extraction, save_order_extraction_cache
     )
@@ -638,14 +638,14 @@ def extract_order_tables(
         raw = generate_with_pdf(
             pdf_path=pdf_path,
             prompt=prompt,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=system_instruction,
         )
 
         if not raw:
-            logger.warning(f"[Order Extract] Gemini returned empty response for {licensee_name}")
+            logger.warning(f"[Order Extract] the model returned empty response for {licensee_name}")
             return {}
         raw = raw.strip()
         if raw.startswith("```"):
@@ -678,7 +678,7 @@ def extract_order_tables(
         },
     }
 
-    # ── Save to cache (Firestore-backed) ──────────────────────────────
+    # ── Save to cache (document store-backed) ──────────────────────────────
     save_order_extraction_cache(pdf_hash, licensee_name, financial_year, result)
 
     return result
@@ -715,13 +715,13 @@ def learn_from_past_orders() -> Dict[str, Any]:
         logger.warning("precedent_extractor not available; cannot learn from past orders.")
         return {"order_learnings": {}, "cross_licensee_patterns": {}}
 
-    # ── Check combined cache (Firestore-backed) ───────────────────────
+    # ── Check combined cache (document store-backed) ───────────────────────
     from src.tools.extraction_cache import get_cached_all_order_learnings, save_all_order_learnings
 
     cached = get_cached_all_order_learnings()
     if cached:
         count = len(cached.get("order_learnings", {}))
-        logger.info(f"[ORDER LEARNING CACHE HIT] {count} past orders loaded from Firestore")
+        logger.info(f"[ORDER LEARNING CACHE HIT] {count} past orders loaded from document store")
         return cached
 
     # ── Process orders in PARALLEL (3 at a time) ─────────────────────────
@@ -786,7 +786,7 @@ def learn_from_past_orders() -> Dict[str, Any]:
         "cross_licensee_patterns": cross_patterns,
     }
 
-    # ── Save combined cache (Firestore-backed) ───────────────────────
+    # ── Save combined cache (document store-backed) ───────────────────────
     save_all_order_learnings(combined)
     logger.info(f"[ORDER LEARNING SAVE] Saved {len(order_learnings)} order learnings")
 
@@ -1108,12 +1108,12 @@ def deep_extract_node(state: dict) -> dict:
                     except (ValueError, TypeError):
                         pass
 
-    # Source 3: Dedicated Gemini call for wage revision (FALLBACK)
+    # Source 3: Dedicated the model call for wage revision (FALLBACK)
     # Runs when Sources 1-2 fail (deep extraction returned 0 employee tables)
     if wage_revision_current == 0.0 and wage_revision_prior == 0.0:
-        logger.info("[Wage Revision] Sources 1-2 found nothing, trying focused Gemini extraction...")
+        logger.info("[Wage Revision] Sources 1-2 found nothing, trying focused the model extraction...")
         try:
-            from src.gemini_client import generate_with_pdf as _gen_pdf
+            from src.llm_client import generate_with_pdf as _gen_pdf
             wage_prompt = (
                 f"Analyze this KSERC truing-up petition for {licensee} FY {fy}.\n\n"
                 f"Find if the licensee EXPLICITLY claims WAGE REVISION or PAY REVISION.\n"
@@ -1144,20 +1144,20 @@ def deep_extract_node(state: dict) -> dict:
             raw_wage = _gen_pdf(
                 pdf_path=wage_pdf_path,
                 prompt=wage_prompt,
-                model=GEMINI_MODEL,
+                model=LLM_MODEL,
                 temperature=0.0,
                 response_mime_type="application/json",
             )
             if not raw_wage:
-                logger.warning("[Wage Revision] Gemini returned empty response")
-                raise ValueError("Empty Gemini response")
-            logger.info(f"[Wage Revision] Gemini raw response: {raw_wage[:300]}")
+                logger.warning("[Wage Revision] the model returned empty response")
+                raise ValueError("Empty the model response")
+            logger.info(f"[Wage Revision] the model raw response: {raw_wage[:300]}")
             wage_data = json.loads(raw_wage.strip())
             
             # Only apply if petition explicitly mentions wage revision
             mentions_wr = wage_data.get("mentions_wage_revision", False)
             if not mentions_wr:
-                logger.info("[Wage Revision] Gemini confirms: petition does NOT mention wage/pay revision — no wage revision applied")
+                logger.info("[Wage Revision] the model confirms: petition does NOT mention wage/pay revision — no wage revision applied")
             else:
                 wr_prior = float(wage_data.get("wage_revision_prior_period_amount", 0) or 0)
                 wr_current = float(wage_data.get("wage_revision_current_year_amount", 0) or 0)
@@ -1183,15 +1183,15 @@ def deep_extract_node(state: dict) -> dict:
 
     # ── Phase 4: Focused R&M line item extraction from PDF ──────────────
     # Extract individual R&M expenditure items for one-time classification.
-    # Like wage revision (Source 3), this uses a focused Gemini PDF call
+    # Like wage revision (Source 3), this uses a focused the model PDF call
     # rather than relying on the massive deep extraction prompt.
     # The auditor uses these items to classify one-time vs routine expenses
     # per KSERC Regulation 80(3).
     existing_rm_items = state.get("rm_line_items", [])
     if not existing_rm_items:
-        logger.info("[R&M Items] No R&M line items in state, trying focused Gemini extraction...")
+        logger.info("[R&M Items] No R&M line items in state, trying focused the model extraction...")
         try:
-            from src.gemini_client import generate_with_pdf as _gen_pdf_rm
+            from src.llm_client import generate_with_pdf as _gen_pdf_rm
             rm_prompt = (
                 f"Extract ALL individual Repairs & Maintenance (R&M) expenditure line items "
                 f"from this petition for {licensee} FY {fy}.\n\n"
@@ -1221,13 +1221,13 @@ def deep_extract_node(state: dict) -> dict:
             raw_rm = _gen_pdf_rm(
                 pdf_path=pdf_path,
                 prompt=rm_prompt,
-                model=GEMINI_MODEL,
+                model=LLM_MODEL,
                 temperature=0.0,
                 response_mime_type="application/json",
             )
             if not raw_rm:
-                logger.warning("[R&M Items] Gemini returned empty response")
-                raise ValueError("Empty Gemini response")
+                logger.warning("[R&M Items] the model returned empty response")
+                raise ValueError("Empty the model response")
             rm_items = json.loads(raw_rm.strip())
             if isinstance(rm_items, list) and len(rm_items) > 0:
                 enrichments["rm_line_items"] = rm_items

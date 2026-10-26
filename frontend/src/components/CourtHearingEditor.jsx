@@ -1,27 +1,25 @@
 import { useState } from 'react'
+import { Chevron } from './ui'
 
 /**
- * CourtHearingEditor — allows the user to input court hearing details
- * (hearing date, licensee submissions, respondent position, commission observations)
- * that flow through to the generated KSERC order PDF.
+ * CourtHearingEditor — hearing date, licensee submissions, respondent position and
+ * Commission observations that flow into the generated KSERC order.
  */
 export default function CourtHearingEditor({ analysisId, existingData, onSaved }) {
     const [expanded, setExpanded] = useState(false)
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
+    const [error, setError] = useState(null)
 
     const [hearingDate, setHearingDate] = useState(existingData?.hearing_date || '')
-    const [submissions, setSubmissions] = useState(existingData?.licensee_submissions || [''])
+    const [submissions, setSubmissions] = useState(existingData?.licensee_submissions?.length ? existingData.licensee_submissions : [''])
     const [respondentPosition, setRespondentPosition] = useState(existingData?.respondent_position || '')
     const [commissionObservations, setCommissionObservations] = useState(existingData?.commission_observations || '')
 
-    const addSubmission = () => setSubmissions(prev => [...prev, ''])
-    const removeSubmission = (idx) => setSubmissions(prev => prev.filter((_, i) => i !== idx))
     const updateSubmission = (idx, text) => setSubmissions(prev => prev.map((s, i) => i === idx ? text : s))
 
     const handleSave = async () => {
-        setSaving(true)
-        setSaved(false)
+        setSaving(true); setSaved(false); setError(null)
         try {
             const body = {
                 analysis_id: analysisId,
@@ -31,177 +29,79 @@ export default function CourtHearingEditor({ analysisId, existingData, onSaved }
                 commission_observations: commissionObservations,
             }
             const resp = await fetch('/api/hearing-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
             })
-            if (!resp.ok) throw new Error('Failed to save hearing data')
+            if (!resp.ok) throw new Error('Could not save hearing details')
             setSaved(true)
-            if (onSaved) onSaved(body)
+            onSaved?.(body)
             setTimeout(() => setSaved(false), 3000)
         } catch (err) {
-            console.error('Save hearing data failed:', err)
+            setError(err.message)
         } finally {
             setSaving(false)
         }
     }
 
     return (
-        <div className="card animate-slide-up" style={{ overflow: 'hidden', borderColor: 'rgba(100, 180, 255, 0.25)' }}>
-            {/* Header — always visible */}
-            <button
-                onClick={() => setExpanded(e => !e)}
-                style={{
-                    width: '100%', padding: '16px 22px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    background: 'linear-gradient(135deg, rgba(100,180,255,0.06), rgba(60,120,255,0.03))',
-                    border: 'none', borderBottom: expanded ? '1px solid var(--border)' : 'none',
-                    cursor: 'pointer', textAlign: 'left',
-                }}
-            >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ fontSize: '1.2rem' }}>⚖️</span>
-                    <div>
-                        <span className="mono-wide" style={{ color: '#64b4ff', fontSize: '10px' }}>
-                            COURT HEARING DETAILS
-                        </span>
-                        <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: 2 }}>
-                            Add hearing date, submissions, and observations for the order PDF
-                        </p>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    {saved && <span className="badge-compliant" style={{ fontSize: '9px' }}>✓ SAVED</span>}
-                    <span style={{
-                        color: 'var(--text-tertiary)', fontSize: '14px',
-                        transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'none',
-                    }}>▾</span>
-                </div>
+        <div className="card">
+            <button className="disclosure" onClick={() => setExpanded(e => !e)} aria-expanded={expanded}>
+                <Chevron open={expanded} />
+                <span style={{ flex: 1 }}>
+                    <span className="h3" style={{ display: 'block' }}>Court hearing</span>
+                    <span className="faint" style={{ fontSize: 12 }}>Hearing date, submissions and observations carried into the order</span>
+                </span>
+                {saved && <span className="pill pill-ok">Saved</span>}
+                {hearingDate && !saved && <span className="pill pill-plain num">{hearingDate}</span>}
             </button>
 
-            {/* Expanded content */}
-            {expanded && (
-                <div style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-                    {/* Hearing Date */}
-                    <div>
-                        <label className="mono-wide" style={{ fontSize: '9px', display: 'block', marginBottom: 8, color: 'var(--text-secondary)' }}>
-                            📅 HEARING DATE
+            <div className={`collapse ${expanded ? 'is-open' : ''}`}>
+                <div>
+                    <div className="stack" style={{ padding: '6px 16px 18px 40px', gap: 18 }}>
+                        <label className="field" style={{ maxWidth: 220 }}>
+                            <span className="label">Hearing date</span>
+                            <input type="date" className="input num" value={hearingDate} onChange={e => setHearingDate(e.target.value)} />
                         </label>
-                        <input
-                            type="date"
-                            value={hearingDate}
-                            onChange={e => setHearingDate(e.target.value)}
-                            className="input-field"
-                            style={{ width: 220, fontFamily: 'var(--font-mono)', fontSize: '0.85rem', padding: '8px 12px' }}
-                        />
-                    </div>
 
-                    {/* Licensee Submissions */}
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                            <label className="mono-wide" style={{ fontSize: '9px', color: 'var(--text-secondary)' }}>
-                                📝 LICENSEE SUBMISSIONS
-                            </label>
-                            <button
-                                onClick={addSubmission}
-                                className="btn-secondary"
-                                style={{ fontSize: '0.65rem', padding: '4px 12px' }}
-                            >
-                                + Add Point
-                            </button>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div className="field">
+                            <div className="row">
+                                <span className="label">Licensee submissions</span>
+                                <span className="spacer" />
+                                <button className="btn btn-sm" onClick={() => setSubmissions(p => [...p, ''])}>Add point</button>
+                            </div>
                             {submissions.map((sub, i) => (
-                                <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                                    <span className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '10px', paddingTop: 10, minWidth: 20 }}>
-                                        {i + 1}.
-                                    </span>
-                                    <textarea
-                                        value={sub}
-                                        onChange={e => updateSubmission(i, e.target.value)}
-                                        rows={2}
-                                        className="input-field"
-                                        placeholder="Enter what the licensee submitted during the hearing..."
-                                        style={{
-                                            flex: 1, resize: 'vertical',
-                                            fontFamily: 'var(--font-body)', fontSize: '0.8rem',
-                                            lineHeight: 1.6, padding: '8px 12px',
-                                        }}
-                                    />
+                                <div key={i} className="row" style={{ alignItems: 'flex-start', flexWrap: 'nowrap' }}>
+                                    <span className="idx" style={{ paddingTop: 9, minWidth: 20 }}>{i + 1}.</span>
+                                    <textarea className="textarea" rows={2} value={sub} onChange={e => updateSubmission(i, e.target.value)}
+                                        placeholder="What the licensee submitted during the hearing" />
                                     {submissions.length > 1 && (
-                                        <button
-                                            onClick={() => removeSubmission(i)}
-                                            style={{
-                                                background: 'none', border: 'none', cursor: 'pointer',
-                                                color: 'var(--red)', fontSize: '14px', paddingTop: 6,
-                                            }}
-                                            title="Remove"
-                                        >
-                                            ×
-                                        </button>
+                                        <button className="btn btn-ghost btn-sm btn-danger" style={{ marginTop: 5 }}
+                                            onClick={() => setSubmissions(p => p.filter((_, j) => j !== i))} aria-label="Remove point">Remove</button>
                                     )}
                                 </div>
                             ))}
                         </div>
-                    </div>
 
-                    {/* Respondent's Position */}
-                    <div>
-                        <label className="mono-wide" style={{ fontSize: '9px', display: 'block', marginBottom: 8, color: 'var(--text-secondary)' }}>
-                            🏛️ RESPONDENT'S (KSEB) POSITION
+                        <label className="field">
+                            <span className="label">Respondent's (KSEB) position</span>
+                            <textarea className="textarea" rows={3} value={respondentPosition} onChange={e => setRespondentPosition(e.target.value)}
+                                placeholder="KSEB Ltd's submissions and verification" />
                         </label>
-                        <textarea
-                            value={respondentPosition}
-                            onChange={e => setRespondentPosition(e.target.value)}
-                            rows={3}
-                            className="input-field"
-                            placeholder="Enter the respondent's (KSEB Ltd) submissions and verification..."
-                            style={{
-                                width: '100%', resize: 'vertical',
-                                fontFamily: 'var(--font-body)', fontSize: '0.8rem',
-                                lineHeight: 1.6, padding: '8px 12px',
-                            }}
-                        />
-                    </div>
 
-                    {/* Commission's Observations */}
-                    <div>
-                        <label className="mono-wide" style={{ fontSize: '9px', display: 'block', marginBottom: 8, color: 'var(--text-secondary)' }}>
-                            📋 COMMISSION'S OBSERVATIONS
+                        <label className="field">
+                            <span className="label">Commission's observations</span>
+                            <textarea className="textarea" rows={3} value={commissionObservations} onChange={e => setCommissionObservations(e.target.value)}
+                                placeholder="The Commission's observations and findings" />
                         </label>
-                        <textarea
-                            value={commissionObservations}
-                            onChange={e => setCommissionObservations(e.target.value)}
-                            rows={3}
-                            className="input-field"
-                            placeholder="Enter the Commission's observations and findings..."
-                            style={{
-                                width: '100%', resize: 'vertical',
-                                fontFamily: 'var(--font-body)', fontSize: '0.8rem',
-                                lineHeight: 1.6, padding: '8px 12px',
-                            }}
-                        />
-                    </div>
 
-                    {/* Save Button */}
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, paddingTop: 4 }}>
-                        {saved && (
-                            <span className="mono" style={{ color: 'var(--green)', fontSize: '0.75rem', alignSelf: 'center' }}>
-                                ✓ Hearing details saved — will appear in the generated order
-                            </span>
-                        )}
-                        <button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="btn-primary"
-                            style={{ fontSize: '0.7rem', padding: '8px 22px', opacity: saving ? 0.5 : 1 }}
-                        >
-                            {saving ? '⏳ Saving…' : '💾 Save Hearing Details'}
-                        </button>
+                        <div className="row">
+                            {error && <span className="bad" style={{ fontSize: 12 }}>{error}</span>}
+                            {saved && <span className="ok" style={{ fontSize: 12 }}>Saved — included in the next generated order</span>}
+                            <span className="spacer" />
+                            <button className="btn btn-accent" disabled={saving} onClick={handleSave}>{saving ? 'Saving…' : 'Save hearing details'}</button>
+                        </div>
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     )
 }

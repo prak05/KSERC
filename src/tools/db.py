@@ -1,8 +1,8 @@
 """
-Firestore-backed database layer for KSERC Truing-Up Engine.
+Database layer for the KSERC Truing-Up Engine.
 
-Replaces the previous SQLite implementation with Google Firestore
-for persistent cloud storage on Cloud Run.
+Backed by the document store in src/cloud/docstore.py — DynamoDB on AWS,
+SQLite when running locally.
 
 Collections:
   - analyses/{analysis_id}        → status, result, progress
@@ -13,73 +13,44 @@ Collections:
 """
 
 import json
-import os
 import logging
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
+from src.cloud import docstore
+
 logger = logging.getLogger("kserc.db")
-
-# ── Firestore client (lazy singleton) ────────────────────────────────────
-
-_firestore_client = None
 
 
 def _get_db():
-    """Get or create Firestore client. Uses firebase-admin for auth."""
-    global _firestore_client
-    if _firestore_client is not None:
-        return _firestore_client
-
-    try:
-        import firebase_admin
-        from firebase_admin import credentials, firestore
-
-        # Check if already initialized
-        try:
-            app = firebase_admin.get_app()
-        except ValueError:
-            # Not initialized yet — use service account or default credentials
-            sa_path = os.getenv("FIREBASE_SERVICE_ACCOUNT_PATH") or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-            if sa_path and os.path.exists(sa_path):
-                cred = credentials.Certificate(sa_path)
-                app = firebase_admin.initialize_app(cred, {
-                    "projectId": os.getenv("GCP_PROJECT_ID", "kserc-trueup-v2"),
-                })
-            else:
-                # Default credentials (Cloud Run uses attached service account)
-                app = firebase_admin.initialize_app(options={
-                    "projectId": os.getenv("GCP_PROJECT_ID", "kserc-trueup-v2"),
-                })
-
-        _firestore_client = firestore.client()
-        logger.info("Firestore client initialized successfully")
-        return _firestore_client
-
-    except Exception as e:
-        logger.error(f"Failed to initialize Firestore: {e}")
-        raise
+    """Document store: DynamoDB on AWS, SQLite locally (see src/cloud/docstore.py)."""
+    return docstore.client()
 
 
-# ── Init (no-op for Firestore — collections auto-create) ────────────────
+get_store_client = _get_db  # older call sites
+
+
+# ── Init (collections are created on first write) ───────────────────────
 
 def init_db():
-    """Initialize database connection. For Firestore, just verify connectivity."""
+    """Open the document store once at start-up so configuration errors surface early."""
     try:
-        db = _get_db()
-        logger.info("Firestore connection verified")
+        _get_db()
+        logger.info("Document store ready")
     except Exception as e:
-        logger.warning(f"Firestore init check failed: {e}")
+        logger.warning(f"Document store init failed: {e}")
 
 
 # ── Analysis Results ─────────────────────────────────────────────────────
 
-def save_analysis(analysis_id: str, status: str, result: dict = None):
-    """Save or update an analysis result."""
+def save_analysis(analysis_id: str, status: str, result: dict = None, meta: dict = None):
+    """Save or update an analysis result. ``meta`` (licensee, financial_year) feeds case history."""
     db = _get_db()
     doc_ref = db.collection("analyses").document(analysis_id)
 
     data = {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}
+    if meta:
+        data.update(meta)
     if result is not None:
         data["result_json"] = json.dumps(result, default=str)
 
@@ -124,6 +95,25 @@ def get_analysis(analysis_id: str) -> Optional[dict]:
         "result": json.loads(result_json) if result_json else None,
         "progress": progress,
     }
+
+
+def list_analyses(limit: int = 100) -> List[dict]:
+    """Case history, newest first, without the (large) result bodies."""
+    out = []
+    for snap in _get_db().collection("analyses").order_by("updated_at", direction="DESCENDING").stream():
+        d = snap.to_dict()
+        licensee, fy = d.get("licensee"), d.get("financial_year")
+        if not licensee and d.get("result_json"):
+            try:
+                r = json.loads(d["result_json"])
+                licensee, fy = r.get("licensee_name"), r.get("financial_year")
+            except (json.JSONDecodeError, TypeError, AttributeError):
+                pass
+        out.append({"analysis_id": snap.id, "licensee": licensee, "financial_year": fy,
+                    "status": d.get("status", "UNKNOWN"), "updated_at": d.get("updated_at")})
+        if len(out) >= limit:
+            break
+    return out
 
 
 def update_progress(analysis_id: str, stage: str, message: str):
@@ -225,7 +215,7 @@ def get_reference_orders(order_type: str = None) -> list:
 # ── MYT Norms ────────────────────────────────────────────────────────────
 
 def get_myt_norms_override(licensee_name: str, financial_year: str) -> dict:
-    """Get MYT norm overrides from Firestore."""
+    """Get MYT norm overrides from document store."""
     db = _get_db()
     doc = (db.collection("myt_norms")
            .document(licensee_name)
@@ -242,7 +232,7 @@ def get_myt_norms_override(licensee_name: str, financial_year: str) -> dict:
 
 
 def save_myt_norms(licensee_name: str, financial_year: str, norms: dict, source: str = "manual"):
-    """Save MYT norms to Firestore."""
+    """Save MYT norms to document store."""
     db = _get_db()
     doc_data = {
         **norms,
@@ -276,7 +266,7 @@ def get_all_myt_norms(licensee_name: str) -> dict:
 # ── Precedent DB ─────────────────────────────────────────────────────────
 
 def save_precedent(licensee_name: str, financial_year: str, data: dict):
-    """Save precedent data to Firestore."""
+    """Save precedent data to document store."""
     db = _get_db()
     doc_data = {
         **data,

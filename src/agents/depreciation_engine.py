@@ -128,7 +128,7 @@ class DepreciationResult:
     justification: str = ""
     flags: List[str] = field(default_factory=list)
     clarification_items: List[str] = field(default_factory=list)
-    firestore_payload: Dict[str, Any] = field(default_factory=dict)
+    store_payload: Dict[str, Any] = field(default_factory=dict)
     disallowances: List[Dict[str, Any]] = field(default_factory=list)
 
 
@@ -1058,7 +1058,7 @@ class FundingSourceIdentifier:
     Identifies and validates all funding sources with proper priority:
       Priority 1: Previous KSERC Order (highest authority)
       Priority 2: Current Petition PDFs
-      Priority 3: Firestore Cache
+      Priority 3: document store Cache
     """
 
     def __init__(self, rate_schedule: AnnexureRateSchedule):
@@ -1068,7 +1068,7 @@ class FundingSourceIdentifier:
         self,
         extraction: DepreciationExtraction,
         prior_year_data: Optional[Dict[str, Any]] = None,
-        firestore_data: Optional[Dict[str, Any]] = None,
+        store_data: Optional[Dict[str, Any]] = None,
     ) -> List[FundingSource]:
         """
         Build the final authoritative funding source list.
@@ -1076,8 +1076,8 @@ class FundingSourceIdentifier:
         """
         sources = list(extraction.funding_deductions)
 
-        # Priority 1 & 3: Override with prior order / Firestore data
-        prior = prior_year_data or firestore_data or {}
+        # Priority 1 & 3: Override with prior order / document store data
+        prior = prior_year_data or store_data or {}
         if prior:
             sources = self._apply_prior_overrides(sources, prior)
 
@@ -1629,8 +1629,8 @@ class DepreciationOutput:
             claimed, approved, total_deductions, funding_sources
         )
 
-        # Build Firestore payload
-        firestore_payload = self._build_firestore_payload(
+        # Build document store payload
+        store_payload = self._build_store_payload(
             licensee, fy, claimed, approved, workings, funding_sources
         )
 
@@ -1668,7 +1668,7 @@ class DepreciationOutput:
             justification=justification,
             flags=flags,
             clarification_items=clarifications,
-            firestore_payload=firestore_payload,
+            store_payload=store_payload,
             disallowances=disallowances,
         )
 
@@ -1703,7 +1703,7 @@ class DepreciationOutput:
 
         return "".join(parts)
 
-    def _build_firestore_payload(
+    def _build_store_payload(
         self,
         licensee: str,
         fy: str,
@@ -1712,7 +1712,7 @@ class DepreciationOutput:
         workings: Dict[str, Any],
         funding_sources: List[FundingSource],
     ) -> Dict[str, Any]:
-        """Build payload for Firestore storage."""
+        """Build payload for document store storage."""
         cc_sources = [fs for fs in funding_sources if fs.source_type == "cc"]
         pre_grant_sources = [fs for fs in funding_sources if fs.source_type == "pre_cutoff_grant"]
         post_sources = [fs for fs in funding_sources if fs.source_type == "post_cutoff_grant"]
@@ -1765,26 +1765,23 @@ class DepreciationOutput:
 
 
 # ═══════════════════════════════════════════════════════════════════
-# Step 7: Firestore Persistence (Optional — degrades gracefully)
+# Step 7: document store Persistence (Optional — degrades gracefully)
 # ═══════════════════════════════════════════════════════════════════
 
-class FirestoreDepreciationStore:
+class DepreciationStore:
     """
-    Stores and retrieves depreciation data from Firestore.
-    Degrades gracefully if Firestore is unavailable.
+    Stores and retrieves depreciation data from document store.
+    Degrades gracefully if document store is unavailable.
     """
 
     def __init__(self):
         self.db = None
         try:
-            import firebase_admin
-            from firebase_admin import firestore as fs_module
-            if not firebase_admin._apps:
-                firebase_admin.initialize_app()
-            self.db = fs_module.client()
-            logger.info("Firestore depreciation store connected")
+            from src.cloud.docstore import client
+
+            self.db = client()
         except Exception as e:
-            logger.info(f"Firestore not available (will use local fallback): {e}")
+            logger.info(f"Document store not available (will use local fallback): {e}")
 
     @property
     def available(self) -> bool:
@@ -1808,11 +1805,11 @@ class FirestoreDepreciationStore:
                 if data.get("financial_year", "") < fy:
                     return data
         except Exception as e:
-            logger.warning(f"Firestore read failed: {e}")
+            logger.warning(f"document store read failed: {e}")
         return None
 
     def save(self, payload: Dict[str, Any]) -> bool:
-        """Save depreciation record to Firestore."""
+        """Save depreciation record to document store."""
         if not self.available:
             return False
         try:
@@ -1822,10 +1819,10 @@ class FirestoreDepreciationStore:
             self.db.collection("depreciation_records").document(doc_id).set(
                 payload, merge=True
             )
-            logger.info(f"Saved depreciation record to Firestore: {doc_id}")
+            logger.info(f"Saved depreciation record to document store: {doc_id}")
             return True
         except Exception as e:
-            logger.warning(f"Firestore write failed: {e}")
+            logger.warning(f"document store write failed: {e}")
             return False
 
 
@@ -1848,7 +1845,7 @@ def compute_depreciation(
         state: The full petition state dict (with pdf paths, claimed expenses, etc.)
         licensee: Licensee name (e.g., "KDHP", "Technopark")
         fy: Financial year (e.g., "2024-25")
-        prior_year_data: Optional prior year Firestore data
+        prior_year_data: Optional prior year document store data
 
     Returns:
         DepreciationResult with approved figure, workings, justification, etc.
@@ -1864,15 +1861,15 @@ def compute_depreciation(
     clarification_builder = ClarificationQueueBuilder()
     output_generator = DepreciationOutput()
 
-    # Try Firestore for prior year data
-    firestore_store = FirestoreDepreciationStore()
-    if not prior_year_data and firestore_store.available:
-        prior_year_data = firestore_store.get_prior_year(licensee, fy)
+    # Try document store for prior year data
+    store_store = DepreciationStore()
+    if not prior_year_data and store_store.available:
+        prior_year_data = store_store.get_prior_year(licensee, fy)
         if prior_year_data:
-            logger.info(f"Loaded prior year data from Firestore: {prior_year_data.get('financial_year')}")
+            logger.info(f"Loaded prior year data from document store: {prior_year_data.get('financial_year')}")
 
     # Also check the precedent DB (local JSON) — always merge KSERC-specific fields
-    # even when Firestore provides the main prior_year_data, because Firestore
+    # even when document store provides the main prior_year_data, because document store
     # won't have our KSERC table data (kserc_gross_dep, kserc_nfa, etc.)
     prec_db_data = _load_from_precedent_db(licensee, fy)
     if prec_db_data:
@@ -2021,9 +2018,9 @@ def compute_depreciation(
         fy=fy,
     )
 
-    # Step 7: Persist to Firestore
-    if firestore_store.available and result.firestore_payload:
-        firestore_store.save(result.firestore_payload)
+    # Step 7: Persist to document store
+    if store_store.available and result.store_payload:
+        store_store.save(result.store_payload)
 
     logger.info(
         f"═══ Depreciation Result: Claimed {result.claimed:.2f}L → "
@@ -2040,7 +2037,7 @@ def compute_depreciation(
 def _load_from_precedent_db(licensee: str, fy: str) -> Optional[Dict[str, Any]]:
     """
     Load prior year depreciation data from the local precedent_db.json.
-    This is the fallback when Firestore is not available.
+    This is the fallback when document store is not available.
     Now includes full depreciation_details with grant exclusions, GFA, etc.
     """
     try:

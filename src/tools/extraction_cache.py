@@ -1,11 +1,11 @@
 """
-Extraction Cache — Persistent Firestore cache for reference document extraction.
+Extraction Cache — Persistent document store cache for reference document extraction.
 
-Replaces the local .extraction_cache/ directory (which is lost on every Cloud Run
-deployment) with Firestore-backed persistence.
+Replaces the local .extraction_cache/ directory (which is lost on every ECS Fargate
+deployment) with document store-backed persistence.
 
-Strategy: ALWAYS store data as a JSON string in Firestore to avoid nested entity
-limits. Firestore has a 20-level nesting limit and can't handle arrays-of-objects
+Strategy: ALWAYS store data as a JSON string in document store to avoid nested entity
+limits. document store has a 20-level nesting limit and can't handle arrays-of-objects
 well, but our extraction data is deeply nested. Storing as a JSON string bypasses
 this limitation entirely.
 
@@ -28,26 +28,19 @@ logger = logging.getLogger(__name__)
 LOCAL_CACHE_DIR = Path(__file__).resolve().parent.parent.parent / ".extraction_cache"
 
 
-def _get_firestore():
-    """Get Firestore client."""
-    env = os.environ.get("ENVIRONMENT", "local")
-    if env != "production":
+def _get_store():
+    """Shared document store on AWS; locally the JSON files in .extraction_cache are enough."""
+    from src.cloud import settings
+
+    if not settings.IS_AWS:
         return None
     try:
-        from src.tools.db import get_firestore_client
-        return get_firestore_client()
-    except Exception:
-        try:
-            import firebase_admin
-            from firebase_admin import firestore
-            try:
-                firebase_admin.get_app()
-            except ValueError:
-                firebase_admin.initialize_app()
-            return firestore.client()
-        except Exception as e:
-            logger.error(f"[Cache] Cannot init Firestore: {e}")
-            return None
+        from src.cloud.docstore import client
+
+        return client()
+    except Exception as e:
+        logger.error(f"[Cache] Cannot open document store: {e}")
+        return None
 
 
 def compute_pdf_hash(pdf_paths) -> str:
@@ -67,13 +60,13 @@ def compute_pdf_hash(pdf_paths) -> str:
 
 
 # ════════════════════════════════════════════════════════════════════════
-# Generic get/save with Firestore + local fallback
+# Generic get/save with document store + local fallback
 # ════════════════════════════════════════════════════════════════════════
 
 def _get_cached(collection: str, key: str) -> Optional[Dict]:
-    """Try Firestore first, then local file fallback."""
-    # Try Firestore
-    db = _get_firestore()
+    """Try document store first, then local file fallback."""
+    # Try document store
+    db = _get_store()
     if db:
         try:
             doc = db.collection(collection).document(key).get()
@@ -83,17 +76,17 @@ def _get_cached(collection: str, key: str) -> Optional[Dict]:
                 json_str = raw.get("data")
                 if json_str:
                     data = json.loads(json_str)
-                    logger.info(f"[Cache] HIT (Firestore) {collection}/{key}")
+                    logger.info(f"[Cache] HIT (document store) {collection}/{key}")
                     return data
                 else:
                     # Legacy format: try to use dict directly
                     raw.pop("_cached_at", None)
                     raw.pop("_format", None)
                     if raw:
-                        logger.info(f"[Cache] HIT (Firestore legacy) {collection}/{key}")
+                        logger.info(f"[Cache] HIT (document store legacy) {collection}/{key}")
                         return raw
         except Exception as e:
-            logger.warning(f"[Cache] Firestore read failed: {e}")
+            logger.warning(f"[Cache] document store read failed: {e}")
     
     # Fallback: local file
     local_file = LOCAL_CACHE_DIR / f"{key}.json"
@@ -101,9 +94,9 @@ def _get_cached(collection: str, key: str) -> Optional[Dict]:
         try:
             data = json.loads(local_file.read_text(encoding="utf-8"))
             logger.info(f"[Cache] HIT (local) {local_file.name}")
-            # Migrate to Firestore if available
+            # Migrate to document store if available
             if db:
-                _save_to_firestore(db, collection, key, data)
+                _save_to_store(db, collection, key, data)
             return data
         except Exception as e:
             logger.warning(f"[Cache] Local read failed: {e}")
@@ -113,11 +106,11 @@ def _get_cached(collection: str, key: str) -> Optional[Dict]:
 
 
 def _save_cached(collection: str, key: str, data: Dict):
-    """Save to both Firestore and local file."""
-    # Save to Firestore
-    db = _get_firestore()
+    """Save to both document store and local file."""
+    # Save to document store
+    db = _get_store()
     if db:
-        _save_to_firestore(db, collection, key, data)
+        _save_to_store(db, collection, key, data)
     
     # Also save locally as backup
     try:
@@ -131,22 +124,22 @@ def _save_cached(collection: str, key: str, data: Dict):
         logger.warning(f"[Cache] Local save failed: {e}")
 
 
-def _save_to_firestore(db, collection: str, key: str, data: Dict):
+def _save_to_store(db, collection: str, key: str, data: Dict):
     """
-    Save to Firestore as a JSON string.
+    Save to document store as a JSON string.
     
-    We ALWAYS serialize the data as a JSON string to avoid Firestore's
+    We ALWAYS serialize the data as a JSON string to avoid document store's
     nested entity limits (arrays-of-objects, 20-level nesting, etc.).
     """
     import datetime
     try:
         serialized = json.dumps(data, default=str)
         
-        # Firestore doc limit is ~1MB
+        # document store doc limit is ~1MB
         if len(serialized) > 950_000:
             logger.warning(
-                f"[Cache] Doc too large for Firestore ({len(serialized)} bytes), "
-                f"skipping Firestore save for {collection}/{key}"
+                f"[Cache] Doc too large for document store ({len(serialized)} bytes), "
+                f"skipping document store save for {collection}/{key}"
             )
             return
         
@@ -157,9 +150,9 @@ def _save_to_firestore(db, collection: str, key: str, data: Dict):
         }
         
         db.collection(collection).document(key).set(cache_doc)
-        logger.info(f"[Cache] SAVED (Firestore) {collection}/{key} ({len(serialized)} bytes)")
+        logger.info(f"[Cache] SAVED (document store) {collection}/{key} ({len(serialized)} bytes)")
     except Exception as e:
-        logger.error(f"[Cache] Firestore save failed: {e}")
+        logger.error(f"[Cache] document store save failed: {e}")
 
 
 # ════════════════════════════════════════════════════════════════════════

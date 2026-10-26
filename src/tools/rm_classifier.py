@@ -3,11 +3,11 @@ KSERC Truing-Up — R&M One-Time Expenditure Classification Engine
 ================================================================
 Module  : rm_classifier.py
 Basis   : KSERC Tariff Regulations 2021, Regulation 80(3)
-Model   : Gemini via gemini_client.py (same pattern as rest of project)
+Model   : the model via llm_client.py (same pattern as rest of project)
 
 WHY AI:
   Keyword matching fails on unknown descriptions.
-  Gemini applies the ONE universal KSERC principle:
+  the model applies the ONE universal KSERC principle:
     "Does this expenditure CREATE a long-life asset (CAPITAL)?
      OR RESTORE existing functionality non-routinely (ONE_TIME_RM)?
      OR is it recurring/already in norm (ROUTINE_RM)?"
@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any, Dict, List, Optional
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger("kserc.rm_classifier")
 
@@ -109,7 +109,7 @@ def classify_rm_item(
     licensee: str = "",
 ) -> Dict[str, Any]:
     """
-    Classify a single R&M line item using Gemini.
+    Classify a single R&M line item using the model.
 
     Works for ANY description from ANY licensee.
     No hardcoded components. No keywords. Pure AI reasoning.
@@ -127,10 +127,10 @@ def classify_rm_item(
     """
     import json
     try:
-        from src.gemini_client import generate
+        from src.llm_client import generate
     except ImportError:
-        logger.error("gemini_client not available — using fallback")
-        return _fallback_result(description, amount, "gemini_client import error")
+        logger.error("llm_client not available — using fallback")
+        return _fallback_result(description, amount, "llm_client import error")
 
     try:
         prompt = _USER_PROMPT.format(
@@ -141,7 +141,7 @@ def classify_rm_item(
 
         raw = generate(
             prompt=prompt,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=_SYSTEM_PROMPT,
@@ -165,7 +165,7 @@ def classify_rm_item(
         logger.error(f"JSON parse error for item '{description}': {e}")
         return _fallback_result(description, amount, f"JSON parse error: {e}")
     except Exception as e:
-        logger.error(f"Gemini error for item '{description}': {e}")
+        logger.error(f"the model error for item '{description}': {e}")
         return _fallback_result(description, amount, str(e))
 
 
@@ -195,7 +195,7 @@ def process_rm_petition(
 ) -> Dict[str, Any]:
     """
     Process ALL one-time R&M items from a petition.
-    Calls Gemini for each item and produces regulatory analysis.
+    Calls the model for each item and produces regulatory analysis.
 
     Parameters
     ----------

@@ -31,7 +31,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
-load_dotenv()  # loads GOOGLE_API_KEY and other vars from .env into os.environ
+load_dotenv()  # loads CLOUD, LLM_PROVIDER and other settings from .env
 
 from fastapi import (
     BackgroundTasks,
@@ -71,15 +71,17 @@ VALID_LICENSEES = ["Technopark", "Infopark", "CSEZA", "KDHP"]
 from src.tools.db import init_db, save_analysis, get_analysis
 from src.tools.audit_trail import log_decision, get_audit_trail
 
-# Initialize SQLite database
+from src.cloud import settings as cloud_settings
+
+# Open the document store (DynamoDB on AWS, SQLite locally)
 init_db()
 
-# Sync reference documents from GCS (Cloud Run only — skips on local dev)
+# Mirror the regulatory corpus from S3 (AWS only — local runs read DOCUMENTS_DIR directly)
 try:
-    from src.gcs_sync import sync_documents_from_gcs
-    sync_documents_from_gcs()
+    from src.cloud.blobstore import sync_documents
+    sync_documents()
 except Exception as e:
-    logger.warning(f"GCS document sync skipped: {e}")
+    logger.warning(f"S3 document sync skipped: {e}")
 
 # Simple in-memory rate limiter
 _rate_limit_store: Dict[str, list] = {}
@@ -97,14 +99,10 @@ app = FastAPI(
     redoc_url=None,
 )
 
-# CORS — allow React dev server + production
+# CORS — the Vite dev server locally; on AWS the UI is served from the same origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "*",  # Cloud Run URLs 
-    ],
+    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(","),
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
@@ -156,15 +154,20 @@ def _validate_file(file: UploadFile) -> None:
 @app.get("/api/health")
 async def health():
     """Health check endpoint."""
-    return {"status": "ok", "service": "KSERC Truing Up Analysis"}
+    return {
+        "status": "ok",
+        "service": "KSERC Truing Up Analysis",
+        "cloud": cloud_settings.CLOUD,
+        "llm_provider": cloud_settings.LLM_PROVIDER,
+    }
 
 
 # ── Regulation Document Management ────────────────────────────────────
 
 @app.get("/api/regulations")
 async def list_regulations():
-    """List all pre-extracted regulation documents in Firestore."""
-    from src.rag.file_search_store import list_stored_regulations
+    """List all pre-extracted regulation documents in document store."""
+    from src.rag.regulation_store import list_stored_regulations
     docs = list_stored_regulations()
     return {"docs": docs, "count": len(docs)}
 
@@ -175,8 +178,8 @@ async def upload_regulation(
     category: str = Form("regulations"),
 ):
     """
-    Upload a regulation PDF, extract text (PyMuPDF first, Gemini fallback),
-    and store in Firestore for fast regulation queries.
+    Upload a regulation PDF, extract text (PyMuPDF first, the model fallback),
+    and store in document store for fast regulation queries.
     """
     if not file.filename.lower().endswith('.pdf'):
         raise HTTPException(400, "Only PDF files are supported")
@@ -192,7 +195,7 @@ async def upload_regulation(
         tmp.write(content)
         tmp.close()
         
-        from src.rag.file_search_store import extract_and_store_regulation
+        from src.rag.regulation_store import extract_and_store_regulation
         result = extract_and_store_regulation(
             pdf_path=tmp.name,
             filename=file.filename,
@@ -210,8 +213,8 @@ async def upload_regulation(
 
 @app.delete("/api/regulations/{doc_id}")
 async def remove_regulation(doc_id: str):
-    """Delete a regulation document from Firestore."""
-    from src.rag.file_search_store import delete_stored_regulation
+    """Delete a regulation document from document store."""
+    from src.rag.regulation_store import delete_stored_regulation
     success = delete_stored_regulation(doc_id)
     if not success:
         raise HTTPException(500, "Failed to delete regulation")
@@ -280,7 +283,7 @@ async def analyze_petition(
             raise HTTPException(500, "File upload failed")
 
     # Run analysis asynchronously via BackgroundTasks
-    save_analysis(analysis_id, "RUNNING")
+    save_analysis(analysis_id, "RUNNING", meta={"licensee": licensee, "financial_year": financial_year})
     
     # Define a sync wrapper to run in the background 
     # since we use asyncio.run_in_executor inside _run_analysis
@@ -422,7 +425,7 @@ async def download_report(analysis_id: str):
     if pdf_path and Path(pdf_path).exists():
         return FileResponse(pdf_path, media_type="application/pdf", filename=filename)
 
-    # Cloud Run fallback: generate PDF from stored HTML on-the-fly
+    # ECS Fargate fallback: generate PDF from stored HTML on-the-fly
     html_content = result.get("generated_html") or result.get("order_html")
     if html_content:
         try:
@@ -441,7 +444,61 @@ async def download_report(analysis_id: str):
     raise HTTPException(404, "PDF report not available — try generating the order again")
 
 
+# ═══════════════════════════════════════════════════════════════════════
+# Case history, Analyst Q&A, Word export
+# ═══════════════════════════════════════════════════════════════════════
+
+@app.get("/api/analyses")
+async def analyses_history():
+    """Past and running analyses, newest first."""
+    from src.tools.db import list_analyses
+    return {"analyses": list_analyses()}
+
+
 from pydantic import BaseModel
+
+
+class AskRequest(BaseModel):
+    question: str
+
+
+@app.post("/api/ask")
+async def ask_analyst(req: AskRequest):
+    """Answer a regulatory question from the regulation corpus, with the source documents."""
+    question = req.question.strip()
+    if not question:
+        raise HTTPException(400, "Question is empty")
+    if len(question) > 4000:
+        raise HTTPException(400, "Question is too long (4000 characters max)")
+    from src.rag.regulation_store import answer_question
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, answer_question, question)
+
+
+@app.get("/api/export-docx/{analysis_id}")
+async def export_docx(analysis_id: str):
+    """Download the order as an editable Word document."""
+    data = get_analysis(analysis_id)
+    if not data or data["status"] != "COMPLETED":
+        raise HTTPException(404, "Analysis not found or not completed")
+    result = data["result"]
+    html = result.get("generated_html") or result.get("order_html")
+    if not html:
+        from builder.json_builder import build_order_json
+        from builder.render import build_html
+        html = build_html(build_order_json(result), skip_validation=True)
+
+    from src.tools.docx_export import html_to_docx
+    content = html_to_docx(html)
+    licensee = result.get("licensee_name", "Licensee").replace(" ", "_")
+    fy = result.get("financial_year", "")
+    return Response(
+        content=content,
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="KSERC_TrueUp_Order_{licensee}_{fy}.docx"'},
+    )
+
+
 class OverrideRequest(BaseModel):
     analysis_id: str
     component_key: str
@@ -539,7 +596,7 @@ async def generate_order(
     req: GenerateOrderRequest,
 ):
     """
-    Generate a KSERC order from analysis results using Gemini drafter.
+    Generate a KSERC order from analysis results using the model drafter.
     Returns { pdf_url, html, analysis_id, order_json }
     """
     db_row = get_analysis(req.analysis_id)
@@ -549,7 +606,7 @@ async def generate_order(
     # Unwrap: get_analysis returns {"status", "result": {actual data}, "progress"}
     state = db_row["result"]
 
-    # Full Gemini-based PDF generation
+    # Full the model-based PDF generation
     from src.agents.drafter import draft_order
     from builder.json_builder import build_order_json
     import asyncio
@@ -581,11 +638,11 @@ async def generate_order(
     try:
         draft_result = await loop.run_in_executor(None, draft_order, draft_state)
 
-        # Update analysis with PDF path and HTML for Cloud Run download
+        # Update analysis with PDF path and HTML for ECS Fargate download
         state["output_pdf_path"] = draft_result.get("output_pdf_path")
         state["pdf_available"] = True
         
-        # Save HTML content so download endpoint works on Cloud Run
+        # Save HTML content so download endpoint works on ECS Fargate
         html_path = draft_result.get("output_html_path")
         if html_path and Path(html_path).exists():
             state["generated_html"] = Path(html_path).read_text(encoding="utf-8")
@@ -593,19 +650,19 @@ async def generate_order(
         save_analysis(req.analysis_id, "COMPLETED", state)
 
         # Read back the generated HTML to show in frontend preview
-        gemini_html = None
+        llm_html = None
         html_path = draft_result.get("output_html_path")
         if html_path and Path(html_path).exists():
-            gemini_html = Path(html_path).read_text(encoding="utf-8")
+            llm_html = Path(html_path).read_text(encoding="utf-8")
 
         return {
             "pdf_url": f"/api/download/{req.analysis_id}",
             "analysis_id": req.analysis_id,
             "order_json": order_json,
-            "html": gemini_html,
+            "html": llm_html,
         }
     except Exception as e:
-        logger.error(f"Gemini PDF generation failed: {e}", exc_info=True)
+        logger.error(f"the model PDF generation failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
 
 
@@ -624,9 +681,6 @@ async def finalize_pdf(req: FinalizePdfRequest):
     This supports the inline editing workflow where users edit text/tables
     directly in the HTML preview and then finalize to a PDF.
     """
-    import asyncio
-    from playwright.sync_api import sync_playwright
-
     if not req.html:
         raise HTTPException(status_code=400, detail="No HTML provided")
 
@@ -640,44 +694,29 @@ async def finalize_pdf(req: FinalizePdfRequest):
     fy = state.get("financial_year", "2024-25")
     safe_name = licensee.replace(" ", "_").replace("/", "-")
 
-    output_dir = Path("output_orders")
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = OUTPUT_DIR
 
     # Save edited HTML
     html_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}_edited.html"
     html_path.write_text(req.html, encoding="utf-8")
 
-    # Render PDF with Playwright
     pdf_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}.pdf"
-
-    # Check if file is locked
     final_pdf_path = pdf_path
     if pdf_path.exists():
         try:
             with open(pdf_path, "a"):
                 pass
-        except PermissionError:
-            import datetime
-            ts = datetime.datetime.now().strftime("%H%M%S")
-            final_pdf_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}_{ts}.pdf"
-
-    html_uri = f"file:///{html_path.resolve().as_posix()}"
+        except PermissionError:  # file open elsewhere: write alongside it
+            final_pdf_path = output_dir / f"KSERC_TrueUp_Order_{safe_name}_FY_{fy}_{datetime.now():%H%M%S}.pdf"
 
     def render_pdf():
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            page.goto(html_uri, wait_until="networkidle")
-            page.pdf(
-                path=str(final_pdf_path),
-                format="A4",
-                margin={"top": "2.5cm", "bottom": "2.5cm", "left": "3.0cm", "right": "3.0cm"},
-                print_background=True,
-                display_header_footer=True,
-                header_template='<span style="font-size: 8px;"></span>',
-                footer_template='<div style="font-size: 10px; width: 100%; text-align: center;"><span class="pageNumber"></span></div>'
-            )
-            browser.close()
+        from weasyprint import CSS, HTML
+
+        page_css = CSS(string=(
+            "@page { size: A4; margin: 2.5cm 3cm;"
+            " @bottom-center { content: counter(page); font-size: 10px; } }"
+        ))
+        HTML(filename=str(html_path)).write_pdf(str(final_pdf_path), stylesheets=[page_css])
 
     loop = asyncio.get_event_loop()
     try:
@@ -1029,7 +1068,7 @@ async def save_rates_for_year(financial_year: str, req: RatesRequest):
     }
 
 
-# ── Reference PDF Upload → Gemini Extract ─────────────────────────────
+# ── Reference PDF Upload → the model Extract ─────────────────────────────
 
 @app.post("/api/reference/orders/extract")
 async def extract_reference_order(
@@ -1041,7 +1080,7 @@ async def extract_reference_order(
     order_number: str = Form(""),
 ):
     """
-    Upload a reference PDF → Gemini extracts all financial values.
+    Upload a reference PDF → the model extracts all financial values.
     Returns extracted_rows (flat table) + full JSON for the UI to display.
     Staff can edit values before confirming.
     """
@@ -1069,7 +1108,7 @@ async def extract_reference_order(
         order_number=order_number, file_path=str(file_path),
     )
 
-    # Run Gemini extraction
+    # Run the model extraction
     loop = asyncio.get_event_loop()
 
     if order_type == "past_order":
@@ -1584,7 +1623,7 @@ async def _run_analysis(
         state["petition_text"] = ""
 
     # Run extraction in a thread to not block the event loop
-    log("extract", "Running Gemini Vision extraction on petition tables…")
+    log("extract", "Running vision model extraction on petition tables…")
     loop = asyncio.get_event_loop()
     try:
         extraction_result = await asyncio.wait_for(
@@ -1593,7 +1632,7 @@ async def _run_analysis(
         )
     except asyncio.TimeoutError:
         log("extract", "ERROR: Extraction timed out after 10 minutes")
-        raise RuntimeError("Petition extraction timed out. The PDF may be too large or Gemini is overloaded.")
+        raise RuntimeError("Petition extraction timed out. The PDF may be too large or the model is overloaded.")
     n_exp = len(extraction_result.get("claimed_expenses", {}))
     log("extract", f"Extraction complete — {n_exp} expense components found")
     state.update(extraction_result)
@@ -1678,7 +1717,7 @@ async def _run_analysis(
 
     # ── Step 2.5: Deep AI Analysis (Agentic RAG) ──────────────────
     n_comps = len(state.get("claimed_expenses", {}))
-    log("ai_audit", f"Starting parallel AI audit for {n_comps} components (gemini-2.5-pro)…")
+    log("ai_audit", f"Starting parallel AI audit for {n_comps} components…")
     try:
         from src.workflows.truing_up_graph import run_agentic_audit
         
@@ -2061,7 +2100,7 @@ def _generate_approval_justification(
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# Frontend Static File Serving (Production — Cloud Run)
+# Frontend Static File Serving (Production — ECS Fargate)
 # ═══════════════════════════════════════════════════════════════════════
 
 FRONTEND_DIR = BASE_DIR / "frontend" / "dist"

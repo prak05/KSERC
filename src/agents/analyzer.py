@@ -1,7 +1,7 @@
 ﻿"""
 Deep AI Analyzer Agent — The AI KSERC Commission
 ===================================================
-Uses Gemini with Google Search Grounding to act as the KSERC Commission.
+Uses the model, grounded in the regulation corpus, to act as the KSERC Commission.
 
 This agent doesn't just find grants — it makes the ACTUAL auditing decisions
 for every expense component, just like the real Commission would:
@@ -22,7 +22,7 @@ import os
 import re
 from pathlib import Path
 from typing import Any, Dict, List
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger("kserc.analyzer")
 
@@ -226,12 +226,12 @@ def analyze_petition_deep(
     financial_year: str,
 ) -> Dict[str, Any]:
     """
-    Deep-analyze a petition PDF using Gemini with Google Search.
+    Deep-analyze a petition PDF with the model, grounded in the regulation corpus.
     Acts as the KSERC Commission — makes actual per-component decisions.
 
     Returns a structured dict of decisions for the Auditor to apply.
     """
-    from src.gemini_client import generate
+    from src.llm_client import generate
 
     # 1. Extract full PDF text
     logger.info(f"[Analyzer] Extracting full text from PDF: {pdf_path}")
@@ -257,11 +257,11 @@ def analyze_petition_deep(
         f"Return your decisions as JSON."
     )
 
-    # 4. Call Gemini via centralized client
+    # 4. Call the model via centralized client
     try:
         raw = generate(
             full_prompt,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.1,
             response_mime_type="application/json",
             system_instruction=(
@@ -271,7 +271,7 @@ def analyze_petition_deep(
                 "Your final output must be exactly matching the requested JSON structure."
             ),
         )
-        logger.info(f"[Analyzer] Gemini response (first 800 chars): {raw[:800]}")
+        logger.info(f"[Analyzer] the model response (first 800 chars): {raw[:800]}")
 
         # Strip markdown code fences if present
         if raw.startswith("```"):
@@ -286,11 +286,11 @@ def analyze_petition_deep(
         return insights
 
     except json.JSONDecodeError as e:
-        logger.error(f"[Analyzer] Failed to parse Gemini JSON response: {e}")
+        logger.error(f"[Analyzer] Failed to parse the model JSON response: {e}")
         logger.error(f"[Analyzer] Raw response: {raw[:1000]}")
         return _empty_insights()
     except Exception as e:
-        logger.error(f"[Analyzer] Gemini call failed: {e}")
+        logger.error(f"[Analyzer] the model call failed: {e}")
         return _empty_insights()
 
 

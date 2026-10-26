@@ -1,103 +1,64 @@
-# Deployment Guide: KSERC Truing-Up Platform
+# Deployment
 
-This guide outlines the recommended deployment procedure for a production environment like a Virtual Private Server (VPS) or AWS EC2 instance.
+Two ways to run the engine. Both use the same image and code; one variable (`CLOUD`) decides where state and models live.
 
-## Prerequisites
+| | Local | AWS |
+|---|---|---|
+| Compute | your machine (`make run`) or Docker (`make up`) | ECS Fargate behind an Application Load Balancer |
+| Model | Ollama / LM Studio / llama.cpp (`LLM_PROVIDER=local`) or `offline` | Claude on Amazon Bedrock |
+| Tables from petitions | PyMuPDF table finder | Amazon Textract (`StartDocumentAnalysis`, TABLES) |
+| Document store | SQLite (`data/store.sqlite3`) | DynamoDB (one table, `pk`/`sk`) — bodies over 350 KB spill to S3 |
+| Regulatory corpus | `documents/` | S3 `s3://<bucket>/documents/`, mirrored into the task at start-up |
+| Credentials | none | the ECS task role — no keys anywhere |
 
-- Ubuntu 22.04 LTS (recommended)
-- Python 3.10 or 3.11
-- Nginx
-- Uvicorn / Gunicorn
-- Supervisor or Systemd
-
----
-
-## 1. System Setup
+## Local
 
 ```bash
-sudo apt update && sudo apt upgrade -y
-sudo apt install python3-pip python3-venv nginx sqlite3 libmagickwand-dev -y
+make setup          # venv, npm ci, .env from .env.example
+make run            # builds the UI, serves UI + API on http://localhost:8000
+make dev            # API with reload on :8000 + Vite on :3000
+make up             # Docker: app + Ollama on http://localhost:8080
+docker compose exec ollama ollama pull qwen2.5:14b   # first run only
 ```
 
-## 2. Application Setup
+Use `LLM_PROVIDER=offline` to run without any model: extraction falls back to PyMuPDF and the deterministic rules engine still produces the audit; model-drafted prose is left empty.
 
-1. **Clone the repository:**
+To use Claude from your laptop instead, set `LLM_PROVIDER=bedrock` and make sure your AWS profile can call Bedrock in `BEDROCK_REGION`.
+
+## AWS
+
+Prerequisites: Terraform ≥ 1.6, Docker, AWS CLI v2 signed in to the target account, and **model access for Claude enabled in Amazon Bedrock** for the region you set as `bedrock_region`.
+
 ```bash
-git clone https://github.com/KSERC/sdl-truing-up.git
-cd sdl-truing-up
+make plan-aws REGION=ap-south-1      # review what will be created (28 resources)
+make deploy-aws REGION=ap-south-1    # apply → build & push image → sync corpus → roll out
 ```
 
-2. **Set up Virtual Environment:**
+`scripts/deploy-aws.sh` prints the URL when the service is stable.
+
+### What gets created (`infra/aws/main.tf`)
+
+- VPC with two public subnets (tasks get public IPs, so there is no NAT gateway to pay for)
+- Application Load Balancer, idle timeout 900 s (order drafting can take minutes); HTTPS when `certificate_arn` is set
+- ECS cluster + Fargate service (2 vCPU / 4 GB, 50 GB ephemeral storage), CloudWatch logs (30 days)
+- ECR repository (scan on push, keeps the last 10 images)
+- S3 bucket — private, versioned, encrypted; `textract-input/` expires after 7 days
+- DynamoDB table — on-demand, point-in-time recovery, encrypted
+- IAM task role limited to that bucket, that table, Textract analysis and Bedrock in one region
+
+### Settings worth changing (`infra/aws/example.tfvars`)
+
+- `allowed_cidrs` — restrict the load balancer to the Commission's network
+- `certificate_arn` — an ACM certificate to serve HTTPS
+- `bedrock_region` — if Claude access is enabled in a different region from the app
+- `llm_model` / `llm_fallback_model` — defaults `anthropic.claude-opus-5-5` / `anthropic.claude-opus-4-8`
+
+Keep `desired_count = 1`: an analysis runs inside the task that accepted it.
+
+### Tear down
+
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+make destroy-aws REGION=ap-south-1
 ```
 
-3. **Initialize the Data Directories:**
-```bash
-mkdir -p data/myt_baselines data/regulations uploads output_orders audit_logs
-```
-
-## 3. Running with Supervisor / Systemd
-
-Create a `systemd` service file `/etc/systemd/system/kserc-api.service`:
-
-```ini
-[Unit]
-Description=KSERC SDL Truing-Up FastAPI Application
-After=network.target
-
-[Service]
-User=www-data
-Group=www-data
-WorkingDirectory=/var/www/sdl-truing-up
-Environment="PATH=/var/www/sdl-truing-up/venv/bin"
-ExecStart=/var/www/sdl-truing-up/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8000 --workers 4
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start the service:
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable kserc-api
-sudo systemctl start kserc-api
-```
-
-## 4. Nginx Reverse Proxy Configuration
-
-Configure Nginx to proxy requests to the FastAPI backend running on port 8000.
-
-Create a block in `/etc/nginx/sites-available/kserc`:
-
-```nginx
-server {
-    listen 80;
-    server_name api.kserctrueup.gov.in;
-
-    client_max_body_size 50M; # Crucial for PDF uploads
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-Enable the Nginx block:
-```bash
-sudo ln -s /etc/nginx/sites-available/kserc /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
-```
-
-## 5. Security & Maintenance
-
-- **SSL:** Use `certbot` and Let's Encrypt to secure the API domain.
-- **Log Rotation:** The audit logs and app logs should be managed by `logrotate`.
-- **Backups:** Setup a cron job to backup the `data/kserc_truing_up.db` SQLite database daily.
+The bucket and registry are protected from deletion while non-empty unless `force_destroy = true`.

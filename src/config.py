@@ -1,16 +1,9 @@
 """
 Central configuration for the KSERC Truing-Up Engine.
 
-All AI model settings are centralized here. To upgrade/change the Gemini model,
-update GEMINI_MODEL in the .env file — no code changes needed.
+The model is set with ``LLM_MODEL`` (default: Claude Opus 5.5 on Amazon Bedrock).
+Change it in ``.env`` — no code changes needed. See ``src/cloud/settings.py`` for
+every runtime switch.
 """
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-# ── Gemini Model ─────────────────────────────────────────────────────────────
-# Change this in .env to upgrade the AI model across the entire project.
-# Supported: gemini-2.5-flash, gemini-2.5-pro, gemini-2.0-flash, etc.
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+from src.cloud.settings import LLM_MODEL  # noqa: F401

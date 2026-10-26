@@ -2,7 +2,7 @@
 KSERC Truing-Up — Order Quality Validator
 ==========================================
 Module  : order_validator.py
-Purpose : After drafter.py generates the draft order, Gemini acts as
+Purpose : After drafter.py generates the draft order, the model acts as
           a "peer reviewer" and validates:
           1. Every claimed item is addressed in the order
           2. Disallowance reasons are legally sound (cite correct regulation)
@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 import logging
 from typing import Any, Dict, List, Optional
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger("kserc.order_validator")
 
@@ -93,7 +93,7 @@ language quality, and internal contradictions.
 
 def validate_drafted_order(state: Dict[str, Any]) -> Dict[str, Any]:
     """
-    LangGraph node: Validate the drafted order using Gemini.
+    LangGraph node: Validate the drafted order using the model.
 
     Parameters
     ----------
@@ -152,7 +152,7 @@ def validate_drafted_order(state: Dict[str, Any]) -> Dict[str, Any]:
     ) if anomaly_flags else "None detected"
 
     try:
-        from src.gemini_client import generate
+        from src.llm_client import generate
 
         prompt = _USER_PROMPT.format(
             licensee=licensee,
@@ -168,7 +168,7 @@ def validate_drafted_order(state: Dict[str, Any]) -> Dict[str, Any]:
 
         raw = generate(
             prompt=prompt,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
             system_instruction=_SYSTEM_PROMPT,

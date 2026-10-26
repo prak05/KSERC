@@ -1,140 +1,50 @@
-# KSERC SDL Truing-Up Platform: API Reference
+# API Reference
 
-This document outlines the REST API endpoints available in the KSERC Truing-Up analysis platform.
+All routes are served by `app.py` under `/api`. The React UI is served from `/` by the same process.
 
-## Base URL
-All API requests must be made against the base URL (default: `http://localhost:8000`).
+## Analysis
 
----
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/api/analyze` | Upload petition PDFs and start an analysis. `multipart/form-data`: `files[]`, `licensee` (`Technopark` \| `Infopark` \| `CSEZA` \| `KDHP`), `financial_year`, optional rates (`inflation_rate`, `iwc_interest_rate`, `sbi_eblr_rate`, `sbi_retail_td_rate`, `supply_code_sd_rate`, `bee_energy_audit_fee`, `norm_loan_opening`, `sd_balance`, `cumulative_gap`). Returns `{analysis_id}`. |
+| `GET` | `/api/status/{id}` | `{status, result, progress}` — `status` is `RUNNING`, `PENDING_RM_REVIEW`, `COMPLETED` or `FAILED`. Poll every few seconds. |
+| `POST` | `/api/rm-continue` | Resume after the R&M review pause: `{analysis_id, selected_items}` (items allowed as one-time expenditure under Reg. 80(3)). |
+| `POST` | `/api/rm-onetime` | Re-apply a one-time R&M selection to a completed analysis: `{analysis_id, selected_indices[], manual_items?[{description, amount}]}`. |
+| `POST` | `/api/override` | Officer override of one component: `{analysis_id, component_key, new_approved_amount, justification, user_id?}`. |
+| `GET` | `/api/analyses` | Case history, newest first: `{analyses: [{analysis_id, licensee, financial_year, status, updated_at}]}`. |
 
-## 1. Upload and Analyze Petition
+## Orders
 
-Uploads a Truing-Up petition PDF for automated analysis.
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/api/hearing-data` | Save court-hearing details used in the order: `{analysis_id, hearing_date, licensee_submissions[], respondent_position, commission_observations}`. |
+| `POST` | `/api/generate-order` | Draft the truing-up order: `{analysis_id, order_json?}` (pass edited `order_json` to regenerate). Returns `{pdf_url, html, order_json, analysis_id}`. |
+| `POST` | `/api/finalize-pdf` | Render edited order HTML to PDF: `{analysis_id, html}`. |
+| `GET` | `/api/download/{id}` | Download the order PDF. |
+| `GET` | `/api/export-docx/{id}` | Download the order as an editable Word document. |
 
-**Endpoint:** `POST /`
+## Regulations and the Analyst
 
-**Content-Type:** `multipart/form-data`
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/regulations` | Regulation documents in the corpus: `{docs: [{doc_id, filename, category, chars, method, extracted_at}], count}`. |
+| `POST` | `/api/regulations/upload` | Add a PDF to the corpus (`file`, `category`). Scanned PDFs are read by the model. |
+| `DELETE` | `/api/regulations/{doc_id}` | Remove a document from the corpus. |
+| `POST` | `/api/ask` | Analyst Q&A grounded in the corpus: `{question}` → `{answer, sources[]}`. |
 
-### Request Parameters
+## Reference data
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `file` | `UploadFile` | Yes | The petition document (PDF format only, max 50MB). |
-| `licensee` | `string` | Yes | Name of the SDL (e.g., `Technopark`, `Infopark`, `CSEZA`, `KDHP`). |
-| `financial_year` | `string` | Yes | The financial year applicable for truing up (e.g., `2022-23`). |
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` / `POST` | `/api/reference/economic-indicators` | CPI, WPI, SBI PLR and related indices by financial year. |
+| `GET` / `POST` | `/api/reference/rates/{fy}` | Interest and deposit rates for a financial year. |
+| `POST` | `/api/reference/orders/extract` | Extract approved figures from a past truing-up order PDF (preview). |
+| `POST` | `/api/reference/orders/confirm` | Save the reviewed extraction as precedent. |
+| `GET` | `/api/reference/orders` | Stored reference orders. |
+| `GET` | `/api/reference/myt-baselines` | MYT baseline norms per licensee and year. |
 
-### Success Response (200 OK)
+## Service
 
-A JSON object detailing the analysis results, extracted tables, component-level gap validations, and disallowance logs.
-
-```json
-{
-  "analysis_id": "uuid-string",
-  "licensee_name": "Technopark",
-  "financial_year": "2022-23",
-  "original_filename": "petition.pdf",
-  "timestamp": "2024-05-20T10:30:00.000",
-  "total_claimed_expenditure": 1500.50,
-  "total_approved_expenditure": 1450.00,
-  "total_claimed_revenue": 1400.00,
-  "total_approved_revenue": 1400.00,
-  "final_revenue_gap_surplus": -50.00,
-  "components": [
-    {
-       "key": "employee_cost",
-       "name": "Employee Cost",
-       "claimed": 300.00,
-       "approved": 250.00,
-       "variance": -50.00,
-       "variance_pct": -16.67,
-       "status": "reduced",
-       "status_label": "Reduced",
-       "justification": "Employee cost capped at MYT baseline + CPI/WPI escalation."
-    }
-  ],
-  "disallowances": [
-    {
-      "item": "Employee Cost",
-      "claimed": 300.00,
-      "approved": 250.00,
-      "amount_cut": 50.00,
-      "justification": "Employee cost capped at MYT baseline + CPI/WPI escalation."
-    }
-  ],
-  "pdf_available": true
-}
-```
-
----
-
-## 2. Check Analysis Status
-
-Polls the analysis pipeline for the current status and returns the result if completed.
-
-**Endpoint:** `GET /api/status/{analysis_id}`
-
-### URL Parameters
-* `analysis_id`: The UUID of the analysis session returned upon upload.
-
-### Success Response (200 OK)
-
-```json
-{
-  "status": "COMPLETED",
-  "result": {
-    // ... Full analysis result object as shown in the POST / response
-  }
-}
-```
-*Possible Statuses: `RUNNING`, `COMPLETED`, `FAILED`.*
-
----
-
-## 3. Human-in-the-Loop Override
-
-Allows a human auditor to override the system-approved amount for a specific expense component.
-
-**Endpoint:** `POST /api/override`
-
-**Content-Type:** `application/json`
-
-### Request Body
-
-```json
-{
-  "analysis_id": "uuid-string",
-  "component_key": "employee_cost",
-  "new_approved_amount": 280.00,
-  "justification": "Approved partial exception due to 7th Pay Commission arrears.",
-  "user_id": "auditor_kserc_01"
-}
-```
-
-### Success Response (200 OK)
-
-```json
-{
-  "status": "success",
-  "message": "Override applied and logged."
-}
-```
-
-*(Note: Applying an override will automatically regenerate the PDF Order and log the decision to the Audit Trail).*
-
----
-
-## 4. Download PDF Order
-
-Downloads the officially formatted KSERC Truing-Up Order document.
-
-**Endpoint:** `GET /api/download/{analysis_id}`
-
-### URL Parameters
-* `analysis_id`: The UUID of the analysis session.
-
-### Success Response (200 OK)
-* `Content-Type: application/pdf`
-* Returns the generated PDF file.
-
-### Error Response (404 Not Found)
-* Returned if the `analysis_id` does not exist or if the PDF has not been generated yet.
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/health` | `{status, service, cloud, llm_provider}` — used by the load balancer health check. |

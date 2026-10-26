@@ -287,7 +287,7 @@ def calculate_interest_on_normative_loan(
     Parameters
     ----------
     opening_balance : float
-        Prior year closing normative loan (from Firestore/order). Rs Lakhs.
+        Prior year closing normative loan (from document store/order). Rs Lakhs.
     qualifying_additions : float
         Capital additions approved this year, own-funded only. Rs Lakhs.
     surplus_funded_additions : float
@@ -540,7 +540,7 @@ def calculate_security_deposit_interest(
     ----------
     opening_balance : float
         Security deposit balance at start of year (= prior year closing).
-        From Firestore or previous KSERC order. Rs Lakhs.
+        From document store or previous KSERC order. Rs Lakhs.
     supply_code_rate : float
         Rate per Kerala Electricity Supply Code (e.g. 0.06 for 6%).
 
@@ -732,7 +732,7 @@ def classify_bank_charge(
     Classify a bank charge item per KSERC interest spec Component E.
 
     Classification priority:
-      1. Litigation BG → DISALLOWED (if description matches OR Firestore says active)
+      1. Litigation BG → DISALLOWED (if description matches OR document store says active)
       2. Letter of Credit → ALLOWABLE
       3. Operational BG → ALLOWABLE
       4. Unclassifiable → CLARIFICATION_NEEDED
@@ -744,7 +744,7 @@ def classify_bank_charge(
     amount : float
         Amount in Rs Lakhs.
     litigation_bg_active : bool
-        Whether Firestore shows active litigation BG for this licensee.
+        Whether document store shows active litigation BG for this licensee.
 
     Returns
     -------

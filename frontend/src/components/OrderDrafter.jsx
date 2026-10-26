@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { Notice, PageHead } from './ui'
 
 /**
  * OrderDrafter — Full-page preview editor with inline editing.
@@ -20,54 +21,6 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
     const [status, setStatus] = useState(null)
     const [hasEdits, setHasEdits] = useState(false)
     const iframeRef = useRef(null)
-
-    // ── Inject edit-mode CSS + JS into preview HTML ─────────────────
-    const makeEditable = useCallback((html) => {
-        if (!html) return html
-        // Inject a script that makes all p, td, th, li, h1-h6, span contenteditable
-        const editScript = `
-<style>
-  [contenteditable="true"] { outline: 2px dashed rgba(0,120,255,0.25); outline-offset: 2px; }
-  [contenteditable="true"]:focus { outline: 2px solid rgba(0,120,255,0.6); background: rgba(0,120,255,0.04); }
-  td[contenteditable="true"], th[contenteditable="true"] { 
-    outline: 1px dashed rgba(0,120,255,0.2); outline-offset: 0; min-width: 30px;
-  }
-  td[contenteditable="true"]:focus, th[contenteditable="true"]:focus { 
-    outline: 2px solid rgba(0,120,255,0.6); background: rgba(230,240,255,0.3); 
-  }
-  .edit-banner {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-    background: linear-gradient(135deg, #1a5aff, #0040dd); color: #fff;
-    padding: 6px 16px; font-size: 12px; font-family: system-ui, sans-serif;
-    display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-  .edit-banner::before { content: "✏️"; }
-  body { padding-top: 32px !important; }
-</style>
-<div class="edit-banner">EDIT MODE — Click any text or table cell to edit directly</div>
-<script>
-  document.querySelectorAll('p, td, th, li, h1, h2, h3, h4, h5, h6').forEach(el => {
-    el.contentEditable = 'true';
-  });
-  document.body.addEventListener('input', () => {
-    window.parent.postMessage({ type: 'PREVIEW_EDITED' }, '*');
-  });
-</script>`
-        // Inject before </body>
-        if (html.includes('</body>')) {
-            return html.replace('</body>', editScript + '</body>')
-        }
-        return html + editScript
-    }, [])
-
-    const makeReadOnly = useCallback((html) => {
-        if (!html) return html
-        // Strip any previously injected edit script/styles
-        return html
-            .replace(/<style>[\s\S]*?\.edit-banner[\s\S]*?<\/style>/g, '')
-            .replace(/<div class="edit-banner">[\s\S]*?<\/div>/g, '')
-            .replace(/<script>[\s\S]*?contentEditable[\s\S]*?<\/script>/g, '')
-    }, [])
 
     // ── Listen for edit events from iframe ───────────────────────────
     useEffect(() => {
@@ -98,19 +51,17 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
                     const style = doc.createElement('style')
                     style.setAttribute('data-edit', 'true')
                     style.textContent = `
-                        [contenteditable="true"] { outline: 2px dashed rgba(0,120,255,0.25); outline-offset: 2px; cursor: text; }
-                        [contenteditable="true"]:focus { outline: 2px solid rgba(0,120,255,0.6); background: rgba(0,120,255,0.04); }
-                        td[contenteditable="true"], th[contenteditable="true"] { outline: 1px dashed rgba(0,120,255,0.2); outline-offset: 0; min-width: 30px; }
-                        td[contenteditable="true"]:focus, th[contenteditable="true"]:focus { outline: 2px solid rgba(0,120,255,0.6); background: rgba(230,240,255,0.3); }
-                        .edit-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: linear-gradient(135deg, #1a5aff, #0040dd); color: #fff; padding: 6px 16px; font-size: 12px; font-family: system-ui, sans-serif; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-                        .edit-banner::before { content: "✏️"; }
+                        [contenteditable="true"] { outline: 1px dashed rgba(94,106,210,0.35); outline-offset: 2px; cursor: text; }
+                        [contenteditable="true"]:focus { outline: 1px solid #5E6AD2; background: rgba(94,106,210,0.05); }
+                        td[contenteditable="true"], th[contenteditable="true"] { outline: 1px dashed rgba(94,106,210,0.25); outline-offset: 0; min-width: 30px; }
+                        .edit-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: #08090A; color: #F7F8F8; padding: 7px 16px; font: 11px/1.4 ui-monospace, Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; }
                         body { padding-top: 32px !important; }
                     `
                     doc.head.appendChild(style)
 
                     const banner = doc.createElement('div')
                     banner.className = 'edit-banner'
-                    banner.textContent = 'EDIT MODE — Click any text or table cell to edit directly'
+                    banner.textContent = 'Edit mode — click any text or table cell to edit'
                     doc.body.prepend(banner)
                 }
                 // Track edits
@@ -146,10 +97,10 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
         return '<!DOCTYPE html><html>' + clone.innerHTML + '</html>'
     }, [previewHtml])
 
-    // ── Generate draft (Gemini only) ─────────────────────────────────
+    // ── Generate draft ─────────────────────────────────
     const handleGenerate = useCallback(async () => {
         setLoading(true)
-        setStatus('⏳ Generating Gemini order draft… This may take 2-3 minutes.')
+        setStatus({ tone: 'info', text: 'Drafting the order. This usually takes two to three minutes.' })
         setPdfUrl(null)
         setPreviewHtml(null)
         setHasEdits(false)
@@ -168,9 +119,9 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
             if (data.html) {
                 setPreviewHtml(data.html)
             }
-            setStatus('✅ Gemini order ready — PDF generated! Edit preview or Download.')
+            setStatus({ tone: 'ok', text: 'Draft ready. Review and edit the preview, then finalize the PDF.' })
         } catch (e) {
-            setStatus(`Error: ${e.message}`)
+            setStatus({ tone: 'bad', text: e.message })
         } finally {
             setLoading(false)
         }
@@ -179,7 +130,7 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
     // ── Finalize PDF from current (possibly edited) HTML ────────────
     const handleFinalize = useCallback(async () => {
         setLoading(true)
-        setStatus('Generating PDF from edited preview…')
+        setStatus({ tone: 'info', text: 'Rendering the PDF from your edited preview…' })
         try {
             const html = getCurrentHtml()
             const resp = await fetch('/api/finalize-pdf', {
@@ -194,9 +145,9 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
             const data = await resp.json()
             setPdfUrl(data.pdf_url)
             setHasEdits(false)
-            setStatus('✅ PDF finalized with your edits! Click Download to save.')
+            setStatus({ tone: 'ok', text: 'PDF finalized with your edits.' })
         } catch (e) {
-            setStatus(`Error: ${e.message}`)
+            setStatus({ tone: 'bad', text: e.message })
         } finally {
             setLoading(false)
         }
@@ -208,164 +159,48 @@ export default function OrderDrafter({ analysisId, analysisData, onBack }) {
     const fy = analysisData?.financial_year || ''
 
     return (
-        <section className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {/* Header */}
-            <div style={{
-                display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between',
-                alignItems: 'center', gap: 12,
-                borderBottom: '1px solid var(--border)', paddingBottom: 16,
-            }}>
-                <div>
-                    <h2 style={{ fontSize: 'clamp(1.2rem, 2.5vw, 1.6rem)', letterSpacing: '-0.04em', marginBottom: 6 }}>
-                        📄 Order Drafter
-                    </h2>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                        {licensee && <span className="tag-neutral">{licensee}</span>}
-                        {fy && <span className="tag-neutral">FY {fy}</span>}
-                    </div>
-                </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                    <button onClick={onBack} className="btn-secondary">← Back</button>
-                    {!previewHtml && !loading && (
-                        <button
-                            onClick={handleGenerate}
-                            disabled={loading}
-                            className="btn-primary"
-                            style={{ padding: '10px 24px' }}
-                        >
-                            ⚡ Generate Draft
+        <section className="stack view">
+            <PageHead eyebrow={`Order drafter${licensee ? ' · ' + licensee : ''}${fy ? ' · FY ' + fy : ''}`} title="Draft the Commission's order">
+                <button className="btn btn-ghost" onClick={onBack}>Back to results</button>
+                {!previewHtml && !loading && <button className="btn btn-accent" onClick={handleGenerate}>Generate draft</button>}
+                {previewHtml && (
+                    <>
+                        {!loading && <button className="btn" onClick={handleGenerate} title="Regenerate from scratch">Regenerate</button>}
+                        <button className={`btn ${editMode ? 'is-on' : ''}`} onClick={toggleEditMode}>{editMode ? 'Editing' : 'Edit'}</button>
+                        <button className="btn" disabled={loading} onClick={handleFinalize}>
+                            {hasEdits && !loading && <span className="dot" />}
+                            {loading ? 'Rendering…' : 'Finalize PDF'}
                         </button>
-                    )}
-                    {previewHtml && (
-                        <>
-                            {!loading && (
-                                <button
-                                    onClick={handleGenerate}
-                                    disabled={loading}
-                                    className="btn-secondary"
-                                    title="Regenerate from scratch"
-                                >
-                                    🔄 Regenerate
-                                </button>
-                            )}
-                            <button
-                                onClick={toggleEditMode}
-                                className={`btn-secondary ${editMode ? '' : ''}`}
-                                style={editMode ? {
-                                    color: '#1a5aff', borderColor: 'rgba(26,90,255,0.5)',
-                                    background: 'rgba(26,90,255,0.08)',
-                                } : {}}
-                            >
-                                {editMode ? '✏️ Editing' : '✏️ Edit'}
-                            </button>
-                            <button
-                                onClick={handleFinalize}
-                                disabled={loading}
-                                className="btn-primary"
-                                style={{ padding: '10px 20px', position: 'relative' }}
-                            >
-                                {loading ? '⏳ Rendering…' : '📑 Finalize PDF'}
-                                {hasEdits && !loading && (
-                                    <span style={{
-                                        position: 'absolute', top: -4, right: -4,
-                                        width: 10, height: 10, borderRadius: '50%',
-                                        background: '#ff4444', border: '2px solid var(--bg)',
-                                    }} />
-                                )}
-                            </button>
-                            {pdfUrl && (
-                                <button
-                                    onClick={() => window.open(pdfUrl, '_blank')}
-                                    className="btn-primary"
-                                    style={{ padding: '10px 20px', background: 'var(--green)', color: '#000' }}
-                                >
-                                    📥 Download PDF
-                                </button>
-                            )}
-                        </>
-                    )}
-                </div>
-            </div>
+                        <button className="btn" onClick={() => window.open(`/api/export-docx/${analysisId}`, '_blank')}>Export DOCX</button>
+                        {pdfUrl && <button className="btn btn-accent" onClick={() => window.open(pdfUrl, '_blank')}>Download PDF</button>}
+                    </>
+                )}
+            </PageHead>
 
-            {/* Status bar */}
-            {status && (
-                <div className="card" style={{
-                    padding: '10px 18px',
-                    borderColor: status.startsWith('Error') ? 'rgba(255,68,68,0.3)'
-                        : status.includes('⚠️') ? 'rgba(255,200,0,0.3)'
-                        : 'rgba(0,255,136,0.2)',
-                }}>
-                    <p className="mono" style={{
-                        fontSize: '0.78rem',
-                        color: status.startsWith('Error') ? 'var(--red)'
-                            : status.includes('⚠️') ? '#ffc800'
-                            : 'var(--green)',
-                    }}>
-                        {status}
-                    </p>
-                </div>
-            )}
+            {status && <Notice tone={status.tone}>{status.text}</Notice>}
 
-            {/* Loading indicator */}
             {loading && !previewHtml && (
-                <div className="card" style={{ padding: '60px 40px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: 16, animation: 'pulse 1.5s ease-in-out infinite' }}>⏳</div>
-                    <h3 style={{ fontSize: '1.2rem', letterSpacing: '-0.03em', marginBottom: 8 }}>
-                        Generating Order…
-                    </h3>
-                    <p className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>
-                        This may take a few minutes for the full Gemini generation.
-                    </p>
+                <div className="card">
+                    <div className="progress is-indeterminate"><span /></div>
+                    <div className="empty"><p className="h3">Drafting…</p><p>Five sections are written in sequence against the reference order format.</p></div>
                 </div>
             )}
 
-            {/* Full-width Preview */}
             {previewHtml && (
-                <div className="card" style={{ padding: 0, overflow: 'hidden', flex: 1, minHeight: '80vh' }}>
-                    <div style={{
-                        background: editMode ? 'rgba(26,90,255,0.06)' : 'rgba(191,255,0,0.04)',
-                        borderBottom: '1px solid var(--border)',
-                        padding: '10px 16px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span className="mono-wide" style={{
-                                fontSize: '9px',
-                                color: editMode ? '#1a5aff' : 'var(--accent)',
-                            }}>
-                                {editMode ? '✏️ EDITING — Click any text or table cell' : '📄 PREVIEW'}
-                            </span>
-                        </div>
-                        {hasEdits && (
-                            <span className="mono" style={{ fontSize: '0.65rem', color: '#ff4444' }}>
-                                ● UNSAVED EDITS
-                            </span>
-                        )}
+                <div className="preview enter-panel">
+                    <div className="card-head">
+                        <span className="label">{editMode ? 'Editing — click any text or table cell' : 'Preview'}</span>
+                        <span className="spacer" />
+                        {hasEdits && <span className="pill pill-warn">Unsaved edits</span>}
                     </div>
-                    <iframe
-                        ref={iframeRef}
-                        srcDoc={previewHtml}
-                        style={{
-                            width: '100%', height: 'calc(100% - 40px)',
-                            border: 'none', background: '#fff',
-                            minHeight: '75vh',
-                        }}
-                        title="Order Preview"
-                        sandbox="allow-same-origin allow-scripts"
-                    />
+                    <iframe ref={iframeRef} srcDoc={previewHtml} title="Order preview" sandbox="allow-same-origin allow-scripts" />
                 </div>
             )}
 
-            {/* Empty state */}
             {!previewHtml && !loading && (
-                <div className="card" style={{ padding: '60px 40px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: 16 }}>📄</div>
-                    <h3 style={{ fontSize: '1.2rem', letterSpacing: '-0.03em', marginBottom: 8 }}>
-                        Ready to Draft
-                    </h3>
-                    <p className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>
-                        Click "Generate Draft" to create the KSERC truing-up order from your analysis results.
-                    </p>
+                <div className="card empty">
+                    <p className="h3">Ready to draft</p>
+                    <p>Generate the KSERC truing-up order from these analysis results. You can edit every paragraph and table before finalizing.</p>
                 </div>
             )}
         </section>

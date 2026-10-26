@@ -12,7 +12,7 @@ class MYTLoader:
     Load MYT baseline norms for a licensee and financial year.
 
     Priority order:
-      1. Firestore myt_norms/{licensee}/years/{fy} — set by staff or auto-extracted
+      1. document store myt_norms/{licensee}/years/{fy} — set by staff or auto-extracted
       2. JSON file fallback (data/myt_baselines/myt_baselines.json)
 
     This means staff can update norms in the UI without touching any files.
@@ -40,17 +40,17 @@ class MYTLoader:
     def load_myt_baselines(self, licensee_name: str, financial_year: str) -> Dict[str, float]:
         """
         Load MYT baseline norms.
-        Firestore wins over JSON. Returns {} if nothing found.
+        document store wins over JSON. Returns {} if nothing found.
         """
-        # ── 1. Check Firestore first ───────────────────────────────────
+        # ── 1. Check document store first ───────────────────────────────────
         try:
             from src.tools.db import get_myt_norms_override
             db_norms = get_myt_norms_override(licensee_name, financial_year)
             if db_norms:
-                logger.info(f"MYT norms loaded from Firestore for {licensee_name} FY {financial_year}")
+                logger.info(f"MYT norms loaded from document store for {licensee_name} FY {financial_year}")
                 return db_norms
         except Exception as e:
-            logger.warning(f"MYTLoader: Firestore lookup failed, falling back to JSON — {e}")
+            logger.warning(f"MYTLoader: document store lookup failed, falling back to JSON — {e}")
 
         # ── 2. Fall back to JSON ───────────────────────────────────────
         licensee_data = self.baselines.get(licensee_name, {})
@@ -64,7 +64,7 @@ class MYTLoader:
         self, licensee_name: str, base_year: str = "base_year_2021-22"
     ) -> Dict[str, float]:
         """Load base year norms — used for O&M escalation."""
-        # Try Firestore first
+        # Try document store first
         try:
             from src.tools.db import get_myt_norms_override
             db_norms = get_myt_norms_override(licensee_name, base_year)
@@ -79,11 +79,11 @@ class MYTLoader:
         return baselines.get(base_year, {})
 
     def load_full_licensee_data(self, licensee_name: str) -> Dict[str, Any]:
-        """Return all years' norms for a licensee. Merges Firestore + JSON."""
+        """Return all years' norms for a licensee. Merges document store + JSON."""
         # Start with JSON data
         result = dict(self.baselines.get(licensee_name, {}))
 
-        # Overlay Firestore data (higher priority)
+        # Overlay document store data (higher priority)
         try:
             from src.tools.db import get_all_myt_norms
             fs_norms = get_all_myt_norms(licensee_name)
@@ -92,6 +92,6 @@ class MYTLoader:
                     result["baselines"] = {}
                 result["baselines"].update(fs_norms)
         except Exception as e:
-            logger.warning(f"MYTLoader: Firestore full load failed — {e}")
+            logger.warning(f"MYTLoader: document store full load failed — {e}")
 
         return result

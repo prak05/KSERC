@@ -9,7 +9,7 @@ Enhanced Pipeline (Phase 2):
          → Review (HITL) → Draft → Clarification → Validate → END
 
 New AI Nodes:
-  • anomaly_detect : Gemini flags suspicious patterns pre-audit
+  • anomaly_detect : the model flags suspicious patterns pre-audit
   • clarification  : Auto-generates KSERC query letters
   • validate       : Peer-reviews the drafted order for quality
 """
@@ -95,7 +95,7 @@ def anomaly_detect_node(state: TruingUpState) -> dict:
     """
     Node 2a: AI Anomaly Detection (runs after extraction, before audit).
 
-    Gemini reviews all extracted financial data and flags:
+    the model reviews all extracted financial data and flags:
     - Year-over-year spikes in any expense
     - Internal inconsistencies between tables
     - Regulatory red flags (items KSERC always disallows)
@@ -127,7 +127,7 @@ def validate_node(state: TruingUpState) -> dict:
     """
     Node 5: Order Quality Validation.
 
-    Gemini reviews the drafted order as a peer reviewer:
+    the model reviews the drafted order as a peer reviewer:
     - Completeness: every claimed item addressed
     - Legal soundness: correct regulation citations
     - Arithmetic consistency

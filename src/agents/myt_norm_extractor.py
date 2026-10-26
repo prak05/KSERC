@@ -1,5 +1,5 @@
 ﻿"""
-KSERC Cross-Licensee Learning & Norm Extractor — Gemini-powered
+KSERC Cross-Licensee Learning & Norm Extractor — the model-powered
 =================================================================
 
 WHAT THIS MODULE DOES:
@@ -25,7 +25,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from src.config import GEMINI_MODEL
+from src.config import LLM_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ def _learn_kserc_methodology(
     Returns a methodology dict with rules for each expense component.
     """
     try:
-        from src.rag.file_search_store import query_regulations
+        from src.rag.regulation_store import query_regulations
     except ImportError:
         logger.warning("file_search_store not available for methodology learning")
         return {}
@@ -211,7 +211,7 @@ CRITICAL INSTRUCTIONS:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders", "regulations", "myt_orders"],
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
         )
         parsed = _parse_json_response(result, "KSERC Methodology")
         if parsed:
@@ -240,11 +240,11 @@ def extract_myt_norms(
     """
     Extract audit benchmarks by studying ALL past orders and regulations.
 
-    Priority (HARDCODED JSON IS PRIMARY — Gemini CANNOT override):
+    Priority (HARDCODED JSON IS PRIMARY — the model CANNOT override):
     0. LOAD hardcoded myt_baselines.json as the AUTHORITATIVE numeric source
-    1. LEARN methodology from ALL past orders across ALL licensees (Gemini)
-    2. Licensee justifications vs KSERC past responses (Gemini)
-    3. Gemini queries fill ONLY gaps not covered by hardcoded JSON
+    1. LEARN methodology from ALL past orders across ALL licensees (the model)
+    2. Licensee justifications vs KSERC past responses (the model)
+    3. the model queries fill ONLY gaps not covered by hardcoded JSON
     """
     logger.info(f"=== Cross-Licensee Learning & Norm Extraction: {licensee_name} FY {financial_year} ===")
 
@@ -256,7 +256,7 @@ def extract_myt_norms(
 
     # ══════════════════════════════════════════════════════════════════
     # STEP 0 (PRIMARY): Load hardcoded myt_baselines.json
-    # These values are AUTHORITATIVE and CANNOT be overridden by Gemini
+    # These values are AUTHORITATIVE and CANNOT be overridden by the model
     # ══════════════════════════════════════════════════════════════════
     hardcoded_norms = {}
     try:
@@ -282,7 +282,7 @@ def extract_myt_norms(
         logger.error(f"Failed to load myt_baselines.json: {e}")
 
     # ══════════════════════════════════════════════════════════════════
-    # STEP 1: Run Gemini queries for METHODOLOGY and JUSTIFICATIONS
+    # STEP 1: Run the model queries for METHODOLOGY and JUSTIFICATIONS
     # (These provide non-numeric context that hardcoded JSON cannot)
     # ══════════════════════════════════════════════════════════════════
     logger.info("[MYT PARALLEL] Running methodology + justification queries...")
@@ -376,7 +376,7 @@ def extract_myt_norms(
                 f"{sum(1 for k,v in result.items() if not k.startswith('_') and isinstance(v, (int,float)) and v > 0)} numeric values")
     for k, v in sorted(result.items()):
         if not k.startswith("_") and isinstance(v, (int, float)) and v > 0:
-            source = "[HARDCODED]" if k in hardcoded_norms else "[GEMINI]"
+            source = "[HARDCODED]" if k in hardcoded_norms else "[LLM]"
             logger.info(f"  {source} {k}: {v}")
 
     return result
@@ -399,7 +399,7 @@ def _query_petition_arr_erc(
     2. Then extract ONLY from the "Revised ARR&ERC Approved" column
     """
     try:
-        from src.rag.file_search_store import query_regulations
+        from src.rag.regulation_store import query_regulations
     except ImportError:
         logger.warning("file_search_store not available")
         return {}
@@ -456,7 +456,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["myt_orders", "past_orders", "regulations"],
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
         )
         parsed = _parse_json_response(result, "Revised ARR&ERC")
         
@@ -490,7 +490,7 @@ def _query_cross_licensee_precedents(
     Queries: past_orders + other_licensee_orders categories
     """
     try:
-        from src.rag.file_search_store import query_regulations
+        from src.rag.regulation_store import query_regulations
     except ImportError:
         return {}
 
@@ -555,7 +555,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders"],
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
         )
         return _parse_json_response(result, "Cross-Licensee Precedents")
     except Exception as e:
@@ -573,7 +573,7 @@ def _query_myt_order_norms(
 ) -> Dict[str, float]:
     """Query MYT Order for original control period norms (fallback only)."""
     try:
-        from src.rag.file_search_store import query_regulations
+        from src.rag.regulation_store import query_regulations
     except ImportError:
         return {}
 
@@ -624,7 +624,7 @@ Return ONLY the JSON object, no other text.
         result = query_regulations(
             prompt,
             categories=["myt_orders"],
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
         )
         return _parse_json_response(result, "MYT Order")
     except Exception as e:
@@ -654,7 +654,7 @@ def _query_all_regulations_and_amendments(
     - 2018 Tariff Regulations (for historical comparison)
     """
     try:
-        from src.rag.file_search_store import query_regulations
+        from src.rag.regulation_store import query_regulations
     except ImportError:
         return {}
 
@@ -708,7 +708,7 @@ Use 0 for unchanged values. Return ONLY the JSON object, no other text.
         result = query_regulations(
             prompt,
             categories=["regulations"],
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
         )
         parsed = _parse_json_response(result, "Regulations & Amendments")
         # Filter to only numeric non-zero values (amendments_summary is string, keep it in methodology)
@@ -727,7 +727,7 @@ Use 0 for unchanged values. Return ONLY the JSON object, no other text.
 # ═══════════════════════════════════════════════════════════════════════
 
 def _parse_json_response(text: str, source: str) -> Dict[str, Any]:
-    """Parse Gemini's JSON response, handling markdown code blocks and nested objects."""
+    """Parse the model's JSON response, handling markdown code blocks and nested objects."""
     if not text:
         return {}
 
@@ -784,7 +784,7 @@ def _analyze_licensee_justifications(
     - likely_decision: What KSERC is likely to do based on precedent
     """
     try:
-        from src.rag.file_search_store import query_regulations
+        from src.rag.regulation_store import query_regulations
     except ImportError:
         logger.warning("file_search_store not available for justification analysis")
         return {}
@@ -904,7 +904,7 @@ IMPORTANT:
         result = query_regulations(
             prompt,
             categories=["past_orders", "other_licensee_orders", "myt_orders", "regulations"],
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
         )
         parsed = _parse_json_response(result, "Justification Analysis")
         if parsed:
@@ -1063,7 +1063,7 @@ IMPORTANT:
 def extract_from_uploaded_pdf(pdf_path: str) -> dict:
     """
     Extract MYT norms / financial data from an uploaded reference PDF
-    using Gemini's direct PDF upload (NOT RAG — the PDF is new and not indexed yet).
+    using the model's direct PDF upload (NOT RAG — the PDF is new and not indexed yet).
 
     Returns:
         {
@@ -1074,17 +1074,17 @@ def extract_from_uploaded_pdf(pdf_path: str) -> dict:
         }
     """
     try:
-        from src.gemini_client import generate_with_pdf
+        from src.llm_client import generate_with_pdf
     except ImportError:
-        logger.error("gemini_client not available for PDF extraction")
-        return {"error": "gemini_client not available", "extracted_rows": []}
+        logger.error("llm_client not available for PDF extraction")
+        return {"error": "llm_client not available", "extracted_rows": []}
 
     logger.info(f"Extracting norms from uploaded PDF: {pdf_path}")
     try:
         raw = generate_with_pdf(
             pdf_path=pdf_path,
             prompt=_MYT_EXTRACT_PROMPT,
-            model=GEMINI_MODEL,
+            model=LLM_MODEL,
             temperature=0.0,
             response_mime_type="application/json",
         )
@@ -1093,12 +1093,12 @@ def extract_from_uploaded_pdf(pdf_path: str) -> dict:
             return {"error": "Extraction returned empty result", "extracted_rows": []}
 
         # ALWAYS rebuild extracted_rows from licensees.baselines structure.
-        # Gemini may return extracted_rows directly but they often lack field_key,
+        # the model may return extracted_rows directly but they often lack field_key,
         # which is required by write_norms_to_json. Rebuilding guarantees consistency.
         if result.get("licensees"):
             result["extracted_rows"] = _build_extracted_rows(result)
         elif "extracted_rows" in result:
-            # Gemini only returned flat rows without licensees structure — ensure field_key exists
+            # the model only returned flat rows without licensees structure — ensure field_key exists
             for row in result["extracted_rows"]:
                 if "field_key" not in row and "field" in row:
                     # Convert human-readable "Employee Cost" → "employee_cost"
@@ -1158,7 +1158,7 @@ def write_norms_to_json(confirmed_rows: list, order_number: str = "",
             baselines = {}
 
         updated = 0
-        # Licensee name normalization: Gemini uses full names, baselines use short keys
+        # Licensee name normalization: the model uses full names, baselines use short keys
         _LICENSEE_ALIASES = {
             "kdhp": "KDHP", "kannan": "KDHP", "kanan": "KDHP", "kdhpcl": "KDHP",
             "kannan devan": "KDHP", "kanan devan": "KDHP",
@@ -1168,7 +1168,7 @@ def write_norms_to_json(confirmed_rows: list, order_number: str = "",
         }
 
         def _normalize_licensee(name: str) -> str:
-            """Map Gemini's long licensee names to short keys in myt_baselines.json."""
+            """Map the model's long licensee names to short keys in myt_baselines.json."""
             lower = name.lower().strip()
             # Try exact match first
             for alias, short in _LICENSEE_ALIASES.items():

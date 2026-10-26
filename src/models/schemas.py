@@ -1,9 +1,8 @@
 """
-KSERC Truing-Up — Pydantic Schemas for Structured Gemini Output.
+KSERC Truing-Up — Pydantic Schemas for Structured Model Output.
 
-These schemas enforce correct JSON output from Gemini by using
-the `response_schema` parameter in google-genai's generate_content.
-This eliminates manual JSON parsing failures and ensures type safety.
+These schemas are passed as `response_schema` to the LLM client, which
+includes them in the request so the model returns JSON in this shape.
 """
 
 from pydantic import BaseModel, Field
@@ -11,7 +10,7 @@ from typing import Optional
 
 
 # ═══════════════════════════════════════════════════════════════════
-# Extraction Schemas (used by extractor.py / Gemini Vision)
+# Extraction Schemas (used by extractor.py / vision model)
 # ═══════════════════════════════════════════════════════════════════
 
 class ClaimedExpenses(BaseModel):
@@ -40,7 +39,7 @@ class ClaimedRevenues(BaseModel):
 
 
 class ExtractionResult(BaseModel):
-    """Complete extraction result from Gemini Vision or Document AI."""
+    """Complete extraction result from vision model or Textract."""
     claimed_expenses: ClaimedExpenses
     claimed_revenues: ClaimedRevenues
     total_expenditure: float = Field(0.0, description="Sum of all expenses")
@@ -141,7 +140,7 @@ class InterestTableExtraction(BaseModel):
     rows_found: List[InterestTableRow] = Field(default_factory=list)
     total_claimed: Optional[float] = Field(None, description="Total claimed for this component")
     extraction_method: str = Field(
-        "gemini", description="gemini | vision_api — how the table was read"
+        "llm", description="llm | vision_api — how the table was read"
     )
     confidence: float = Field(1.0, description="0.0–1.0 extraction confidence")
 

@@ -1,57 +1,40 @@
-# ============================================================
-# KSERC Truing-Up Engine — Cloud Run Dockerfile
-# Multi-stage: Build React frontend → Serve with Python FastAPI
-# ============================================================
+# KSERC Truing-Up Engine
+# Stage 1 builds the React UI; stage 2 serves it and the API from one FastAPI process.
 
-# ── Stage 1: Build React Frontend ─────────────────────────────
-FROM node:20-alpine AS frontend-builder
-
-WORKDIR /frontend
+FROM node:22-alpine AS ui
+WORKDIR /ui
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci --production=false
-
+RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 
-# ── Stage 2: Python Backend + Static Frontend ─────────────────
-FROM python:3.11-slim
-
-# Install system dependencies for WeasyPrint and general use
+FROM python:3.12-slim
+# WeasyPrint needs Pango/Cairo for PDF rendering
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libgdk-pixbuf-2.0-0 \
-    libffi-dev \
-    libcairo2 \
-    libcairo2-dev \
-    pkg-config \
-    gcc \
+        libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+COPY app.py ./
+COPY src/ src/
+COPY builder/ builder/
+COPY templates/ templates/
+COPY data/ data/
+COPY documents/ documents/
+COPY --from=ui /ui/dist frontend/dist
 
-# Copy built frontend from Stage 1
-COPY --from=frontend-builder /frontend/dist /app/frontend/dist
+RUN useradd --create-home --uid 10001 kserc \
+    && mkdir -p uploads output_orders \
+    && chown -R kserc:kserc /app
+USER kserc
 
-# Create necessary directories
-RUN mkdir -p uploads output_orders data
-
-# Set environment variables
-ENV PORT=8080
-ENV PYTHONUNBUFFERED=1
-ENV ENVIRONMENT=production
-ENV DOCUMENTS_DIR=/app/Documents
-ENV GCS_BUCKET=kserc-regulatory-docs-v2
-
-# Expose Cloud Run port
+ENV PYTHONUNBUFFERED=1 \
+    PORT=8080 \
+    DOCUMENTS_DIR=/app/documents
 EXPOSE 8080
-
-# Start the server
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s \
+    CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8080/api/health').status==200 else 1)"
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT} --timeout-keep-alive 75"]

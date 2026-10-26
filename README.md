@@ -1,292 +1,107 @@
-# KSERC SDL Truing-Up Analysis System
+# KSERC Truing-Up Engine
 
-An AI-powered tool that reads KSERC (Kerala State Electricity Regulatory Commission) truing-up 
-petitions submitted by Special Distribution Licensees (SDLs), audits them against MYT 
-(Multi-Year Tariff) approved norms, and generates a draft KSERC order in PDF format.
+You are reviewing a truing-up petition for the **Kerala State Electricity Regulatory Commission**. A licensee (Technopark, Infopark, CSEZA or KDHP) has filed its actual costs for a financial year; the Commission must check every head of expenditure against the Tariff Regulations and the MYT order, disallow what the rules don't permit, and issue a reasoned order.
 
----
+This engine does that work end to end. It reads the petition PDFs, extracts the ARR tables, audits each component with deterministic regulatory formulas (the model never does the arithmetic), pauses for an officer to rule on one-time R&M items, and drafts a 30-page order in the Commission's format — exportable as PDF or Word.
 
-## What It Does
-
-Given a petition PDF from an SDL (Infopark, Technopark, CSEZA/KSEZ, KDHP) for any year 
-in the MYT control period (2022-27), the system:
-
-1. **Extracts** all claimed expenses, revenues, energy data, and distribution loss from the PDF using Gemini Vision AI
-2. **Audits** the petition against KSERC-approved MYT norms (escalation rates, loss targets, APPC)
-3. **Applies** KSERC Regulation 73(3) for symmetric treatment of distribution loss efficiency gains and losses
-4. **Drafts** a complete KSERC truing-up order in the official format as a PDF
+It runs entirely on your machine with no keys, or on AWS with one command.
 
 ---
 
-## System Architecture
+### 1. VISUAL SYSTEM & DESIGN SPECS
+
+*   **Palette (monochrome foundation + one accent):**
+    *   Canvas `#08090A`, raised surfaces `#0F1011` / `#141516`.
+    *   Hairline structure: 1px borders `#1F2023`, strong `#2A2B2F`.
+    *   Text `#F7F8F8`, secondary `#8A8F98`, tertiary `#5C6068`.
+    *   The single accent — indigo `#5E6AD2` — marks only the active route, focus, the primary action and progress (under 5% of the screen).
+    *   Data states use muted tones and appear only on data: approved `#4CB782`, review `#D9A441`, disallowed `#D25E5E`.
+*   **Typography:** heavy display headings with tight tracking; every amount, clause number and log line in a monospace face with tabular figures; 10–11px uppercase mono micro-labels. All fonts are self-hosted — the UI makes no request to any font CDN.
+*   **Layout attitude:** a Linear-style workspace — fixed sidebar, ⌘K command palette, dense aligned tables — opened by an asymmetric editorial hero where a massive title sits against microscopic case metadata and deliberate negative space.
+
+---
+
+### 2. SYSTEM ARCHITECTURE
 
 ```
-petition PDF
-     │
-     ▼
-┌─────────────┐    Gemini Vision     ┌────────────────────┐
-│  extractor  │ ─────────────────►  │ claimed_expenses   │
-│    .py      │                     │ energy_input       │
-│             │                     │ energy_purchased   │
-│  (PDF →     │                     │ actual_loss        │
-│   JSON)     │                     │ appc_rs_per_unit   │
-└─────────────┘                     └────────────────────┘
-                                             │
-                    ┌────────────────────────┘
-                    │
-                    ▼
-        ┌──────────────────┐
-        │ myt_baselines    │  ← MYT Order norms (expense
-        │    .json         │    ceilings, loss targets,
-        │                  │    escalation rates)
-        └──────────────────┘
-                    │
-                    ▼
-┌─────────────┐
-│  auditor    │  Computes:
-│    .py      │  • approved_loss = energy_input × target% / 100
-│             │  • PPC = claimed ± efficiency gain/loss (Reg 73(3))
-│  (Audit +  │  • Each expense: min(claimed, MYT_norm × escalation)
-│   Compute) │  • ARR = Σ approved expenses - revenue
-└─────────────┘
-        │
-        ▼
-┌─────────────┐    Gemini text      ┌──────────────────┐
-│  drafter    │ ─────────────────►  │  PDF order       │
-│    .py      │    generation       │  (KSERC format)  │
-└─────────────┘                     └──────────────────┘
+            ┌──────────────── React UI (Vite) ─────────────────┐
+            │ Upload · Results · Order drafter · Analyst ·     │
+            │ History · Calculator · Benchmarks · Regulations  │
+            └───────────────────────┬──────────────────────────┘
+                                    │ /api
+                       ┌────────────▼─────────────┐
+                       │  FastAPI  (app.py)       │
+                       │  LangGraph pipeline:     │
+                       │  extract → deep tables → │
+                       │  MYT norms → anomalies → │
+                       │  audit → R&M review →    │
+                       │  draft → clarify → verify│
+                       └────────────┬─────────────┘
+                                    │ src/cloud  (CLOUD = local | aws)
+      ┌───────────────┬─────────────┼───────────────┬───────────────────┐
+      │ Model         │ Tables      │ Document store│ Files             │
+ local│ Ollama / LM   │ PyMuPDF     │ SQLite        │ documents/        │
+      │ Studio /      │             │               │                   │
+      │ offline       │             │               │                   │
+ aws  │ Claude on     │ Textract    │ DynamoDB      │ S3                │
+      │ Bedrock       │             │ (+S3 spill)   │                   │
+      └───────────────┴─────────────┴───────────────┴───────────────────┘
 ```
 
-### Supporting Agents
+*   **Frame 1 — Intake:** petition PDFs plus the year's rates (inflation, SBI EBLR, deposit rates, BEE fee). Files are validated, size-capped and stored under random IDs.
+*   **Frame 2 — Extraction:** page images go to the model for the ARR table; Textract (AWS) or PyMuPDF (local) supplies the structured tables as a cross-check; results are cached by PDF hash.
+*   **Frame 3 — Audit engine:** `src/tools/normative_math.py`, the depreciation engine (90% cap, grant-funded assets), the interest & finance engine (normative loan, IWC, security deposit interest) and the PPC cross-check (APPC × energy input) compute every approved figure. The model only classifies and explains.
+*   **Frame 4 — Regulation corpus:** 29 reference PDFs (tariff regulations and amendments, MYT orders, past truing-up orders) are converted to text once; questions retrieve the most relevant passages with BM25 instead of shipping whole PDFs.
+*   **Frame 5 — Order:** JSON order model → Jinja templates → HTML → WeasyPrint PDF, or DOCX for editing in Word.
 
-| Agent | File | Role |
+**AWS deployment** (`infra/aws`, 28 resources): VPC with two public subnets → Application Load Balancer (900 s idle timeout, optional HTTPS) → ECS Fargate (2 vCPU / 4 GB) → Bedrock, Textract, DynamoDB (on-demand, PITR), S3 (private, versioned, encrypted). The task's IAM role is the only credential; it is scoped to one bucket, one table and one Bedrock region.
+
+---
+
+### 3. BEHAVIOUR & MOTION
+
+*   **Choreographed entry:** structural borders fade in (500 ms) → the hero title glides up 16 px while fading in (150 ms delay, `cubic-bezier(0.16, 1, 0.3, 1)`) → working panels wipe in (300 ms delay).
+*   **Easing:** macro moves — opening panels, drawers, view changes — 500 ms `cubic-bezier(0.16,1,0.3,1)`; micro-interactions 200 ms `cubic-bezier(0.25,1,0.5,1)`. Views cross-fade; nothing blinks out. `prefers-reduced-motion` is respected.
+*   **Primary action:** an off-white block that inverts on hover with a vertical text slide.
+*   **Audit terminal:** while a petition is analysed, pipeline stages stream in as monospace log lines with stage tags, an elapsed timer and a thin indigo progress line.
+*   **Human in the loop:** when claimed R&M exceeds the MYT norm the pipeline pauses; the officer selects one-time items under Regulation 80(3) and the run resumes. Any component can be overridden later with a recorded justification.
+*   **Merged from earlier versions:** Analyst Q&A grounded in the corpus with cited sources (v3/v6), case history (v4), Word export (v3), quick calculator and historical benchmarks (v2), live audit terminal (v6).
+
+---
+
+### 4. RUN & OUTPUT REQUIREMENTS
+
+**Local — no cloud, no keys**
+
+```bash
+make setup      # Python venv, UI packages, .env from .env.example
+make run        # UI + API on http://localhost:8000
+make up         # or Docker: app + Ollama on http://localhost:8080
+make test       # 99 tests, model-free
+```
+
+`LLM_PROVIDER` chooses the model: `local` (Ollama, LM Studio, llama.cpp — default `qwen2.5:14b`), `bedrock`, or `offline` (rules engine only). A sample petition is in `documents/sample-petitions/`.
+
+**AWS — one command**
+
+```bash
+make plan-aws REGION=ap-south-1     # review
+make deploy-aws REGION=ap-south-1   # provision → build & push → sync corpus → roll out
+make destroy-aws REGION=ap-south-1
+```
+
+Before the first deploy, enable model access for Claude in Amazon Bedrock for the region you deploy to (or set `bedrock_region`). Restrict `allowed_cidrs` to the Commission's network and set `certificate_arn` for HTTPS — see [`docs/deployment.md`](docs/deployment.md).
+
+**Configuration** — `.env` (see `.env.example`):
+
+| Variable | Default | |
 |---|---|---|
-| MYT Norm Extractor | `myt_norm_extractor.py` | Reads MYT order PDFs with Gemini to populate `myt_baselines.json` |
-| Deep Table Extractor | `deep_table_extractor.py` | Fallback extraction using structured table parsing |
-| Chief Auditor | `chief_auditor.py` | Orchestrates multi-component audit |
-| Analyzer | `analyzer.py` | Post-audit analysis and variance reporting |
+| `CLOUD` | `local` | `aws` switches storage to DynamoDB + S3 and tables to Textract |
+| `LLM_PROVIDER` | `local` (`bedrock` on AWS) | `local` · `bedrock` · `offline` |
+| `LLM_MODEL` | `anthropic.claude-opus-5-5` | Bedrock model; `LLM_FALLBACK_MODEL` handles refusals |
+| `LLM_EFFORT` | `high` | model effort for extraction and drafting |
+| `AWS_REGION` / `BEDROCK_REGION` | `ap-south-1` | app region / model region |
 
----
+**Outputs** — generated orders land in `output_orders/` (samples for Infopark, KDHP and Technopark FY 2024-25 are included); downloads: `GET /api/download/{id}` (PDF), `GET /api/export-docx/{id}` (Word). Full route list: [`docs/api_reference.md`](docs/api_reference.md).
 
-## Key Concepts
-
-### What Is a Truing-Up Petition?
-At the end of each financial year, each SDL submits a petition to KSERC claiming reimbursement 
-for their actual costs. KSERC audits the claimed costs against the MYT-approved norms and 
-issues a truing-up order approving or adjusting each line item.
-
-### Distribution Loss Regulation (Reg 73(3))
-If the SDL's actual distribution loss is **lower** than the MYT target (efficiency gain), 
-KSERC shares the savings symmetrically:
-```
-efficiency_gain_units = approved_loss_units - actual_loss_units
-savings_to_SDL        = efficiency_gain_units × APPC / 2
-```
-If actual loss is **higher** than target (inefficiency), the SDL bears the extra cost.
-
-### Power Purchase Cost (PPC) Audit
-```
-APPC          = Total PPC (Rs Lakhs) ÷ Energy Purchased (Lakh units)   [from petition]
-approved_loss = Energy Input (Lakh units) × Target Loss% ÷ 100          [computed]
-actual_loss   = extracted from petition Energy Balance table             [from petition]
-efficiency_gain = approved_loss - actual_loss                            [if positive]
-approved_PPC  = claimed_PPC + (efficiency_gain × APPC)                  [KSERC formula]
-```
-
-### Where Values Come From
-
-| Value | Source | File |
-|---|---|---|
-| Claimed costs | Gemini reads petition PDF | `extractor.py` |
-| Energy purchased from KSEB | Gemini reads Power Purchase table | `extractor.py` |
-| Total energy input to system | Gemini reads Energy Balance table | `extractor.py` |
-| Actual distribution loss units | Gemini reads Energy Balance table | `extractor.py` |
-| APPC (Rs/unit) | Gemini reads Power Purchase table | `extractor.py` |
-| MYT expense ceilings | `myt_baselines.json` | regulatory constant |
-| Target distribution loss % | `myt_baselines.json` | regulatory constant |
-| Approved distribution loss units | Computed: `energy_input × target%` | `auditor.py` |
-| PPC efficiency gain/loss | Computed: Reg 73(3) formula | `auditor.py` |
-
----
-
-## Setup
-
-### Prerequisites
-- Python 3.11+
-- Node.js 18+ (for the React frontend)
-- A Google Cloud project with Gemini API access
-
-### 1. Clone and install dependencies
-```bash
-git clone <repo-url>
-cd kserc_sdl_truing_up
-pip install -r requirements.txt
-```
-
-### 2. Configure environment variables
-Copy `.env.example` to `.env` and fill in:
-```env
-GEMINI_API_KEY=your_gemini_api_key
-GOOGLE_CLOUD_PROJECT=your_gcp_project_id
-VERTEX_AI_REGION=us-central1
-DOCUMENT_AI_PROCESSOR_ID=your_processor_id   # optional
-```
-
-### 3. Prepare MYT norms
-The MYT baselines for all licensees (Technopark, Infopark, CSEZA, KDHP) are in:
-```
-data/myt_baselines/myt_baselines.json
-```
-These are pre-populated from KSERC MYT Orders (OP 09-12/2023). Do not modify unless you 
-have a new MYT Order from KSERC.
-
-### 4. Install and start the frontend (optional)
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
----
-
-## Running the System
-
-### Option 1: Web UI
-```bash
-# Start the Flask backend
-python app.py
-
-# In another terminal, start the React frontend
-cd frontend && npm run dev
-```
-Open http://localhost:5173, upload a petition PDF, select the licensee and year, click Analyze.
-
-### Option 2: Command-line test
-Edit `run_test.py` to point to your petition PDF, then:
-```bash
-python run_test.py
-```
-Output PDF is saved to `output_orders/`.
-
-### Option 3: Python API
-```python
-from src.main_graph import run_pipeline
-
-result = run_pipeline(
-    licensee_name="Infopark",
-    financial_year="2024-25",
-    petition_pdf_path="path/to/petition.pdf",
-)
-print(result["approved_arr"])
-```
-
----
-
-## Adding a New Petition
-
-1. Place the petition PDF in `data/input_petitions/` (or upload via web UI)
-2. Select the licensee name and financial year in the UI
-3. Run the pipeline — Gemini extracts everything from the PDF automatically
-4. Review the generated PDF order in `output_orders/`
-
----
-
-## Adding a New Licensee
-
-1. Obtain the licensee's KSERC MYT Order PDF
-2. Add an entry to `data/myt_baselines/myt_baselines.json`:
-```json
-"NewLicensee": {
-  "control_period": "2022-2027",
-  "myt_order": "OP No.XX/2023",
-  "escalation_rates": { "2024-25": 4.84, ... },
-  "baselines": {
-    "2024-25": {
-      "power_purchase_cost": 0.0,
-      "employee_cost": 0.0,
-      "target_distribution_loss_pct": 5.0,
-      "avg_power_purchase_cost_rs_per_kwh": 7.0,
-      ...
-    }
-  }
-}
-```
-3. Add a name alias in `auditor.py` → `DEFAULT_TARGET_DIST_LOSS` for fuzzy name matching
-
----
-
-## Extraction Cache
-
-Gemini API calls are expensive and slow. The system caches extraction results in `.extraction_cache/`.  
-To force a fresh extraction (e.g., after fixing the Gemini prompt), delete the cache file:
-```bash
-Remove-Item .extraction_cache\*.json   # Windows PowerShell
-rm .extraction_cache/*.json            # Linux/macOS
-```
-
----
-
-## Project Structure
-
-```
-kserc_sdl_truing_up/
-├── app.py                      # Flask REST API backend
-├── run_test.py                 # CLI test script
-├── requirements.txt
-├── RULES.md                    # Development rules (read this before editing code)
-│
-├── src/
-│   ├── main_graph.py           # LangGraph pipeline orchestrator
-│   ├── state.py                # Shared state schema
-│   ├── gemini_client.py        # Gemini Vision API wrapper
-│   ├── agents/
-│   │   ├── extractor.py        # PDF → structured JSON (Gemini Vision)
-│   │   ├── auditor.py          # Apply MYT norms, compute approved values
-│   │   ├── drafter.py          # Generate PDF order (Gemini text + HTML)
-│   │   ├── myt_norm_extractor.py   # Extract norms from MYT Order PDFs
-│   │   └── deep_table_extractor.py # Fallback table extraction
-│   └── rag/                    # Vector search on historical orders
-│
-├── data/
-│   ├── myt_baselines/
-│   │   └── myt_baselines.json  # MYT-approved norms per licensee per year
-│   ├── input_petitions/        # Input PDFs
-│   ├── historical_orders/      # Past KSERC orders for RAG context
-│   └── regulations/            # KSERC Tariff Regulations
-│
-├── frontend/                   # React + Vite web UI
-├── output_orders/              # Generated PDF orders
-└── docs/                       # Additional documentation
-```
-
----
-
-## Regulatory References
-
-| Document | Relevance |
-|---|---|
-| KSERC Tariff Regulation 2021 | Governs expense approval methodology |
-| Regulation 73(3) | Symmetric distribution loss incentive/disincentive |
-| OP No.09/2023 (Infopark MYT) | MYT norms for Infopark 2022-2027 |
-| OP No.10/2023 (CSEZA MYT) | MYT norms for CSEZA 2022-2027 |
-| OP No.11/2023 (KDHP MYT) | MYT norms for KDHP 2022-2027 |
-| OP No.12/2023 (Technopark MYT) | MYT norms for Technopark 2022-2027 |
-
----
-
-## Troubleshooting
-
-**Gemini returns 503 / UNAVAILABLE**  
-Gemini is overloaded (temporary). Delete the bad cache entry and retry in a few minutes.
-
-**APPC is wrong (too low or too high)**  
-Check that Gemini extracted `energy_purchased_lakh_units` (not `energy_input_lakh_units`).  
-APPC = PPC ÷ energy_purchased_from_KSEB, NOT ÷ total_energy_input.
-
-**approved_loss is wrong**  
-Check that `energy_input_lakh_units` was extracted correctly from the Energy Balance table.  
-The formula is `approved_loss = energy_input × target% / 100`.
-
-**Wrong licensee norms applied**  
-Check that the `licensee_name` string in the pipeline call matches a key in `myt_baselines.json`. 
-The system does fuzzy matching (e.g., "infopark" matches "Infopark").
+**Known gaps** — `KSERC_Tariff_Regulations_2021.pdf` is not in the corpus (add it under Regulations); two legacy tests are marked expected-fail because they predate the March 2026 PPC and ARR-scanner rules. Version history: [`VERSIONS.md`](VERSIONS.md).

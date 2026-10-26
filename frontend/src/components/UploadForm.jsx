@@ -1,206 +1,135 @@
-import { useState } from 'react'
-import NeonSelect from './NeonSelect'
+import { useRef, useState } from 'react'
+import { Cta } from './ui'
 
 const LICENSEES = [
     { value: 'Technopark', label: 'Technopark' },
     { value: 'Infopark', label: 'Infopark' },
-    { value: 'CSEZ', label: 'CSEZA / Cezza' },
+    { value: 'CSEZ', label: 'CSEZA' },
     { value: 'KDHP', label: 'KDHP' },
 ]
 
 const FINANCIAL_YEARS = ['2024-25', '2023-24', '2022-23']
+
+const PARAMS = [
+    { key: 'inflation_pct', label: 'CPI inflation', unit: '%', placeholder: '0.00' },
+    { key: 'sbi_eblr_pct', label: 'SBI EBLR + 2%', unit: '%', placeholder: '0.00' },
+    { key: 'bee_energy_audit_fee', label: 'BEE audit fee', unit: '₹L', placeholder: 'Auto', hint: 'Auto-extracted when blank' },
+    { key: 'supply_code_sd_rate', label: 'SD interest rate', unit: '%', placeholder: '6.75', hint: 'Default 6.75%' },
+    { key: 'norm_loan_opening', label: 'Normative loan opening', unit: '₹L', placeholder: 'Auto' },
+    { key: 'sd_balance', label: 'Security deposit balance', unit: '₹L', placeholder: 'Auto' },
+    { key: 'cumulative_gap', label: 'Cumulative revenue gap', unit: '₹L', placeholder: 'Auto', hint: 'For carrying cost' },
+]
 
 export default function UploadForm({ onSubmit }) {
     const [dragActive, setDragActive] = useState(false)
     const [files, setFiles] = useState(null)
     const [licensee, setLicensee] = useState('')
     const [financialYear, setFinancialYear] = useState('')
-    const [inflationPct, setInflationPct] = useState('')
-    const [sbiEblrPct, setSbiEblrPct] = useState('')
-    const [beeFee, setBeeFee] = useState('')
-    const [supplyCodeRate, setSupplyCodeRate] = useState('')
-    const [normLoanOpening, setNormLoanOpening] = useState('')
-    const [sdBalance, setSdBalance] = useState('')
-    const [cumulativeGap, setCumulativeGap] = useState('')
+    const [params, setParams] = useState(() => Object.fromEntries(PARAMS.map(p => [p.key, ''])))
+    const inputRef = useRef(null)
 
     const handleDrop = (e) => {
         e.preventDefault()
         setDragActive(false)
-        const dropped = e.dataTransfer.files
-        if (dropped?.length) setFiles(dropped)
+        if (e.dataTransfer.files?.length) setFiles(e.dataTransfer.files)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
         if (!files || !licensee || !financialYear) return
-
         const formData = new FormData()
         for (let i = 0; i < files.length; i++) formData.append('files', files[i])
         formData.append('licensee', licensee)
         formData.append('financial_year', financialYear)
-        formData.append('inflation_pct', inflationPct)
-        formData.append('sbi_eblr_pct', sbiEblrPct)
-        formData.append('bee_energy_audit_fee', beeFee)
-        formData.append('supply_code_sd_rate', supplyCodeRate)
-        formData.append('norm_loan_opening', normLoanOpening)
-        formData.append('sd_balance', sdBalance)
-        formData.append('cumulative_gap', cumulativeGap)
+        PARAMS.forEach(p => formData.append(p.key, params[p.key]))
         onSubmit(formData)
     }
 
     const canSubmit = files && licensee && financialYear
+    const fileArr = files ? Array.from(files) : []
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {/* Section title */}
-            <div>
-                <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', letterSpacing: '-0.05em', marginBottom: 6 }}>
-                    Submit Petition
-                </h2>
-                <p className="mono" style={{ lineHeight: 1.8 }}>
-                    Upload licensee petition PDFs for automated compliance analysis
+        <form onSubmit={handleSubmit} className="hero">
+            <section className="hero-left enter-frame">
+                <span className="label">KSERC · Truing-up terminal · Regulation 2021</span>
+                <h1 className="display hero-title enter-title">
+                    Truing-up,<br /><em>reviewed.</em>
+                </h1>
+                <p className="lede enter-title">
+                    Upload a licensee's petition. The engine extracts every cost head, tests it against the MYT norms
+                    and Tariff Regulations with deterministic formulas, and drafts the Commission's order for your review.
                 </p>
-            </div>
+                <div className="hero-meta enter-panel">
+                    <div><b>9 stages</b>Extraction → order</div>
+                    <div><b>4 licensees</b>SDL · FY 2022–25</div>
+                    <div><b>Rs. Lakhs</b>All amounts</div>
+                    <div><b>Deterministic</b>Normative math</div>
+                    <div><b>Auditable</b>Every decision logged</div>
+                    <div><b>Editable</b>Human override</div>
+                </div>
+            </section>
 
-            {/* Row: Licensee + FY */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <section className="hero-right enter-panel">
+                <div className="grid-2">
+                    <label className="field">
+                        <span className="label">Licensee</span>
+                        <select className="select" value={licensee} onChange={e => setLicensee(e.target.value)} required>
+                            <option value="" disabled>Select licensee</option>
+                            {LICENSEES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
+                        </select>
+                    </label>
+                    <label className="field">
+                        <span className="label">Financial year</span>
+                        <select className="select" value={financialYear} onChange={e => setFinancialYear(e.target.value)} required>
+                            <option value="" disabled>Select year</option>
+                            {FINANCIAL_YEARS.map(y => <option key={y} value={y}>FY {y}</option>)}
+                        </select>
+                    </label>
+                </div>
+
+                <div
+                    className={`dropzone ${dragActive ? 'is-drag' : ''} ${files ? 'has-files' : ''}`}
+                    onDragOver={e => { e.preventDefault(); setDragActive(true) }}
+                    onDragLeave={() => setDragActive(false)}
+                    onDrop={handleDrop}
+                    onClick={() => inputRef.current?.click()}
+                    role="button" tabIndex={0}
+                    onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && inputRef.current?.click()}
+                >
+                    <input ref={inputRef} type="file" accept=".pdf" multiple hidden onChange={e => setFiles(e.target.files)} />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 15V4m0 0L8 8m4-4l4 4M5 15v3a2 2 0 002 2h10a2 2 0 002-2v-3" /></svg>
+                    <span className="h3">{files ? `${fileArr.length} petition file${fileArr.length > 1 ? 's' : ''} ready` : 'Drop petition PDFs'}</span>
+                    {!files && <span className="hint">Petition, annexures and audited accounts — sent together for cross-reference</span>}
+                    {files && (
+                        <div className="file-list">
+                            {fileArr.map(f => (
+                                <div key={f.name}><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</span><span>{(f.size / 1024 / 1024).toFixed(1)} MB</span></div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
                 <div>
-                    <label className="mono-wide" style={{ display: 'block', marginBottom: 8 }}>Licensee</label>
-                    <NeonSelect value={licensee} onChange={setLicensee} options={LICENSEES} placeholder="Select licensee..." />
-                </div>
-                <div>
-                    <label className="mono-wide" style={{ display: 'block', marginBottom: 8 }}>Financial Year</label>
-                    <NeonSelect value={financialYear} onChange={setFinancialYear} options={FINANCIAL_YEARS} placeholder="Select year..." />
-                </div>
-            </div>
-
-            {/* Parameter cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
-                <div className="card" style={{ padding: '22px 24px' }}>
-                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        📈 CPI Inflation
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                        <input type="number" step="0.01" value={inflationPct} placeholder="0.00"
-                            onChange={e => setInflationPct(e.target.value)}
-                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>%</span>
+                    <span className="label" style={{ display: 'block', marginBottom: 10 }}>Parameters · optional</span>
+                    <div className="param-grid">
+                        {PARAMS.map(p => (
+                            <label key={p.key} className="field">
+                                <span className="label">{p.label}</span>
+                                <span className="affix">
+                                    <input type="number" step="0.01" className="input num" placeholder={p.placeholder}
+                                        value={params[p.key]} onChange={e => setParams(s => ({ ...s, [p.key]: e.target.value }))} />
+                                    <span className="affix-unit">{p.unit}</span>
+                                </span>
+                                {p.hint && <span className="hint">{p.hint}</span>}
+                            </label>
+                        ))}
                     </div>
                 </div>
 
-                <div className="card" style={{ padding: '22px 24px' }}>
-                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        🏛️ SBI EBLR + 2%
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                        <input type="number" step="0.01" value={sbiEblrPct} placeholder="0.00"
-                            onChange={e => setSbiEblrPct(e.target.value)}
-                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>%</span>
-                    </div>
+                <div style={{ marginTop: 'auto' }}>
+                    <Cta type="submit" block disabled={!canSubmit}>Run truing-up audit</Cta>
                 </div>
-
-                <div className="card" style={{ padding: '22px 24px' }}>
-                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        🔋 BEE Audit Fee
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                        <input type="number" step="0.01" value={beeFee} placeholder="0.00"
-                            onChange={e => setBeeFee(e.target.value)}
-                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
-                    </div>
-                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Auto-extract</p>
-                </div>
-
-                <div className="card" style={{ padding: '22px 24px' }}>
-                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        🔐 SD Interest Rate
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                        <input type="number" step="0.01" value={supplyCodeRate} placeholder="6.75"
-                            onChange={e => setSupplyCodeRate(e.target.value)}
-                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>%</span>
-                    </div>
-                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Default 6.75%</p>
-                </div>
-
-                <div className="card" style={{ padding: '22px 24px' }}>
-                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        🏦 Norm. Loan Opening
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                        <input type="number" step="0.01" value={normLoanOpening} placeholder="Auto"
-                            onChange={e => setNormLoanOpening(e.target.value)}
-                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
-                    </div>
-                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Normative loan opening balance</p>
-                </div>
-
-                <div className="card" style={{ padding: '22px 24px' }}>
-                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        🔒 SD Balance
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                        <input type="number" step="0.01" value={sdBalance} placeholder="Auto"
-                            onChange={e => setSdBalance(e.target.value)}
-                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
-                    </div>
-                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>Consumer security deposit balance</p>
-                </div>
-
-                <div className="card" style={{ padding: '22px 24px' }}>
-                    <p className="mono-wide" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        📊 Cumulative Rev. Gap
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                        <input type="number" step="0.01" value={cumulativeGap} placeholder="Auto"
-                            onChange={e => setCumulativeGap(e.target.value)}
-                            className="input-field" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right', padding: '14px 16px', letterSpacing: '0.02em' }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>₹L</span>
-                    </div>
-                    <p className="mono" style={{ color: 'var(--text-tertiary)', marginTop: 8, fontSize: '9px' }}>For carrying cost calculation</p>
-                </div>
-            </div>
-
-            {/* Drop Zone */}
-            <div
-                onDragOver={e => { e.preventDefault(); setDragActive(true) }}
-                onDragLeave={() => setDragActive(false)}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById('neon-file-input').click()}
-                className="card"
-                style={{
-                    padding: '50px 32px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    borderColor: dragActive ? 'var(--border-accent)' : files ? 'var(--border-accent)' : undefined,
-                    background: dragActive ? 'rgba(191, 255, 0, 0.03)' : files ? 'rgba(191, 255, 0, 0.02)' : undefined,
-                    transition: 'all 0.3s var(--ease-expo)',
-                }}
-            >
-                <input id="neon-file-input" type="file" accept=".pdf" multiple
-                    onChange={e => setFiles(e.target.files)}
-                    style={{ display: 'none' }} />
-                <div style={{ fontSize: '2rem', marginBottom: 12, opacity: files ? 1 : 0.3 }}>
-                    {files ? '✓' : '🗃️'}
-                </div>
-                <p className="mono-wide" style={{ color: files ? 'var(--accent)' : 'var(--text-secondary)', marginBottom: 6 }}>
-                    {files ? `${files.length} file${files.length > 1 ? 's' : ''} selected` : 'Upload Petition PDFs'}
-                </p>
-                <p className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '9px' }}>
-                    {files ? Array.from(files).map(f => f.name).join(', ') : 'Click or drag PDFs here'}
-                </p>
-            </div>
-
-            {/* Submit */}
-            <button type="submit" disabled={!canSubmit} className="btn-primary"
-                style={{ width: '100%', padding: '16px 24px', fontSize: '0.85rem' }}>
-                🚀 Run Audit Pipeline
-            </button>
+            </section>
         </form>
     )
 }

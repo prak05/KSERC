@@ -1,75 +1,45 @@
-# Environment & Secrets
+# Secrets and local settings — never commit
 .env
 .env.*
-service_account.json
-vertex_sa.json
-*_sa.json
-*_sa_*.json
-kserc_sa*.json
-*service*.json
-*.key.json
+!.env.example
+*.pem
+*.key
+*_sa*.json
+*service-account*.json
+token*.txt
 
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-venv/
-env/
+*.py[cod]
 .venv/
-*.egg-info/
-dist/
-build/
+venv/
 .pytest_cache/
+.coverage
+*.egg-info/
 
-# Data & Cache
-.extraction_cache/
-*.db
-data/*.pkl
-data/*.pickle
-*.chroma/
-chroma_db/
-*.jsonl
-data/audit_trail/
-.file_upload_cache.json
-.benchmarks/
-cache/
-results_*.json
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Output files (regeneratable)
-output_orders/*.pdf
-
-# Uploads (user data, not committed)
-uploads/
-
-# Logs
-*.log
-log_summary.txt
-log_summary_details.txt
-
-# Large PDFs in project root
-/*.pdf
-
-# Temp
-tmp_pdf_pages/
-/tmp/
-*.tmp
-
-# Node
+# Frontend
 frontend/node_modules/
 frontend/dist/
 
-# Gemini AI
-.gemini/
+# Runtime data
+uploads/
+.extraction_cache/
+.file_upload_cache.json
+data/store.sqlite3
+data/audit_trail/
+output_orders/*_edited.html
+*.log
+
+# Terraform
+infra/aws/.terraform/
+infra/aws/*.tfstate
+infra/aws/*.tfstate.*
+infra/aws/*.tfvars
+!infra/aws/example.tfvars
+infra/aws/tfplan
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -2,15 +2,15 @@
 import logging
 from typing import Dict, Any
 
-from src.gemini_client import generate
-from src.config import GEMINI_MODEL
+from src.llm_client import generate
+from src.config import LLM_MODEL
 
 logger = logging.getLogger("chief_auditor")
 
 class ChiefAuditor:
     def __init__(self):
-        """Initializes the Gemini 2.5 Pro Chief Auditor."""
-        # Client is initialized lazily via gemini_client on first generate() call
+        """Initializes the model 2.5 Pro Chief Auditor."""
+        # Client is initialized lazily via llm_client on first generate() call
         pass
 
     def analyze_component(
@@ -116,7 +116,7 @@ class ChiefAuditor:
             from src.models.schemas import AuditorDecision
             raw = generate(
                 prompt,
-                model=GEMINI_MODEL,  # Fast structured JSON — no AFC loops needed
+                model=LLM_MODEL,  # Fast structured JSON — no AFC loops needed
                 temperature=0.0,
                 response_mime_type="application/json",
                 response_schema=AuditorDecision,

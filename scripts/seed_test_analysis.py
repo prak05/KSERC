@@ -25,7 +25,7 @@ def seed(results_file: str = None):
 
     if results_file is None:
         # Default to Infopark 2024-25
-        results_file = str(project_root / "results_infopark_2024_25.json")
+        results_file = str(project_root / "data" / "samples" / "results_infopark_2024_25.json")
 
     results_path = Path(results_file)
     if not results_path.exists():
