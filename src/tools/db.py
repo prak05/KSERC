@@ -1,0 +1,300 @@
+"""
+Database layer for the KSERC Truing-Up Engine.
+
+Backed by the document store in src/cloud/docstore.py — DynamoDB on AWS,
+SQLite when running locally.
+
+Collections:
+  - analyses/{analysis_id}        → status, result, progress
+  - economic_indicators/{fy}      → WPI, CPI, SBI PLR, etc.
+  - reference_orders/{order_id}   → order metadata
+  - myt_norms/{licensee}/years/{fy} → MYT baseline norms per year
+  - precedent_db/{licensee}/years/{fy} → precedent data per year
+"""
+
+import json
+import logging
+from datetime import datetime, timezone
+from typing import Optional, Dict, Any, List
+
+from src.cloud import docstore
+
+logger = logging.getLogger("kserc.db")
+
+
+def _get_db():
+    """Document store: DynamoDB on AWS, SQLite locally (see src/cloud/docstore.py)."""
+    return docstore.client()
+
+
+get_store_client = _get_db  # older call sites
+
+
+# ── Init (collections are created on first write) ───────────────────────
+
+def init_db():
+    """Open the document store once at start-up so configuration errors surface early."""
+    try:
+        _get_db()
+        logger.info("Document store ready")
+    except Exception as e:
+        logger.warning(f"Document store init failed: {e}")
+
+
+# ── Analysis Results ─────────────────────────────────────────────────────
+
+def save_analysis(analysis_id: str, status: str, result: dict = None, meta: dict = None):
+    """Save or update an analysis result. ``meta`` (licensee, financial_year) feeds case history."""
+    db = _get_db()
+    doc_ref = db.collection("analyses").document(analysis_id)
+
+    data = {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}
+    if meta:
+        data.update(meta)
+    if result is not None:
+        data["result_json"] = json.dumps(result, default=str)
+
+    # Check if document exists — if not, initialize progress_log
+    doc = doc_ref.get()
+    if not doc.exists:
+        data["progress_log"] = []
+
+    doc_ref.set(data, merge=True)
+
+
+def get_analysis(analysis_id: str) -> Optional[dict]:
+    """Get analysis status and result."""
+    db = _get_db()
+    doc = db.collection("analyses").document(analysis_id).get()
+
+    if not doc.exists:
+        return None
+
+    data = doc.to_dict()
+    result_json = data.get("result_json")
+    progress_log = data.get("progress_log")
+    # Parse progress_log — entries stored as JSON strings in a list
+    progress = []
+    if isinstance(progress_log, list):
+        for entry in progress_log:
+            if isinstance(entry, str):
+                try:
+                    progress.append(json.loads(entry))
+                except (json.JSONDecodeError, TypeError):
+                    progress.append({"msg": entry})
+            elif isinstance(entry, dict):
+                progress.append(entry)
+    elif isinstance(progress_log, str):
+        try:
+            progress = json.loads(progress_log)
+        except (json.JSONDecodeError, TypeError):
+            progress = []
+
+    return {
+        "status": data.get("status", "UNKNOWN"),
+        "result": json.loads(result_json) if result_json else None,
+        "progress": progress,
+    }
+
+
+def list_analyses(limit: int = 100) -> List[dict]:
+    """Case history, newest first, without the (large) result bodies."""
+    out = []
+    for snap in _get_db().collection("analyses").order_by("updated_at", direction="DESCENDING").stream():
+        d = snap.to_dict()
+        licensee, fy = d.get("licensee"), d.get("financial_year")
+        if not licensee and d.get("result_json"):
+            try:
+                r = json.loads(d["result_json"])
+                licensee, fy = r.get("licensee_name"), r.get("financial_year")
+            except (json.JSONDecodeError, TypeError, AttributeError):
+                pass
+        out.append({"analysis_id": snap.id, "licensee": licensee, "financial_year": fy,
+                    "status": d.get("status", "UNKNOWN"), "updated_at": d.get("updated_at")})
+        if len(out) >= limit:
+            break
+    return out
+
+
+def update_progress(analysis_id: str, stage: str, message: str):
+    """Append a timestamped progress entry. Uses read-modify-write for reliability."""
+    ts = datetime.utcnow().strftime("%H:%M:%S")
+    entry = json.dumps({"ts": ts, "stage": stage, "msg": message})
+
+    db = _get_db()
+    doc_ref = db.collection("analyses").document(analysis_id)
+
+    try:
+        # Read current progress, append, write back
+        doc = doc_ref.get()
+        if doc.exists:
+            data = doc.to_dict()
+            log = data.get("progress_log", [])
+            if not isinstance(log, list):
+                log = []
+            log.append(entry)
+            doc_ref.update({"progress_log": log})
+        else:
+            # Document doesn't exist yet — create it
+            doc_ref.set({"progress_log": [entry], "status": "RUNNING"})
+    except Exception as e:
+        logger.warning(f"Failed to update progress for {analysis_id}: {e}")
+
+
+# ── Economic Indicators ──────────────────────────────────────────────────
+
+def get_all_economic_indicators() -> list:
+    """Get all economic indicators, ordered by financial year descending."""
+    db = _get_db()
+    docs = db.collection("economic_indicators").order_by(
+        "financial_year", direction="DESCENDING"
+    ).stream()
+
+    return [doc.to_dict() for doc in docs]
+
+
+def get_economic_indicators(financial_year: str) -> dict:
+    """Get economic indicators for a specific FY."""
+    db = _get_db()
+    doc = db.collection("economic_indicators").document(financial_year).get()
+    if doc.exists:
+        data = doc.to_dict()
+        return {
+            "wpi_pct": data.get("wpi_pct"),
+            "cpi_pct": data.get("cpi_pct"),
+            "sbi_plr_pct": data.get("sbi_plr_pct"),
+            "hsd_price_rs": data.get("hsd_price_rs"),
+            "power_purchase_rate_rs_per_kwh": data.get("power_purchase_rate_rs_per_kwh"),
+        }
+    return {}
+
+
+def upsert_economic_indicators(financial_year: str, data: dict):
+    """Insert or update economic indicators for a FY."""
+    db = _get_db()
+    doc_data = {
+        "financial_year": financial_year,
+        "wpi_pct": data.get("wpi_pct"),
+        "cpi_pct": data.get("cpi_pct"),
+        "sbi_plr_pct": data.get("sbi_plr_pct"),
+        "hsd_price_rs": data.get("hsd_price_rs"),
+        "power_purchase_rate_rs_per_kwh": data.get("power_purchase_rate_rs_per_kwh"),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    db.collection("economic_indicators").document(financial_year).set(doc_data, merge=True)
+
+
+# ── Reference Orders ────────────────────────────────────────────────────
+
+def save_reference_order(order_id: str, order_type: str, licensee: str,
+                         financial_year: str, order_number: str, file_path: str):
+    """Save reference order metadata."""
+    db = _get_db()
+    db.collection("reference_orders").document(order_id).set({
+        "order_type": order_type,
+        "licensee": licensee,
+        "financial_year": financial_year,
+        "order_number": order_number,
+        "file_path": file_path,
+        "uploaded_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+
+def get_reference_orders(order_type: str = None) -> list:
+    """Get reference orders, optionally filtered by type."""
+    db = _get_db()
+    query = db.collection("reference_orders")
+
+    if order_type:
+        query = query.where("order_type", "==", order_type)
+
+    query = query.order_by("uploaded_at", direction="DESCENDING")
+    return [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
+
+
+# ── MYT Norms ────────────────────────────────────────────────────────────
+
+def get_myt_norms_override(licensee_name: str, financial_year: str) -> dict:
+    """Get MYT norm overrides from document store."""
+    db = _get_db()
+    doc = (db.collection("myt_norms")
+           .document(licensee_name)
+           .collection("years")
+           .document(financial_year)
+           .get())
+
+    if doc.exists:
+        data = doc.to_dict()
+        # Return just the norms, not metadata
+        norms = {k: v for k, v in data.items() if k not in ("updated_at", "source")}
+        return norms
+    return {}
+
+
+def save_myt_norms(licensee_name: str, financial_year: str, norms: dict, source: str = "manual"):
+    """Save MYT norms to document store."""
+    db = _get_db()
+    doc_data = {
+        **norms,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "source": source,
+    }
+    (db.collection("myt_norms")
+     .document(licensee_name)
+     .collection("years")
+     .document(financial_year)
+     .set(doc_data, merge=True))
+    logger.info(f"Saved MYT norms for {licensee_name} FY {financial_year} (source={source})")
+
+
+def get_all_myt_norms(licensee_name: str) -> dict:
+    """Get all MYT norms for a licensee (all FYs)."""
+    db = _get_db()
+    docs = (db.collection("myt_norms")
+            .document(licensee_name)
+            .collection("years")
+            .stream())
+
+    result = {}
+    for doc in docs:
+        data = doc.to_dict()
+        norms = {k: v for k, v in data.items() if k not in ("updated_at", "source")}
+        result[doc.id] = norms
+    return result
+
+
+# ── Precedent DB ─────────────────────────────────────────────────────────
+
+def save_precedent(licensee_name: str, financial_year: str, data: dict):
+    """Save precedent data to document store."""
+    db = _get_db()
+    doc_data = {
+        **data,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    (db.collection("precedent_db")
+     .document(licensee_name)
+     .collection("years")
+     .document(financial_year)
+     .set(doc_data))
+
+
+def get_precedent(licensee_name: str, financial_year: str) -> dict:
+    """Get precedent data for a specific licensee and FY."""
+    db = _get_db()
+    doc = (db.collection("precedent_db")
+           .document(licensee_name)
+           .collection("years")
+           .document(financial_year)
+           .get())
+    return doc.to_dict() if doc.exists else {}
+
+
+def get_all_precedents(licensee_name: str) -> dict:
+    """Get all precedent data for a licensee."""
+    db = _get_db()
+    docs = (db.collection("precedent_db")
+            .document(licensee_name)
+            .collection("years")
+            .stream())
+    return {doc.id: doc.to_dict() for doc in docs}

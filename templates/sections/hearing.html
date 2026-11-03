@@ -1,0 +1,18 @@
+{# Hearing on the Petition section #}
+{% if hearing and hearing.paragraphs %}
+<h2 class="section-title">Hearing on the Petition</h2>
+
+{% for para in hearing.paragraphs %}
+{% if para.is_decision is defined and para.is_decision %}
+<p class="decision-para">
+    <span class="para-num">{{ para.seq }}.</span>
+    {{ para.text }}
+</p>
+{% else %}
+<p class="numbered-para">
+    <span class="para-num">{{ para.seq }}.</span>
+    {{ para.text }}
+</p>
+{% endif %}
+{% endfor %}
+{% endif %}

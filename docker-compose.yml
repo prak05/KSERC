@@ -1,12 +1,26 @@
-version: '3.8'
+# Local stack: the app plus an Ollama model server. Nothing leaves your machine.
+#   docker compose up --build        → http://localhost:8080
+#   first run: docker compose exec ollama ollama pull qwen2.5:14b
 services:
-  web:
+  app:
     build: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app:delegated
+    ports: ["8080:8080"]
     environment:
-      - HOST=0.0.0.0
-      - PORT=8000
-      - DEBUG_MODE=True
+      CLOUD: local
+      LLM_PROVIDER: local
+      LOCAL_LLM_URL: http://ollama:11434/v1
+      LOCAL_LLM_MODEL: ${LOCAL_LLM_MODEL:-qwen2.5:14b}
+      LOCAL_DB_PATH: /app/state/store.sqlite3
+    volumes:
+      - state:/app/state
+      - uploads:/app/uploads
+    depends_on: [ollama]
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes: [ollama:/root/.ollama]
+
+volumes:
+  state:
+  uploads:
+  ollama:

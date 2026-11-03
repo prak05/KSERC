@@ -1,0 +1,491 @@
+{
+  "analysis_id": "8c8a7dd4-08f3-4e9f-b97e-af758c3a5b18",
+  "licensee_name": "Infopark",
+  "financial_year": "2024-25",
+  "original_filename": "info 2024-25.pdf",
+  "timestamp": "2026-03-25T18:02:00.947053",
+  "total_claimed_expenditure": 1342.09,
+  "total_approved_expenditure": 1312.7,
+  "total_claimed_revenue": 1326.78,
+  "total_approved_revenue": 1326.78,
+  "final_revenue_gap_surplus": 14.08,
+  "imputed_interest": 0.0,
+  "components": [
+    {
+      "key": "power_purchase_cost",
+      "name": "Power Purchase Cost",
+      "proposed_myt": 541.95,
+      "claimed": 1023.94,
+      "approved": 1040.8,
+      "variance": 16.86,
+      "variance_pct": 1.65,
+      "status": "increased",
+      "status_label": "Increased",
+      "justification": "The actual distribution loss (6.95 Lakh units) is below the approved target loss (10.41 Lakh units, target 4.23%), yielding an efficiency gain of 3.46 Lakh units = Rs. 25.29 Lakhs at APPC Rs. 7.31/unit. Per Regulation 73(3), 2/3rd (Rs. 16.86 Lakhs) is passed to the licensee. Approved PPC: Rs. 1040.80 Lakhs."
+    },
+    {
+      "key": "employee_cost",
+      "name": "Employee Cost",
+      "proposed_myt": 25.04,
+      "claimed": 29.86,
+      "approved": 25.04,
+      "variance": -4.82,
+      "variance_pct": -16.14,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The claimed Employee Expenses of Rs. 29.86 Lakhs exceeds the effective ceiling of Rs. 25.04 Lakhs (MYT norm (FY-specific)). The excess of Rs. 4.82 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 25.04 Lakhs. Precedent: In Infopark FY 2022-23 (OP 82/2023), the Commission approved Rs. 23.53 Lakhs against a claim of Rs. 24.99 Lakhs (5.8% reduction)."
+    },
+    {
+      "key": "repair_maintenance",
+      "name": "Repairs & Maintenance",
+      "proposed_myt": 26.41,
+      "claimed": 58.3,
+      "approved": 26.41,
+      "variance": -31.89,
+      "variance_pct": -54.7,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The claimed R&M of Rs. 58.30 Lakhs was analysed item-by-item using KSERC Regulation 80(3). The Commission approves Rs. 26.41 Lakhs as the normative O&M component. Rs. 1.00 Lakhs are directed to be capitalised and added to the Gross Fixed Assets. Total approved: Rs. 26.41 Lakhs."
+    },
+    {
+      "key": "admin_general",
+      "name": "Administration & General Expenses",
+      "proposed_myt": 5.11,
+      "claimed": 10.06,
+      "approved": 5.11,
+      "variance": -4.95,
+      "variance_pct": -49.2,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The claimed Administration & General Expenses of Rs. 10.06 Lakhs exceeds the effective ceiling of Rs. 5.11 Lakhs (MYT norm (FY-specific)). The excess of Rs. 4.95 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 5.11 Lakhs. Precedent: In Infopark FY 2022-23 (OP 82/2023), the Commission approved Rs. 6.04 Lakhs against a claim of Rs. 8.79 Lakhs (31.3% reduction)."
+    },
+    {
+      "key": "depreciation",
+      "name": "Depreciation",
+      "proposed_myt": 47.21,
+      "claimed": 47.21,
+      "approved": 47.21,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "Depreciation of Rs. 47.21 Lakhs has been verified against the asset register. The rates applied are in accordance with the CERC norms adopted by the Commission. No assets funded by grants or surplus were identified. Approved as claimed."
+    },
+    {
+      "key": "interest_long_term",
+      "name": "Interest on Long-Term Loans",
+      "proposed_myt": 45.23,
+      "claimed": 56.33,
+      "approved": 53.59,
+      "variance": -2.74,
+      "variance_pct": -4.86,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "KSERC Regulation 26: Interest computed on normative loan basis. Opening Loan = Rs. 609.27L, Less Depreciation/Repayment = Rs. 47.21L, Closing = Rs. 562.06L. Average Normative Loan = Rs. 585.66L \u00d7 8.9% = Rs. 52.12L."
+    },
+    {
+      "key": "interest_consumer_deposits",
+      "name": "Interest on Consumer Security Deposits",
+      "proposed_myt": 4.71,
+      "claimed": 9.13,
+      "approved": 8.41,
+      "variance": -0.72,
+      "variance_pct": -7.89,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "The Interest on Consumer Security Deposits has been reduced from Rs. 9.13 Lakhs to Rs. 8.41 Lakhs (reduction of Rs. 0.72 Lakhs). The adjustment is based on the Commission's scrutiny of the actual expenditure vis-\u00e0-vis the normative limits for FY 2024-25."
+    },
+    {
+      "key": "interest_working_capital",
+      "name": "Interest on Working Capital",
+      "proposed_myt": 0.39,
+      "claimed": 8.89,
+      "approved": 8.7,
+      "variance": -0.19,
+      "variance_pct": -2.14,
+      "status": "reduced",
+      "status_label": "Reduced",
+      "justification": "KSERC Regulation 29: WC = (O&M/12) + Spares + (2-month Revenue) \u2212 Security Deposits. O&M/12 = Rs. 4.71L, Spares = Rs. 0.00L, Receivables(2mo) = Rs. 197.94L, Security Deposits = Rs. 124.59L. WC = Rs. 78.06L \u00d7 MCLR+2% (10.90%) = Rs. 8.51L. Approved: Rs. 8.51L."
+    },
+    {
+      "key": "carrying_cost",
+      "name": "Carrying Cost on Revenue Gaps",
+      "proposed_myt": 53.93,
+      "claimed": 62.26,
+      "approved": 62.26,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "Carrying cost on past revenue gaps of Rs. 62.26 Lakhs has been verified against prior year revenue gap and applicable SBI deposit rate. Approved for FY 2024-25."
+    },
+    {
+      "key": "return_on_nfa",
+      "name": "Return on Net Fixed Assets (RoNFA)",
+      "proposed_myt": 38.7,
+      "claimed": 36.11,
+      "approved": 36.11,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "Return on Net Fixed Assets of Rs. 36.11 Lakhs has been computed at 5.5% on the eligible NFA base after excluding assets funded by consumer contributions, Government grants, and normative loans. The claim is approved."
+    },
+    {
+      "key": "other_debits",
+      "name": "Other Debits",
+      "proposed_myt": 0.0,
+      "claimed": 0.0,
+      "approved": 0.0,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "No amount claimed under Other Debits for FY 2024-25."
+    },
+    {
+      "key": "section3_1_duty",
+      "name": "Section 3(1) Electricity Duty",
+      "proposed_myt": 0.0,
+      "claimed": 0.0,
+      "approved": 0.0,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "No amount claimed under Section 3(1) Electricity Duty for FY 2024-25."
+    },
+    {
+      "key": "other_expenses",
+      "name": "Other Expenses",
+      "proposed_myt": 0.0,
+      "claimed": 0.0,
+      "approved": 0.0,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "No amount claimed under Other Expenses for FY 2024-25."
+    },
+    {
+      "key": "prior_period_employee_cost",
+      "name": "Prior Period Employee Cost (Wage Revision)",
+      "proposed_myt": 0.0,
+      "claimed": 0.0,
+      "approved": 0.0,
+      "variance": 0.0,
+      "variance_pct": 0.0,
+      "status": "approved",
+      "status_label": "Approved as Claimed",
+      "justification": "No amount claimed under Prior Period Employee Cost (Wage Revision) for FY 2024-25."
+    }
+  ],
+  "disallowances": [
+    {
+      "item": "Power Purchase Cost \u2014 Distribution Loss Efficiency Gain",
+      "claimed": 1023.94,
+      "approved": 1040.8,
+      "amount_cut": -16.86,
+      "justification": "The actual distribution loss (6.95 Lakh units) is below the approved target loss (10.41 Lakh units, target 4.23%), yielding an efficiency gain of 3.46 Lakh units = Rs. 25.29 Lakhs at APPC Rs. 7.31/unit. Per Regulation 73(3), 2/3rd (Rs. 16.86 Lakhs) is passed to the licensee. Approved PPC: Rs. 1040.80 Lakhs."
+    },
+    {
+      "item": "Repairs & Maintenance (AI-classified)",
+      "claimed": 58.3,
+      "approved": 26.41,
+      "amount_cut": 31.89,
+      "justification": "The claimed R&M of Rs. 58.30 Lakhs was analysed item-by-item using KSERC Regulation 80(3). The Commission approves Rs. 26.41 Lakhs as the normative O&M component. Rs. 1.00 Lakhs are directed to be capitalised and added to the Gross Fixed Assets. Total approved: Rs. 26.41 Lakhs."
+    },
+    {
+      "item": "Employee Expenses",
+      "claimed": 29.86,
+      "approved": 25.04,
+      "amount_cut": 4.82,
+      "justification": "The claimed Employee Expenses of Rs. 29.86 Lakhs exceeds the effective ceiling of Rs. 25.04 Lakhs (MYT norm (FY-specific)). The excess of Rs. 4.82 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 25.04 Lakhs. Precedent: In Infopark FY 2022-23 (OP 82/2023), the Commission approved Rs. 23.53 Lakhs against a claim of Rs. 24.99 Lakhs (5.8% reduction)."
+    },
+    {
+      "item": "Administration & General Expenses",
+      "claimed": 10.06,
+      "approved": 5.11,
+      "amount_cut": 4.95,
+      "justification": "The claimed Administration & General Expenses of Rs. 10.06 Lakhs exceeds the effective ceiling of Rs. 5.11 Lakhs (MYT norm (FY-specific)). The excess of Rs. 4.95 Lakhs is disallowed as per KSERC Tariff Regulations. The Commission approves Rs. 5.11 Lakhs. Precedent: In Infopark FY 2022-23 (OP 82/2023), the Commission approved Rs. 6.04 Lakhs against a claim of Rs. 8.79 Lakhs (31.3% reduction)."
+    },
+    {
+      "item": "Interest on Normative Loan",
+      "claimed": 56.33,
+      "approved": 52.12,
+      "amount_cut": 4.21,
+      "justification": "KSERC Regulation 26: Interest computed on normative loan basis. Opening Loan = Rs. 609.27L, Less Depreciation/Repayment = Rs. 47.21L, Closing = Rs. 562.06L. Average Normative Loan = Rs. 585.66L \u00d7 8.9% = Rs. 52.12L."
+    },
+    {
+      "item": "Interest on Working Capital",
+      "claimed": 8.89,
+      "approved": 8.51,
+      "amount_cut": 0.38,
+      "justification": "KSERC Regulation 29: WC = (O&M/12) + Spares + (2-month Revenue) \u2212 Security Deposits. O&M/12 = Rs. 4.71L, Spares = Rs. 0.00L, Receivables(2mo) = Rs. 197.94L, Security Deposits = Rs. 124.59L. WC = Rs. 78.06L \u00d7 MCLR+2% (10.90%) = Rs. 8.51L. Approved: Rs. 8.51L."
+    },
+    {
+      "component": "Repairs & Maintenance",
+      "claimed": 58.3,
+      "approved": 26.41,
+      "disallowed": 31.89,
+      "reason": "The claimed R&M of Rs. 58.30 Lakhs was reviewed. The Commission approves Rs. 26.41 Lakhs as the normative O&M component, plus Rs. 0.00 Lakhs for one-time expenditures (user-selected items). Total approved: Rs. 26.41 Lakhs. Disallowance of Rs. 31.89 Lakhs under Regulation 80."
+    }
+  ],
+  "claimed_revenues": {
+    "revenue_from_sale": 1187.62,
+    "wheeling_charges": 64.46,
+    "non_tariff_income": 74.7,
+    "other_revenue": 0.0
+  },
+  "claimed_distribution_loss_pct": 2.86,
+  "target_distribution_loss_pct": 4.23,
+  "output_pdf_path": "",
+  "pdf_available": false,
+  "ai_insights": {},
+  "interest_finance": {
+    "component_a": {
+      "component": "A",
+      "name": "Interest on Long Term Loans",
+      "claimed_rs_lakhs": 56.33,
+      "approved_rs_lakhs": 56.33,
+      "interest_rs_lakhs": 56.33,
+      "status": "AS_CLAIMED",
+      "reason": "Approved as claimed based on audited loan schedule.",
+      "provisional": false,
+      "provisional_reason": ""
+    },
+    "component_b": {
+      "opening_balance": 609.27,
+      "qualifying_additions": 0.0,
+      "excluded_surplus_additions": 0,
+      "net_additions": 0.0,
+      "repayment_depreciation": 47.21,
+      "closing_balance": 562.06,
+      "raw_closing_balance": 562.06,
+      "is_exhausted": false,
+      "average_balance": 585.66,
+      "eblr_rate": 0.0915,
+      "interest_rs_lakhs": 53.59,
+      "provisional": false,
+      "provisional_reason": "",
+      "component": "B",
+      "name": "Interest on Normative Loan"
+    },
+    "component_c": {
+      "om_one_month": 4.71,
+      "receivables_two_months": 197.94,
+      "maintenance_spares": 0.0,
+      "cash_security_deposit": 124.59,
+      "other_deductions": 0.0,
+      "net_working_capital": 78.06,
+      "is_zero": false,
+      "zero_reason": "",
+      "rate": 0.1115,
+      "interest_rs_lakhs": 8.7,
+      "provisional": false,
+      "provisional_reason": "",
+      "component": "C",
+      "name": "Interest on Working Capital"
+    },
+    "component_d": {
+      "opening_balance": 124.59,
+      "supply_code_rate": 0.0675,
+      "interest_rs_lakhs": 8.41,
+      "component": "D",
+      "name": "Interest on Consumer Security Deposits"
+    },
+    "component_e": {
+      "component": "E",
+      "name": "Bank Charges",
+      "items": [],
+      "total_approved": 0.0,
+      "total_disallowed": 0.0,
+      "reclassified_from_ag": 0.0,
+      "needs_clarification": [],
+      "litigation_bg_status": {
+        "active": false,
+        "court_reference": ""
+      },
+      "interest_rs_lakhs": 0.0
+    },
+    "component_f": {
+      "applicable": false,
+      "cumulative_gap_base": 0.0,
+      "retail_td_rate": 0.068,
+      "carrying_cost_rs_lakhs": 0.0,
+      "component": "F",
+      "name": "Carrying Cost on Revenue Gaps"
+    },
+    "component_g": {
+      "applicable": false,
+      "cumulative_surplus_base": 0.0,
+      "less_surplus_additions": 0.0,
+      "net_base": 0.0,
+      "retail_td_rate": 0.068,
+      "notional_amount": 0.0,
+      "licensee_claimed_actual": 0.0,
+      "additional_to_nti": 0.0,
+      "component": "G",
+      "name": "Notional Interest on Accumulated Surplus",
+      "is_income_not_expense": true
+    },
+    "total_approved_interest_expense": 127.03,
+    "component_totals": {
+      "A": 56.33,
+      "B": 53.59,
+      "C": 8.7,
+      "D": 8.41,
+      "E": 0.0,
+      "F": 0.0
+    },
+    "income_additions": {
+      "notional_surplus_interest": 0.0,
+      "additional_to_nti": 0.0
+    },
+    "ag_adjustment_for_bank_charges": 0.0,
+    "is_provisional": false,
+    "provisional_components": [],
+    "provisional_warning": "",
+    "cross_verification": [
+      {
+        "check_name": "Total approved \u2264 claimed + reclassified",
+        "passed": false,
+        "detail": "Approved: 127.03, Ceiling: 0.00 (claimed 0.00 + reclassified 0.00 + prior period 0.00)"
+      },
+      {
+        "check_name": "Normative loan closing \u2265 0",
+        "passed": true,
+        "detail": "Closing balance: 562.06"
+      },
+      {
+        "check_name": "WC interest rate = EBLR + 2%",
+        "passed": true,
+        "detail": "Rate applied: 0.1115"
+      },
+      {
+        "check_name": "SD interest uses Supply Code rate",
+        "passed": true,
+        "detail": "Supply Code rate: 0.0675"
+      },
+      {
+        "check_name": "Component G routed to NTI (not expense)",
+        "passed": true,
+        "detail": "Not applicable (GAP position or zero surplus)"
+      },
+      {
+        "check_name": "Bank charges reclassification tracked",
+        "passed": true,
+        "detail": "Rs.0.00 lakh reclassified from A&G. ag_adjustment_for_bank_charges set for A&G deduction."
+      }
+    ],
+    "all_checks_passed": false,
+    "clarifications_needed": [],
+    "disallowances": []
+  },
+  "extraction_metadata": {
+    "method": "native_pdf_upload",
+    "checksum_passed": true,
+    "extracted_total_expenditure": 2164.77,
+    "extracted_total_revenue": 1326.78,
+    "extraction_warnings": []
+  },
+  "rm_line_items": [
+    {
+      "description": "O&M Charges to O&M contractor, M/s Voltas",
+      "amount": 39.02,
+      "classification": "ROUTINE_RM",
+      "reason": "Recurring charges for O&M contractor as part of normal operations."
+    },
+    {
+      "description": "Power transformer (110KV/11KV)-Oil leakage arresting, gasket replacement, Refilling of transformer oil",
+      "amount": 1.46,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring repair and refilling for a power transformer."
+    },
+    {
+      "description": "VCB maintenance",
+      "amount": 0.14,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring maintenance for VCB."
+    },
+    {
+      "description": "Relay testing at 110KV substation",
+      "amount": 0.45,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring testing at a substation."
+    },
+    {
+      "description": "Replacement of relay",
+      "amount": 1.0,
+      "classification": "ONE_TIME_RM",
+      "reason": "Non-recurring replacement of a relay component."
+    },
+    {
+      "description": "Replacement of LA",
+      "amount": 2.79,
+      "classification": "ONE_TIME_RM",
+      "reason": "Non-recurring replacement of LA component."
+    },
+    {
+      "description": "Dismantling & Repairing of Tubular conductor",
+      "amount": 1.16,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring repair of tubular conductor."
+    },
+    {
+      "description": "Relay testing at 220KV GIS",
+      "amount": 1.54,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring testing at 220KV GIS."
+    },
+    {
+      "description": "EOT crane servicing",
+      "amount": 0.23,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring servicing of EOT crane."
+    },
+    {
+      "description": "Power transformer oil testing",
+      "amount": 0.9,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring testing of power transformer oil."
+    },
+    {
+      "description": "Replacement of EHT bushing",
+      "amount": 8.8,
+      "classification": "ONE_TIME_RM",
+      "reason": "Major non-recurring replacement of EHT bushing."
+    },
+    {
+      "description": "Testing for Tan delta of power transformer",
+      "amount": 0.25,
+      "classification": "ONE_TIME_RM",
+      "reason": "Specific non-recurring testing for power transformer."
+    },
+    {
+      "description": "Charges for engaging expert from TELK being OEM",
+      "amount": 0.55,
+      "classification": "ONE_TIME_RM",
+      "reason": "Non-recurring expert charges for specific one-time work."
+    }
+  ],
+  "rm_norm": 26.41,
+  "rm_one_time_override": 26.41,
+  "rm_one_time_items": [],
+  "approved_expenses": {
+    "section3_1_duty": 0.0,
+    "power_purchase_cost": 1040.8,
+    "repair_maintenance": 26.41,
+    "employee_cost": 25.04,
+    "admin_general": 5.11,
+    "depreciation": 47.21,
+    "interest_long_term": 53.59,
+    "interest_consumer_deposits": 8.41,
+    "interest_working_capital": 8.7,
+    "carrying_cost": 62.26,
+    "return_on_nfa": 36.11,
+    "other_debits": 0.0,
+    "other_expenses": 0.0,
+    "interest_finance": 127.03
+  }
+}

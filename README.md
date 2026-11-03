@@ -1,394 +1,107 @@
-# KSERC Autonomous Regulatory Agent (ARA) - Backend
+# KSERC Truing-Up Engine
 
-## Overview
+You are reviewing a truing-up petition for the **Kerala State Electricity Regulatory Commission**. A licensee (Technopark, Infopark, CSEZA or KDHP) has filed its actual costs for a financial year; the Commission must check every head of expenditure against the Tariff Regulations and the MYT order, disallow what the rules don't permit, and issue a reasoned order.
 
-This repository contains the **backend system** for the **Autonomous Regulatory Agent (ARA)**, developed for the **Kerala State Electricity Regulatory Commission (KSERC)**. The system automates the scrutiny of "Truing Up of Accounts" petitions submitted by electricity distribution licensees (Technopark, Infopark, KDHPCL, etc.).
+This engine does that work end to end. It reads the petition PDFs, extracts the ARR tables, audits each component with deterministic regulatory formulas (the model never does the arithmetic), pauses for an officer to rule on one-time R&M items, and drafts a 30-page order in the Commission's format — exportable as PDF or Word.
 
-### What is Truing Up?
-
-"Truing Up" is a regulatory process where actual expenditures and revenues of electricity licensees are compared against their approved Annual Revenue Requirement (ARR). The ARA automates this comparison, identifies deviations, and ensures mathematical precision in regulatory analysis.
-
-## Key Features
-
-✅ **PDF Ingestion** - Automatically extracts financial tables from KSERC regulatory order PDFs  
-✅ **Zero-Error Mathematics** - Performs precise calculations with automatic validation  
-✅ **Deviation Analysis** - Identifies significant deviations between ARR and actuals  
-✅ **Compliance Checks** - Automated regulatory compliance verification  
-✅ **REST API** - High-performance API built with FastAPI for easy integration  
-✅ **Comprehensive Logging** - Detailed logging for debugging and audit trails  
-✅ **Auto-Generated Documentation** - Interactive API documentation via Swagger UI  
-✅ **AI Executive Summary (Free Tier)** - Optional LLM summary via Hugging Face Inference API  
-✅ **RAG + 4-LLM Verdicts** - Multi-agent pipeline with final PDF output  
-
-## Technology Stack
-
-### Core Framework
-- **Python 3.10+** - Modern Python with type hints and async support
-- **FastAPI** - High-performance web framework (chosen for speed and auto-documentation)
-- **Uvicorn** - Lightning-fast ASGI server
-
-### Data Processing
-- **pdfplumber** - Superior PDF table extraction (better than PyPDF2 for structured tables)
-- **Pydantic** - Data validation using Python type hints
-
-### Development Tools
-Code generation and optimization supported by:
-- **Codeium** - AI-powered code completion
-- **Sourcery** - Code quality and refactoring suggestions
-- **Tabnine** - Intelligent code suggestions
-
-> Note: `pandas` is now optional and only required if you call `response_to_dataframe()`.
-> Note: `Pillow` is an indirect dependency of `pdfplumber` and will install a compatible version automatically.
-
-## Project Structure
-
-```
-kserc-ara-backend/
-├── .gitignore              # Files to exclude from version control
-├── vercel.json             # Vercel static frontend configuration
-├── frontend/               # Static dashboard frontend
-├── requirements.txt        # Python dependencies
-├── README.md              # This file
-└── src/
-    ├── __init__.py        # Package initialization
-    ├── main.py            # FastAPI application entry point
-    ├── config.py          # Environment configuration
-    ├── models/
-    │   ├── __init__.py
-    │   └── schemas.py     # Pydantic models for data validation
-    ├── services/
-    │   ├── __init__.py
-    │   ├── pdf_ingestion.py  # PDF parsing and extraction logic
-    │   └── analyzer.py       # Compliance checks and gap analysis
-    └── utils/
-        ├── __init__.py
-        └── logger.py         # Custom logging configuration
-```
-
-## Installation & Setup
-
-### Prerequisites
-
-- Python 3.10 or higher
-- pip (Python package manager)
-- Virtual environment tool (venv or virtualenv)
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/prak05/KSERCnew.git
-cd KSERCnew
-```
-
-### Step 2: Create Virtual Environment
-
-```bash
-# On Linux/Mac
-python3 -m venv venv
-source venv/bin/activate
-
-# On Windows
-python -m venv venv
-venv\Scripts\activate
-```
-
-### Step 3: Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Step 4: Configure Environment (Optional)
-
-Create a `.env` file in the root directory for custom configuration:
-
-```env
-# Server Configuration
-HOST=0.0.0.0
-PORT=8000
-
-# Logging Configuration
-LOG_LEVEL=INFO
-DEBUG_MODE=True
-
-# File Upload Configuration
-MAX_UPLOAD_SIZE=52428800  # 50 MB in bytes
-```
-
-## Running the Application
-
-### Development Mode
-
-```bash
-# Run with auto-reload (recommended for development)
-python -m uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-Or simply:
-
-```bash
-python src/main.py
-```
-
-### Production Mode
-
-```bash
-# Run with multiple workers for production
-uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4
-```
-
-The server will start at: `http://localhost:8000`
-
-## API Documentation
-
-### Interactive Documentation
-
-Once the server is running, access the interactive API documentation:
-
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-### API Endpoints
-
-#### 1. Health Check
-```
-GET /
-```
-Returns the health status of the API.
-
-**Response:**
-```json
-{
-  "status": "active",
-  "system": "ARA Backend v1.0.0",
-  "timestamp": "2024-02-18T10:30:45.123456",
-  "version": "1.0.0"
-}
-```
-
-#### 2. API Information
-```
-GET /info
-```
-Returns detailed information about the API capabilities.
-
-#### 3. Analyze Regulatory Order
-```
-POST /analyze-order/
-```
-Upload a KSERC regulatory order PDF and get truing up analysis.
-
-**Request:** Multipart form data with PDF file
-
-**Response:**
-```json
-{
-  "licensee_name": "Infopark",
-  "financial_year": "2023-24",
-  "financial_summary": [
-    {
-      "particulars": "Power Purchase Cost",
-      "arr_approved": 3103.55,
-      "trued_up_value": 3370.52,
-      "deviation": 266.97
-    }
-  ],
-  "net_surplus_deficit": -150.75,
-  "total_arr_approved": 5000.00,
-  "total_trued_up": 5150.75,
-  "analysis_timestamp": "2024-02-18T10:30:45.123456",
-  "compliance_status": "Analysis Complete"
-}
-```
-
-#### 4. Compliance Check
-```
-POST /compliance-check/
-```
-Performs comprehensive compliance checks on the uploaded regulatory order.
-
-**Response:** Detailed compliance report with checks, warnings, and executive summary.
-
-#### 5. AI Summary (Free Tier)
-```
-POST /ai-summary/
-```
-Generates an executive summary using a free-tier LLM API.  
-Send the JSON output from `/analyze-order/` as `analysis`, and optionally `compliance_report` from `/compliance-check/`.
-
-#### 6. RAG Indexing (Backend Admin)
-```
-POST /rag/index-seed
-POST /rag/upload
-POST /rag/refresh
-```
-Indexes KSERC reference PDFs and regulatory documents for retrieval.
-
-#### 6.1 Remote RAG Indexing (Cloudflare Worker + R2)
-To offload indexing from your local machine, deploy the Cloudflare Worker in
-`cloudflare/worker/` and set:
-
-- `RAG_REMOTE_BASE_URL` to the Worker URL
-- `RAG_REMOTE_TOKEN` if you enabled auth
-
-Then use the Worker to index (seed or upload), and call:
-
-```
-POST /rag/refresh
-```
-
-to refresh the backend cache.
-
-#### 7. Final Verdict (ARR + Truing-Up)
-```
-POST /verdict/
-```
-Upload ARR + Truing-Up PDFs to generate a final KSERC-style verdict and a downloadable PDF.
-
-## Cloud Storage (Verdict PDFs)
-
-If `GCS_BUCKET_NAME` is set, verdict PDFs are uploaded to Google Cloud Storage and returned as a public URL.
-
-## Usage Examples
-
-### Using cURL
-
-```bash
-# Health check
-curl http://localhost:8000/
-
-# Analyze a regulatory order
-curl -X POST http://localhost:8000/analyze-order/ \
-  -F "file=@path/to/kserc-order.pdf" \
-  -H "accept: application/json"
-```
-
-### Using Python Requests
-
-```python
-import requests
-
-# Analyze a regulatory order
-with open('kserc-order.pdf', 'rb') as f:
-    files = {'file': f}
-    response = requests.post(
-        'http://localhost:8000/analyze-order/',
-        files=files
-    )
-    result = response.json()
-    print(f"Licensee: {result['licensee_name']}")
-    print(f"Net Surplus/Deficit: ₹{result['net_surplus_deficit']} Lakhs")
-
-# AI summary (optional)
-summary_payload = {
-    "analysis": result,
-    "compliance_report": None
-}
-summary_response = requests.post(
-    "http://localhost:8000/ai-summary/",
-    json=summary_payload
-)
-print(summary_response.json())
-
-# Generate verdict from ARR + Truing-Up PDFs
-with open("arr.pdf", "rb") as arr, open("truing.pdf", "rb") as truing:
-    files = {"arr_pdf": arr, "truing_pdf": truing}
-    verdict_response = requests.post(
-        "http://localhost:8000/verdict/",
-        files=files
-    )
-    print(verdict_response.json())
-
-## Frontend (Vercel-ready)
-
-A static frontend is included in `frontend/` with:
-- ARR + Truing-Up upload
-- RAG indexing (admin) with optional Cloudflare index service URL
-- Verdict PDF download
-
-Vercel deployment is configured via `vercel.json` at repo root.
-```
-
-## Code Documentation
-
-This codebase follows professional documentation standards:
-
-✅ **Every line is commented** (except basic Python operations)  
-✅ **Source attribution** - Each function notes its source (library vs. user-defined)  
-✅ **Library explanations** - Every library function includes "Why" it's used  
-✅ **Function purpose** - Clear docstrings explaining what each function does  
-✅ **Pattern documentation** - Design patterns and architectural decisions are explained  
-
-## Development Notes
-
-### Code Style
-
-- **Type Hints**: All functions use type hints for better IDE support
-- **Pydantic Models**: Data validation using Pydantic ensures type safety
-- **Async/Await**: Async operations for I/O-bound tasks (file uploads)
-- **Error Handling**: Comprehensive exception handling with proper HTTP status codes
-
-### Logging
-
-The application uses a custom logging system with:
-- Colored console output for better readability
-- Configurable log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-- Optional file logging for production environments
-- Detailed function call tracking
-
-### Testing
-
-To test the API with a sample PDF:
-
-1. Use the Swagger UI at http://localhost:8000/docs
-2. Navigate to `/analyze-order/` endpoint
-3. Click "Try it out"
-4. Upload a KSERC regulatory order PDF
-5. Click "Execute" to see the results
-
-## Source References
-
-This backend is based on:
-
-1. **KSERC Work Order No. KSERC/CSO/03-05** - Project specification
-2. **KSERC (Terms and Conditions for Determination of Tariff) Regulations, 2021** - Regulatory framework
-3. **KSERC Regulatory Orders** (4oCC..., 4tJU..., OyFwUM...) - Real-world examples for table structures
-
-## Contributing
-
-This is an academic/professional project for KSERC. For questions or contributions:
-
-- **Developer**: Prakash (@prak05)
-- **GitHub**: https://github.com/prak05
-- **Timeline**: 2-week delivery to KSERC
-
-## Future Enhancements
-
-Potential improvements for future iterations:
-
-- [ ] Database integration for storing analysis history
-- [ ] Multi-year comparison analysis
-- [ ] Advanced table detection using ML models
-- [ ] Export functionality (Excel, CSV, PDF reports)
-- [ ] Real-time collaborative analysis
-- [ ] Integration with KSERC official systems
-- [ ] Automated email notifications
-- [x] Dashboard UI (static frontend, Vercel-ready)
-
-## License
-
-This project is developed for the Kerala State Electricity Regulatory Commission (KSERC).
-
-## Acknowledgments
-
-- **KSERC** - For the opportunity and project requirements
-- **AI Assistants** - Codeium, Sourcery, and Tabnine for code optimization
-- **Open Source Community** - For the excellent libraries used in this project
+It runs entirely on your machine with no keys, or on AWS with one command.
 
 ---
 
-**Built with ❤️ for Kerala State Electricity Regulatory Commission**
+### 1. VISUAL SYSTEM & DESIGN SPECS
 
-**Last Updated**: February 2024  
-**Version**: 1.0.0  
-**Status**: Production Ready
+*   **Palette (monochrome foundation + one accent):**
+    *   Canvas `#08090A`, raised surfaces `#0F1011` / `#141516`.
+    *   Hairline structure: 1px borders `#1F2023`, strong `#2A2B2F`.
+    *   Text `#F7F8F8`, secondary `#8A8F98`, tertiary `#5C6068`.
+    *   The single accent — indigo `#5E6AD2` — marks only the active route, focus, the primary action and progress (under 5% of the screen).
+    *   Data states use muted tones and appear only on data: approved `#4CB782`, review `#D9A441`, disallowed `#D25E5E`.
+*   **Typography:** heavy display headings with tight tracking; every amount, clause number and log line in a monospace face with tabular figures; 10–11px uppercase mono micro-labels. All fonts are self-hosted — the UI makes no request to any font CDN.
+*   **Layout attitude:** a Linear-style workspace — fixed sidebar, ⌘K command palette, dense aligned tables — opened by an asymmetric editorial hero where a massive title sits against microscopic case metadata and deliberate negative space.
+
+---
+
+### 2. SYSTEM ARCHITECTURE
+
+```
+            ┌──────────────── React UI (Vite) ─────────────────┐
+            │ Upload · Results · Order drafter · Analyst ·     │
+            │ History · Calculator · Benchmarks · Regulations  │
+            └───────────────────────┬──────────────────────────┘
+                                    │ /api
+                       ┌────────────▼─────────────┐
+                       │  FastAPI  (app.py)       │
+                       │  LangGraph pipeline:     │
+                       │  extract → deep tables → │
+                       │  MYT norms → anomalies → │
+                       │  audit → R&M review →    │
+                       │  draft → clarify → verify│
+                       └────────────┬─────────────┘
+                                    │ src/cloud  (CLOUD = local | aws)
+      ┌───────────────┬─────────────┼───────────────┬───────────────────┐
+      │ Model         │ Tables      │ Document store│ Files             │
+ local│ Ollama / LM   │ PyMuPDF     │ SQLite        │ documents/        │
+      │ Studio /      │             │               │                   │
+      │ offline       │             │               │                   │
+ aws  │ Claude on     │ Textract    │ DynamoDB      │ S3                │
+      │ Bedrock       │             │ (+S3 spill)   │                   │
+      └───────────────┴─────────────┴───────────────┴───────────────────┘
+```
+
+*   **Frame 1 — Intake:** petition PDFs plus the year's rates (inflation, SBI EBLR, deposit rates, BEE fee). Files are validated, size-capped and stored under random IDs.
+*   **Frame 2 — Extraction:** page images go to the model for the ARR table; Textract (AWS) or PyMuPDF (local) supplies the structured tables as a cross-check; results are cached by PDF hash.
+*   **Frame 3 — Audit engine:** `src/tools/normative_math.py`, the depreciation engine (90% cap, grant-funded assets), the interest & finance engine (normative loan, IWC, security deposit interest) and the PPC cross-check (APPC × energy input) compute every approved figure. The model only classifies and explains.
+*   **Frame 4 — Regulation corpus:** 29 reference PDFs (tariff regulations and amendments, MYT orders, past truing-up orders) are converted to text once; questions retrieve the most relevant passages with BM25 instead of shipping whole PDFs.
+*   **Frame 5 — Order:** JSON order model → Jinja templates → HTML → WeasyPrint PDF, or DOCX for editing in Word.
+
+**AWS deployment** (`infra/aws`, 28 resources): VPC with two public subnets → Application Load Balancer (900 s idle timeout, optional HTTPS) → ECS Fargate (2 vCPU / 4 GB) → Bedrock, Textract, DynamoDB (on-demand, PITR), S3 (private, versioned, encrypted). The task's IAM role is the only credential; it is scoped to one bucket, one table and one Bedrock region.
+
+---
+
+### 3. BEHAVIOUR & MOTION
+
+*   **Choreographed entry:** structural borders fade in (500 ms) → the hero title glides up 16 px while fading in (150 ms delay, `cubic-bezier(0.16, 1, 0.3, 1)`) → working panels wipe in (300 ms delay).
+*   **Easing:** macro moves — opening panels, drawers, view changes — 500 ms `cubic-bezier(0.16,1,0.3,1)`; micro-interactions 200 ms `cubic-bezier(0.25,1,0.5,1)`. Views cross-fade; nothing blinks out. `prefers-reduced-motion` is respected.
+*   **Primary action:** an off-white block that inverts on hover with a vertical text slide.
+*   **Audit terminal:** while a petition is analysed, pipeline stages stream in as monospace log lines with stage tags, an elapsed timer and a thin indigo progress line.
+*   **Human in the loop:** when claimed R&M exceeds the MYT norm the pipeline pauses; the officer selects one-time items under Regulation 80(3) and the run resumes. Any component can be overridden later with a recorded justification.
+*   **Merged from earlier versions:** Analyst Q&A grounded in the corpus with cited sources (v3/v6), case history (v4), Word export (v3), quick calculator and historical benchmarks (v2), live audit terminal (v6).
+
+---
+
+### 4. RUN & OUTPUT REQUIREMENTS
+
+**Local — no cloud, no keys**
+
+```bash
+make setup      # Python venv, UI packages, .env from .env.example
+make run        # UI + API on http://localhost:8000
+make up         # or Docker: app + Ollama on http://localhost:8080
+make test       # 99 tests, model-free
+```
+
+`LLM_PROVIDER` chooses the model: `local` (Ollama, LM Studio, llama.cpp — default `qwen2.5:14b`), `bedrock`, or `offline` (rules engine only). A sample petition is in `documents/sample-petitions/`.
+
+**AWS — one command**
+
+```bash
+make plan-aws REGION=ap-south-1     # review
+make deploy-aws REGION=ap-south-1   # provision → build & push → sync corpus → roll out
+make destroy-aws REGION=ap-south-1
+```
+
+Before the first deploy, enable model access for Claude in Amazon Bedrock for the region you deploy to (or set `bedrock_region`). Restrict `allowed_cidrs` to the Commission's network and set `certificate_arn` for HTTPS — see [`docs/deployment.md`](docs/deployment.md).
+
+**Configuration** — `.env` (see `.env.example`):
+
+| Variable | Default | |
+|---|---|---|
+| `CLOUD` | `local` | `aws` switches storage to DynamoDB + S3 and tables to Textract |
+| `LLM_PROVIDER` | `local` (`bedrock` on AWS) | `local` · `bedrock` · `offline` |
+| `LLM_MODEL` | `anthropic.claude-opus-5-5` | Bedrock model; `LLM_FALLBACK_MODEL` handles refusals |
+| `LLM_EFFORT` | `high` | model effort for extraction and drafting |
+| `AWS_REGION` / `BEDROCK_REGION` | `ap-south-1` | app region / model region |
+
+**Outputs** — generated orders land in `output_orders/` (samples for Infopark, KDHP and Technopark FY 2024-25 are included); downloads: `GET /api/download/{id}` (PDF), `GET /api/export-docx/{id}` (Word). Full route list: [`docs/api_reference.md`](docs/api_reference.md).
+
+**Known gaps** — `KSERC_Tariff_Regulations_2021.pdf` is not in the corpus (add it under Regulations); two legacy tests are marked expected-fail because they predate the March 2026 PPC and ARR-scanner rules. Version history: [`VERSIONS.md`](VERSIONS.md).

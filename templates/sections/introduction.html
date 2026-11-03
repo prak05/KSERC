@@ -1,0 +1,12 @@
+{# Introduction section: paragraphs + ARR summary table #}
+{% for para in introduction.paragraphs %}
+<p class="numbered-para">
+    <span class="para-num">{{ para.seq }}.</span>
+    {{ para.text }}
+</p>
+{% endfor %}
+
+{# Introduction tables (usually the ARR summary) #}
+{% for table in introduction.tables %}
+{% include "components/table.html" %}
+{% endfor %}

@@ -1,0 +1,29 @@
+{# Signature block: Chairman + Members + Secretary #}
+{% if signature %}
+<table class="sig-table">
+    <tr>
+        {% for m in signature.members %}
+        <td>Sd/-</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for m in signature.members %}
+        <td><b>{{ m.name }}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for m in signature.members %}
+        <td><b>{{ m.designation }}</b></td>
+        {% endfor %}
+    </tr>
+</table>
+
+{% if signature.secretary %}
+<div class="secretary-block">
+    <p><b>Approved for issue</b></p>
+    <p>Sd/-</p>
+    <p><b>{{ signature.secretary.name }}</b></p>
+    <p><b>{{ signature.secretary.designation }}</b></p>
+</div>
+{% endif %}
+{% endif %}

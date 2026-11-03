@@ -1,0 +1,65 @@
+{
+  "rates": {
+    "electrical_distribution": {
+      "description": "Electrical Distribution Assets (Lines, Cables, Switchgear, Transformers)",
+      "rate_pct": 5.28,
+      "useful_life_years": 25,
+      "salvage_pct": 10.0,
+      "keywords": ["distribution", "electrical", "line", "cable", "switchgear", "transformer", "substation", "service line", "meter", "HT", "LT", "overhead"]
+    },
+    "civil_works": {
+      "description": "Civil Works (Buildings, Structures, Roads)",
+      "rate_pct": 3.34,
+      "useful_life_years": 30,
+      "salvage_pct": 10.0,
+      "keywords": ["civil", "building", "structure", "road", "foundation", "boundary", "wall", "shed"]
+    },
+    "it_equipment": {
+      "description": "IT Equipment (Computers, Servers, Network Equipment)",
+      "rate_pct": 15.0,
+      "useful_life_years": 6,
+      "salvage_pct": 10.0,
+      "keywords": ["computer", "IT", "server", "network", "hardware", "data processing"]
+    },
+    "software": {
+      "description": "Software and Licenses",
+      "rate_pct": 15.0,
+      "useful_life_years": 6,
+      "salvage_pct": 10.0,
+      "keywords": ["software", "license", "application", "ERP"]
+    },
+    "vehicles": {
+      "description": "Vehicles and Transport Equipment",
+      "rate_pct": 9.50,
+      "useful_life_years": 10,
+      "salvage_pct": 10.0,
+      "keywords": ["vehicle", "transport", "car", "truck", "van", "motor"]
+    },
+    "furniture": {
+      "description": "Furniture and Fixtures",
+      "rate_pct": 6.33,
+      "useful_life_years": 15,
+      "salvage_pct": 10.0,
+      "keywords": ["furniture", "fixture", "fitting", "office furniture"]
+    },
+    "office_equipment": {
+      "description": "Office Equipment",
+      "rate_pct": 6.33,
+      "useful_life_years": 15,
+      "salvage_pct": 10.0,
+      "keywords": ["office equipment", "equipment", "air condition", "AC", "fan", "pump"]
+    },
+    "land": {
+      "description": "Land and Land Rights (NEVER depreciable)",
+      "rate_pct": 0.0,
+      "useful_life_years": null,
+      "salvage_pct": 0.0,
+      "keywords": ["land", "land right", "freehold", "leasehold"]
+    }
+  },
+  "default_rate_pct": 5.28,
+  "max_depreciation_pct": 90.0,
+  "salvage_value_pct": 10.0,
+  "over_13_year_threshold": 13,
+  "notes": "Source: KSERC Tariff Regulations 2021, Annexure 1. Land always zero. Over 13 years uses reduced rate calculation."
+}

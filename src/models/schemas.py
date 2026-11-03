@@ -1,252 +1,161 @@
-# [Purpose] Pydantic data models for API request/response validation
-# [Source] Based on KSERC regulatory orders (4oCC...pdf, 4tJU...pdf)
-# [Why] Ensures type safety and automatic validation for all API interactions
+"""
+KSERC Truing-Up — Pydantic Schemas for Structured Model Output.
 
-# [Library] Pydantic - Data validation library using Python type hints
-# [Source] https://docs.pydantic.dev/
-# [Why] Provides automatic data validation, serialization, and documentation
-from pydantic import BaseModel, Field, validator
+These schemas are passed as `response_schema` to the LLM client, which
+includes them in the request so the model returns JSON in this shape.
+"""
 
-# [Library] typing - Support for type hints
-# [Why] Enables type checking and better IDE support
-from typing import List, Optional, Dict, Any
-
-# [Library] datetime - Date and time handling
-# [Why] Used for timestamp fields in API responses
-from datetime import datetime
+from pydantic import BaseModel, Field
+from typing import Optional
 
 
-# [User Defined] Model representing a single row in the 'Truing Up' financial table
-# [Source] Based on Table 30 in KSERC Order '4oCC...pdf' (Infopark Truing Up)
-# [Why] Represents individual line items in the financial statement
-class FinancialRow(BaseModel):
+# ═══════════════════════════════════════════════════════════════════
+# Extraction Schemas (used by extractor.py / vision model)
+# ═══════════════════════════════════════════════════════════════════
+
+class ClaimedExpenses(BaseModel):
+    """ARR expense line items — all values in Rs. Lakhs."""
+    power_purchase_cost: float = Field(0.0, description="Cost of Power Purchase")
+    employee_cost: float = Field(0.0, description="Employee Cost / Expenses")
+    repair_maintenance: float = Field(0.0, description="Repairs & Maintenance")
+    admin_general: float = Field(0.0, description="Administration & General (gross, excl. elec duty)")
+    depreciation: float = Field(0.0, description="Depreciation")
+    interest_long_term: float = Field(0.0, description="Interest on Long Term Loans / Finance Charges")
+    interest_consumer_deposits: float = Field(0.0, description="Interest on Consumer Security Deposits")
+    interest_working_capital: float = Field(0.0, description="Interest on Working Capital")
+    carrying_cost: float = Field(0.0, description="Carrying cost for past revenue gaps")
+    return_on_nfa: float = Field(0.0, description="Return on Net Fixed Assets / Equity")
+    other_debits: float = Field(0.0, description="Other Debits / Duty-III")
+    section3_1_duty: float = Field(0.0, description="Section 3(1) Kerala Electricity Duty")
+    other_expenses: float = Field(0.0, description="Other miscellaneous expenses")
+
+
+class ClaimedRevenues(BaseModel):
+    """ARR revenue line items — all values in Rs. Lakhs."""
+    revenue_from_sale: float = Field(0.0, description="Revenue from sale of power")
+    wheeling_charges: float = Field(0.0, description="Wheeling charges received")
+    non_tariff_income: float = Field(0.0, description="Non-tariff income")
+    other_revenue: float = Field(0.0, description="Other income / revenue")
+
+
+class ExtractionResult(BaseModel):
+    """Complete extraction result from vision model or Textract."""
+    claimed_expenses: ClaimedExpenses
+    claimed_revenues: ClaimedRevenues
+    total_expenditure: float = Field(0.0, description="Sum of all expenses")
+    total_revenue: float = Field(0.0, description="Sum of all revenues")
+    distribution_loss_pct: float = Field(0.0, description="Distribution loss percentage")
+    bee_energy_audit_fee: float = Field(0.0, description="BEE energy audit fee (A&G sub-item)")
+    # Distribution loss unit values (in Lakh units = lakh kWh) — used for PPC Reg 73(3) calc
+    actual_loss_lakh_units: float = Field(0.0, description="Actual distribution loss in Lakh units (lakh kWh) from petition energy balance table")
+    approved_loss_lakh_units: float = Field(0.0, description="Approved/target distribution loss in Lakh units (lakh kWh) from petition table (ignore — re-computed from MYT norms)")
+    energy_input_lakh_units: float = Field(0.0, description="Energy Input to Distribution System in Lakh units (lakh kWh). Look for row labeled 'Energy Received at State boundary (MU)' in PPC table (Form D 3.1) or 'Energy Input to Distribution System' in Annexure B / energy balance table. If value is in MU (Million Units), multiply by 10 to get Lakh units. This is the energy entering the distribution network, NOT 'Total Energy Purchased'.")
+    energy_sales_lakh_units: float = Field(0.0, description="Total energy output / energy sold / energy delivered to consumers in Lakh units (lakh kWh). Look for rows labeled 'Total Energy Output', 'Energy Sold', 'Energy Delivered to Consumers', 'Energy Sales', 'Total Output'. This equals Energy Input minus Distribution Loss.")
+    appc_rs_per_unit: float = Field(0.0, description="Average Power Purchase Cost in Rs/unit (Rs/kWh) from petition table")
+    ppc_net_charges_rs_lakhs: float = Field(0.0, description="KDHP-specific: Net Charges (Rs/Lakhs) from the detailed Power Purchase Cost sub-table — this is the BOLD 'Net Charges-Rs/Lakhs' row after deducting excess line loss adjustment. Use this for power_purchase_cost for KDHP. If no adjustment, equals Total Charges.")
+    # IWC sub-components
+    consumer_security_deposit_balance: float = Field(0.0, description="Consumer security deposit balance (Rs Lakhs) from IWC table")
+    maintenance_spares_wc: float = Field(0.0, description="Maintenance spares as per norms (Rs Lakhs)")
+    # RoNFA computation fields
+    ronfa_gross_fixed_assets: float = Field(0.0, description="Gross Fixed Assets at start of year (Rs Lakhs)")
+    ronfa_accumulated_depreciation: float = Field(0.0, description="Total accumulated depreciation (Rs Lakhs)")
+    ronfa_consumer_contribution: float = Field(0.0, description="Consumer contribution to assets (Rs Lakhs)")
+    ronfa_nfa_for_normative_loan: float = Field(0.0, description="NFA for which interest is allowed / normative loan NFA (Rs Lakhs)")
+    ronfa_prior_year_additions: float = Field(0.0, description="Asset additions from prior year excluded from NFA base (Rs Lakhs)")
+    ronfa_balance_nfa: float = Field(0.0, description="Balance/eligible NFA after all deductions (Rs Lakhs)")
+    ronfa_rate_pct: float = Field(0.0, description="Rate of return as percentage (e.g. 5.50 for 5.5%)")
+    ronfa_eligible_return: float = Field(0.0, description="Computed eligible return / RoNFA claimed (Rs Lakhs)")
+
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Auditor Schemas (used by chief_auditor.py)
+# ═══════════════════════════════════════════════════════════════════
+
+class AuditorDecision(BaseModel):
+    """Chief Auditor's decision for a single component."""
+    approved_amount: float = Field(description="Approved amount in Rs. Lakhs")
+    justification: str = Field(description="Legal justification with regulation citations")
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Analyzer Schemas (used by analyzer.py)
+# ═══════════════════════════════════════════════════════════════════
+
+class AnalysisResult(BaseModel):
+    """Analysis result for a component comparison."""
+    component: str = Field(description="Name of the financial component")
+    claimed: float = Field(description="Claimed amount in Rs. Lakhs")
+    approved: float = Field(description="Approved/calculated amount in Rs. Lakhs")
+    variance: float = Field(description="Difference (approved - claimed)")
+    variance_pct: float = Field(0.0, description="Variance as percentage")
+    reasoning: str = Field("", description="Explanation of the variance")
+    status: str = Field("", description="APPROVED / PARTIALLY_APPROVED / REJECTED")
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Interest & Finance Extraction Schemas (flexible row-based)
+# ═══════════════════════════════════════════════════════════════════
+
+from typing import List
+from enum import Enum
+
+
+class FileClass(str, Enum):
+    """Document classification types for uploaded petition files."""
+    NARRATIVE_PETITION = "NARRATIVE_PETITION"
+    KSERC_FORMATS = "KSERC_FORMATS"
+    AUDITED_ACCOUNTS = "AUDITED_ACCOUNTS"
+    AUDITOR_REPORT = "AUDITOR_REPORT"
+    PREVIOUS_ORDER = "PREVIOUS_ORDER"
+    HEARING_PROCEEDINGS = "HEARING_PROCEEDINGS"
+    SCANNED_PDF = "SCANNED_PDF"
+
+
+class InterestTableRow(BaseModel):
+    """A single row from an interest-related table in a petition.
+
+    Role-based identification: we detect rows by their CONTENT
+    (e.g. label contains 'opening' or 'addition'), not by position.
+    This handles different licensee table formats.
     """
-    [Purpose] Represents a single financial line item in a regulatory order
-    [Source] Structure derived from KSERC Truing Up tables
+    role: str = Field(
+        description="Semantic role: opening, addition, repayment, closing, "
+        "interest_rate, interest_amount, total, subtotal, or raw"
+    )
+    label: str = Field(description="Original text label from table")
+    value: Optional[float] = Field(None, description="Numeric value in Rs Lakhs")
+    note: Optional[str] = Field(None, description="Any footnote or qualification")
+
+
+class InterestTableExtraction(BaseModel):
+    """Flexible extraction of a single interest component table.
+
+    Component can be: normative_loan, working_capital, security_deposit,
+    bank_charges, carrying_cost, actual_loan, or interest_summary.
     """
-    
-    # [Field] particulars - The name/description of the cost or revenue head
-    # [Example] "Employee Expenses", "Power Purchase Cost", "Administrative Expenses"
-    # [Why] Identifies what the financial row represents
-    particulars: str = Field(
-        ...,  # [Comment] ... means this field is required
-        description="Name of the expense/revenue category",
-        example="Power Purchase Cost"
+    component: str = Field(description="Which interest component this table relates to")
+    source_file: str = Field(description="Filename this was extracted from")
+    source_page: int = Field(0, description="Page number within the file")
+    rows_found: List[InterestTableRow] = Field(default_factory=list)
+    total_claimed: Optional[float] = Field(None, description="Total claimed for this component")
+    extraction_method: str = Field(
+        "llm", description="llm | vision_api — how the table was read"
     )
-    
-    # [Field] arr_approved - The value approved in the Annual Revenue Requirement (ARR)
-    # [Source] ARR column from KSERC Truing Up tables
-    # [Why] Baseline value for comparison against actual expenditure
-    arr_approved: float = Field(
-        ...,
-        description="Amount approved in ARR (in Lakhs of Rupees)",
-        example=3103.55
-    )
-    
-    # [Field] trued_up_value - The actual value claimed/spent during the year
-    # [Source] Trued Up/Actual column from KSERC tables
-    # [Why] Represents the real expenditure to compare against ARR
-    trued_up_value: float = Field(
-        ...,
-        description="Actual amount trued up (in Lakhs of Rupees)",
-        example=3370.52
-    )
-    
-    # [Field] deviation - Calculated difference between ARR and actual
-    # [Why] Key metric for regulatory scrutiny (over/under spending)
-    deviation: float = Field(
-        ...,
-        description="Deviation from ARR (Trued Up - ARR)",
-        example=266.97
-    )
-    
-    # [Pydantic Validator] Ensure deviation is correctly calculated
-    # [Source] Pydantic validation feature
-    # [Why] Data integrity - ensures deviation matches the formula
-    @validator('deviation', always=True)
-    def validate_deviation(cls, v, values):
-        """
-        [User Defined] Validates that deviation equals trued_up_value - arr_approved
-        [Why] Prevents data inconsistency
-        """
-        # [Comment] Check if required fields exist in values dictionary
-        if 'arr_approved' in values and 'trued_up_value' in values:
-            # [Comment] Calculate expected deviation
-            expected = values['trued_up_value'] - values['arr_approved']
-            # [Comment] Allow small floating-point tolerance (0.01)
-            if abs(v - expected) > 0.01:
-                # [Library] Pydantic raises ValueError for validation failures
-                raise ValueError(f"Deviation must equal trued_up_value - arr_approved")
-        return v
+    confidence: float = Field(1.0, description="0.0–1.0 extraction confidence")
 
 
-# [User Defined] Main response model for the Truing Up analysis API endpoint
-# [Source] Corresponds to the output structure needed for ARA Dashboard
-# [Why] Provides complete analysis results in a structured format
-class TruingUpResponse(BaseModel):
+class InterestSummaryExtraction(BaseModel):
+    """Extraction result from the interest summary table (Pass 2).
+
+    This is the high-level table showing all interest components in one view.
     """
-    [Purpose] Complete response for regulatory order analysis
-    [Source] Structure based on 'AI_Regulatory_Auditing...pdf' requirements
-    """
-    
-    # [Field] licensee_name - Name of the electricity distribution licensee
-    # [Example] "Infopark", "Technopark", "KDHPCL"
-    # [Source] Extracted from PDF header (M/s [Name])
-    licensee_name: str = Field(
-        ...,
-        description="Name of the licensee",
-        example="Infopark"
-    )
-    
-    # [Field] financial_year - The financial year being audited
-    # [Format] "YYYY-YY" format as per KSERC convention
-    # [Example] "2023-24"
-    financial_year: str = Field(
-        ...,
-        description="Financial year of the truing up exercise",
-        example="2023-24"
-    )
-    
-    # [Field] financial_summary - List of all extracted financial rows
-    # [Type] List of FinancialRow objects
-    # [Why] Contains the complete financial breakdown
-    financial_summary: List[FinancialRow] = Field(
-        ...,
-        description="List of financial line items with ARR vs Actuals"
-    )
-    
-    # [Field] net_surplus_deficit - Overall surplus or deficit amount
-    # [Source] Key metric from KSERC orders (Net Surplus/Deficit calculation)
-    # [Why] Critical value for regulatory decision-making
-    # [Sign Convention] Positive = Surplus, Negative = Deficit
-    net_surplus_deficit: float = Field(
-        ...,
-        description="Net surplus (+) or deficit (-) in Lakhs of Rupees",
-        example=-150.75
-    )
-    
-    # [Field] total_arr_approved - Sum of all ARR approved values
-    # [Why] Provides aggregate view of approved budget
-    total_arr_approved: Optional[float] = Field(
-        None,
-        description="Total ARR approved amount"
-    )
-    
-    # [Field] total_trued_up - Sum of all trued up actual values
-    # [Why] Provides aggregate view of actual expenditure
-    total_trued_up: Optional[float] = Field(
-        None,
-        description="Total trued up amount"
-    )
-    
-    # [Field] analysis_timestamp - When the analysis was performed
-    # [Why] Audit trail for when analysis was done
-    analysis_timestamp: Optional[datetime] = Field(
-        default_factory=datetime.now,  # [Library] datetime.now() for current time
-        description="Timestamp of analysis"
-    )
-    
-    # [Field] compliance_status - Overall compliance assessment
-    # [Why] Quick summary of whether licensee is within acceptable limits
-    compliance_status: Optional[str] = Field(
-        None,
-        description="Overall compliance status",
-        example="Under Review"
-    )
-
-
-# [User Defined] Model for error responses
-# [Source] Standard error response pattern for REST APIs
-# [Why] Provides consistent error format for API consumers
-class ErrorResponse(BaseModel):
-    """
-    [Purpose] Standardized error response format
-    [Why] Consistent error handling across the API
-    """
-    
-    # [Field] error - Error type or category
-    error: str = Field(..., description="Error type", example="ValidationError")
-    
-    # [Field] message - Human-readable error message
-    message: str = Field(..., description="Error description", example="Invalid PDF format")
-    
-    # [Field] details - Additional error details
-    details: Optional[Dict[str, Any]] = Field(None, description="Additional error context")
-
-
-# [User Defined] Model for health check response
-# [Source] Standard practice for API health monitoring
-# [Why] Allows monitoring systems to check API status
-class HealthCheckResponse(BaseModel):
-    """
-    [Purpose] Health check endpoint response
-    [Why] Enables monitoring and load balancer health checks
-    """
-    
-    # [Field] status - Service status indicator
-    status: str = Field(..., description="Service status", example="active")
-    
-    # [Field] system - System name
-    system: str = Field(..., description="System identifier", example="ARA Backend v1")
-    
-    # [Field] timestamp - Current server time
-    timestamp: datetime = Field(
-        default_factory=datetime.now,
-        description="Current server timestamp"
-    )
-    
-    # [Field] version - API version
-    version: str = Field(..., description="API version", example="1.0.0")
-
-
-# [User Defined] Model for AI summary requests
-# [Source] User defined for free-tier LLM integration
-# [Why] Provides structured input for summary generation
-class SummaryRequest(BaseModel):
-    """
-    [Purpose] Request payload for AI summary generation
-    [Why] Combines analysis result with optional compliance report
-    """
-    analysis: TruingUpResponse = Field(
-        ...,
-        description="Full analysis result from /analyze-order/"
-    )
-    compliance_report: Optional[Dict[str, Any]] = Field(
-        None,
-        description="Optional compliance report from /compliance-check/"
-    )
-
-
-# [User Defined] Model for AI summary responses
-# [Source] User defined for LLM output normalization
-# [Why] Provides consistent summary response for frontend
-class SummaryResponse(BaseModel):
-    """
-    [Purpose] Response payload for AI summary generation
-    [Why] Normalizes summary text and provider details
-    """
-    summary: str = Field(..., description="Generated summary text")
-    provider: str = Field(..., description="Summary provider (local or API)")
-    model: str = Field(..., description="Model name used for summary")
-    warning: Optional[str] = Field(None, description="Warning if LLM was unavailable")
-
-
-# [User Defined] RAG indexing response
-# [Why] Provides status for indexing operation
-class RagIndexResponse(BaseModel):
-    status: str = Field(..., description="Indexing status")
-    indexed_chunks: int = Field(..., description="Total chunks indexed")
-    sources: List[str] = Field(..., description="List of sources indexed")
-
-
-# [User Defined] Verdict response model
-# [Why] Provides verdict summary and PDF link
-class VerdictResponse(BaseModel):
-    verdict_id: str = Field(..., description="Unique verdict ID")
-    verdict_pdf_url: str = Field(..., description="URL to download verdict PDF")
-    summary: str = Field(..., description="Executive summary")
-    approved_items: List[str] = Field(default_factory=list, description="Approved expenses")
-    disallowed_items: List[str] = Field(default_factory=list, description="Disallowed expenses")
-    conditions: List[str] = Field(default_factory=list, description="Conditions/notes")
-    agent_outputs: Dict[str, Any] = Field(..., description="Outputs from 4 agents")
-    rag_snippets: List[Dict[str, Any]] = Field(..., description="RAG context snippets used")
+    interest_on_long_term_loans: Optional[float] = None
+    interest_on_normative_loan: Optional[float] = None
+    interest_on_working_capital: Optional[float] = None
+    interest_on_security_deposits: Optional[float] = None
+    bank_charges: Optional[float] = None
+    carrying_cost: Optional[float] = None
+    total_interest_and_finance: Optional[float] = None
+    source_file: str = ""
+    source_page: int = 0
