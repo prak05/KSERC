@@ -105,3 +105,20 @@ Before the first deploy, enable model access for Claude in Amazon Bedrock for th
 **Outputs** — generated orders land in `output_orders/` (samples for Infopark, KDHP and Technopark FY 2024-25 are included); downloads: `GET /api/download/{id}` (PDF), `GET /api/export-docx/{id}` (Word). Full route list: [`docs/api_reference.md`](docs/api_reference.md).
 
 **Known gaps** — `KSERC_Tariff_Regulations_2021.pdf` is not in the corpus (add it under Regulations); two legacy tests are marked expected-fail because they predate the March 2026 PPC and ARR-scanner rules. Version history: [`VERSIONS.md`](VERSIONS.md).
+
+## Portfolio brief
+
+A regulatory-analysis platform for truing-up petitions, combining deterministic financial computation with evidence-grounded review workflows.
+
+### Visual system
+
+Linear-inspired dark graphite, indigo signal accents, dense audit tables, and sharp 1px boundaries keep the interface focused on traceability rather than decoration.
+
+### Architecture
+
+FastAPI services, document/table extraction, regulation retrieval, local SQLite/Ollama mode, and AWS-compatible S3, DynamoDB, Textract, and Bedrock adapters.
+
+### Run modes
+
+Use the repository's local Docker/Make workflow for offline development. AWS deployment is planned through `infra/aws` and IAM roles; no credentials belong in the repository.
+
